@@ -1,0 +1,92 @@
+<script>
+const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a']];
+const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
+const RAW=__DATA__;
+const SERIES=new Set(__SERIES__);
+const ONLINE=new Set(__ONLINE__);
+const X360=new Set(__X360__),XOG=new Set(__XOG__);
+const badges=k=>(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">Solo Series X|S</span>':'');
+const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
+const KEYS=new Set(GAMES.map(g=>g.k));
+const countOf=c=>(RAW[c]||[]).length;
+const key=n=>n.replace(/^(the|a|el) /i,'');
+const letterOf=n=>{const c=key(n).normalize('NFD')[0].toUpperCase();return /[A-Z]/.test(c)?c:'#'};
+const ORDER=['#',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fold=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const alias={fifa:'fc',cod:'call of duty',gta:'grand theft auto'};
+const tagHTML=c=>{const x=CONS[CI[c]];return `<span class="ctag" style="background:${x[2]};color:${x[3]}">${c}</span>`};
+const $=id=>document.getElementById(id);
+const list=$('list'),lettersEl=$('letters'),countEl=$('count');
+let current=null,query='';
+
+$('consoles').innerHTML=CONS.map(([n,s,col,,txt])=>{const q=countOf(n);return q
+  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${n}</span><span class="cq">${q.toLocaleString('es')} juegos<span class="go">→</span></span></a>`
+  :`<div class="ccard soon" style="--cc:${col};--ct:${txt}" aria-disabled="true"><span class="cn">${n}</span><span class="cq">Próximamente</span></div>`}).join('');
+
+function render(){
+  const all=current==='todas';
+  const terms=fold(query.trim()),extra=alias[terms];
+  const hits=GAMES.filter(g=>(all||g.c===current)&&(!terms||fold(g.n).includes(terms)||(extra&&fold(g.n).includes(extra))));
+  hits.sort((a,b)=>key(a.n).localeCompare(key(b.n),'es',{sensitivity:'base'})||CI[a.c]-CI[b.c]);
+  const groups={};hits.forEach(g=>(groups[letterOf(g.n)]??=[]).push(g));
+  const hl=n=>{if(!terms)return esc(n);const t=fold(n).includes(terms)?terms:extra;const i=fold(n).indexOf(t);return i<0?esc(n):esc(n.slice(0,i))+'<mark>'+esc(n.slice(i,i+t.length))+'</mark>'+esc(n.slice(i+t.length))};
+  list.innerHTML=hits.length?ORDER.filter(l=>groups[l]).map(l=>`<section id="l-${l==='#'?'num':l}"><h2>${l}<small>${groups[l].length}</small></h2><ul>${groups[l].map(g=>`<li data-k="${esc(g.k)}">${all?tagHTML(g.c):''}<span class="gn">${hl(g.n)}${badges(g.k)}</span><button class="add" type="button">+</button></li>`).join('')}</ul></section>`).join(''):`<p class="empty">${terms?`No encontramos “${esc(query)}”.`:'Todavía no hay juegos aquí.'} Escríbenos por WhatsApp al 5344 1089, 5382 7989 o 5293 3943 y te lo conseguimos.</p>`;
+  lettersEl.innerHTML=ORDER.map(l=>`<a href="#l-${l==='#'?'num':l}" class="${groups[l]?'':'off'}">${l}</a>`).join('');
+  countEl.textContent=terms?`${hits.length} resultado${hits.length===1?'':'s'}`:'';
+  sync();
+}
+function route(){
+  const h=location.hash.slice(1);
+  if(h.startsWith('l-'))return;
+  const c=BYSLUG[h];
+  if(c&&countOf(c[0])||h==='todas'){
+    const was=current;current=c?c[0]:'todas';
+    $('home').hidden=true;$('view').hidden=false;
+    const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
+    $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
+    if(was!==current){if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
+    render();
+  }else{
+    current=null;$('view').hidden=true;$('home').hidden=false;sync();
+  }
+}
+addEventListener('hashchange',route);
+$('back').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
+$('q').addEventListener('input',e=>{query=e.target.value;render()});
+$('hq').addEventListener('input',e=>{const v=e.target.value;if(!v.trim())return;query=v;$('q').value=v;e.target.value='';location.hash='todas';setTimeout(()=>$('q').focus(),0)});
+$('flogo').src=document.querySelector('h1 .logo').src;
+(function(){const el=$('open-now');try{const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));const h=+p.hour%24;const on=p.weekday!=='Sun'&&h>=10&&h<18;el.textContent=on?'Abierto ahora':'Cerrado ahora';el.className='open '+(on?'on':'off')}catch(e){el.hidden=true}})();
+
+let cart=[];try{const old=JSON.parse(localStorage.getItem('gamex-cart')||'[]');cart=JSON.parse(localStorage.getItem('gamex-cart-v2')||'null')||old.map(n=>'PS4|'+n);cart=cart.filter(k=>KEYS.has(k))}catch(e){}
+let dest='5353441089';
+const save=()=>{try{localStorage.setItem('gamex-cart-v2',JSON.stringify(cart))}catch(e){}};
+const split=k=>{const i=k.indexOf('|');return [k.slice(0,i),k.slice(i+1)]};
+const sorted=()=>[...cart].sort((a,b)=>CI[split(a)[0]]-CI[split(b)[0]]);
+function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]).push(n)});
+  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${c}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`}
+function sync(){
+  $('cn').textContent=cart.length;
+  $('clear').hidden=!cart.length;
+  document.querySelectorAll('#list li').forEach(li=>{const on=cart.includes(li.dataset.k);li.classList.toggle('sel',on);const b=li.querySelector('.add');b.textContent=on?'✓':'+';b.setAttribute('aria-label',(on?'Quitar ':'Añadir ')+split(li.dataset.k).reverse().join(' – '))});
+  $('cl').innerHTML=sorted().map(k=>{const[c,n]=split(k);return `<li data-k="${esc(k)}">${tagHTML(c)}<span class="gn">${esc(n)}${badges(k)}</span><button class="add" type="button" aria-label="Quitar ${esc(n)}">×</button></li>`}).join('');
+  $('empty').hidden=!!cart.length;
+  const s=$('send');s.href=`https://wa.me/${dest}?text=${encodeURIComponent(text())}`;s.style.opacity=cart.length?1:.45;
+  save();
+}
+function toggle(k){const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);sync()}
+list.addEventListener('click',e=>{const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
+$('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
+const sheet=$('sheet');
+$('open').onclick=()=>{sheet.hidden=false;$('close').focus()};
+$('close').onclick=()=>sheet.hidden=true;
+sheet.addEventListener('click',e=>{if(e.target===sheet)sheet.hidden=true});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')sheet.hidden=true});
+$('clear').onclick=()=>{cart=[];sync()};
+document.querySelectorAll('.choose .btn').forEach(b=>b.onclick=()=>{dest=b.dataset.n;document.querySelectorAll('.choose .btn').forEach(x=>x.setAttribute('aria-pressed',x===b));sync()});
+$('send').addEventListener('click',e=>{if(!cart.length){e.preventDefault();$('msg').textContent='Escoge al menos un juego antes de enviar.'}});
+$('copy').onclick=()=>{const m=$('msg');if(!cart.length){m.textContent='Escoge al menos un juego primero.';return}
+  navigator.clipboard.writeText(text()).then(()=>m.textContent='Lista copiada. Pégala en el chat de WhatsApp de GameX.').catch(()=>{m.textContent='No se pudo copiar automáticamente. Mantén presionada la lista para copiarla.'})};
+route();
+</script>
