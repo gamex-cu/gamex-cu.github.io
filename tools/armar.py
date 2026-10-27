@@ -78,14 +78,20 @@ w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div id="home">',1)
 w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button> <span id="verlbl" style="margin-left:8px"></span></div>',1)
 pj='''
-if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{})}
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 '''
 pj+='''
 const GXV=__VER__;
 document.getElementById('verlbl').textContent='Versión '+GXV;
-async function gxRefresh(){const b=document.getElementById('refresh');if(b)b.textContent='Actualizando…';try{if(self.caches){for(const k of await caches.keys())await caches.delete(k)}const rs=navigator.serviceWorker?await navigator.serviceWorker.getRegistrations():[];for(const r of rs)await r.unregister()}catch(e){}location.replace(location.pathname+'?v='+Date.now()+location.hash)}
+async function gxRefresh(){const b=document.getElementById('refresh');
+  try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
+    if(b)b.textContent='Actualizando…';
+    try{const rg=await navigator.serviceWorker?.getRegistration();if(rg){await rg.update();rg.active&&rg.active.postMessage('guardar')}}catch(e){}
+    setTimeout(()=>location.replace(location.pathname+location.hash),400);
+  }catch(e){if(b)b.textContent='Necesitas internet para actualizar';setTimeout(()=>{if(b)b.textContent='Actualizar catálogo'},3000)}}
+navigator.serviceWorker?.ready.then(rg=>{rg.active&&rg.active.postMessage('guardar')}).catch(()=>{});
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
 function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV)document.getElementById('upd').hidden=false}).catch(()=>{})}
 fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
