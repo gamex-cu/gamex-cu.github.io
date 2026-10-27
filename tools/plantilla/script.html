@@ -75,7 +75,7 @@ function route(){
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
     const was=current;current=c?c[0]:'todas';
-    $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('view').hidden=false;
+    $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('view').hidden=false;
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
@@ -83,11 +83,13 @@ function route(){
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else if(h==='catalogos'){
-    current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
+    current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
+  }else if(h==='iphone'){
+    current=null;['view','home','cats','ofer'].forEach(x=>$(x).hidden=true);$('iphone').hidden=false;const it=document.getElementById('ios-tip');if(it)it.hidden=true;window.scrollTo(0,0);sync();
   }else if(h==='ofertas'){
-    current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
+    current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('iphone').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
   }else{
-    current=null;$('view').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('home').hidden=false;sync();
+    current=null;$('view').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('home').hidden=false;sync();
   }
 }
 addEventListener('hashchange',route);
@@ -97,6 +99,12 @@ $('filt').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!
   render()});
 $('back').addEventListener('click',e=>{e.preventDefault();location.hash='catalogos'});
 $('back-cats').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+(function(){const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+  const ok=('Notification' in window)&&Notification.permission==='granted';
+  if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
+  if(sa)$('g-ya').hidden=false;})();
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};

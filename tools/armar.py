@@ -54,6 +54,9 @@ try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
 js=js.replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
+import base64 as _b64
+ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
+head=head.replace('__ICONO__',ICONO)
 page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])]+['Meta Quest|'+n for n in MQE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
@@ -91,7 +94,7 @@ css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));righ
 w=w.replace('mark{',css+DCSS+'mark{',1)
 k_=w.index('<a class="chan"');k2=w.index('</a>',k_)+4
 w=w[:k2]+'\n'+CARD+w[k2:]
-tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.</div>
+tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet. <a href="#iphone" style="color:var(--hot);font-weight:600">Ver paso a paso</a></div>
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div class="aviso" id="aviso" hidden role="status"><div><b id="aviso-t"></b><span id="aviso-x"></span></div><button type="button" id="aviso-c" aria-label="Cerrar aviso">×</button></div>\n<div id="home">',1)
@@ -124,17 +127,17 @@ gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)
   el.onclick=()=>{if(a.url)window.open(a.url,'_blank','noopener')};
  }).catch(()=>{})})();
 const PUSH=__PUSH__;
-(function(){const b=document.getElementById('push-b');if(!PUSH.url||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;
+(function(){const bs=[...document.querySelectorAll('.pushb')];if(!PUSH.url||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;
  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
  const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)return;
  const k=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const r=atob(s+'='.repeat((4-s.length%4)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
  navigator.serviceWorker.ready.then(rg=>rg.pushManager.getSubscription().then(sub=>{
   if(sub&&Notification.permission==='granted'){fetch(PUSH.url+'/suscribir',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)}).catch(()=>{});return}
-  if(Notification.permission==='denied')return;b.hidden=false;
+  if(Notification.permission==='denied')return;bs.forEach(b=>{b.hidden=false;
   b.onclick=async()=>{try{const p=await Notification.requestPermission();if(p!=='granted'){b.textContent='Avisos bloqueados';return}
    const s=await rg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:k(PUSH.vapid)});
    const r=await fetch(PUSH.url+'/suscribir',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)});if(!r.ok)throw 0;
-   b.textContent='✓ Avisos activados';setTimeout(()=>{b.hidden=true},2500)}catch(e){b.textContent='No se pudo activar, prueba con internet';setTimeout(()=>{b.textContent='🔔 Activar avisos'},3000)}};
+   bs.forEach(x=>{x.textContent='✓ Avisos activados';setTimeout(()=>{x.hidden=true},2500)})}catch(e){b.textContent='No se pudo activar, prueba con internet';setTimeout(()=>{b.textContent='🔔 Activar avisos'},3000)}}});
  })).catch(()=>{})})();
 '''.replace('__VER__',str(VER)).replace('__PUSH__',json.dumps(json.load(open(D+'push.json'))))
 k=w.rindex('</script>'); w=w[:k]+pj+w[k:]

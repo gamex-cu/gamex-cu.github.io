@@ -128,6 +128,27 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .ocard p{margin:0;color:var(--fg);line-height:1.45;white-space:pre-line}
 .ocard .ov{display:block;margin-top:8px;color:var(--muted);font-size:.85rem}
 .ocard a.op{display:inline-block;margin-top:12px;background:#1fa855;color:#fff;font:600 .95rem var(--display);padding:10px 14px;border-radius:9px;text-decoration:none}
+.sb-ios{background:linear-gradient(135deg,rgba(255,255,255,.07),rgba(61,123,255,.10))}
+.sb-ios .sbi{background:#e9ecff;color:#0d1124}
+.guia{padding:16px 0 32px}
+.guia li::before{display:none}
+.g-ayuda li{padding:0;margin:0 0 6px;border:0;display:list-item;list-style:disc}
+.g-req{margin:0 0 14px;padding:12px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);color:var(--muted);font-size:.92rem;line-height:1.45}
+.g-req b{color:var(--fg)}
+.g-ya{margin:0 0 14px;padding:14px;border-radius:12px;border:1px solid #27a35a;background:rgba(39,163,90,.12);line-height:1.5}
+.g-ya .pushb{display:block;margin:10px 0 0}
+.pasos{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.paso{display:grid;grid-template-columns:1fr;gap:12px;align-items:center;padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel)}
+@media(min-width:640px){.paso{grid-template-columns:1fr 220px}}
+.p-tx h3{margin:6px 0 4px;font:700 1.15rem var(--display)}
+.p-tx p{margin:0;color:var(--muted);line-height:1.5}
+.p-tx p b{color:var(--fg)}
+.p-n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--hot);color:#0d1124;font:700 1rem var(--display)}
+.ill{display:block;width:100%;max-width:220px;height:auto;margin:0 auto}
+.g-ayuda{margin-top:18px;padding:16px;border-radius:14px;border:1px solid var(--line)}
+.g-ayuda h3{margin:0 0 8px;font:700 1.05rem var(--display)}
+.g-ayuda ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.55}
+.g-ayuda b{color:var(--fg)}
 .sbtn{display:flex;align-items:center;gap:14px;margin:22px 0 0;padding:18px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(61,123,255,.16),rgba(242,169,0,.08));color:var(--fg);text-decoration:none;transition:border-color .15s,transform .15s}
 .sbtn:hover,.sbtn:focus-visible{border-color:var(--hot);outline:none;transform:translateY(-1px)}
 .sbi{flex:none;width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:var(--accent);color:#fff}
@@ -205,6 +226,11 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
     <span class="sbt"><b>Ofertas</b><small>Promociones y precios especiales de la semana</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
+  <a class="sbtn sb-ios" href="#iphone" id="b-iphone" hidden>
+    <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/><path d="M12 7v5M9.8 9.8 12 12l2.2-2.2"/></svg></span>
+    <span class="sbt"><b>¿Tienes iPhone?</b><small>Instala GameX en tu pantalla de inicio y recibe las ofertas. Te explicamos paso a paso.</small></span>
+    <span class="sgo" aria-hidden="true">→</span>
+  </a>
   <p class="sectitle">Escríbenos</p>
   <div class="wa"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089 <small>WhatsApp</small></a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989 <small>WhatsApp</small></a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943 <small>WhatsApp</small></a></div>
   <a class="chan" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener"><b>Canal de GAMEX en WhatsApp</b><span>Novedades, juegos nuevos y promociones</span><i>Seguir canal</i></a>
@@ -226,6 +252,29 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
   <div class="vtitle"><a class="back" href="#" id="back-ofer">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Ofertas</span><span class="vc">Promociones vigentes. Pídelas por WhatsApp.</span></span></div>
 </div></div>
 <div class="wrap"><div class="olist" id="olist"><p class="empty">Cargando ofertas…</p></div></div>
+</div>
+
+<div id="iphone" hidden>
+<div class="bar"><div class="wrap">
+  <div class="vtitle"><a class="back" href="#" id="back-iphone">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">GameX en tu iPhone</span><span class="vc">Instálalo en la pantalla de inicio y recibe las ofertas</span></span></div>
+</div></div>
+<div class="wrap guia">
+  <p class="g-req">Necesitas un iPhone con <b>iOS 16.4 o más nuevo</b> para recibir avisos. Para verlo: Ajustes → General → Información → Versión de iOS.</p>
+  <div class="g-ya" id="g-ya" hidden><b>✓ Ya tienes GameX instalado.</b> Solo te falta activar los avisos:<button type="button" class="refresh pushb" hidden>🔔 Activar avisos</button></div>
+  <ol class="pasos">
+    <li class="paso"><div class="p-tx"><span class="p-n">1</span><h3>Abre GameX en Safari</h3><p>Entra a <b>gamex-cu.github.io</b> con <b>Safari</b>, el navegador azul que trae el iPhone.</p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><rect x="24" y="24" width="172" height="30" rx="9" fill="#1c2140"/><text x="110" y="44" text-anchor="middle" fill="#e9ecff" font-size="12" font-family="system-ui">🔒 gamex-cu.github.io</text><rect x="24" y="66" width="172" height="120" rx="10" fill="#141933"/><text x="110" y="130" text-anchor="middle" fill="#8fb0ff" font-size="20" font-weight="700" font-family="system-ui">GAMEX</text><rect x="20" y="194" width="180" height="24" rx="8" fill="#1c2140"/><text x="110" y="210" text-anchor="middle" fill="#9aa3c7" font-size="10" font-family="system-ui">Safari</text></svg></li>
+    <li class="paso"><div class="p-tx"><span class="p-n">2</span><h3>Toca el botón Compartir</h3><p>Abajo en el centro está el cuadrado con una flecha hacia arriba. Si no ves la barra, toca una vez abajo de la pantalla.</p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><rect x="24" y="24" width="172" height="130" rx="10" fill="#141933"/><text x="110" y="95" text-anchor="middle" fill="#8fb0ff" font-size="20" font-weight="700" font-family="system-ui">GAMEX</text><rect x="20" y="166" width="180" height="50" rx="10" fill="#1c2140"/><g fill="none" stroke="#9aa3c7" stroke-width="2" stroke-linecap="round"><path d="M42 191l-6-6 6-6"/><path d="M66 179l6 6-6 6"/><rect x="146" y="182" width="14" height="14" rx="2"/><rect x="174" y="180" width="12" height="12" rx="2"/></g><circle cx="110" cy="191" r="18" fill="none" stroke="#f2a900" stroke-width="3"/><g transform="translate(110 192)" color="#4a8cff"><path d="M0 -9v12M-5 -4l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M-6 0h-3v11h18V0h-3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></g></svg></li>
+    <li class="paso"><div class="p-tx"><span class="p-n">3</span><h3>Toca “Agregar a pantalla de inicio”</h3><p>En el menú que sale, desliza hacia abajo hasta encontrarlo. En algunos iPhone dice “Agregar a inicio”.</p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><text x="110" y="38" text-anchor="middle" fill="#9aa3c7" font-size="11" font-family="system-ui">gamex-cu.github.io</text><rect x="24" y="50" width="172" height="30" rx="8" fill="#1c2140" stroke="none" stroke-width="2.5"/><text x="32" y="69" fill="#e9ecff" font-size="11.5" font-family="system-ui">Copiar</text><rect x="24" y="86" width="172" height="30" rx="8" fill="#1c2140" stroke="none" stroke-width="2.5"/><text x="32" y="105" fill="#e9ecff" font-size="11.5" font-family="system-ui">Agregar a favoritos</text><rect x="24" y="122" width="172" height="30" rx="8" fill="#2a2410" stroke="#f2a900" stroke-width="2.5"/><text x="32" y="141" fill="#e9ecff" font-size="10.5" font-family="system-ui">Agregar a pantalla de inicio</text><rect x="170" y="129" width="16" height="16" rx="4" fill="none" stroke="#e9ecff" stroke-width="1.6"/><path d="M178 133v8M174 137h8" stroke="#e9ecff" stroke-width="1.6"/><rect x="24" y="158" width="172" height="30" rx="8" fill="#1c2140" stroke="none" stroke-width="2.5"/><text x="32" y="177" fill="#e9ecff" font-size="11.5" font-family="system-ui">Buscar en la página</text><text x="110" y="208" text-anchor="middle" fill="#9aa3c7" font-size="10" font-family="system-ui">desliza hacia abajo si no lo ves</text></svg></li>
+    <li class="paso"><div class="p-tx"><span class="p-n">4</span><h3>Toca “Agregar”</h3><p>Arriba a la derecha. Ya tienes GameX en tu pantalla de inicio, como una app, y funciona sin internet.</p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><text x="24" y="40" fill="#4a8cff" font-size="9" font-family="system-ui">Cancelar</text><text x="103" y="40" text-anchor="middle" fill="#e9ecff" font-size="9" font-weight="700" font-family="system-ui">Agregar a inicio</text><rect x="150" y="25" width="48" height="22" rx="7" fill="none" stroke="#f2a900" stroke-width="2.5"/><text x="174" y="40" text-anchor="middle" fill="#4a8cff" font-size="10.5" font-weight="700" font-family="system-ui">Agregar</text><rect x="24" y="64" width="172" height="70" rx="10" fill="#1c2140"/><image href="__ICONO__" x="34" y="76" width="46" height="46"/><text x="92" y="96" fill="#e9ecff" font-size="13" font-family="system-ui">GameX</text><text x="92" y="114" fill="#9aa3c7" font-size="10" font-family="system-ui">gamex-cu.github.io</text></svg></li>
+    <li class="paso"><div class="p-tx"><span class="p-n">5</span><h3>Abre GameX desde el ícono</h3><p>Sal de Safari y abre GameX tocando el ícono nuevo de tu pantalla de inicio. <b>Los avisos solo funcionan abriéndolo desde aquí.</b></p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><rect x="30" y="30" width="34" height="34" rx="9" fill="#2b6be0"/><rect x="74" y="30" width="34" height="34" rx="9" fill="#27a35a"/><rect x="118" y="30" width="34" height="34" rx="9" fill="#e0612b"/><rect x="162" y="30" width="34" height="34" rx="9" fill="#7a3fe0"/><rect x="30" y="82" width="34" height="34" rx="9" fill="#d9a91f"/><rect x="74" y="82" width="34" height="34" rx="9" fill="#1e8fd0"/><rect x="162" y="82" width="34" height="34" rx="9" fill="#c0392b"/><rect x="30" y="134" width="34" height="34" rx="9" fill="#444b70"/><rect x="74" y="134" width="34" height="34" rx="9" fill="#2b9e8f"/><rect x="118" y="134" width="34" height="34" rx="9" fill="#b04fd0"/><rect x="162" y="134" width="34" height="34" rx="9" fill="#5c6385"/><image href="__ICONO__" x="118" y="82" width="34" height="34"/><rect x="113" y="77" width="44" height="44" rx="12" fill="none" stroke="#f2a900" stroke-width="3"/><text x="135" y="133" text-anchor="middle" fill="#e9ecff" font-size="9" font-family="system-ui">GameX</text><text x="110" y="205" text-anchor="middle" fill="#9aa3c7" font-size="10.5" font-family="system-ui">Abre GameX desde este ícono</text></svg></li>
+    <li class="paso"><div class="p-tx"><span class="p-n">6</span><h3>Activa los avisos</h3><p>Baja hasta el final de la página, toca <b>🔔 Activar avisos</b> y luego <b>Permitir</b>. ¡Listo! Te llegarán las ofertas y los juegos nuevos.</p></div><svg class="ill" viewBox="0 0 220 230" role="img" aria-hidden="true"><rect x="10" y="4" width="200" height="222" rx="26" fill="#0b0e1c" stroke="#3a4170" stroke-width="2"/><rect x="34" y="28" width="152" height="34" rx="9" fill="#1c2140" stroke="#f2a900" stroke-width="2.5"/><text x="110" y="50" text-anchor="middle" fill="#e9ecff" font-size="12.5" font-weight="700" font-family="system-ui">🔔 Activar avisos</text><rect x="28" y="80" width="164" height="118" rx="14" fill="#262b4d"/><text x="110" y="106" text-anchor="middle" fill="#e9ecff" font-size="11.5" font-weight="700" font-family="system-ui">“GameX” quiere enviarte</text><text x="110" y="122" text-anchor="middle" fill="#e9ecff" font-size="11.5" font-weight="700" font-family="system-ui">notificaciones</text><line x1="28" y1="140" x2="192" y2="140" stroke="#3a4170"/><text x="110" y="161" text-anchor="middle" fill="#4a8cff" font-size="12" font-family="system-ui">No permitir</text><line x1="28" y1="170" x2="192" y2="170" stroke="#3a4170"/><rect x="60" y="173" width="100" height="22" rx="7" fill="none" stroke="#f2a900" stroke-width="2.5"/><text x="110" y="189" text-anchor="middle" fill="#4a8cff" font-size="12" font-weight="700" font-family="system-ui">Permitir</text></svg></li>
+  </ol>
+  <div class="g-ayuda"><h3>¿No te llegan los avisos?</h3><ul>
+    <li>Si tocaste “No permitir”: ve a <b>Ajustes → Notificaciones → GameX</b> y activa “Permitir notificaciones”.</li>
+    <li>Si no ves el botón “Activar avisos”: revisa que abriste GameX desde el ícono y no desde Safari.</li>
+    <li>Si ya tenías GameX en la pantalla de inicio de antes: bórralo, ábrelo en Safari, toca “Actualizar catálogo” al final y vuelve a agregarlo.</li>
+    <li>¿Sigue sin funcionar? Escríbenos por WhatsApp y te ayudamos.</li></ul></div>
+</div>
 </div>
 
 <div id="view" hidden>
