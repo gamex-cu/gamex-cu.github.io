@@ -47,6 +47,7 @@ def enviar_firebase(aviso):
 
 def enviar_web(aviso):
     """Manda el aviso a los iPhone/navegadores suscritos (lista guardada en el Worker de Cloudflare)."""
+    aviso = {**aviso, 'titulo': aviso.get('titulo', '').replace('🎮', '🥷')}
     import webpush
     cfg = json.load(open(T + 'datos/push.json'))
     clave = json.load(open(os.path.dirname(webpush.ruta_claves()) + '/cloudflare.json'))['clave_worker']
@@ -68,6 +69,7 @@ if __name__ == '__main__':
     ap.add_argument('--url', default=''); ap.add_argument('--vence', default='')
     ap.add_argument('--sin-firebase', action='store_true')
     a = ap.parse_args()
+    a.titulo = a.titulo.replace('🎮', '🥷')  # el emoji de GameX es el ninjita
     hoy = datetime.date.today().isoformat()
     aviso = {'id': f"{hoy}-{int(time.time())}", 'fecha': hoy, 'titulo': a.titulo, 'texto': a.texto}
     if a.url: aviso['url'] = a.url
