@@ -123,8 +123,12 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .wa{margin-top:12px!important}
 .back{flex:0 0 auto;font:600 .95rem var(--display);background:var(--panel);border:1px solid var(--line);color:var(--fg);border-radius:8px;padding:10px 12px;cursor:pointer;text-decoration:none}
 .back:focus-visible{outline:2px solid var(--accent)}
-.vtitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.vtitle .vn{font:700 1.3rem var(--display);color:var(--ct)}
+.vtitle{display:flex;align-items:center;gap:10px}
+.vic{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.06);color:var(--ct)}
+.vic svg{width:26px;height:26px}
+.vtx{display:flex;flex-direction:column;min-width:0;line-height:1.15}
+.vc{color:var(--muted);font-size:.85rem}
+.vtitle .vn{font:700 1.3rem/1.15 var(--display);color:var(--ct)}
 .on{display:inline-block;font:600 .66rem/1 var(--display);letter-spacing:.03em;padding:3px 6px;border-radius:4px;border:1px solid #ff9a2e;color:#ffc27d;vertical-align:2px;margin-left:4px;white-space:nowrap}
 .sx{display:inline-block;font:600 .66rem/1 var(--display);letter-spacing:.03em;padding:3px 6px;border-radius:4px;border:1px solid #2fbf4a;color:#7fdc7f;vertical-align:2px;margin-left:4px;white-space:nowrap}
 .ctag{display:inline-block;font:600 .68rem/1 var(--display);letter-spacing:.04em;padding:4px 0;width:72px;text-align:center;border-radius:4px;margin-right:8px;vertical-align:2px}
@@ -166,7 +170,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 </div>
 <div id="view" hidden>
 <div class="bar"><div class="wrap">
-  <div class="vtitle"><a class="back" href="#" id="back">← Consolas</a><span class="vn" id="vn"></span><span id="vc" style="color:var(--muted);font-size:.9rem"></span></div>
+  <div class="vtitle"><a class="back" href="#" id="back">← Consolas</a><span class="vic" id="vic" aria-hidden="true"></span><span class="vtx"><span class="vn" id="vn"></span><span id="vc" class="vc"></span></span></div>
   <p class="vnote" id="vnote" hidden></p>
   <div class="search"><input id="q" type="search" placeholder="Buscar juego… (ej. FIFA, Resident, Lego)" autocomplete="off" aria-label="Buscar juego"><span id="count"></span></div>
   <div class="fchips" id="filt" role="group" aria-label="Filtrar" hidden></div>
