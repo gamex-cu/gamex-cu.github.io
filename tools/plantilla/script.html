@@ -75,7 +75,7 @@ function route(){
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
     const was=current;current=c?c[0]:'todas';
-    $('home').hidden=true;$('cats').hidden=true;$('view').hidden=false;
+    $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('view').hidden=false;
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
@@ -83,9 +83,11 @@ function route(){
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else if(h==='catalogos'){
-    current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
+    current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
+  }else if(h==='ofertas'){
+    current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
   }else{
-    current=null;$('view').hidden=true;$('cats').hidden=true;$('home').hidden=false;sync();
+    current=null;$('view').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('home').hidden=false;sync();
   }
 }
 addEventListener('hashchange',route);
@@ -95,7 +97,14 @@ $('filt').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!
   render()});
 $('back').addEventListener('click',e=>{e.preventDefault();location.hash='catalogos'});
 $('back-cats').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
-$('b-cat-n').textContent=GAMES.length.toLocaleString('es')+' juegos';
+$('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
+  const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
+  fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
+    const a=(j.avisos||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).reverse();
+    el.innerHTML=a.length?a.map(x=>`<article class="ocard"><h3>${esc(x.titulo||'')}</h3><p>${esc(x.texto||'')}</p>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}<a class="op" href="${esc(x.url&&x.url.startsWith('https://')?x.url:'https://wa.me/5353441089?text='+encodeURIComponent('Hola GameX, me interesa la oferta: '+(x.titulo||'')))}" target="_blank" rel="noopener">Pedir por WhatsApp</a></article>`).join('')
+      :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
+  }).catch(()=>{el.innerHTML='<p class="empty">No se pudieron cargar las ofertas. Revisa tu conexión a internet.</p>'})}
 lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 $('q').addEventListener('input',e=>{query=e.target.value;render()});
 $('hq').addEventListener('input',e=>{const v=e.target.value;if(!v.trim())return;query=v;$('q').value=v;e.target.value='';location.hash='todas';setTimeout(()=>$('q').focus(),0)});

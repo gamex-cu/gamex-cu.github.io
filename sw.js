@@ -9,7 +9,7 @@ self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.a
 self.addEventListener('message',e=>{if(e.data==='guardar')e.waitUntil(caches.open(C).then(c=>fetch('./',{cache:'reload'}).then(r=>guardar(c,'./',r))).catch(()=>{}))});
 self.addEventListener('fetch',e=>{
   const r=e.request;const u=new URL(r.url);
-  if(r.method!=='GET'||u.origin!==location.origin||u.pathname.endsWith('version.json')||u.pathname.endsWith('avisos.json')||u.pathname.endsWith('.apk'))return;
+  if(r.method!=='GET'||u.origin!==location.origin||u.pathname.endsWith('version.json')||u.pathname.endsWith('.apk'))return;
   const nav=r.mode==='navigate'||(r.headers.get('accept')||'').includes('text/html');
   const key=nav?'./':(u.pathname.replace(/^.*\//,'')||'./');
   const red=fetch(nav?u.pathname+u.search:r,{cache:'no-store'}).then(res=>({res,cp:(res&&res.ok&&!res.redirected)?res.clone():null}));

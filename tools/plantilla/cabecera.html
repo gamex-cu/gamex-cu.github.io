@@ -120,6 +120,14 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .ccard.soon{cursor:default;opacity:.55}
 .ccard.soon:hover{border-color:var(--line);background:var(--panel)}
 .hsearch{margin-top:6px}
+.sb-of{background:linear-gradient(135deg,rgba(242,169,0,.18),rgba(217,43,43,.10))}
+.sb-of .sbi{background:var(--hot);color:#0d1124}
+.olist{display:grid;gap:12px;padding:16px 0 28px}
+.ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
+.ocard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
+.ocard p{margin:0;color:var(--fg);line-height:1.45;white-space:pre-line}
+.ocard .ov{display:block;margin-top:8px;color:var(--muted);font-size:.85rem}
+.ocard a.op{display:inline-block;margin-top:12px;background:#1fa855;color:#fff;font:600 .95rem var(--display);padding:10px 14px;border-radius:9px;text-decoration:none}
 .sbtn{display:flex;align-items:center;gap:14px;margin:22px 0 0;padding:18px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(61,123,255,.16),rgba(242,169,0,.08));color:var(--fg);text-decoration:none;transition:border-color .15s,transform .15s}
 .sbtn:hover,.sbtn:focus-visible{border-color:var(--hot);outline:none;transform:translateY(-1px)}
 .sbi{flex:none;width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:var(--accent);color:#fff}
@@ -181,7 +189,12 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="wrap">
   <a class="sbtn" href="#catalogos" id="b-catalogos">
     <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11a4.5 4.5 0 0 1 4.3 5.8l-1 3.4a2.4 2.4 0 0 1-4 1L14.6 16H9.4l-2.2 2.2a2.4 2.4 0 0 1-4-1l-1-3.4A4.5 4.5 0 0 1 6.5 8z"/><path d="M7.5 11v3M6 12.5h3"/><circle cx="16" cy="11.5" r=".6" fill="currentColor"/><circle cx="17.6" cy="13.3" r=".6" fill="currentColor"/></svg></span>
-    <span class="sbt"><b>Catálogos</b><small>Juegos para PS4, PS5, PC, Xbox Game Pass, Meta Quest y Switch</small><em id="b-cat-n"></em></span>
+    <span class="sbt"><b>Catálogos</b><small>Juegos para PS4, PS5, PC, Xbox Game Pass, Meta Quest y Switch</small></span>
+    <span class="sgo" aria-hidden="true">→</span>
+  </a>
+  <a class="sbtn sb-of" href="#ofertas" id="b-ofertas">
+    <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5" fill="currentColor"/></svg></span>
+    <span class="sbt"><b>Ofertas</b><small>Promociones y precios especiales de la semana</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
   <p class="sectitle">Escríbenos</p>
@@ -198,6 +211,13 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
   <div class="consoles" id="consoles"></div>
   <div class="hsearch"><input id="hq" type="search" placeholder="O busca un juego en todas las consolas…" autocomplete="off" aria-label="Buscar en todas las consolas" style="width:100%;font:inherit;font-size:1.05rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px"></div>
 </div>
+</div>
+
+<div id="ofer" hidden>
+<div class="bar"><div class="wrap">
+  <div class="vtitle"><a class="back" href="#" id="back-ofer">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Ofertas</span><span class="vc">Promociones vigentes. Pídelas por WhatsApp.</span></span></div>
+</div></div>
+<div class="wrap"><div class="olist" id="olist"><p class="empty">Cargando ofertas…</p></div></div>
 </div>
 
 <div id="view" hidden>
