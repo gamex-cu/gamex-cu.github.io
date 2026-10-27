@@ -1,7 +1,7 @@
 {
   "catalogo": 74,
-  "apk": 4,
-  "apkNombre": "1.3",
+  "apk": 5,
+  "apkNombre": "1.4",
   "apkUrl": "https://gamex-cu.github.io/app/GAMEX-Catalogo.apk",
-  "notas": "Arreglado: la barra de arriba del teléfono ya no tapa el logo ni el botón de Consolas."
+  "notas": "Ahora te avisamos de ofertas y juegos nuevos con notificaciones. Además trae el catálogo de PC y Meta Quest."
 }
