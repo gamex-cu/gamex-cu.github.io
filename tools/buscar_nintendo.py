@@ -74,4 +74,59 @@ def main():
     with open(T + 'salida/switch_no_oficiales.txt', 'w') as f:
         f.write(f'== NO ESTÁN EN EL CATÁLOGO DE NINTENDO ({len(no)}) – posibles ports, o con nombre distinto ==\n'); f.writelines(n + '\n' for n in no)
         f.write(f'\n== PARECIDOS ({len(dudas)}): tu lista  ->  lo más parecido en Nintendo ==\n'); f.writelines(f'{n}  ->  {t}  ({r})\n' for n, t, r in dudas)
-if __name__ == '__main__': main()
+if __name__ == '__main__' and '--solo-eeuu' not in sys.argv:
+    main()
+    if '--probar' not in sys.argv: segunda_pasada()
+
+# --- Segunda pasada: tienda de Nintendo de Estados Unidos (para los que no están en Europa) ---
+ALG = 'https://u3b6gr4ua3-dsn.algolia.net/1/indexes/store_game_en_us/query'
+ALG_H = {'X-Algolia-Application-Id': 'U3B6GR4UA3', 'X-Algolia-API-Key': 'a29c6927638bfd8cee23993e51e721c9', 'Content-Type': 'application/json'}
+def buscar_us(nombre, indice='store_game_en_us'):
+    q = re.sub(r"[:–\-!?,.'’()]", ' ', nombre); q = ' '.join(q.split())[:80]
+    body = json.dumps({'query': q, 'hitsPerPage': 15}).encode()
+    try: hits = json.load(OP.open(urllib.request.Request(ALG.replace('store_game_en_us', indice), data=body, headers=ALG_H), timeout=40)).get('hits', [])
+    except Exception: return None, 0, ''
+    nn, nums, mis = norm(nombre), numeros(nombre), set(norm(nombre).split())
+    mejor, mr, tit = None, 0, ''
+    for h in hits:
+        pl = ' '.join([h.get('platform') or ''] + (h.get('corePlatforms') or []))
+        if 'Switch' not in pl or not h.get('url'): continue
+        t = h.get('title', ''); tn = norm(t)
+        if numeros(t) != nums: continue
+        r = 1.0 if tn == nn or norm(re.sub(r'\(.*?\)|:.*$', '', t)) == nn else difflib.SequenceMatcher(None, nn, tn).ratio()
+        sus = set(tn.split())
+        if r < 0.9 and len(mis) >= 2 and (mis <= sus or sus <= mis) and min(len(mis), len(sus)) / max(len(mis), len(sus)) >= 0.6: r = 0.9
+        u = ('https://www.nintendo.com/us/store/products/' + h['slug'] + '/') if h.get('slug') and indice != 'store_game_en_us' else 'https://www.nintendo.com' + h['url']
+        if r > mr: mejor, mr, tit = u, r, t
+    return mejor, mr, tit
+
+def segunda_pasada():
+    from concurrent.futures import ThreadPoolExecutor
+    ruta = T + 'datos/enlaces_switch.json'; ok = json.load(open(ruta))
+    juegos = json.load(open(T + 'datos/switch.json'))
+    et = json.load(open(T + 'datos/etiquetas_switch.json')); excl = set(et.get('port', [])) | set(et.get('emulador', []))
+    man = json.load(open(T + 'datos/enlaces_manuales.json')) if os.path.exists(T + 'datos/enlaces_manuales.json') else {}
+    faltan = [n for n in juegos if n not in ok and n not in excl and ('Switch|' + n) not in man]
+    def ambos(n):
+        a = buscar_us(n)
+        if a[1] >= 0.9: return a
+        b = buscar_us(n, 'ncom_game_en_us')
+        return b if b[1] > a[1] else a
+    with ThreadPoolExecutor(8) as ex: res = list(ex.map(lambda n: (n, ambos(n)), faltan))
+    nuevos, dudas, no = {}, [], []
+    for n, (u, r, t) in res:
+        if u and r >= 0.9: nuevos[n] = (u, t)
+        elif u and r >= 0.72: dudas.append((n, t, round(r, 2)))
+        else: no.append(n)
+    if '--probar' in sys.argv:
+        for n, (u, t) in sorted(nuevos.items()): print(f'{n}  ->  {t}')
+        print('nuevos', len(nuevos), 'dudosos', len(dudas), 'no', len(no)); return
+    ok.update({n: u for n, (u, t) in nuevos.items()})
+    json.dump(dict(sorted(ok.items())), open(ruta, 'w'), ensure_ascii=False, indent=0)
+    with open(T + 'salida/switch_no_oficiales.txt', 'w') as f:
+        f.write(f'== NO ESTÁN NI EN LA TIENDA DE EUROPA NI EN LA DE EE. UU. ({len(no)}) ==\n'); f.writelines(n + '\n' for n in no)
+        f.write(f'\n== PARECIDOS EN LA TIENDA DE EE. UU. ({len(dudas)}): tu lista  ->  lo más parecido ==\n'); f.writelines(f'{n}  ->  {t}  ({r})\n' for n, t, r in dudas)
+    print('EE. UU.: nuevos', len(nuevos), '| dudosos', len(dudas), '| sin encontrar', len(no))
+
+if __name__ == '__main__' and '--solo-eeuu' in sys.argv:
+    segunda_pasada()
