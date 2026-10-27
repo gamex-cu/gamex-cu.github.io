@@ -74,9 +74,7 @@ def main():
     with open(T + 'salida/switch_no_oficiales.txt', 'w') as f:
         f.write(f'== NO ESTÁN EN EL CATÁLOGO DE NINTENDO ({len(no)}) – posibles ports, o con nombre distinto ==\n'); f.writelines(n + '\n' for n in no)
         f.write(f'\n== PARECIDOS ({len(dudas)}): tu lista  ->  lo más parecido en Nintendo ==\n'); f.writelines(f'{n}  ->  {t}  ({r})\n' for n, t, r in dudas)
-if __name__ == '__main__' and '--solo-eeuu' not in sys.argv:
-    main()
-    if '--probar' not in sys.argv: segunda_pasada()
+
 
 # --- Segunda pasada: tienda de Nintendo de Estados Unidos (para los que no están en Europa) ---
 ALG = 'https://u3b6gr4ua3-dsn.algolia.net/1/indexes/store_game_en_us/query'
@@ -130,3 +128,7 @@ def segunda_pasada():
 
 if __name__ == '__main__' and '--solo-eeuu' in sys.argv:
     segunda_pasada()
+
+if __name__ == '__main__' and '--solo-eeuu' not in sys.argv:
+    main()
+    if '--probar' not in sys.argv: segunda_pasada()

@@ -1,60 +1,27 @@
-== DUDOSOS (27): nombre en tu lista  ->  lo más parecido en la tienda ==
-Atlas Fallen  ->  Lords of the Fallen  (0.75)
+== DUDOSOS (7): nombre en tu lista  ->  lo más parecido en la tienda ==
 Away  ->  Pawbay  (0.8)
-Bassmaster Fishing 2022  ->  Bassmaster® Fishing 2022: Super Deluxe Edition  (0.88)
-EA Sports WRC  ->  EA SPORTS™ PGA TOUR™  (0.71)
-Grand Theft Auto: San Andreas – The Definitive Edition  ->  Grand Theft Auto V (PS4™ & PS5™)  (0.74)
-Grand Theft Auto: Vice City – The Definitive Edition  ->  Grand Theft Auto V (PS4™ & PS5™)  (0.82)
-Madden NFL 26  ->  EA SPORTS™ Madden NFL 26  (0.72)
-Madden NFL 27  ->  EA SPORTS™ Madden NFL 27  (0.72)
-MADiSON VR Cursed Edition  ->  MADiSON VR  (0.74)
-Mafia: Definitive Edition  ->  Maniac  (0.73)
 Marvel's Avengers Definitive Edition  ->  Acorn Avengers  (0.71)
 Minecraft Preview  ->  Minecraft Legends  (0.71)
-NBA 2K26  ->  NBA 2K27  (0.88)
 Nerf Legends  ->  Minecraft Legends  (0.83)
-R-Type 3 Evolved  ->  R-Type Final 3 Evolved  (0.84)
-Resident Evil 2 Remake  ->  Resident Evil 2  (0.81)
-Resident Evil 3 Remake  ->  Resident Evil 3 Nemesis  (0.84)
-Sker Ritual  ->  Sker Ritual - Inferno Edition  (0.73)
-South of Midnight  ->  South of Midnight Weaver's Edition  (0.76)
 Taiko no Tatsujin Donderful Festival Demo  ->  Taiko no Tatsujin: Rhythm Festival  (0.76)
-Tiny Tina's Wonderlands  ->  Tiny Tina's Wonderlands: Next-Level Edition  (0.81)
-Tomb Raider I-III Remastered  ->  Tomb Raider I-III Remastered Starring Lara Croft  (0.72)
-Train Life  ->  Taxi Life - Complete Edition  (0.84)
-The Witcher 3: Wild Hunt – Complete Edition  ->  The Witcher 3: Wild Hunt — Remastered  (0.78)
-Wreckfest Complete Edition  ->  The Wreck | PS4 & PS5  (0.71)
 WWE 2K22  ->  WWE 2K26 Standard Edition  (0.88)
 WWE 2K24  ->  WWE 2K26 Standard Edition  (0.88)
 
-== NO ENCONTRADOS EN LA TIENDA (30) ==
+== NO ENCONTRADOS EN LA TIENDA (17) ==
 7 Days to Die Console Edition
 Abandoned Realtime Trailers Demo
 Destruction AllStars
 Disney•Pixar Toy Story 2: Buzz Lightyear to the Rescue!
 Dragon Quest X Offline
 Dungeons & Dragons: Dark Alliance
-EA Sports UFC 5
-Grand Theft Auto III – The Definitive Edition
 Jurassic Park: Classic Games Collection
 LEGO 2K Drive
 The Matrix Awakens: An Unreal Engine 5 Experience
-MotoGP 21
-MotoGP 23
-MotoGP 24
-MotoGP 26
 MultiVersus
-A Quiet Place
-Samson: A Tyndalston Story
-Senua's Saga: Hellblade II
 Star Trek Prodigy: Supernova
 Star Trek Resurgence
 Steins;Gate Re:Boot
-Tiebreak: Official Game of the ATP and WTA – Ace Edition
 Train Sim World 2 Rush Hour
 Train Sim World 3
 Transformers: EarthSpark – Expedition
-Tropico 6
-Village in the Shade
-Yonder: The Cloud Catcher Chronicles
 WWE 2K23   (la página ya no existe en la tienda)

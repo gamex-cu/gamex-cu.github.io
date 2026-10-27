@@ -1,154 +1,78 @@
-== DUDOSOS (106): nombre en tu lista  ->  lo más parecido en la tienda ==
+== DUDOSOS (46): nombre en tu lista  ->  lo más parecido en la tienda ==
 7 Days To Die  ->  7 Days of Rose PS4 & PS5  (0.75)
-Accel World vs. Sword Art Online: Millennium Twilight  ->  Accel World VS Sword Art Online  (0.76)
-Air Conflicts: Pacific Carriers  ->  Air Conflicts: Pacific Carriers - PlayStation®4 Edition  (0.82)
-Alien: Isolation Nostromo Edition  ->  Alien: Isolation  (0.77)
-Arcade Game Series  ->  ARCADE GAME SERIES: GALAGA  (0.84)
-Arizona Sunshine VR  ->  Arizona Sunshine® VR Remake  (0.84)
 Assassin's Creed Odyssey  ->  Assassin's Creed Origins  (0.79)
 Assassin's Creed Unity  ->  Assassin's Creed Syndicate  (0.83)
-Batman: Arkham City  ->  Batman™: Arkham Knight  (0.84)
-Batman: The Telltale Series  ->  The Expanse: A Telltale Series  (0.8)
 Beyond Eyes  ->  Beyond Blue  (0.73)
-Bus Simulator 21  ->  Bus Simulator 21 Next Stop  (0.76)
 Call of Duty: Modern Warfare 2 Campaign Remastered  ->  Call of Duty®: Modern Warfare® II - Cross-Gen Bundle  (0.72)
-Castlevania: Symphony of the Night (Dracula X)  ->  Castlevania Requiem: Symphony of the Night & Rondo of Blood  (0.71)
-Clash: Artifacts of Chaos Zeno Edition  ->  Clash: Artifacts of Chaos  (0.89)
 Constructor  ->  SHIP CONSTRUCTOR  (0.81)
-Cotton Guardian Force Saturn Tribute  ->  Guardian Force - Saturn Tribute  (0.89)
-Crossout  ->  CrossCode  (0.71)
 Crow: The Legend  ->  RPGolf Legends  (0.72)
-Daedalus: The Awakening of Golden Jazz  ->  Alternate Jake Hunter: Daedalus The Awakening of Golden Jazz  (0.73)
 Dark Alliance  ->  Art of Balance  (0.75)
 Dead Star  ->  Dead Dust  (0.78)
 Deadpool  ->  DEADBOLT  (0.75)
-Death's Gambit  ->  Death's Gambit: Afterlife  (0.74)
 Deer Hunter Reloaded  ->  Syder Reloaded  (0.71)
 Demons Crystals  ->  Demonic Tales Bundle  (0.71)
-Devil May Cry 5  ->  Devil May Cry 5 + Vergil  (0.81)
-Diablo II: Resurrected  ->  Diablo II: Resurrected – Infernal Edition  (0.82)
 Digimon Story: Cyber Sleuth  ->  Digimon Story: Cyber Sleuth - Hacker's Memory  (0.76)
-Disco Elysium  ->  Disco Elysium - The Final Cut  (0.72)
 Dreams Universe  ->  Atom Universe  (0.79)
 Dungeon Punks  ->  Dungeon Munchies  (0.76)
-Dying Light: The Following – Enhanced Edition  ->  Dying Light Collection  (0.79)
-eFootball 2022  ->  Football Cup 2022  (0.84)
 End of Eternity 4KHD Edition  ->  Edge Of Eternity  (0.73)
 EVE Valkyrie  ->  Xenon Valkyrie+ PS4 & PS5  (0.77)
-Far Cry Primal Special Edition  ->  Far Cry® Primal - Digital Apex Edition  (0.83)
 Final Fantasy XV: Episode Duscae  ->  FINAL FANTASY XV ROYAL EDITION  (0.72)
-Frostpunk  ->  Frost  (0.71)
-Gauntlet  ->  Dauntless  (0.71)
-Ghostbusters  ->  Ghosthunter  (0.78)
-Golf Club Wasteland  ->  Golf Club Nostalgia  (0.74)
 The Grand Tour Game  ->  Gigantosaurus The Game  (0.73)
 GRID  ->  GRIS | PS4 & PS5  (0.75)
 Hardware Rivals  ->  Marvel Rivals  (0.71)
-Helldivers  ->  Hell Warders  (0.73)
 Hidden Agenda  ->  HIDDEN DRAGON LEGEND  (0.73)
-Hitman  ->  Hitman GO: Definitive Edition  (0.8)
-Hollow Knight  ->  KILL KNIGHT  (0.75)
-The House in Fata Morgana  ->  The House in Fata Morgana: Dreams of the Revenants Edition  (0.71)
-Hustle Kings  ->  Hustle Kings VR  (0.89)
-Immortal Legacy  ->  Immortal Planet  (0.73)
 Immortal Unchained  ->  Immortal Planet  (0.73)
-Journey to the Savage Planet  ->  Journey To The Savage Planet: Employee Of The Month  (0.76)
 Just Dance 2016  ->  Tour de France 2016  (0.71)
 Just Dance 2018  ->  Tour de France 2018  (0.71)
 Just Dance 2020  ->  Tour de France 2020  (0.71)
 The Last Tinker  ->  Fast Striker  (0.78)
-The Last Wind Monk  ->  The Inner World - The Last Wind Monk  (0.7)
 LawBreakers  ->  Caretaker  (0.7)
-Layers of Fear  ->  Layers of Fear VR  (0.88)
-Left Alive  ->  LEFT ALIVE™ DAY ONE EDITION   (0.71)
-Life is Strange  ->  Life is Strange Complete Season  (0.81)
-Life is Strange 2  ->  Life is Strange 2 Complete Season  (0.83)
-Lords of the Fallen  ->  Malicious Fallen  (0.71)
-Madden NFL 25  ->  EA SPORTS™ Madden NFL 25  (0.72)
-Mafia III: Definitive Edition  ->  Mafia III: Definitive Edition for PS5®  (0.78)
 Mario Mania  ->  Atari Mania  (0.82)
 Mars Odyssey  ->  Harmony's Odyssey  (0.76)
 Marvel's Guardians of the Galaxy: The Telltale Series  ->  Marvel's Guardians of the Galaxy PS4 & PS5  (0.76)
 Marvel's Spider-Man  ->  Marvel's Iron Man VR  (0.77)
-Mercenaries Wings  ->  Mercenaries Wings: The False Phoenix  (0.71)
-Moss  ->  Moss VR  (0.73)
 NBA 2K24  ->  NBA 2K25 Standard Edition  (0.88)
 NBA 2K26  ->  NBA 2K25 Standard Edition  (0.88)
-NieR:Automata  ->  Order Automatica  (0.76)
-Odallus  ->  Godfall Ultimate Edition  (0.71)
-Persona 5 Royal  ->  Persona 5  (0.75)
 Project CARS  ->  Project Starship  (0.79)
-Resident Evil 2 Remake  ->  Resident Evil 2  (0.81)
-Resident Evil 3 Remake  ->  Resident Evil 3 Nemesis  (0.84)
 Resident Evil Origins Collection  ->  Resident Evil: Deluxe Origins Bundle  (0.79)
-Riot  ->  RICO  (0.75)
-Saints Row IV: Re-Elected & Gat Out of Hell  ->  Saints Row IV Re-Elected  (0.78)
-Sea of Stars  ->  Slide Stars  (0.8)
 Sega Classics Collection  ->  Galactic Collection  (0.79)
-Slain  ->  LAPIN  (0.8)
-Slaps And Beans  ->  Last Beat Enhanced  (0.7)
 SNES Station  ->  Dead Station  (0.75)
-Sniper Ghost Warrior 3  ->  Sniper Ghost Warrior 3 Season Pass Edition   (0.79)
 Street Fighter V Arcade Edition  ->  Street Fighter V: Champion Edition  (0.75)
-Terraria  ->  Terraria: PS4™ Edition Demo  (0.76)
-Tetris Effect  ->  Fear Effect  (0.75)
-Tiny Tina's Wonderlands  ->  Tiny Tina's Wonderlands: Next-Level Edition  (0.81)
-Tomb Raider I-III Remastered  ->  Tomb Raider I-III Remastered Starring Lara Croft  (0.72)
 Train Sim World  ->  Rain World  (0.8)
 Transformers: Battlegrounds  ->  Worms™ Battlegrounds   (0.8)
-Valkyria Chronicles  ->  Alvastia Chronicles  (0.79)
-The Witcher 3: Wild Hunt – Complete Edition  ->  The Witcher 3: Wild Hunt — Remastered  (0.78)
-WRC Generations  ->  D/Generation HD  (0.73)
 WWE 2K Battlegrounds  ->  Worms™ Battlegrounds   (0.77)
 WWE 2K18  ->  WWE 2K25 Standard Edition  (0.75)
 WWE 2K20  ->  WWE 2K25 Standard Edition  (0.88)
 WWE 2K22  ->  WWE 2K25 Standard Edition  (0.88)
 WWE 2K23 Deluxe Edition  ->  WWE 2K25 Standard Edition  (0.88)
-Zen Pinball 2  ->  Zen Pinball 2 Full Tilt Bundle  (0.72)
 
-== NO ENCONTRADOS EN LA TIENDA (138) ==
+== NO ENCONTRADOS EN LA TIENDA (100) ==
 Ace Combat 5: The Unsung War
-Ace Combat 7: Skies Unknown
 Adventure Time: Finn & Jake Investigations
 Angry Birds Star Wars
-Asterix & Obelix XXL 3: The Crystal Menhir
-Atelier Ryza: Ever Darkness & the Secret Hideout
-Attack on Titan: Wings of Freedom
-Azkend 2
 Baboon
 Back to the Future: The Game
 Bandit Six: Combined Arms
 The Banner Saga Trilogy
 Blue Estate
 The Brookhaven Experiment
-Capcom vs. SNK 2: Mark of the Millennium 2001
-Chocobo's Mystery Dungeon Every Buddy!
 Citizens of Earth
 Cooking Mama: Cookstar
 Curse of the Sea Rats
-Dark Souls III: The Fire Fades Edition
-Dead or Alive 6
 Dead or Alive Xtreme 3: Fortune
 Demon Gaze II
-Destroy All Humans! 2
-Devil May Cry 3 Special Edition
 Diablo III: Reaper of Souls – Ultimate Evil Edition
 DiRT 4
 Doki-Doki Universe
-DOOM (2016)
-DOOM (clásico)
 Driveclub Limited Edition
 EA Sports FC 24
 EA Sports UFC 3
-EA Sports UFC 4
-Earthlock: Festival of Magic
 Emulador de SNES
 Emulador Gearsystem
 Emulador NES
 Everybody's Gone to the Rapture
 F1 2021
 F1 2022
-F1 2023
 Fast & Furious Crossroads
 Fate/Grand Order VR feat. Mash Kyrielight
 Frantics
@@ -158,14 +82,8 @@ Gintama Rumble
 Girls und Panzer Dream Tank Match
 God Wars: Future Past
 Godzilla
-Gone Home Console Edition
 Gran Turismo Sport
 Gunjack
-HellMut
-Hitman 2
-Hitman 3
-Hitman Absolution HD
-Hitman Blood Money HD
 Home
 J-STARS Victory VS+
 John Wick Hex
@@ -177,34 +95,25 @@ LEGO 2K Drive Awesome Rivals Edition
 Madden NFL 23
 Madden NFL 24
 Media Player
-Metal Gear & Metal Gear 2: Solid Snake
 Minecraft: Story Mode
 El Ministerio del Tiempo VR: Salvar el tiempo
-MotoGP 17
 MotoGP 22
 Narcos: Rise of the Cartels
 Natural Doctrine
 NBA 2K Playgrounds 2
 NHL 23
 Nightmares from the Deep 3: Davy Jones
-Observer
-Oceanhorn
 Olympic Games Tokyo 2020
 Override: Mech City Brawl
 Pac-Man Championship Edition 2 + Arcade Game Series
 Peaky Blinders: Mastermind
-Penn & Teller VR: Frankly Unfair, Unkind, Unnecessary, & Underhanded
 PGA Tour 2K23
-Prison Architect: PlayStation 4 Edition
 Project CARS 2
 Project CARS 3
 Prototype Biohazard Bundle
 R.B.I. Baseball 20
 Raiders of the Broken Planet
-Ratchet & Clank
 Republique
-Risen 3: Titan Lords – Enhanced Edition
-Rock of Ages 3
 Samurai Jack: Battle Through Time
 SD Gundam G Generation Cross Rays Premium G Sound Edition
 Skylar & Plux: Adventure on Clover Island
@@ -222,14 +131,7 @@ Trivial Pursuit Live
 Troll and I
 Turma da Mônica: O Resgate
 Unmechanical Extended
-Until Dawn
-Vader Immortal: Episode I
-Vader Immortal: Episode II
-Vader Immortal: Episode III
-The Walking Dead: Saints & Sinners
 We Happy Few Uncle Jack Live VR
-Yakuza 0
-Yakuza 5
 Zenith
 The Bridge   (la página ya no existe en la tienda)
 Call of Duty: Black Ops 4   (la página ya no existe en la tienda)

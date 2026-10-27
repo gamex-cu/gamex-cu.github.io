@@ -1,42 +1,22 @@
-== NO ESTÁN NI EN LA TIENDA DE EUROPA NI EN LA DE EE. UU. (102) ==
-Blade II
+== NO ESTÁN NI EN LA TIENDA DE EUROPA NI EN LA DE EE. UU. (54) ==
 Blaster Master Zero Trilogy MetaFight Chronicle
 Bloons
-Borderlands 2 Game of the Year Edition
-Borderlands The Pre-Sequel Ultimate Edition
-BOXBOY
 Cooking Mama Cookstar
-CounterRecon
 Darius Cozmic Revelation
 DEAD OR ALIVE Xtreme 3 Scarlet
-Deltarune Chapter 1
-Disgaea 5 Alliance of Vengeance
 Dragon Ball Z Super Butouden JAP
-Dragon Quest I, II & III
 eBASEBALL Pro Yakyu Spirits 2021 Grand Slam
-F117-A
-Famicom Detective Club 1 - The Missing Heir
-Famicom Detective Club 2 - The Girl Who Stands Behind
-Family Feud 2021
 FIFA 23 Legacy Edition
 FiNC HOME FiT
 Football Manager 19 Touch
 Football Manager 20 Touch
 Football Manager 21 Touch
-Galaxy of pen and paper
-Game Party 15 in 1
-Gate of Doom
 Goetia the Infinite Tower
-Gonner 2
-Gotcha Racing 2
 Guacamelee! One-Two Punch Collection
 Headball Soccer Deluxe
 Hungry Baby Party Treats
-Infinite Tanks World War 2
 Inops
 J.B. Harold Murder Club
-JUMP FORCE Deluxe Edition
-Junior League Sports Collection
 Just Dance 2017
 Just Dance 2018
 Just Dance 2019
@@ -44,90 +24,48 @@ Just Dance 2020
 Kamen Rider Climax Scramble
 Karaoke JOYSOUND for Nintendo Switch
 Knight Club
-Mean Greens
 Metal Commando
 Minecraft Story Mode - The Complete Adventure
 Mordheim Warband Skirmish
-MotoGP 21
-Mutant Blobs Attack
-My Friend Pedro Blood Bullets Bananas
-MySims Kingdom
 Nazotoki Mail
-Ninja Gaiden 3 - Razors Edge
-Ninja Gaiden Sigma
-Ninja Gaiden Sigma 2
 Nintendo Labo Toy-Con 01 - Variety Kit
 Nintendo Labo Toy-Con 02 - Robot Kit
 Nintendo Labo Toy-Con Kits
-OK K O! Let's Play Heroes
 Olympic Boxing
-Oniken & Odallus Collection
 Order Land
-Override Mech City Brawl
 PHAEX
 Profane
 R.B.I. Baseball 21
 Rabbit x Labyrinth Puzzle Out Stories
-Raiden IV×MIKADO remix
 SD Gundam G Generation Cross Rays
-Sea of Solitude The Directos Cut
 SEGA AGES Collection
-Shred 2 Freeride Mountainbiking
-Skyland Rush
-SolDivide for Nintendo Switch
 Sonitsukuhuosu
-Stay Safe - Labyrinth of the Mad
 Stranger Things 3 The Game
-Stray Cat Doors 2
 Super Robot Wars 30
 Super Seducer
 Susanoh Nihon Shinwa RPG
-The Casino
 The Legend of Heroes Zero no Kiseki Kai
-The Longest 5 Minutes
-The MISSING J J
-The Ninja Warriors Strikes Once Again
 Titeuf Mega Party
-Toki Remake
 Toraware no Palm Deluxe Edition
 Torchlight
 Troll and I
 Tsuri Spirits
 UglyDolls An Imperfect Adventure
-UnExplored - Unlocked Edition
 Wang daarando
-Windstorm - Ari's Arrival
-Witch Spring 3 ReFine -The Story of the Marionette Witch Eirudy
-WitchAndHero
 Xiang beyodoragon
-Zoids Wild Infinity Blast
 
-== PARECIDOS EN LA TIENDA DE EE. UU. (28): tu lista  ->  lo más parecido ==
-BattleGroup2  ->  Battleground  (0.83)
+== PARECIDOS EN LA TIENDA DE EE. UU. (14): tu lista  ->  lo más parecido ==
 Cardfight Vanguard EX  ->  Cardfight!! Vanguard Dear Days  (0.82)
-Collar×Malice for Nintendo Switch  ->  Collar X Malice  (0.89)
-DAEDALUS The Awakening of Golden Jazz  ->  Alternate Jake Hunter: DAEDALUS The Awakening of Golden Jazz  (0.73)
-Doodle God Crime City  ->  Doodle Mafia: Crime City  (0.82)
 Dragon Quest Heroes I,II  ->  DRAGON QUEST BUILDERS™ 2   (0.78)
 Dragon Quest Monsters Terry's Wonderland Retro  ->  DRAGON QUEST MONSTERS: The Withered World  (0.76)
 Farmer Sim  ->  Farmer Simulator  (0.77)
 Flying Slime  ->  Flying Soldiers  (0.81)
-FUZE  ->  FUZE4 Nintendo Switch  (0.89)
-Green the Life Alg0r1thm Game  ->  GREEN The Life Algorithm  (0.8)
 Guilty Gear 20th Anniversary Edition  ->  Double Switch - 25th Anniversary Edition  (0.75)
-James Pond Operation Robocod  ->  James Pond Codename Robocod  (0.8)
 Kunio Kun The World Classics Collection  ->  Humongous Classic Collection  (0.73)
 Namcot Collection  ->  FRAMED Collection  (0.76)
 NBA 2K23  ->  NBA 2K26  (0.88)
 Niconico  ->  Unicornicopia  (0.76)
-POISOFT's Thud  ->  Poisoft Thud Card  (0.77)
 Psikyo Collection Vol. 1  ->  Shockman Collection Vol. 1  (0.79)
 Psikyo Collection Vol.2  ->  Shockman Collection Vol. 2  (0.79)
-Sega Megadrive Classics  ->  SEGA Genesis Classics  (0.73)
-Seven Knights  ->  Six Seven Nights  (0.83)
 Syberia Trilogy  ->  THE GRISAIA TRILOGY  (0.73)
-Technosphere Reload  ->  Technosphere  (0.77)
-The Binding of Isaac Rebirth  ->  The Binding of Isaac: Afterbirth+  (0.89)
-Tokyo 2020 Olympics The Official Video Game  ->  Olympic Games Tokyo 2020 – The Official Video Game™  (0.72)
-Truck Sim Collection  ->  Truck Simulator Collection  (0.87)
 WWE 2K18  ->  WWE 2K25 Standard Edition  (0.75)
