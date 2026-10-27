@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GAMEX">
+<meta name="theme-color" content="#0d1124">
+<meta name="description" content="Catálogo de juegos de GAMEX. Escoge tus juegos y pídelos por WhatsApp.">
 <title>Catálogo GAMEX PS4</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -108,6 +116,10 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .nums a:hover,.fch:hover{color:var(--hot)}
 .fch{display:inline-block;margin-top:12px;font-size:.95rem;color:#2fd36f}
 .copy{margin-top:24px;padding-top:16px;border-top:1px solid var(--line);font-size:.85rem}
+.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--panel);border:1px solid var(--hot);border-radius:12px;padding:14px 44px 14px 14px;color:var(--fg);font-size:.95rem;line-height:1.45;max-width:520px;margin:0 auto}
+.ios-tip b{color:var(--hot)}
+.ios-tip button{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--muted);font-size:1.5rem;cursor:pointer;padding:4px}
+.ios-tip svg{vertical-align:-3px}
 mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 .empty{color:var(--muted);padding:40px 0;text-align:center}
 </style>
@@ -133,6 +145,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
  <div class="fcol"><h4>WhatsApp</h4><p class="nums"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089</a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989</a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943</a></p><a class="fch" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener">Seguir el canal de GAMEX</a></div>
 </div><div class="wrap copy">© GAMEX · Juegos para PS4</div></footer>
 
+<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GAMEX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.</div>
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
 <div class="sheet" id="sheet" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="sh">
 <h3 id="sh">Tu selección <button type="button" id="close" aria-label="Cerrar">×</button></h3>
@@ -196,6 +209,10 @@ document.getElementById('send').addEventListener('click',e=>{if(!cart.length){e.
 document.getElementById('copy').onclick=()=>{const m=document.getElementById('msg');if(!cart.length){m.textContent='Escoge al menos un juego primero.';return}
   navigator.clipboard.writeText(text()).then(()=>m.textContent='Lista copiada. Pégala en el chat de WhatsApp de GAMEX.').catch(()=>{m.textContent='No se pudo copiar automáticamente. Mantén presionada la lista para copiarla.'})};
 
+
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+(function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
+if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 </script>
 
 </body>
