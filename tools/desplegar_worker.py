@@ -1,6 +1,8 @@
 """Sube (o actualiza) el Worker de avisos a Cloudflare y guarda su dirección en tools/datos/push.json.
 Necesita ~/secretos/cloudflare.json (o /home/claude/secretos/cloudflare.json) con {"cuenta": "...", "token": "..."}
-y acceso a api.cloudflare.com. La clave del Worker se crea sola la primera vez."""
+y acceso a api.cloudflare.com. La clave del Worker se crea sola la primera vez.
+Para el panel (/panel) también lee de la misma carpeta: panel.json {"clave": "contraseña del panel", "github": "github_pat_..."},
+vapid.json y firebase-admin.json. Si falta alguno, el panel no se activa pero los avisos siguen funcionando."""
 import json, os, secrets, ssl, urllib.request, uuid
 T = os.path.dirname(os.path.abspath(__file__)) + '/'
 SEC = next((p for p in [os.path.expanduser('~/secretos'), '/home/claude/secretos'] if os.path.exists(p + '/cloudflare.json')), '/home/claude/secretos')
@@ -22,10 +24,16 @@ ns = [n for n in cf('/storage/kv/namespaces?per_page=100')['result'] if n['title
 ns_id = ns[0]['id'] if ns else cf('/storage/kv/namespaces', 'POST', json.dumps({'title': NOMBRE}).encode())['result']['id']
 meta = {'main_module': 'worker.js', 'compatibility_date': '2025-01-01',
         'bindings': [{'type': 'kv_namespace', 'name': 'SUBS', 'namespace_id': ns_id}, {'type': 'secret_text', 'name': 'CLAVE', 'text': CF['clave_worker']}]}
+for nombre, archivo, campo in [('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None)]:
+    try:
+        d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
+        if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})
+    except (FileNotFoundError, KeyError): print('Aviso: falta', nombre, '(el panel no funcionará completo)')
+codigo = open(T + 'push-worker.js').read().replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read()), 1)
 b = uuid.uuid4().hex
 body = (f'--{b}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n{json.dumps(meta)}\r\n'
         f'--{b}\r\nContent-Disposition: form-data; name="worker.js"; filename="worker.js"\r\nContent-Type: application/javascript+module\r\n\r\n'
-        + open(T + 'push-worker.js').read() + f'\r\n--{b}--\r\n').encode()
+        + codigo + f'\r\n--{b}--\r\n').encode()
 cf(f'/workers/scripts/{NOMBRE}', 'PUT', body, f'multipart/form-data; boundary={b}')
 cf(f'/workers/scripts/{NOMBRE}/subdomain', 'POST', json.dumps({'enabled': True}).encode())
 sub = cf('/workers/subdomain')['result']['subdomain']
