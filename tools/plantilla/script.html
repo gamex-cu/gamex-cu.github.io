@@ -9,7 +9,7 @@ const ICON_OF={'PC':'pc','Meta Quest':'vr'};
 const RAW=__DATA__;
 const LINKS=__LINKS__;
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-const linkOf=g=>{const id=LINKS[g.k];return id?`https://www.xbox.com/es-MX/games/store/${slug(g.n)}/${id}`:null};
+const linkOf=g=>{const v=LINKS[g.k];if(!v)return null;return v.startsWith('http')?v:`https://www.xbox.com/es-MX/games/store/${slug(g.n)}/${v}`};
 const NOTES=__NOTES__;
 const SERIES=new Set(__SERIES__);
 const ONLINE=new Set(__ONLINE__);

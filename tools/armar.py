@@ -34,7 +34,15 @@ MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septie
 NOTES={}
 if GP.get('fecha'):
     _y,_m,_d=GP['fecha'].split('-');NOTES['Xbox Game Pass']=f'Lista tomada del <b>catálogo oficial de Xbox Game Pass</b> · actualizada el {int(_d)} de {MESES[int(_m)-1]} de {_y}'
-js=js.replace('__LINKS__',json.dumps({'Xbox Game Pass|'+n:i for n,i in GP.get('ids',{}).items()},ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
+LINKS={'Xbox Game Pass|'+n:i for n,i in GP.get('ids',{}).items()}
+for _c in ['PS4','PS5']:
+    try:
+        for n,pid in json.load(open(D+'enlaces_'+_c.lower()+'.json')).items(): LINKS[_c+'|'+n]='https://store.playstation.com/es-mx/product/'+pid
+    except FileNotFoundError: pass
+    import urllib.parse as _up
+    for n in data.get(_c,[]):
+        LINKS.setdefault(_c+'|'+n,'https://store.playstation.com/es-mx/search/'+_up.quote(n.replace('/',' ')))
+js=js.replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
