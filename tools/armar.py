@@ -80,6 +80,7 @@ css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));righ
 .ios-tip b{color:var(--hot)}
 .ios-tip button{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--muted);font-size:1.5rem;cursor:pointer;padding:4px}
 .ios-tip svg{vertical-align:-3px}
+.tipb{display:inline-block;margin-top:10px;padding:7px 12px;border-radius:8px;background:var(--hot);color:#0d1124;font:600 .9rem var(--display);text-decoration:none}
 .upd{position:sticky;top:env(safe-area-inset-top,0px);z-index:12;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));font-weight:600}
 .upd button,.refresh{font:600 .95rem var(--display);border-radius:8px;cursor:pointer;padding:8px 14px}
 .upd button{background:#fff;color:#0d1124;border:0}
@@ -94,7 +95,7 @@ css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));righ
 w=w.replace('mark{',css+DCSS+'mark{',1)
 k_=w.index('<a class="chan"');k2=w.index('</a>',k_)+4
 w=w[:k2]+'\n'+CARD+w[k2:]
-tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet. <a href="#iphone" style="color:var(--hot);font-weight:600">Ver paso a paso</a></div>
+tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.<br><a class="tipb" href="#iphone">📱 Ver la guía paso a paso</a></div>
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div class="aviso" id="aviso" hidden role="status"><div><b id="aviso-t"></b><span id="aviso-x"></span></div><button type="button" id="aviso-c" aria-label="Cerrar aviso">×</button></div>\n<div id="home">',1)
