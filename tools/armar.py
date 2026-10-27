@@ -25,7 +25,7 @@ GP=json.load(open(D+'gamepass.json'));gp=GP['games']
 online=['Xbox Game Pass|'+n for n in GP['online']]
 data['Xbox Game Pass']=[n for n,_ in gp]
 series=['Xbox Game Pass|'+n for n,s in gp if s]
-CARD='''<a class="dlapp" id="dlapp" href="https://gamex-cu.github.io/app/GAMEX-Catalogo.apk" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Funciona sin internet</small></span></a>
+CARD='''<a class="dlapp" id="dlapp" href="https://gamex-cu.github.io/app/GAMEX-Catalogo.apk" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
 '''
 DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
 .dlapp:hover,.dlapp:focus-visible{background:rgba(61,123,255,.22);outline:none}
@@ -107,6 +107,7 @@ async function gxRefresh(){const b=document.getElementById('refresh');
 navigator.serviceWorker?.ready.then(rg=>{rg.active&&rg.active.postMessage('guardar')}).catch(()=>{});
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
 function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV)document.getElementById('upd').hidden=false}).catch(()=>{})}
+fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
 gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)gxCheck()});
 '''.replace('__VER__',str(VER))
 k=w.rindex('</script>'); w=w[:k]+pj+w[k:]
