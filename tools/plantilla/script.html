@@ -17,7 +17,7 @@ const ONLINE=new Set(__ONLINE__);
 const X360=new Set(__X360__),XOG=new Set(__XOG__);
 const VR=new Set(__VR__),VRO=new Set(__VRO__);
 const PORT=new Set(__PORT__),EMU=new Set(__EMU__);
-const badges=k=>(PORT.has(k)?' <span class="pt">Port</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">Solo Series X|S</span>':'');
+const badges=k=>(PORT.has(k)?' <span class="pt">Port</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
