@@ -129,7 +129,19 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sx{display:inline-block;font:600 .66rem/1 var(--display);letter-spacing:.03em;padding:3px 6px;border-radius:4px;border:1px solid #2fbf4a;color:#7fdc7f;vertical-align:2px;margin-left:4px;white-space:nowrap}
 .ctag{display:inline-block;font:600 .68rem/1 var(--display);letter-spacing:.04em;padding:4px 0;width:72px;text-align:center;border-radius:4px;margin-right:8px;vertical-align:2px}
 li .gn{min-width:0}
-section{scroll-margin-top:175px}
+section{scroll-margin-top:215px}
+.fchips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.fchips::-webkit-scrollbar{display:none}
+.fchip{flex:0 0 auto;font:600 .85rem var(--display);padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer;white-space:nowrap}
+.fchip small{font-family:var(--body);font-weight:500;opacity:.7;font-variant-numeric:tabular-nums}
+.fchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.fchip.f-vr{border-color:#ff5a5a;color:#ff9a9a}.fchip.f-vr.on{background:#ff5a5a;color:#fff}
+.fchip.f-vro{border-color:#33c4e0;color:#8fe6f5}.fchip.f-vro.on{background:#33c4e0;color:#0d1124}
+.fchip.f-on{border-color:#ff9a2e;color:#ffc27d}.fchip.f-on.on{background:#ff9a2e;color:#1a1200}
+.fchip.f-sx{border-color:#2fbf4a;color:#7fdc7f}.fchip.f-sx.on{background:#2fbf4a;color:#06200c}
+.fchip.f-x3{border-color:#a66bff;color:#cdb0ff}.fchip.f-x3.on{background:#a66bff;color:#fff}
+.fchip.f-xc{border-color:#f2d14b;color:#ffe680}.fchip.f-xc.on{background:#f2d14b;color:#1a1500}
+.fchip:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 .empty{color:var(--muted);padding:40px 0;text-align:center}
 </style>
@@ -153,6 +165,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="bar"><div class="wrap">
   <div class="vtitle"><a class="back" href="#" id="back">← Consolas</a><span class="vn" id="vn"></span><span id="vc" style="color:var(--muted);font-size:.9rem"></span></div>
   <div class="search"><input id="q" type="search" placeholder="Buscar juego… (ej. FIFA, Resident, Lego)" autocomplete="off" aria-label="Buscar juego"><span id="count"></span></div>
+  <div class="fchips" id="filt" role="group" aria-label="Filtrar" hidden></div>
   <nav class="letters" id="letters" aria-label="Ir a la letra"></nav>
 </div></div>
 <main class="wrap" id="list"></main>
