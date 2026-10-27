@@ -15,7 +15,7 @@
 <title>Catálogo de Juegos GameX</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Barlow:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Barlow:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
 <style>
 /* Layout: arcade cabinet marquee header, sticky search + letter strip, letter-grouped multi-column game list */
 :root{
@@ -372,7 +372,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=58;
+const GXV=59;
 document.getElementById('verlbl').textContent='Versión '+GXV;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
