@@ -23,6 +23,7 @@ function unb64(s){s=s.replace(/-/g,'+').replace(/_/g,'/').replace(/\s/g,'');s+='
 function cat(...a){const n=a.reduce((t,x)=>t+x.length,0),o=new Uint8Array(n);let p=0;for(const x of a){o.set(x,p);p+=x.length}return o}
 async function hmac(k,d){const key=await crypto.subtle.importKey('raw',k,{name:'HMAC',hash:'SHA-256'},false,['sign']);return new Uint8Array(await crypto.subtle.sign('HMAC',key,d))}
 function hoyCuba(){try{return new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date().toISOString().slice(0,10)}}
+const sinAst=s=>s.trim().replace(/^\*+|\*+$/g,''); // acepta la contraseña con o sin *asteriscos*
 function igual(a,b){if(typeof a!=='string'||typeof b!=='string'||a.length!==b.length)return false;let x=0;for(let i=0;i<a.length;i++)x|=a.charCodeAt(i)^b.charCodeAt(i);return x===0}
 
 // ---------- web push (RFC 8291 aes128gcm + VAPID) ----------
@@ -96,7 +97,7 @@ async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({
 async function panel(req,env,u){
   if(u.pathname==='/panel'||u.pathname==='/panel/')return new Response(PANEL_HTML,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer'}});
   if(!u.pathname.startsWith('/panel/api/'))return j({error:'No existe'},404);
-  if(!env.PANEL||!igual(req.headers.get('X-Panel')||'',env.PANEL)){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
+  if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
     if(p==='estado'){
