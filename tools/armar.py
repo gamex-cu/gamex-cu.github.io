@@ -8,7 +8,7 @@ os.makedirs(T+'salida',exist_ok=True)
 VJ=R+'app/version.json';VV=json.load(open(VJ));VER=VV['catalogo']+1;VV['catalogo']=VER;json.dump(VV,open(VJ,'w'),ensure_ascii=False,indent=2)
 head=open(T+'plantilla/cabecera.html').read(); js=open(T+'plantilla/script.html').read()
 data={'PS4':json.load(open(D+'ps4.json'))}
-for extra in ['PS5','PC','Meta Quest','Switch']:
+for extra in ['PS5','PC','Meta Quest','Switch','Xbox pago']:
     try: data[extra]=json.load(open(D+extra.lower().replace(' ','_')+'.json'))
     except FileNotFoundError: pass
 ET={'vr':[],'vr_opcional':[]}
