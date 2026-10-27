@@ -13,3 +13,9 @@
 3. Avisar al dueño con el reporte: juegos que entraron, que salieron y los que hay que revisar si son solo online.
 4. Cuando el dueño diga cuáles nuevos son solo online, agregarlos a `online` en `reglas_gamepass.json`,
    pasar sus claves de `pendientes` a `revisados`, correr `armar.py` y subir.
+
+## Panel de ofertas
+- https://gamex-avisos.gamex-cu.workers.dev/panel (contraseña en secretos/panel.json, nunca en este repo).
+- Manda la oferta a Android (Firebase), iPhone (web push) y la agrega a app/avisos.json haciendo un commit en GitHub.
+- Por eso: **hacer `git pull --rebase origin main` antes de cada push**, porque el panel también sube cambios.
+- Código: tools/push-worker.js + tools/panel.html; se sube con `python3 tools/desplegar_worker.py`.
