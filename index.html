@@ -33,13 +33,13 @@ body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
 .wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 header{padding-block:28px 18px;border-bottom:1px solid var(--line);background:
-  radial-gradient(600px 180px at 12% 0%,rgba(61,123,255,.28),transparent 70%),
+  radial-gradient(600px 200px at 50% 0%,rgba(61,123,255,.28),transparent 70%),
   repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px)}
-.brand{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}
+.brand{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center}
 h1{font-family:var(--display);font-weight:700;font-size:clamp(2.6rem,8vw,4.4rem);letter-spacing:.06em;margin:0;line-height:1;text-wrap:balance}
-h1 .logo{display:block;width:clamp(200px,48vw,300px);height:auto}
+h1 .logo{display:block;width:clamp(220px,60vw,320px);height:auto;margin:0 auto}
 .tag{font-family:var(--display);font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--hot);border:1px solid var(--hot);padding:3px 10px;border-radius:3px}
-.lede{color:var(--muted);margin:14px 0 0;max-width:60ch}
+.lede{color:var(--muted);margin:14px auto 0;max-width:46ch;text-align:center}
 .lede b{color:var(--fg);font-variant-numeric:tabular-nums}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:rgba(13,17,36,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
 .bar .wrap{padding-block:12px;display:flex;flex-direction:column;gap:10px}
@@ -349,7 +349,7 @@ if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWo
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=29;
+const GXV=30;
 document.getElementById('verlbl').textContent='Versión '+GXV;
 async function gxRefresh(){const b=document.getElementById('refresh');if(b)b.textContent='Actualizando…';try{if(self.caches){for(const k of await caches.keys())await caches.delete(k)}const rs=navigator.serviceWorker?await navigator.serviceWorker.getRegistrations():[];for(const r of rs)await r.unregister()}catch(e){}location.replace(location.pathname+'?v='+Date.now()+location.hash)}
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
