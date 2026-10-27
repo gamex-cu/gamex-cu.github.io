@@ -66,6 +66,19 @@ for _f,_c in [('enlaces_pc.json','PC')]:
 try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
+import subprocess as _sp
+def _fecha(*fs):
+    r=''
+    for f in fs:
+        try: o=_sp.run(['git','log','-1','--date=format-local:%Y-%m-%d','--format=%ad','--',f],cwd=R,capture_output=True,text=True,env=dict(os.environ,TZ='America/Havana')).stdout.strip()
+        except Exception: o=''
+        r=max(r,o)
+    return r
+for _c,_b in [('PS4','ps4'),('PS5','ps5'),('PC','pc'),('Meta Quest','meta_quest'),('Switch','switch')]:
+    if _c in NOTES or _c not in data: continue
+    _f=_fecha(*['tools/datos/'+x+_b+'.json' for x in ('','enlaces_','etiquetas_')])
+    if _f:
+        _y,_m,_d=_f.split('-');NOTES[_c]=f'Catálogo actualizado el <b>{int(_d)} de {MESES[int(_m)-1]} de {_y}</b>'
 js=js.replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
