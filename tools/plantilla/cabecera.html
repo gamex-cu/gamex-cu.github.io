@@ -142,6 +142,9 @@ section{scroll-margin-top:215px}
 .fchip.f-x3{border-color:#a66bff;color:#cdb0ff}.fchip.f-x3.on{background:#a66bff;color:#fff}
 .fchip.f-xc{border-color:#f2d14b;color:#ffe680}.fchip.f-xc.on{background:#f2d14b;color:#1a1500}
 .fchip:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.vnote{margin:0;font-size:.82rem;line-height:1.4;color:var(--muted)}
+.vnote::before{content:"✓ ";color:#2fbf4a;font-weight:700}
+.vnote b{color:var(--fg);font-weight:600}
 mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 .empty{color:var(--muted);padding:40px 0;text-align:center}
 </style>
@@ -164,6 +167,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div id="view" hidden>
 <div class="bar"><div class="wrap">
   <div class="vtitle"><a class="back" href="#" id="back">← Consolas</a><span class="vn" id="vn"></span><span id="vc" style="color:var(--muted);font-size:.9rem"></span></div>
+  <p class="vnote" id="vnote" hidden></p>
   <div class="search"><input id="q" type="search" placeholder="Buscar juego… (ej. FIFA, Resident, Lego)" autocomplete="off" aria-label="Buscar juego"><span id="count"></span></div>
   <div class="fchips" id="filt" role="group" aria-label="Filtrar" hidden></div>
   <nav class="letters" id="letters" aria-label="Ir a la letra"></nav>

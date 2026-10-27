@@ -96,7 +96,7 @@ def main():
     juegos.sort(key=lambda x: sk(x[0]))
     actuales = {n for n, _ in juegos}; previos = {n for n, _ in antes['games']}
     salieron = sorted(previos - actuales, key=sk); entraron = sorted(actuales - previos, key=sk)
-    nuevo = {'games': juegos, 'online': sorted(n for n in online if n in actuales),
+    nuevo = {'fecha': datetime.date.today().isoformat(), 'games': juegos, 'online': sorted(n for n in online if n in actuales),
              'x360': sorted(x360), 'xog': sorted(n for n in xog if n in actuales)}
     hoy = datetime.date.today().isoformat()
     lin = [f'# Game Pass – revisión del {hoy}', '', f'Total: {len(juegos)} juegos (antes {len(previos)}).', '']

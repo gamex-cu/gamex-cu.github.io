@@ -2,6 +2,7 @@
 const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a']];
 const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
 const RAW=__DATA__;
+const NOTES=__NOTES__;
 const SERIES=new Set(__SERIES__);
 const ONLINE=new Set(__ONLINE__);
 const X360=new Set(__X360__),XOG=new Set(__XOG__);
@@ -66,6 +67,7 @@ function route(){
     $('home').hidden=true;$('view').hidden=false;
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
+    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else{
