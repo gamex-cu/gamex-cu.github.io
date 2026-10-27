@@ -57,7 +57,7 @@ def bajar():
         d = get_json('https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=' + ','.join(ids[i:i + 20]) + '&market=US&languages=en-us')
         for p in d.get('Products', []):
             pr = p.get('Properties', {})
-            prods[p['ProductId']] = {'t': p['LocalizedProperties'][0]['ProductTitle'], 'gen': pr.get('XboxConsoleGenCompatible') or [],
+            prods[p['ProductId']] = {'pid': p['ProductId'], 't': p['LocalizedProperties'][0]['ProductTitle'], 'gen': pr.get('XboxConsoleGenCompatible') or [],
                                      'attr': [a.get('Name') for a in (pr.get('Attributes') or [])], 'pfn': pr.get('PackageFamilyName') or ''}
     return prods
 
@@ -65,7 +65,9 @@ def agrupar(prods):
     g = {}
     for v in prods.values():
         n = limpiar(v['t']); k = clave(n)
-        e = g.setdefault(k, {'n': n, 'one': False, 'attr': set(), 'bc': False})
+        e = g.setdefault(k, {'n': n, 'one': False, 'attr': set(), 'bc': False, 'id': None, 'id9': False})
+        solo9 = 'ConsoleGen9' in v['gen'] and 'ConsoleGen8' not in v['gen']
+        if e['id'] is None or (solo9 and not e['id9']): e['id'], e['id9'] = v.get('pid'), solo9
         if len(n) < len(e['n']): e['n'] = n
         if 'ConsoleGen8' in v['gen']: e['one'] = True
         e['attr'] |= set(v['attr'])
@@ -83,7 +85,7 @@ def main():
     g = agrupar(bajar())
     nombres, quitar, online, xog = reglas['nombres'], set(reglas['quitar']), set(reglas['online']), set(reglas['xog'])
     revisados = set(reglas.get('revisados', []))
-    juegos, x360, nuevos, revisar = [], [], [], []
+    juegos, x360, nuevos, revisar, ids = [], [], [], [], {}
     for k, e in g.items():
         if k in quitar: continue
         if k not in nombres:
@@ -91,13 +93,14 @@ def main():
             if k not in revisados and parece_online(e): revisar.append(nombres[k])
         n = nombres[k]
         juegos.append([n, not e['one']])
+        if e['id']: ids[n] = e['id']
         if e['bc'] and n not in xog: x360.append(n)
     sk = lambda s: re.sub(r'^(the|a) ', '', s.lower())
     juegos.sort(key=lambda x: sk(x[0]))
     actuales = {n for n, _ in juegos}; previos = {n for n, _ in antes['games']}
     salieron = sorted(previos - actuales, key=sk); entraron = sorted(actuales - previos, key=sk)
     nuevo = {'fecha': datetime.date.today().isoformat(), 'games': juegos, 'online': sorted(n for n in online if n in actuales),
-             'x360': sorted(x360), 'xog': sorted(n for n in xog if n in actuales)}
+             'x360': sorted(x360), 'xog': sorted(n for n in xog if n in actuales), 'ids': ids}
     hoy = datetime.date.today().isoformat()
     lin = [f'# Game Pass – revisión del {hoy}', '', f'Total: {len(juegos)} juegos (antes {len(previos)}).', '']
     lin += [f'## Entraron ({len(entraron)})'] + [f'- {n}' for n in entraron] + ['']

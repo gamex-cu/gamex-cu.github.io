@@ -7,6 +7,9 @@ vr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8
 all:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>'};
 const ICON_OF={'PC':'pc','Meta Quest':'vr'};
 const RAW=__DATA__;
+const LINKS=__LINKS__;
+const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const linkOf=g=>{const id=LINKS[g.k];return id?`https://www.xbox.com/es-MX/games/store/${slug(g.n)}/${id}`:null};
 const NOTES=__NOTES__;
 const SERIES=new Set(__SERIES__);
 const ONLINE=new Set(__ONLINE__);
@@ -57,7 +60,7 @@ function render(){
   hits.sort((a,b)=>key(a.n).localeCompare(key(b.n),'es',{sensitivity:'base'})||CI[a.c]-CI[b.c]);
   const groups={};hits.forEach(g=>(groups[letterOf(g.n)]??=[]).push(g));
   const hl=n=>{if(!terms)return esc(n);const t=fold(n).includes(terms)?terms:extra;const i=fold(n).indexOf(t);return i<0?esc(n):esc(n.slice(0,i))+'<mark>'+esc(n.slice(i,i+t.length))+'</mark>'+esc(n.slice(i+t.length))};
-  list.innerHTML=hits.length?ORDER.filter(l=>groups[l]).map(l=>`<section id="l-${l==='#'?'num':l}"><h2>${l}<small>${groups[l].length}</small></h2><ul>${groups[l].map(g=>`<li data-k="${esc(g.k)}">${all?tagHTML(g.c):''}<span class="gn">${hl(g.n)}${badges(g.k)}</span><button class="add" type="button">+</button></li>`).join('')}</ul></section>`).join(''):`<p class="empty">${terms?`No encontramos “${esc(query)}”.`:'Todavía no hay juegos aquí.'} Escríbenos por WhatsApp al 5344 1089, 5382 7989 o 5293 3943 y te lo conseguimos.</p>`;
+  list.innerHTML=hits.length?ORDER.filter(l=>groups[l]).map(l=>`<section id="l-${l==='#'?'num':l}"><h2>${l}<small>${groups[l].length}</small></h2><ul>${groups[l].map(g=>`<li data-k="${esc(g.k)}">${all?tagHTML(g.c):''}<span class="gn">${hl(g.n)}${badges(g.k)}</span>${linkOf(g)?`<a class="info" href="${linkOf(g)}" target="_blank" rel="noopener" aria-label="Ver ${esc(g.n)} en la tienda" title="Ver en la tienda oficial">i</a>`:''}<button class="add" type="button">+</button></li>`).join('')}</ul></section>`).join(''):`<p class="empty">${terms?`No encontramos “${esc(query)}”.`:'Todavía no hay juegos aquí.'} Escríbenos por WhatsApp al 5344 1089, 5382 7989 o 5293 3943 y te lo conseguimos.</p>`;
   lettersEl.innerHTML=ORDER.map(l=>`<a href="#l-${l==='#'?'num':l}" class="${groups[l]?'':'off'}">${l}</a>`).join('');
   countEl.textContent=(terms||fs.length)?`${hits.length} resultado${hits.length===1?'':'s'}`:'';
   drawFilters();
@@ -109,7 +112,7 @@ function sync(){
   save();
 }
 function toggle(k){const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);sync()}
-list.addEventListener('click',e=>{const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
+list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
 const sheet=$('sheet');
 $('open').onclick=()=>{sheet.hidden=false;$('close').focus()};

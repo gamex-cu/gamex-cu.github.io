@@ -1,6 +1,6 @@
-# Game Pass – revisión del 2026-10-26
+# Game Pass – revisión del 2026-10-27
 
-Total: 608 juegos (antes 608).
+Total: 607 juegos (antes 607).
 
 ## Entraron (0)
 
