@@ -19,6 +19,8 @@ for _c,_f in [('PS4','etiquetas_ps4.json'),('PS5','etiquetas_ps5.json')]:
     except FileNotFoundError: pass
 try: SWE=json.load(open(D+'etiquetas_switch.json'))
 except FileNotFoundError: SWE={}
+try: PCE=json.load(open(D+'etiquetas_pc.json'))
+except FileNotFoundError: PCE={}
 try: MQE=json.load(open(D+'etiquetas_meta_quest.json'))
 except FileNotFoundError: MQE={}
 GP=json.load(open(D+'gamepass.json'));gp=GP['games']
@@ -97,7 +99,7 @@ for k in _todas: AGR.setdefault(k,HOY.isoformat())
 AGR={k:v for k,v in sorted(AGR.items()) if k in _todas}
 json.dump(AGR,open(_AF,'w'),ensure_ascii=False,indent=0)
 NUEVO={k:v for k,v in AGR.items() if (HOY-_dt.date.fromisoformat(v)).days<7}
-page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])]+['Meta Quest|'+n for n in MQE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']]+['Xbox pago|'+n for n in XP.get('x360',[])],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']]+['Xbox pago|'+n for n in XP.get('xog',[])],ensure_ascii=False)).replace('__NUEVO__',json.dumps(NUEVO,ensure_ascii=False).replace('</','<\\/')).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
+page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])]+['Meta Quest|'+n for n in MQE.get('port',[])]+['PC|'+n for n in PCE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']]+['Xbox pago|'+n for n in XP.get('x360',[])],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']]+['Xbox pago|'+n for n in XP.get('xog',[])],ensure_ascii=False)).replace('__NUEVO__',json.dumps(NUEVO,ensure_ascii=False).replace('</','<\\/')).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
 art=art[:k2]+'\n'+CARD+art[k2:]

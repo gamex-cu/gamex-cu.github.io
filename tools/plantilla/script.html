@@ -19,7 +19,7 @@ const VR=new Set(__VR__),VRO=new Set(__VRO__);
 const NUEVO_F=__NUEVO__,_hoy=new Date();_hoy.setHours(0,0,0,0);
 const NUEVO=new Set(Object.keys(NUEVO_F).filter(k=>{const[y,m,d]=NUEVO_F[k].split('-');return (_hoy-new Date(+y,m-1,+d))/864e5<7}));
 const PORT=new Set(__PORT__),EMU=new Set(__EMU__);
-const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(PORT.has(k)?' <span class="pt">Port</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
+const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -44,7 +44,7 @@ const FIL=[
  {id:'sx',l:'Solo Series X|S',t:k=>SERIES.has(k),c:'sx',s:SERIES},
  {id:'x3',l:'Xbox 360',t:k=>X360.has(k),c:'x3',s:X360},
  {id:'xc',l:'Xbox clásico',t:k=>XOG.has(k),c:'xc',s:XOG},
- {id:'pt',l:'Port',t:k=>PORT.has(k),c:'pt',s:PORT},
+ {id:'pt',get l(){return current==='PC'?'PC-Port':'Port'},t:k=>PORT.has(k),c:'pt',s:PORT},
  {id:'em',l:'Emulador',t:k=>EMU.has(k),c:'em',s:EMU}];
 const inCons=g=>current==='todas'||g.c===current;
 function drawFilters(){
