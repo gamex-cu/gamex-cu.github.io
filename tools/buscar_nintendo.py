@@ -26,28 +26,43 @@ def norm(s):
     s = re.sub(r'[™®©]', '', s)
     s = unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode().lower().replace('&', ' and ').replace('+', ' plus ')
     s = re.sub(QUITAR, ' ', s)
-    return ' '.join(ROM.get(t, t) for t in re.findall(r'[a-z0-9]+', s))
+    s = re.sub(r'\b([a-z])\.(?=[a-z]\b)', r'\1', s)
+    toks = [ROM.get(t, t) for t in re.findall(r'[a-z0-9]+', s)]
+    out = []
+    for t in toks:
+        if out and len(t) == 1 and len(out[-1]) <= 2 and out[-1].isalpha() and t.isalpha(): out[-1] += t
+        else: out.append(t)
+    return ' '.join(out)
 def numeros(s): return {t for t in norm(s).split() if t.isdigit()}
 def main():
     juegos = json.load(open(T + 'datos/switch.json'))
     et = json.load(open(T + 'datos/etiquetas_switch.json'))
     excl = set(et.get('port', [])) | set(et.get('emulador', []))
     cat = catalogo()
-    for x in cat: x['nn'], x['nums'] = norm(x['title']), numeros(x['title'])
+    for x in cat:
+        x['nn'], x['nums'] = norm(x['title']), numeros(x['title'])
+        x['nn2'] = norm(re.sub(r'\(.*?\)|:.*$', '', x['title']))
     por = {}
     for x in cat: por.setdefault(x['nn'], x)
+    for x in cat: por.setdefault(x['nn2'], x)
     man = json.load(open(T + 'datos/enlaces_manuales.json')) if os.path.exists(T + 'datos/enlaces_manuales.json') else {}
     ok, dudas, no = {}, [], []
     for n in juegos:
         if n in excl: continue
-        if 'Switch|' + n in man: ok[n] = man['Switch|' + n]; continue
+        if 'Switch|' + n in man:
+            if man['Switch|' + n]: ok[n] = man['Switch|' + n]
+            else: no.append(n)
+            continue
         nn = norm(n)
         if nn in por: ok[n] = 'https://www.nintendo.com' + por[nn]['url']; continue
         nums = numeros(n); mejor, mr = None, 0
-        primera = nn.split()[0] if nn else ''
+        mis = set(nn.split())
         for x in cat:
-            if x['nums'] != nums or not x['nn'].startswith(primera[:3]): continue
+            if x['nums'] != nums: continue
             r = difflib.SequenceMatcher(None, nn, x['nn']).ratio()
+            if r < 0.9 and x.get('nn2') and x['nn2'] == nn: r = 0.99
+            sus = set(x['nn'].split())
+            if r < 0.9 and mis and len(mis) >= 2 and (mis <= sus or sus <= mis) and min(len(mis), len(sus)) / max(len(mis), len(sus)) >= 0.6: r = max(r, 0.9)
             if r > mr: mejor, mr = x, r
         if mejor and mr >= 0.9: ok[n] = 'https://www.nintendo.com' + mejor['url']
         elif mejor and mr >= 0.72: dudas.append((n, mejor['title'], round(mr, 2)))
