@@ -95,7 +95,7 @@ css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));righ
 w=w.replace('mark{',css+DCSS+'mark{',1)
 k_=w.index('<a class="chan"');k2=w.index('</a>',k_)+4
 w=w[:k2]+'\n'+CARD+w[k2:]
-tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.<br><a class="tipb" href="#iphone">📱 Ver la guía paso a paso</a></div>
+tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <b>•••</b> abajo, luego <b>Compartir</b> y <b>Agregar a pantalla de inicio</b>. Funciona sin internet.<br><a class="tipb" href="#iphone">📱 Ver la guía paso a paso</a></div>
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div class="aviso" id="aviso" hidden role="status"><div><b id="aviso-t"></b><span id="aviso-x"></span></div><button type="button" id="aviso-c" aria-label="Cerrar aviso">×</button></div>\n<div id="home">',1)
