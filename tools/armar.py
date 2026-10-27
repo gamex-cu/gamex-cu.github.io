@@ -70,7 +70,7 @@ pwa='''<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GameX">
 <meta name="theme-color" content="#0d1124">
-<meta name="description" content="Catálogo de Juegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
+<meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
 '''
 w=alone.replace('<title>',pwa+'<title>',1)
 css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--panel);border:1px solid var(--hot);border-radius:12px;padding:14px 44px 14px 14px;color:var(--fg);font-size:.95rem;line-height:1.45;max-width:520px;margin:0 auto}
@@ -95,7 +95,7 @@ tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div class="aviso" id="aviso" hidden role="status"><div><b id="aviso-t"></b><span id="aviso-x"></span></div><button type="button" id="aviso-c" aria-label="Cerrar aviso">×</button></div>\n<div id="home">',1)
-w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button><button type="button" class="refresh pushb" id="push-b" hidden>🔔 Activar avisos</button></div>',1)
+w=w.replace('© GameX · Tienda de Videojuegos GameX</div>','© GameX · Tienda de Videojuegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button><button type="button" class="refresh pushb" id="push-b" hidden>🔔 Activar avisos</button></div>',1)
 pj='''
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{})}
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
