@@ -15,7 +15,8 @@ const SERIES=new Set(__SERIES__);
 const ONLINE=new Set(__ONLINE__);
 const X360=new Set(__X360__),XOG=new Set(__XOG__);
 const VR=new Set(__VR__),VRO=new Set(__VRO__);
-const badges=k=>(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">Solo Series X|S</span>':'');
+const PORT=new Set(__PORT__),EMU=new Set(__EMU__);
+const badges=k=>(PORT.has(k)?' <span class="pt">Port</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">Solo Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -38,7 +39,9 @@ const FIL=[
  {id:'one',l:'Funciona en Xbox One',t:k=>!SERIES.has(k),s:SERIES},
  {id:'sx',l:'Solo Series X|S',t:k=>SERIES.has(k),c:'sx',s:SERIES},
  {id:'x3',l:'Xbox 360',t:k=>X360.has(k),c:'x3',s:X360},
- {id:'xc',l:'Xbox clásico',t:k=>XOG.has(k),c:'xc',s:XOG}];
+ {id:'xc',l:'Xbox clásico',t:k=>XOG.has(k),c:'xc',s:XOG},
+ {id:'pt',l:'Port',t:k=>PORT.has(k),c:'pt',s:PORT},
+ {id:'em',l:'Emulador',t:k=>EMU.has(k),c:'em',s:EMU}];
 const inCons=g=>current==='todas'||g.c===current;
 function drawFilters(){
   const pool=GAMES.filter(inCons);

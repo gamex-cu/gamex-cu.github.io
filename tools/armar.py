@@ -17,6 +17,8 @@ for _c,_f in [('PS4','etiquetas_ps4.json'),('PS5','etiquetas_ps5.json')]:
         _e=json.load(open(D+_f))
         ET['vr']+=[_c+'|'+n for n in _e['vr']];ET['vr_opcional']+=[_c+'|'+n for n in _e['vr_opcional']]
     except FileNotFoundError: pass
+try: SWE=json.load(open(D+'etiquetas_switch.json'))
+except FileNotFoundError: SWE={}
 GP=json.load(open(D+'gamepass.json'));gp=GP['games']
 online=['Xbox Game Pass|'+n for n in GP['online']]
 data['Xbox Game Pass']=[n for n,_ in gp]
@@ -40,7 +42,7 @@ for _c in ['PS4','PS5']:
         for n,pid in json.load(open(D+'enlaces_'+_c.lower()+'.json')).items(): LINKS[_c+'|'+n]='https://store.playstation.com/es-mx/product/'+pid
     except FileNotFoundError: pass
 js=js.replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
-page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
+page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
 art=art[:k2]+'\n'+CARD+art[k2:]
