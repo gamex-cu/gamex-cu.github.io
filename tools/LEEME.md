@@ -19,3 +19,8 @@
 - Manda la oferta a Android (Firebase), iPhone (web push) y la agrega a app/avisos.json haciendo un commit en GitHub.
 - Por eso: **hacer `git pull --rebase origin main` antes de cada push**, porque el panel también sube cambios.
 - Código: tools/push-worker.js + tools/panel.html; se sube con `python3 tools/desplegar_worker.py`.
+
+## Etiqueta "Nuevo"
+- armar.py guarda en tools/datos/agregados.json la fecha en que cada juego apareció por primera vez en su catálogo.
+- Los juegos con menos de 7 días llevan la etiqueta amarilla "Nuevo" y salen en el filtro "Nuevos"; se quita sola a los 7 días.
+- Siempre subir tools/datos/agregados.json junto con los cambios (git add -A). Si se le cambia el nombre a un juego, poner a mano su fecha vieja en agregados.json para que no salga como nuevo.
