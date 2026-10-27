@@ -204,6 +204,19 @@ section{scroll-margin-top:215px}
 .fchip.f-sx{border-color:#2fbf4a;color:#7fdc7f}.fchip.f-sx.on{background:#2fbf4a;color:#06200c}
 .nv{display:inline-block;font:700 .66rem/1 var(--display);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:#ffd23f;color:#1a1400;vertical-align:2px;margin-left:4px;white-space:nowrap}
 .fchip.f-nv{border-color:#ffd23f;color:#ffe27a}.fchip.f-nv.on{background:#ffd23f;color:#1a1400}
+.sv{display:inline-block;font:700 .66rem/1 var(--display);letter-spacing:.03em;padding:3px 6px;border-radius:4px;background:#ff5a5a;color:#fff;vertical-align:2px;margin-left:4px;white-space:nowrap}
+.fchip.f-sv{border-color:#ff5a5a;color:#ff9a9a}.fchip.f-sv.on{background:#ff5a5a;color:#fff}
+.marq{display:flex;align-items:stretch;margin-top:8px;border:1px solid #ff5a5a;border-radius:8px;background:rgba(255,90,90,.1);overflow:hidden;font-size:.84rem}
+.marq>b{flex:none;display:flex;align-items:center;padding:6px 10px;background:#ff5a5a;color:#fff;font-family:var(--display);font-size:.78rem;white-space:nowrap}
+.mq{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.mqi{display:inline-flex;white-space:nowrap;animation:mq var(--d,30s) linear infinite;will-change:transform}
+.mqi:hover,.mqi:focus-within{animation-play-state:paused}
+.mqi span{display:inline-flex;align-items:center}
+.mqi button{font:inherit;color:var(--fg);background:none;border:0;padding:7px 6px;cursor:pointer}
+.mqi button:hover,.mqi button:focus-visible{color:#ff9a9a;text-decoration:underline;outline:none}
+.mqi i{font-style:normal;color:#ff9a9a;padding:0 4px}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mqi{animation:none}.mq{overflow-x:auto}.mqi span[aria-hidden]{display:none}}
 .fchip.f-x3{border-color:#a66bff;color:#cdb0ff}.fchip.f-x3.on{background:#a66bff;color:#fff}
 .fchip.f-pt{border-color:#ff6fb5;color:#ffb0d6}.fchip.f-pt.on{background:#ff6fb5;color:#2a0718}
 .fchip.f-em{border-color:#9aa3c7;color:#cfd5f0}.fchip.f-em.on{background:#9aa3c7;color:#0d1124}
@@ -287,6 +300,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="bar"><div class="wrap">
   <div class="vtitle"><a class="back" href="#catalogos" id="back">← Consolas</a><span class="vic" id="vic" aria-hidden="true"></span><span class="vtx"><span class="vn" id="vn"></span><span id="vc" class="vc"></span></span></div>
   <p class="vnote" id="vnote" hidden></p>
+  <div class="marq" id="marq" hidden></div>
   <div class="search"><input id="q" type="search" placeholder="Buscar juego… (ej. FIFA, Resident, Lego)" autocomplete="off" aria-label="Buscar juego"><span id="count"></span></div>
   <div class="fchips" id="filt" role="group" aria-label="Filtrar" hidden></div>
   <nav class="letters" id="letters" aria-label="Ir a la letra"></nav>

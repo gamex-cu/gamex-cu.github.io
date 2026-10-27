@@ -2,6 +2,7 @@
 
 Uso:  python3 tools/actualizar_gamepass.py            -> actualiza tools/datos/gamepass.json y escribe el reporte
       python3 tools/actualizar_gamepass.py --probar    -> solo muestra qué cambiaría, no guarda nada
+      python3 tools/actualizar_gamepass.py --saliendo  -> solo actualiza la lista "Se van pronto"
 
 Necesita acceso a catalog.gamepass.com y displaycatalog.mp.microsoft.com.
 Las correcciones hechas a mano viven en tools/datos/reglas_gamepass.json:
@@ -78,7 +79,26 @@ ONLINE = {'XblOnlineMultiPlayer', 'XblOnlineCoop', 'XblCrossPlatformMultiPlayer'
 LOCAL = {'XblLocalMultiPlayer', 'XblLocalCoop', 'SharedSplitScreen'}
 def parece_online(e): return bool(e['attr'] & ONLINE) and 'SinglePlayer' not in e['attr'] and not (e['attr'] & LOCAL)
 
+SALIENDO_ID = '393f05bf-e596-4ef6-9487-6d4fa0eab987'  # lista oficial "Leaving soon" de Game Pass
+def saliendo(nombres, actuales):
+    """Juegos del catálogo (consola) que Microsoft marca como "se van pronto"."""
+    ids = [x['id'] for x in get_json(f'https://catalog.gamepass.com/sigls/v2?id={SALIENDO_ID}&language=en-us&market=US') if 'id' in x]
+    out = []
+    for i in range(0, len(ids), 20):
+        d = get_json('https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=' + ','.join(ids[i:i + 20]) + '&market=US&languages=en-us')
+        for p in d.get('Products', []):
+            n = nombres.get(clave(limpiar(p['LocalizedProperties'][0]['ProductTitle'])))
+            if n and n in actuales and n not in out: out.append(n)
+    return sorted(out, key=lambda s: re.sub(r'^(the|a) ', '', s.lower()))
+
+def solo_saliendo():
+    reglas = json.load(open(DATOS + 'reglas_gamepass.json')); gp = json.load(open(DATOS + 'gamepass.json'))
+    gp['saliendo'] = saliendo(reglas['nombres'], {n for n, _ in gp['games']})
+    json.dump(gp, open(DATOS + 'gamepass.json', 'w'), ensure_ascii=False)
+    print('Se van pronto:', ', '.join(gp['saliendo']) or 'ninguno')
+
 def main():
+    if '--saliendo' in sys.argv: return solo_saliendo()
     probar = '--probar' in sys.argv
     reglas = json.load(open(DATOS + 'reglas_gamepass.json'))
     antes = json.load(open(DATOS + 'gamepass.json'))
@@ -101,10 +121,13 @@ def main():
     salieron = sorted(previos - actuales, key=sk); entraron = sorted(actuales - previos, key=sk)
     nuevo = {'fecha': datetime.date.today().isoformat(), 'games': juegos, 'online': sorted(n for n in online if n in actuales),
              'x360': sorted(x360), 'xog': sorted(n for n in xog if n in actuales), 'ids': ids}
+    try: nuevo['saliendo'] = saliendo(nombres, actuales)
+    except Exception as e: print('No se pudo leer "se van pronto":', e); nuevo['saliendo'] = antes.get('saliendo', [])
     hoy = datetime.date.today().isoformat()
     lin = [f'# Game Pass – revisión del {hoy}', '', f'Total: {len(juegos)} juegos (antes {len(previos)}).', '']
     lin += [f'## Entraron ({len(entraron)})'] + [f'- {n}' for n in entraron] + ['']
     lin += [f'## Salieron ({len(salieron)})'] + [f'- {n}' for n in salieron] + ['']
+    lin += [f'## Se van pronto ({len(nuevo["saliendo"])})'] + [f'- {n}' for n in nuevo['saliendo']] + ['']
     lin += [f'## Por revisar si son solo online ({len(revisar)})'] + [f'- {n}' for n in sorted(revisar, key=sk)] + ['']
     rep = '\n'.join(lin)
     print(rep)

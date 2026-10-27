@@ -18,8 +18,9 @@ const X360=new Set(__X360__),XOG=new Set(__XOG__);
 const VR=new Set(__VR__),VRO=new Set(__VRO__);
 const NUEVO_F=__NUEVO__,_hoy=new Date();_hoy.setHours(0,0,0,0);
 const NUEVO=new Set(Object.keys(NUEVO_F).filter(k=>{const[y,m,d]=NUEVO_F[k].split('-');return (_hoy-new Date(+y,m-1,+d))/864e5<7}));
+const SALE=new Set(__SALIENDO__);
 const PORT=new Set(__PORT__),EMU=new Set(__EMU__);
-const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
+const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -35,6 +36,7 @@ const list=$('list'),lettersEl=$('letters'),countEl=$('count');
 let current=null,query='',active=new Set();
 const FIL=[
  {id:'nv',l:'Nuevos',t:k=>NUEVO.has(k),c:'nv',s:NUEVO},
+ {id:'sv',l:'Se van pronto',t:k=>SALE.has(k),c:'sv',s:SALE},
  {id:'vr',l:'Solo VR',t:k=>VR.has(k),c:'vr',s:VR},
  {id:'vro',l:'VR opcional',t:k=>VRO.has(k),c:'vro',s:VRO},
  {id:'novr',l:'Sin VR',t:k=>!VR.has(k),s:VR},
@@ -46,6 +48,10 @@ const FIL=[
  {id:'xc',l:'Xbox clásico',t:k=>XOG.has(k),c:'xc',s:XOG},
  {id:'pt',get l(){return current==='PC'?'PC-Port':'Port'},t:k=>PORT.has(k),c:'pt',s:PORT},
  {id:'em',l:'Emulador',t:k=>EMU.has(k),c:'em',s:EMU}];
+function pintarMarq(c){const el=$('marq'),ks=[...SALE].filter(k=>k.startsWith(c+'|'));el.hidden=!ks.length;if(!ks.length)return;
+  const it=ks.map(k=>k.slice(c.length+1)).map(n=>`<button type="button" data-n="${esc(n)}">${esc(n)}</button>`).join('<i>•</i>');
+  el.innerHTML=`<b>⏳ Se van pronto</b><div class="mq"><div class="mqi" style="--d:${Math.max(18,ks.length*5)}s"><span>${it}<i>•</i></span><span aria-hidden="true">${it.replace(/<button /g,'<button tabindex="-1" ')}<i>•</i></span></div></div>`}
+$('marq').addEventListener('click',e=>{const b=e.target.closest('button[data-n]');if(!b)return;query=b.dataset.n;$('q').value=query;render();$('q').scrollIntoView({block:'center',behavior:'smooth'})});
 const inCons=g=>current==='todas'||g.c===current;
 function drawFilters(){
   const pool=GAMES.filter(inCons);
@@ -83,7 +89,7 @@ function route(){
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=c&&c[0]==='PlayStation Plus'?`Juegos del mes · ${PSPMES}`:`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
-    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');
+    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');pintarMarq(c&&c[0]);
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else if(h==='catalogos'){

@@ -204,6 +204,19 @@ section{scroll-margin-top:215px}
 .fchip.f-sx{border-color:#2fbf4a;color:#7fdc7f}.fchip.f-sx.on{background:#2fbf4a;color:#06200c}
 .nv{display:inline-block;font:700 .66rem/1 var(--display);letter-spacing:.04em;text-transform:uppercase;padding:3px 6px;border-radius:4px;background:#ffd23f;color:#1a1400;vertical-align:2px;margin-left:4px;white-space:nowrap}
 .fchip.f-nv{border-color:#ffd23f;color:#ffe27a}.fchip.f-nv.on{background:#ffd23f;color:#1a1400}
+.sv{display:inline-block;font:700 .66rem/1 var(--display);letter-spacing:.03em;padding:3px 6px;border-radius:4px;background:#ff5a5a;color:#fff;vertical-align:2px;margin-left:4px;white-space:nowrap}
+.fchip.f-sv{border-color:#ff5a5a;color:#ff9a9a}.fchip.f-sv.on{background:#ff5a5a;color:#fff}
+.marq{display:flex;align-items:stretch;margin-top:8px;border:1px solid #ff5a5a;border-radius:8px;background:rgba(255,90,90,.1);overflow:hidden;font-size:.84rem}
+.marq>b{flex:none;display:flex;align-items:center;padding:6px 10px;background:#ff5a5a;color:#fff;font-family:var(--display);font-size:.78rem;white-space:nowrap}
+.mq{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent);mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.mqi{display:inline-flex;white-space:nowrap;animation:mq var(--d,30s) linear infinite;will-change:transform}
+.mqi:hover,.mqi:focus-within{animation-play-state:paused}
+.mqi span{display:inline-flex;align-items:center}
+.mqi button{font:inherit;color:var(--fg);background:none;border:0;padding:7px 6px;cursor:pointer}
+.mqi button:hover,.mqi button:focus-visible{color:#ff9a9a;text-decoration:underline;outline:none}
+.mqi i{font-style:normal;color:#ff9a9a;padding:0 4px}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.mqi{animation:none}.mq{overflow-x:auto}.mqi span[aria-hidden]{display:none}}
 .fchip.f-x3{border-color:#a66bff;color:#cdb0ff}.fchip.f-x3.on{background:#a66bff;color:#fff}
 .fchip.f-pt{border-color:#ff6fb5;color:#ffb0d6}.fchip.f-pt.on{background:#ff6fb5;color:#2a0718}
 .fchip.f-em{border-color:#9aa3c7;color:#cfd5f0}.fchip.f-em.on{background:#9aa3c7;color:#0d1124}
@@ -295,6 +308,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="bar"><div class="wrap">
   <div class="vtitle"><a class="back" href="#catalogos" id="back">← Consolas</a><span class="vic" id="vic" aria-hidden="true"></span><span class="vtx"><span class="vn" id="vn"></span><span id="vc" class="vc"></span></span></div>
   <p class="vnote" id="vnote" hidden></p>
+  <div class="marq" id="marq" hidden></div>
   <div class="search"><input id="q" type="search" placeholder="Buscar juego… (ej. FIFA, Resident, Lego)" autocomplete="off" aria-label="Buscar juego"><span id="count"></span></div>
   <div class="fchips" id="filt" role="group" aria-label="Filtrar" hidden></div>
   <nav class="letters" id="letters" aria-label="Ir a la letra"></nav>
@@ -344,8 +358,9 @@ const X360=new Set(["Xbox Game Pass|Alice: Madness Returns", "Xbox Game Pass|Arm
 const VR=new Set(["PS4|Affected: The Manor", "PS4|The Angry Birds Movie 2 VR: Under Pressure", "PS4|Arizona Sunshine VR", "PS4|Astro Bot Rescue Mission", "PS4|Beat Saber", "PS4|Blood & Truth", "PS4|Borderlands 2 VR", "PS4|BoxVR", "PS4|The Brookhaven Experiment", "PS4|Budget Cuts", "PS4|Carnival Games VR", "PS4|Contagion VR: Outbreak", "PS4|CoolPaintr VR", "PS4|Creed: Rise to Glory", "PS4|DEXED", "PS4|Doctor Who: The Edge of Time", "PS4|Farpoint", "PS4|Fate/Grand Order VR feat. Mash Kyrielight", "PS4|Fruit Ninja VR", "PS4|Golem", "PS4|Gun Club VR", "PS4|Gungrave VR", "PS4|Gunjack", "PS4|Hatsune Miku VR Future Live", "PS4|The Inpatient", "PS4|The Invisible Hours", "PS4|El Ministerio del Tiempo VR: Salvar el tiempo", "PS4|Mars Odyssey", "PS4|Moss", "PS4|Penn & Teller VR: Frankly Unfair, Unkind, Unnecessary, & Underhanded", "PS4|Red Matter", "PS4|Space Channel 5 VR: Kinda Funky News Flash!", "PS4|Spider-Man: Far From Home VR", "PS4|Table of Tales: The Crooked Crown", "PS4|Time Carnage", "PS4|Unearthing Mars", "PS4|Vader Immortal: Episode I", "PS4|Vader Immortal: Episode II", "PS4|Vader Immortal: Episode III", "PS4|VirZOOM Arcade", "PS4|The Walking Dead: Saints & Sinners", "PS4|We Happy Few Uncle Jack Live VR", "PS4|Windlands", "PS5|Beat Saber", "PS5|Crossfire: Sierra Squad VR", "PS5|Drums Rock", "PS5|Horizon Call of the Mountain", "PS5|Hubris", "PS5|MADiSON VR Cursed Edition", "PS5|Metro Awakening", "PS5|Moss: The Forgotten Relic", "PS5|OVRDARK: A Do Not Open Story", "PS5|Pavlov", "PS5|Pistol Whip", "PS5|Red Matter", "PS5|Song in the Smoke: Rekindled", "PS5|Star Wars: Tales from the Galaxy's Edge", "PS5|Synapse", "PS5|The 7th Guest VR", "PS5|The Dark Pictures: Switchback VR", "PS5|The Walking Dead: Saints & Sinners", "PS5|The Walking Dead: Saints & Sinners – Chapter 2: Retribution", "PS5|Ultrawings 2", "PS5|Vertigo 2", "PS5|VR Skater"]),VRO=new Set(["PS4|Ace Combat 7: Skies Unknown", "PS4|DiRT Rally", "PS4|Don't Knock Twice", "PS4|Dreams", "PS4|EVE Valkyrie", "PS4|Five Nights at Freddy's: Help Wanted", "PS4|Gran Turismo Sport", "PS4|Hitman 3", "PS4|Hustle Kings", "PS4|No Man's Sky", "PS4|Resident Evil 7 Gold Edition", "PS4|Star Wars Battlefront", "PS4|Tetris Effect", "PS5|Gran Turismo 7", "PS5|Hitman World of Assassination", "PS5|No Man's Sky", "PS5|Resident Evil 4 Remake", "PS5|Resident Evil Village Gold Edition"]);
 const NUEVO_F={"PC|ASTRO BOT": "2026-10-27", "PC|Black": "2026-10-27", "PC|Bloodborne": "2026-10-27", "PC|Crash Team Racing Nitro-Fueled": "2026-10-27", "PC|Driveclub": "2026-10-27", "PC|Forza Horizon 2": "2026-10-27", "PC|God of War III Remastered": "2026-10-27", "PC|God of War Sons of Sparta": "2026-10-27", "PC|Killzone Shadow Fall": "2026-10-27", "PC|MediEvil": "2026-10-27", "PC|The Order: 1886": "2026-10-27", "PC|Uncharted: The Nathan Drake Collection": "2026-10-27", "PC|inFAMOUS Second Son": "2026-10-27", "PlayStation Plus|Earth Defense Force: World Brothers 2 (PS4 y PS5)": "2026-10-27", "PlayStation Plus|F1 25 (PS5)": "2026-10-27", "PlayStation Plus|Hunt: Showdown 1896 (PS5)": "2026-10-27", "Switch|The Legend of Zelda: Echoes of Wisdom": "2026-10-27", "Xbox Game Pass|The Séance of Blake Manor": "2026-10-27"},_hoy=new Date();_hoy.setHours(0,0,0,0);
 const NUEVO=new Set(Object.keys(NUEVO_F).filter(k=>{const[y,m,d]=NUEVO_F[k].split('-');return (_hoy-new Date(+y,m-1,+d))/864e5<7}));
+const SALE=new Set(["Xbox Game Pass|Day of the Tentacle Remastered", "Xbox Game Pass|Dead Static Drive", "Xbox Game Pass|Deep Rock Galactic", "Xbox Game Pass|Full Throttle Remastered", "Xbox Game Pass|Lara Croft and the Temple of Osiris", "Xbox Game Pass|LEGO Star Wars: The Skywalker Saga", "Xbox Game Pass|Wartales", "Xbox Game Pass|Wildgate"]);
 const PORT=new Set(["Switch|Blood - Whole Unit Pack", "Switch|Bully", "Switch|Counter-Strike 1.6", "Switch|Grand Theft Auto V", "Switch|Half-Life, Opposing Force y Blue Shift", "Switch|Helltaker", "Switch|Need for Speed Underground 2", "Switch|Prince of Persia (1989)", "Switch|Super Mario 64", "Meta Quest|Doom3Quest", "Meta Quest|Quake2Quest", "Meta Quest|Quake3Quest", "Meta Quest|Quake4", "Meta Quest|QuakeQuest", "Meta Quest|PreyVR", "Meta Quest|QuestCraft", "PC|ASTRO BOT", "PC|Black", "PC|Bloodborne", "PC|Crash Team Racing Nitro-Fueled", "PC|Driveclub", "PC|Forza Horizon 2", "PC|God of War III Remastered", "PC|God of War Sons of Sparta", "PC|inFAMOUS Second Son", "PC|Killzone Shadow Fall", "PC|MediEvil", "PC|The Order: 1886", "PC|Uncharted: The Nathan Drake Collection"]),EMU=new Set(["Switch|FBA Arcade: colección completa de ROMs", "Switch|MAME 2003-Plus: colección de 4,859 juegos arcade", "Switch|NES / Famicom: colección completa de ROMs", "Switch|Super Nintendo: colección completa de ROMs"]);
-const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
+const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -361,6 +376,7 @@ const list=$('list'),lettersEl=$('letters'),countEl=$('count');
 let current=null,query='',active=new Set();
 const FIL=[
  {id:'nv',l:'Nuevos',t:k=>NUEVO.has(k),c:'nv',s:NUEVO},
+ {id:'sv',l:'Se van pronto',t:k=>SALE.has(k),c:'sv',s:SALE},
  {id:'vr',l:'Solo VR',t:k=>VR.has(k),c:'vr',s:VR},
  {id:'vro',l:'VR opcional',t:k=>VRO.has(k),c:'vro',s:VRO},
  {id:'novr',l:'Sin VR',t:k=>!VR.has(k),s:VR},
@@ -372,6 +388,10 @@ const FIL=[
  {id:'xc',l:'Xbox clásico',t:k=>XOG.has(k),c:'xc',s:XOG},
  {id:'pt',get l(){return current==='PC'?'PC-Port':'Port'},t:k=>PORT.has(k),c:'pt',s:PORT},
  {id:'em',l:'Emulador',t:k=>EMU.has(k),c:'em',s:EMU}];
+function pintarMarq(c){const el=$('marq'),ks=[...SALE].filter(k=>k.startsWith(c+'|'));el.hidden=!ks.length;if(!ks.length)return;
+  const it=ks.map(k=>k.slice(c.length+1)).map(n=>`<button type="button" data-n="${esc(n)}">${esc(n)}</button>`).join('<i>•</i>');
+  el.innerHTML=`<b>⏳ Se van pronto</b><div class="mq"><div class="mqi" style="--d:${Math.max(18,ks.length*5)}s"><span>${it}<i>•</i></span><span aria-hidden="true">${it.replace(/<button /g,'<button tabindex="-1" ')}<i>•</i></span></div></div>`}
+$('marq').addEventListener('click',e=>{const b=e.target.closest('button[data-n]');if(!b)return;query=b.dataset.n;$('q').value=query;render();$('q').scrollIntoView({block:'center',behavior:'smooth'})});
 const inCons=g=>current==='todas'||g.c===current;
 function drawFilters(){
   const pool=GAMES.filter(inCons);
@@ -409,7 +429,7 @@ function route(){
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=c&&c[0]==='PlayStation Plus'?`Juegos del mes · ${PSPMES}`:`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
-    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');
+    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');pintarMarq(c&&c[0]);
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else if(h==='catalogos'){
