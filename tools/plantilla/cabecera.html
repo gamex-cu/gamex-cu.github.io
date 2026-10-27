@@ -141,6 +141,10 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .addr-t{font:600 .78rem var(--display);letter-spacing:.14em;text-transform:uppercase;color:var(--hot)}
 .addr a{color:var(--fg);text-decoration:none;line-height:1.4}
 .addr a:hover{text-decoration:underline}
+.redes{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.red{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--fg);text-decoration:none;font:600 .92rem var(--display)}
+.red.ig svg{color:#e1306c}.red.fb svg{color:#4a8cff}
+.red:hover{border-color:var(--hot)}
 .secc{margin:22px 0 0;padding:18px 16px 20px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}
 .secc-t{font:700 1.45rem var(--display);margin:0;color:var(--fg);letter-spacing:.02em}
 .secc-d{color:var(--muted);margin:4px 0 0;font-size:.95rem}
@@ -238,7 +242,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <footer><div class="wrap fgrid">
  <div class="fcol"><img class="flogo" alt="GAMEX" id="flogo"><p class="fnote">¿No ves el juego que buscas? Escríbenos, y te lo conseguimos.</p></div>
  <div class="fcol"><h4>Horario</h4><p class="hrs"><span>Lunes a sábado</span><b>10:00 a. m. – 6:00 p. m.</b></p><p class="hrs"><span>Domingo</span><b>Cerrado</b></p><p class="open" id="open-now"></p><p class="addr"><span class="addr-t">Dirección</span><a href="https://maps.app.goo.gl/hfsEAhNcSgx5iHi9A" target="_blank" rel="noopener">Calle 10 #211 apto 2 e/ 11 y Línea, Vedado, La Habana</a></p></div>
- <div class="fcol"><h4>WhatsApp</h4><p class="nums"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089</a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989</a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943</a></p><a class="fch" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener">Seguir el canal de GAMEX</a></div>
+ <div class="fcol"><h4>WhatsApp</h4><p class="nums"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089</a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989</a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943</a></p><a class="fch" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener">Seguir el canal de GAMEX</a><div class="redes"><a class="red ig" href="https://www.instagram.com/gamex.cu/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg><span>Instagram</span></a><a class="red fb" href="https://www.facebook.com/share/1CKYgeuN1w/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-7.5h2.5l.4-3h-2.9V8.6c0-.9.3-1.5 1.5-1.5h1.5V4.4c-.3 0-1.2-.1-2.2-.1-2.2 0-3.7 1.3-3.7 3.8v2.4H8.1v3h2.5V21h2.9z"/></svg><span>Facebook</span></a><a class="red xx" href="https://x.com/GameX_CU" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.8 3h3.1l-6.8 7.8L22 21h-6.3l-4.9-6.4L5.2 21H2.1l7.3-8.3L2 3h6.4l4.4 5.9L17.8 3zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5z"/></svg><span>X</span></a></div></div>
 </div><div class="wrap copy">© GameX · Tienda de Videojuegos GameX</div></footer>
 
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
