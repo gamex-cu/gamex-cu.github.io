@@ -90,7 +90,7 @@ tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
 w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div id="home">',1)
-w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button> <span id="verlbl" style="margin-left:8px"></span></div>',1)
+w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button></div>',1)
 pj='''
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{})}
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
@@ -98,7 +98,6 @@ if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=
 '''
 pj+='''
 const GXV=__VER__;
-document.getElementById('verlbl').textContent='Versión '+GXV;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

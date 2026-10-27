@@ -224,7 +224,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
  <div class="fcol"><img class="flogo" alt="GAMEX" id="flogo"><p class="fnote">¿No ves el juego que buscas? Escríbenos, y te lo conseguimos.</p></div>
  <div class="fcol"><h4>Horario</h4><p class="hrs"><span>Lunes a sábado</span><b>10:00 a. m. – 6:00 p. m.</b></p><p class="hrs"><span>Domingo</span><b>Cerrado</b></p><p class="open" id="open-now"></p></div>
  <div class="fcol"><h4>WhatsApp</h4><p class="nums"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089</a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989</a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943</a></p><a class="fch" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener">Seguir el canal de GAMEX</a></div>
-</div><div class="wrap copy">© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button> <span id="verlbl" style="margin-left:8px"></span></div></footer>
+</div><div class="wrap copy">© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button></div></footer>
 
 <div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.</div>
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
@@ -372,8 +372,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=71;
-document.getElementById('verlbl').textContent='Versión '+GXV;
+const GXV=72;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
