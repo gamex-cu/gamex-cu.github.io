@@ -9,7 +9,7 @@ self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.a
 self.addEventListener('message',e=>{if(e.data==='guardar')e.waitUntil(caches.open(C).then(c=>fetch('./',{cache:'reload'}).then(r=>guardar(c,'./',r))).catch(()=>{}))});
 self.addEventListener('fetch',e=>{
   const r=e.request;const u=new URL(r.url);
-  if(r.method!=='GET'||u.origin!==location.origin||u.pathname.endsWith('version.json')||u.pathname.endsWith('.apk'))return;
+  if(r.method!=='GET'||u.origin!==location.origin||u.pathname.endsWith('version.json')||u.pathname.endsWith('avisos.json')||u.pathname.endsWith('.apk'))return;
   const nav=r.mode==='navigate'||(r.headers.get('accept')||'').includes('text/html');
   const key=nav?'./':(u.pathname.replace(/^.*\//,'')||'./');
   const red=fetch(nav?u.pathname+u.search:r,{cache:'no-store'}).then(res=>({res,cp:(res&&res.ok&&!res.redirected)?res.clone():null}));
@@ -17,3 +17,9 @@ self.addEventListener('fetch',e=>{
   e.respondWith(red.then(x=>x.res).catch(desdeCache));
   e.waitUntil(red.then(x=>x.cp&&caches.open(C).then(c=>c.put(key,x.cp))).catch(()=>{}));
 });
+
+// Avisos y ofertas (iPhone con GameX en la pantalla de inicio y navegadores compatibles)
+self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(x){d={titulo:'GameX',texto:e.data?e.data.text():''}}
+  e.waitUntil(self.registration.showNotification(d.titulo||'GameX',{body:d.texto||'',icon:'icon-192.png',badge:'icon-192.png',tag:d.id||'gamex',data:{url:d.url||''}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();const u=(e.notification.data&&e.notification.data.url)||'./';
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(!e.notification.data.url&&cs.length)return cs[0].focus();return self.clients.openWindow(u)}))});

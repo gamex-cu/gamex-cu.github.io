@@ -82,6 +82,11 @@ css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));righ
 .upd button{background:#fff;color:#0d1124;border:0}
 .refresh{margin-top:14px;background:var(--panel);color:var(--fg);border:1px solid var(--line)}
 .refresh:hover{border-color:var(--hot)}
+.aviso{position:relative;display:flex;gap:12px;align-items:flex-start;margin:10px auto 0;max-width:640px;width:calc(100% - 32px);background:linear-gradient(135deg,rgba(242,169,0,.18),rgba(61,123,255,.14));border:1px solid var(--hot);border-radius:12px;padding:12px 40px 12px 14px;color:var(--fg);cursor:pointer;box-sizing:border-box}
+.aviso b{display:block;font-family:var(--display);font-size:1.05rem;margin-bottom:2px}
+.aviso span{font-size:.95rem;line-height:1.4;white-space:pre-line}
+.aviso button{position:absolute;top:4px;right:6px;background:none;border:0;color:var(--muted);font-size:1.5rem;cursor:pointer;padding:4px 8px}
+.pushb{margin-left:8px}
 '''
 w=w.replace('mark{',css+DCSS+'mark{',1)
 k_=w.index('<a class="chan"');k2=w.index('</a>',k_)+4
@@ -89,8 +94,8 @@ w=w[:k2]+'\n'+CARD+w[k2:]
 tip='''<div class="ios-tip" id="ios-tip" hidden role="note"><button type="button" id="ios-x" aria-label="Cerrar">×</button><b>Instala GameX en tu iPhone:</b> toca <svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="currentColor" stroke-width="1.6" aria-label="Compartir"><path d="M8 11V1M4.5 4.5 8 1l3.5 3.5"/><path d="M5 7H2.5v9.5h11V7H11"/></svg> <b>Compartir</b> abajo y luego <b>Agregar a inicio</b>. Funciona sin internet.</div>
 '''
 w=w.replace('<div class="cartbar"',tip+'<div class="cartbar"',1)
-w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div id="home">',1)
-w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button></div>',1)
+w=w.replace('<div id="home">','<div class="upd" id="upd" hidden><span>Hay una versión nueva del catálogo.</span><button type="button" id="upd-b">Actualizar</button></div>\n<div class="aviso" id="aviso" hidden role="status"><div><b id="aviso-t"></b><span id="aviso-x"></span></div><button type="button" id="aviso-c" aria-label="Cerrar aviso">×</button></div>\n<div id="home">',1)
+w=w.replace('© GameX · Catálogo de Juegos GameX</div>','© GameX · Catálogo de Juegos GameX<br><button type="button" class="refresh" id="refresh">Actualizar catálogo</button><button type="button" class="refresh pushb" id="push-b" hidden>🔔 Activar avisos</button></div>',1)
 pj='''
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(()=>{})}
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
@@ -109,7 +114,29 @@ document.getElementById('refresh').onclick=gxRefresh;document.getElementById('up
 function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV)document.getElementById('upd').hidden=false}).catch(()=>{})}
 fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
 gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)gxCheck()});
-'''.replace('__VER__',str(VER))
+(function(){const K='gamex-avisos-cerrados';let c=[];try{c=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
+ const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
+ fetch('app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
+  const a=(j.avisos||[]).filter(x=>x.id&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a)return;
+  const el=document.getElementById('aviso');document.getElementById('aviso-t').textContent=a.titulo||'';document.getElementById('aviso-x').textContent=a.texto||'';el.hidden=false;
+  const cerrar=()=>{el.hidden=true;c.push(a.id);try{localStorage.setItem(K,JSON.stringify(c.slice(-50)))}catch(e){}};
+  document.getElementById('aviso-c').onclick=ev=>{ev.stopPropagation();cerrar()};
+  el.onclick=()=>{if(a.url)window.open(a.url,'_blank','noopener')};
+ }).catch(()=>{})})();
+const PUSH=__PUSH__;
+(function(){const b=document.getElementById('push-b');if(!PUSH.url||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;
+ const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)return;
+ const k=s=>{s=s.replace(/-/g,'+').replace(/_/g,'/');const r=atob(s+'='.repeat((4-s.length%4)%4));return Uint8Array.from(r,c=>c.charCodeAt(0))};
+ navigator.serviceWorker.ready.then(rg=>rg.pushManager.getSubscription().then(sub=>{
+  if(sub&&Notification.permission==='granted'){fetch(PUSH.url+'/suscribir',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(sub)}).catch(()=>{});return}
+  if(Notification.permission==='denied')return;b.hidden=false;
+  b.onclick=async()=>{try{const p=await Notification.requestPermission();if(p!=='granted'){b.textContent='Avisos bloqueados';return}
+   const s=await rg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:k(PUSH.vapid)});
+   const r=await fetch(PUSH.url+'/suscribir',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(s)});if(!r.ok)throw 0;
+   b.textContent='✓ Avisos activados';setTimeout(()=>{b.hidden=true},2500)}catch(e){b.textContent='No se pudo activar, prueba con internet';setTimeout(()=>{b.textContent='🔔 Activar avisos'},3000)}};
+ })).catch(()=>{})})();
+'''.replace('__VER__',str(VER)).replace('__PUSH__',json.dumps(json.load(open(D+'push.json'))))
 k=w.rindex('</script>'); w=w[:k]+pj+w[k:]
 open(R+'index.html','w').write(w)
 print('ok',{k:len(v) for k,v in data.items()})
