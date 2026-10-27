@@ -11,7 +11,12 @@ data={'PS4':json.load(open(D+'ps4.json'))}
 for extra in ['PS5','PC','Meta Quest','Switch']:
     try: data[extra]=json.load(open(D+extra.lower().replace(' ','_')+'.json'))
     except FileNotFoundError: pass
-ET=json.load(open(D+'etiquetas_ps4.json'))
+ET={'vr':[],'vr_opcional':[]}
+for _c,_f in [('PS4','etiquetas_ps4.json'),('PS5','etiquetas_ps5.json')]:
+    try:
+        _e=json.load(open(D+_f))
+        ET['vr']+=[_c+'|'+n for n in _e['vr']];ET['vr_opcional']+=[_c+'|'+n for n in _e['vr_opcional']]
+    except FileNotFoundError: pass
 GP=json.load(open(D+'gamepass.json'));gp=GP['games']
 online=['Xbox Game Pass|'+n for n in GP['online']]
 data['Xbox Game Pass']=[n for n,_ in gp]
@@ -25,7 +30,7 @@ DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:
 .dlt b{font-family:var(--display);font-size:1.05rem}
 .dlt small{color:var(--muted);font-size:.85rem}
 '''
-page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__VR__',json.dumps(['PS4|'+n for n in ET['vr']],ensure_ascii=False)).replace('__VRO__',json.dumps(['PS4|'+n for n in ET['vr_opcional']],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
+page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
 art=art[:k2]+'\n'+CARD+art[k2:]
