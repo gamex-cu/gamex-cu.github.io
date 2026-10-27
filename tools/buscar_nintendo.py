@@ -36,9 +36,11 @@ def main():
     for x in cat: x['nn'], x['nums'] = norm(x['title']), numeros(x['title'])
     por = {}
     for x in cat: por.setdefault(x['nn'], x)
+    man = json.load(open(T + 'datos/enlaces_manuales.json')) if os.path.exists(T + 'datos/enlaces_manuales.json') else {}
     ok, dudas, no = {}, [], []
     for n in juegos:
         if n in excl: continue
+        if 'Switch|' + n in man: ok[n] = man['Switch|' + n]; continue
         nn = norm(n)
         if nn in por: ok[n] = 'https://www.nintendo.com' + por[nn]['url']; continue
         nums = numeros(n); mejor, mr = None, 0
