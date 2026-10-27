@@ -25,6 +25,10 @@ GP=json.load(open(D+'gamepass.json'));gp=GP['games']
 online=['Xbox Game Pass|'+n for n in GP['online']]
 data['Xbox Game Pass']=[n for n,_ in gp]
 series=['Xbox Game Pass|'+n for n,s in gp if s]
+try: XP=json.load(open(D+'etiquetas_xbox_pago.json'))
+except FileNotFoundError: XP={}
+series+=['Xbox pago|'+n for n in XP.get('series',[])]
+online+=['Xbox pago|'+n for n in XP.get('online',[])]
 CARD='''<a class="dlapp" id="dlapp" href="https://gamex-cu.github.io/app/GAMEX-Catalogo.apk" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
 '''
 DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
@@ -40,6 +44,7 @@ if GP.get('fecha'):
     _y,_m,_d=GP['fecha'].split('-');NOTES['Xbox Game Pass']=f'Lista tomada del <b>catálogo oficial de Xbox Game Pass</b> · actualizada el {int(_d)} de {MESES[int(_m)-1]} de {_y}'
 NOTES['Xbox pago']='¿No ves el juego que buscas? <b>Pregunta por él</b> por <a href="#" class="wa-pick" data-ask="1" data-t="Hola GameX, ¿tienen este juego para Xbox?">WhatsApp</a> y te lo conseguimos.'
 LINKS={'Xbox Game Pass|'+n:i for n,i in GP.get('ids',{}).items()}
+LINKS.update({'Xbox pago|'+n:i for n,i in XP.get('ids',{}).items()})
 for _c in ['PS4','PS5']:
     try:
         for n,pid in json.load(open(D+'enlaces_'+_c.lower()+'.json')).items(): LINKS[_c+'|'+n]='https://store.playstation.com/es-mx/product/'+pid
@@ -58,7 +63,7 @@ js=js.replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
 head=head.replace('__ICONO__',ICONO)
-page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])]+['Meta Quest|'+n for n in MQE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
+page=head+js.replace('__DATA__',json.dumps(data,ensure_ascii=False).replace('</','<\\/')).replace('__PORT__',json.dumps(['Switch|'+n for n in SWE.get('port',[])]+['Meta Quest|'+n for n in MQE.get('port',[])],ensure_ascii=False)).replace('__EMU__',json.dumps(['Switch|'+n for n in SWE.get('emulador',[])],ensure_ascii=False)).replace('__VR__',json.dumps(ET['vr'],ensure_ascii=False)).replace('__VRO__',json.dumps(ET['vr_opcional'],ensure_ascii=False)).replace('__X360__',json.dumps(['Xbox Game Pass|'+n for n in GP['x360']]+['Xbox pago|'+n for n in XP.get('x360',[])],ensure_ascii=False)).replace('__XOG__',json.dumps(['Xbox Game Pass|'+n for n in GP['xog']]+['Xbox pago|'+n for n in XP.get('xog',[])],ensure_ascii=False)).replace('__ONLINE__',json.dumps(online,ensure_ascii=False)).replace('__SERIES__',json.dumps(series,ensure_ascii=False).replace('</','<\\/'))
 art=page.replace('mark{',DCSS+'mark{',1)
 k_=art.index('<a class="chan"');k2=art.index('</a>',k_)+4
 art=art[:k2]+'\n'+CARD+art[k2:]
