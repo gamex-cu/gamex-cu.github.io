@@ -46,6 +46,10 @@ for _c in ['PS4','PS5']:
 try:
     for n,u in json.load(open(D+'enlaces_switch.json')).items(): LINKS['Switch|'+n]=u
 except FileNotFoundError: pass
+for _f,_c in [('enlaces_pc.json','PC')]:
+    try:
+        for n,u in json.load(open(D+_f)).items(): LINKS[_c+'|'+n]=u
+    except FileNotFoundError: pass
 try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
