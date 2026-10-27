@@ -45,6 +45,22 @@ def enviar_firebase(aviso):
                                  data=json.dumps(msg).encode(), headers={'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json'})
     return json.load(opener().open(req, timeout=30))
 
+def enviar_web(aviso):
+    """Manda el aviso a los iPhone/navegadores suscritos (lista guardada en el Worker de Cloudflare)."""
+    import webpush
+    cfg = json.load(open(T + 'datos/push.json'))
+    clave = json.load(open(os.path.dirname(webpush.ruta_claves()) + '/cloudflare.json'))['clave_worker']
+    op = opener(); h = {'X-Clave': clave}
+    subs = json.load(op.open(urllib.request.Request(cfg['url'] + '/lista', headers=h), timeout=30))
+    ok = borradas = 0
+    datos = {k: v for k, v in aviso.items() if k in ('id', 'titulo', 'texto', 'url')}
+    for s in subs:
+        c = webpush.enviar(s, datos, op)
+        if c in (200, 201, 202): ok += 1
+        elif c in (404, 410):
+            op.open(urllib.request.Request(cfg['url'] + '/borrar', data=json.dumps({'endpoint': s['endpoint']}).encode(), headers={**h, 'Content-Type': 'application/json'}), timeout=30); borradas += 1
+    return f'{ok} de {len(subs)} enviados' + (f', {borradas} viejos borrados' if borradas else '')
+
 if __name__ == '__main__':
     import urllib.parse
     ap = argparse.ArgumentParser()
@@ -64,3 +80,6 @@ if __name__ == '__main__':
     if not a.sin_firebase:
         try: print('Firebase:', enviar_firebase(aviso))
         except Exception as e: print('Firebase NO enviado:', e)
+    try:
+        if json.load(open(T + 'datos/push.json')).get('url'): print('iPhone/web:', enviar_web(aviso))
+    except Exception as e: print('iPhone/web NO enviado:', e)
