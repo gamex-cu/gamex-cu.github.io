@@ -1,11 +1,12 @@
 <script>
-const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a']];
+const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a'],['PlayStation Plus','playstation-plus','#f5c400','#0d1124','#ffd84d']];
+const PSPMES=__PSPMES__;
 const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
 const ICO={pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12a4 4 0 0 1 3.9 4.9l-.8 3.4a2.2 2.2 0 0 1-3.9.8L15.5 16h-7l-1.7 2.1a2.2 2.2 0 0 1-3.9-.8l-.8-3.4A4 4 0 0 1 6 9z"/><path d="M8 11.5v3M6.5 13h3"/><circle cx="15.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="14" r=".6" fill="currentColor"/></svg>',
 pc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
 vr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-3.5l-2-2.5h-3L8.5 17H5a2 2 0 0 1-2-2z"/><circle cx="8" cy="12" r="1.6"/><circle cx="16" cy="12" r="1.6"/></svg>',
 all:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>'};
-const ICON_OF={'PC':'pc','Meta Quest':'vr'};
+const ICON_OF={'PC':'pc','Meta Quest':'vr','PlayStation Plus':'pad'};
 const RAW=__DATA__;
 const LINKS=__LINKS__;
 const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
@@ -52,7 +53,7 @@ function drawFilters(){
 }
 
 $('consoles').innerHTML=CONS.map(([n,s,col,,txt])=>{const q=countOf(n);return q
-  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${n}</span><span class="cq">${q.toLocaleString('es')} juegos<span class="go">→</span></span></a>`
+  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${n}</span><span class="cq">${n==='PlayStation Plus'?'Juegos del mes · '+PSPMES.split(' ')[0]:q.toLocaleString('es')+' juegos'}<span class="go">→</span></span></a>`
   :`<div class="ccard soon" style="--cc:${col};--ct:${txt}" aria-disabled="true"><span class="cn">${n}</span><span class="cq">Próximamente</span></div>`}).join('');
 
 function render(){
@@ -78,7 +79,7 @@ function route(){
     $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('view').hidden=false;
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
-    $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
+    $('vc').textContent=c&&c[0]==='PlayStation Plus'?`Juegos del mes · ${PSPMES}`:`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
     const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();

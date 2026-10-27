@@ -25,6 +25,10 @@ GP=json.load(open(D+'gamepass.json'));gp=GP['games']
 online=['Xbox Game Pass|'+n for n in GP['online']]
 data['Xbox Game Pass']=[n for n,_ in gp]
 series=['Xbox Game Pass|'+n for n,s in gp if s]
+try: PSP=json.load(open(D+'ps_plus.json'))
+except FileNotFoundError: PSP={'mes':'','juegos':[]}
+data['PlayStation Plus']=[g['n'] for g in PSP['juegos']]
+online+=['PlayStation Plus|'+g['n'] for g in PSP['juegos'] if g.get('online')]
 try: XP=json.load(open(D+'etiquetas_xbox_pago.json'))
 except FileNotFoundError: XP={}
 series+=['Xbox pago|'+n for n in XP.get('series',[])]
@@ -45,6 +49,9 @@ if GP.get('fecha'):
 NOTES['Xbox pago']='¿No ves el juego que buscas? <b>Pregunta por él</b> por <a href="#" class="wa-pick" data-ask="1" data-t="Hola GameX, ¿tienen este juego para Xbox?">WhatsApp</a> y te lo conseguimos.'
 LINKS={'Xbox Game Pass|'+n:i for n,i in GP.get('ids',{}).items()}
 LINKS.update({'Xbox pago|'+n:i for n,i in XP.get('ids',{}).items()})
+LINKS.update({'PlayStation Plus|'+g['n']:'https://store.playstation.com/es-mx/product/'+g['id'] for g in PSP['juegos'] if g.get('id')})
+if PSP.get('hasta'):
+    _y,_m,_d=PSP['hasta'].split('-');NOTES['PlayStation Plus']=f'Juegos mensuales de <b>PlayStation Plus Essential</b> · disponibles hasta el {int(_d)} de {MESES[int(_m)-1]}'
 for _c in ['PS4','PS5']:
     try:
         for n,pid in json.load(open(D+'enlaces_'+_c.lower()+'.json')).items(): LINKS[_c+'|'+n]='https://store.playstation.com/es-mx/product/'+pid
@@ -59,7 +66,7 @@ for _f,_c in [('enlaces_pc.json','PC')]:
 try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
-js=js.replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
+js=js.replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
 head=head.replace('__ICONO__',ICONO)

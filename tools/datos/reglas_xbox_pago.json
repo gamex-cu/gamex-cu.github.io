@@ -13,15 +13,15 @@
   "Diablo Prime Evil Collection": "9N9LJ3N3TRZX",
   "Dragon Ball FighterZ Ultimate Edition": "9P6HKH56D3DH",
   "EA Sports FC 25": "9N436FQM30HX",
-  "EA Sports FC 26": "9NK13T4QFPQW",
-  "EA Sports FC 27": "9NJ2N85T2ZGS",
+  "EA Sports FC 26": "9MXZBTLG26VX",
+  "EA Sports FC 27": "9NNFX161JGRJ",
   "EA Sports FC 27 Ultimate Edition": "9NJ2N85T2ZGS",
   "Guns, Gore & Cannoli": "C4B39136C8KR",
   "Hogwarts Legacy Deluxe Edition": "9MT5NJ5W7B8Z",
   "Hot Wheels Unleashed 2: Turbocharged": "9MWDKL3SD6D9",
   "Hungry Shark World": "C3NHWKLR94M9",
   "Injustice 2 Legendary Edition": "BQQWKGXZGJ17",
-  "Little Nightmares Bundle": "BWD88K55MK5W",
+  "Little Nightmares Bundle": "9P9K6RPTCHC3",
   "MLB The Show 24 (Xbox One)": "9NK2SCJP5MGZ",
   "MLB The Show 25": "9PJ6W7RC6H71",
   "MLB The Show 26": "9NRLSFM01XTP",
@@ -33,7 +33,35 @@
   "Street Fighter 6": "9NM79B7N9JM6",
   "The LEGO Ninjago Movie Video Game": "BQKKNPKX1C4P",
   "Tony Hawk's Pro Skater 1 + 2": "9P7KBLT2NQ2N",
-  "Watch Dogs 2": "BSXLFN5QQZSC"
+  "Watch Dogs 2": "BSXLFN5QQZSC",
+  "Call of Duty: Modern Warfare (2019)": "9NVQBQ3F6W9W",
+  "Call of Duty: Modern Warfare 2 Campaign Remastered": "9N2CTV36Z5S6",
+  "Call of Duty: Vanguard": "9NQQ8B4PJR25",
+  "Call of Duty: Vanguard Cross-Gen": "9PDPD158GLKD",
+  "Call of Duty: Modern Warfare III": "9PMFDKG5F9R7",
+  "Call of Duty: Modern Warfare Remastered": "BQLMFLL88BSW",
+  "Call of Duty: Black Ops III": "C3Q2WWJJ2T1H",
+  "Call of Duty: Black Ops 4": "BZJWV056VNPB",
+  "Call of Duty: Ghosts": "C0FCRDZS2H9S",
+  "Assassin's Creed Black Flag + Unity + Syndicate": "C48ZFTBQ17Q3",
+  "Assassin's Creed: The Ezio Collection": "BQ9S8ZKCT3Q7",
+  "EA Sports UFC 5": "9NH8K4B707H0",
+  "NBA 2K25": "9PL2XQ4GF10R",
+  "Hitman": "9NN82NH949D5",
+  "Hitman 2": "9NN82NH949D5",
+  "Hitman 3": "9NN82NH949D5",
+  "Dying Light 2 Stay Human + DLC": "9P4Z34DJ9XH3",
+  "Darksiders 1 y 2": "BPR5GFHR9GTZ",
+  "Dragon Ball Xenoverse 1 y 2": "BT6C28BZM5JX",
+  "Naruto Shippuden: Ultimate Ninja Storm 4 + DLC": "BR1QZ16D82Q4",
+  "Death Stranding": "9NQGN8TGNT8P",
+  "Monopoly": "C0CB2CVZVSNR",
+  "WRC 8 Deluxe Edition": "9N6N1X63M5SK",
+  "Monster Hunter Stories 3": "9NT1VLG29DG8",
+  "Olympic Games Tokyo 2020": "9PLG49K93DKK",
+  "LEGO Star Wars: The Complete Saga": "BTT25GGLG6KD",
+  "LEGO Marvel Super Heroes": "BZGZ3G053NTH",
+  "NieR:Automata": "BPPZVT8BZ15N"
  },
  "series": [
   "Borderlands 4",
@@ -47,9 +75,13 @@
   "Monster Hunter Stories 3"
  ],
  "no_series": [
-  "The Callisto Protocol",
+  "EA Sports FC 24",
+  "EA Sports FC 25",
+  "EA Sports FC 26",
+  "EA Sports FC 27",
   "Green Hell",
-  "NBA 2K25"
+  "NBA 2K25",
+  "The Callisto Protocol"
  ],
  "x360": [
   "Call of Duty: Black Ops II",
@@ -57,5 +89,8 @@
   "Red Dead Redemption"
  ],
  "xog": [],
- "online": []
+ "online": [
+  "Diablo IV",
+  "Naruto to Boruto: Shinobi Striker"
+ ]
 }
