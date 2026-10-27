@@ -378,7 +378,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=76;
+const GXV=77;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
@@ -399,7 +399,7 @@ gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)
   document.getElementById('aviso-c').onclick=ev=>{ev.stopPropagation();cerrar()};
   el.onclick=()=>{if(a.url)window.open(a.url,'_blank','noopener')};
  }).catch(()=>{})})();
-const PUSH={"url": "", "vapid": "BGTPTAz2N8ktMnA2qdILGbdwRTFjLC_o0GGHtbILs6dTGMe5io1tRPGNCCJIfF0taf5lJ5MurB7mIxZc0ri6k-U"};
+const PUSH={"url": "https://gamex-avisos.gamex-cu.workers.dev", "vapid": "BGTPTAz2N8ktMnA2qdILGbdwRTFjLC_o0GGHtbILs6dTGMe5io1tRPGNCCJIfF0taf5lJ5MurB7mIxZc0ri6k-U"};
 (function(){const b=document.getElementById('push-b');if(!PUSH.url||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;
  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
  const sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;if(ios&&!sa)return;
