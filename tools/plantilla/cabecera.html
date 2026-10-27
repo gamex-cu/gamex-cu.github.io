@@ -167,6 +167,8 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .red{display:inline-flex;align-items:center;gap:8px;padding:9px 13px;border-radius:9px;border:1px solid var(--line);background:var(--panel);color:var(--fg);text-decoration:none;font:600 .92rem var(--display)}
 .red.ig svg{color:#e1306c}.red.wa svg{color:#25d366}.red.fb svg{color:#4a8cff}
 .red:hover{border-color:var(--hot)}
+.wpl{display:grid;gap:10px;margin:14px 0 6px}
+.wpl .btn{justify-content:center;text-align:center;font-size:1.1rem;padding:14px}
 .secc{margin:22px 0 0;padding:18px 16px 20px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}
 .secc-t{font:700 1.45rem var(--display);margin:0;color:var(--fg);letter-spacing:.02em}
 .secc-d{color:var(--muted);margin:4px 0 0;font-size:.95rem}
@@ -293,6 +295,11 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 </div><div class="wrap copy">© GameX · Tienda de Videojuegos GameX</div></footer>
 
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
+<div class="sheet" id="wapick" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="wph">
+<h3 id="wph">¿A qué número escribes? <button type="button" id="wpx" aria-label="Cerrar">×</button></h3>
+<div class="wpl"><a class="btn wa2" data-n="5353441089" target="_blank" rel="noopener" href="#">5344 1089</a><a class="btn wa2" data-n="5353827989" target="_blank" rel="noopener" href="#">5382 7989</a><a class="btn wa2" data-n="5352933943" target="_blank" rel="noopener" href="#">5293 3943</a></div>
+<p class="note">Se abrirá WhatsApp con el mensaje ya escrito.</p>
+</div></div>
 <div class="sheet" id="sheet" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="sh">
 <h3 id="sh">Tu selección <button type="button" id="close" aria-label="Cerrar">×</button></h3>
 <ol id="cl"></ol>

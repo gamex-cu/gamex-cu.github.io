@@ -110,7 +110,7 @@ function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
   fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
     const a=(j.avisos||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).reverse();
-    el.innerHTML=a.length?a.map(x=>`<article class="ocard"><h3>${esc(x.titulo||'')}</h3><p>${esc(x.texto||'')}</p>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}<a class="op" href="${esc(x.url&&x.url.startsWith('https://')?x.url:'https://wa.me/5353441089?text='+encodeURIComponent('Hola GameX, me interesa la oferta: '+(x.titulo||'')))}" target="_blank" rel="noopener">Pedir por WhatsApp</a></article>`).join('')
+    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url);return `<article class="ocard"><h3>${esc(x.titulo||'')}</h3><p>${esc(x.texto||'')}</p>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
       :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
   }).catch(()=>{el.innerHTML='<p class="empty">No se pudieron cargar las ofertas. Revisa tu conexión a internet.</p>'})}
 lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
@@ -138,6 +138,10 @@ function sync(){
 function toggle(k){const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);sync()}
 list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
+const wp=$('wapick');
+document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();const tx=a.dataset.t||'Hola GameX';
+  wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`);wp.hidden=false});
+$('wpx').onclick=()=>wp.hidden=true;wp.addEventListener('click',e=>{if(e.target===wp||e.target.closest('[data-n]'))setTimeout(()=>wp.hidden=true,50)});
 const sheet=$('sheet');
 $('open').onclick=()=>{sheet.hidden=false;$('close').focus()};
 $('close').onclick=()=>sheet.hidden=true;
