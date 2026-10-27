@@ -75,15 +75,17 @@ function route(){
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
     const was=current;current=c?c[0]:'todas';
-    $('home').hidden=true;$('view').hidden=false;
+    $('home').hidden=true;$('cats').hidden=true;$('view').hidden=false;
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
     const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
+  }else if(h==='catalogos'){
+    current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
   }else{
-    current=null;$('view').hidden=true;$('home').hidden=false;sync();
+    current=null;$('view').hidden=true;$('cats').hidden=true;$('home').hidden=false;sync();
   }
 }
 addEventListener('hashchange',route);
@@ -91,7 +93,9 @@ $('filt').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!
   if(!f)active.clear();else{active.has(f)?active.delete(f):active.add(f);
     const opp={vr:['vro','novr'],vro:['vr','novr'],novr:['vr','vro'],off:['on'],on:['off'],one:['sx'],sx:['one'],x3:['xc'],xc:['x3']};(opp[f]||[]).forEach(o=>active.delete(o))}
   render()});
-$('back').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('back').addEventListener('click',e=>{e.preventDefault();location.hash='catalogos'});
+$('back-cats').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('b-cat-n').textContent=GAMES.length.toLocaleString('es')+' juegos';
 lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 $('q').addEventListener('input',e=>{query=e.target.value;render()});
 $('hq').addEventListener('input',e=>{const v=e.target.value;if(!v.trim())return;query=v;$('q').value=v;e.target.value='';location.hash='todas';setTimeout(()=>$('q').focus(),0)});
