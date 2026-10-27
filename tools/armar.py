@@ -107,6 +107,32 @@ open(T+'salida/catalogo-claude.html','w').write(art)
 H='<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
 i=page.index('<div id="home">')
 alone=H+'<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>\n'+page[:i]+'</head>\n<body>\n'+page[i:]+'\n</body>\n</html>\n'
+
+# ---- estadísticas anónimas (visitas, catálogos, búsquedas, pedidos) -> Worker /evento; solo web y app, no la copia de Claude ----
+_PU=json.load(open(D+'push.json')).get('url','')
+EST=("""<script>(function(){const URL_EV=%s,ORIGEN='app';if(!URL_EV)return;
+let uid='';try{uid=localStorage.getItem('gx-uid')||'';if(!uid){uid=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('gx-uid',uid)}}catch(e){uid='s'+Math.random().toString(36).slice(2)}
+const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+const disp=ORIGEN==='app'&&/android/i.test(ua)?'app':ios?(sa?'iphone-app':'iphone'):/android/i.test(ua)?'android':/windows|macintosh|linux|cros/i.test(ua)?'pc':'otro';
+let cola=[],tm=null;
+function enviar(final){if(!cola.length)return;const b=JSON.stringify({u:uid,d:disp,o:ORIGEN,e:cola.splice(0,40)});
+  try{if(final&&navigator.sendBeacon){navigator.sendBeacon(URL_EV+'/evento',new Blob([b],{type:'text/plain'}));return}
+    fetch(URL_EV+'/evento',{method:'POST',body:b,headers:{'Content-Type':'text/plain'},keepalive:true}).catch(()=>{})}catch(e){}}
+function ev(t,v,n){cola.push(n==null?{t,v}:{t,v,n});clearTimeout(tm);tm=setTimeout(enviar,2500)}
+window.gxEv=ev;
+addEventListener('pagehide',()=>enviar(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
+ev('visita','');
+let ultCat=null;function cat(){try{if(current&&current!==ultCat){ultCat=current;ev('cat',current==='todas'?'Todas':current)}if(!current)ultCat=null}catch(e){}}
+addEventListener('hashchange',()=>setTimeout(cat,0));setTimeout(cat,0);
+const vistas=new Set();let bt=null;const q=document.getElementById('q');
+if(q)q.addEventListener('input',()=>{clearTimeout(bt);bt=setTimeout(()=>{const t=q.value.trim().toLowerCase();if(t.length<3||vistas.has(t))return;vistas.add(t);
+  const m=(document.getElementById('count').textContent||'').match(/\\d[\\d.,]*/);ev('busca',t,m?+m[0].replace(/[.,]/g,''):0)},1800)});
+const s=document.getElementById('send');if(s)s.addEventListener('click',()=>{try{if(!cart.length)return;ev('envio','',cart.length);cart.forEach(k=>ev('juego',k));enviar()}catch(e){}});
+const c=document.getElementById('copy');if(c)c.addEventListener('click',()=>{try{if(!cart.length)return;ev('envio','copiado',cart.length);cart.forEach(k=>ev('juego',k));enviar()}catch(e){}});
+document.addEventListener('click',e=>{const a=e.target.closest('#wapick [data-n]');if(a){ev('contacto',a.dataset.n);enviar()}});
+})();</script>
+""" % json.dumps(_PU))
+_k=alone.rindex('</body>');alone=alone[:_k]+EST+alone[_k:]
 open(R+'app/catalogo.html','w').write(alone)
 pwa='''<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -117,7 +143,7 @@ pwa='''<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0d1124">
 <meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
 '''
-w=alone.replace('<title>',pwa+'<title>',1)
+w=alone.replace('<title>',pwa+'<title>',1).replace("ORIGEN='app'","ORIGEN='web'",1)
 css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--panel);border:1px solid var(--hot);border-radius:12px;padding:14px 44px 14px 14px;color:var(--fg);font-size:.95rem;line-height:1.45;max-width:520px;margin:0 auto}
 .ios-tip b{color:var(--hot)}
 .ios-tip button{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--muted);font-size:1.5rem;cursor:pointer;padding:4px}

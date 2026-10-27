@@ -59,6 +59,32 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .conf .row button{flex:1}
 .vacio{color:var(--muted);font-size:.92rem}
 .salir{background:none;border:0;color:var(--muted);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;margin-left:auto}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:16px}
+.tabs button{flex:1;font:inherit;font-weight:600;padding:10px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.kpi{background:#0b0f20;border:1px solid var(--line);border-radius:10px;padding:12px}
+.kpi b{display:block;font-size:1.6rem;line-height:1.1}
+.kpi span{color:var(--muted);font-size:.84rem}
+.kpi small{display:block;color:var(--muted);font-size:.76rem;margin-top:2px}
+.rng{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.rng .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.chart{position:relative;display:flex;align-items:flex-end;gap:2px;height:140px;padding-top:8px;border-bottom:1px solid var(--line)}
+.chart div{flex:1;min-width:2px;background:var(--accent);border-radius:4px 4px 0 0;position:relative;cursor:default}
+.chart div:hover,.chart div:focus{background:#6d9bff;outline:none}
+.chart div.cero{background:var(--line);height:2px!important;border-radius:2px}
+.cax{display:flex;justify-content:space-between;color:var(--muted);font-size:.76rem;margin-top:6px}
+.tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;color:#111;font-size:.78rem;padding:5px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;z-index:2;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.rank{list-style:none;margin:0;padding:0}
+.rank li{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:7px 0;border-top:1px solid var(--line);font-size:.9rem}
+.rank li:first-child{border-top:0}
+.rank .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rank .nm small{color:var(--muted)}
+.rank .ct{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
+.rank .br{grid-column:1/-1;height:4px;border-radius:4px;background:#0b0f20;overflow:hidden}
+.rank .br i{display:block;height:100%;background:var(--accent);border-radius:4px}
+.rank.warn .br i{background:var(--warn)}
+.nota{color:var(--muted);font-size:.8rem;margin:4px 0 0}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -78,6 +104,27 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 </section>
 
 <div id="app" hidden>
+  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Estadísticas</button></div>
+  <div id="t-es" hidden>
+    <section class="card">
+      <div class="rng" id="rng"><button type="button" class="chip" data-d="1">Hoy</button><button type="button" class="chip" data-d="7" aria-pressed="true">7 días</button><button type="button" class="chip" data-d="30">30 días</button><button type="button" class="chip" data-d="90">90 días</button></div>
+      <div class="kpis">
+        <div class="kpi"><b id="k-vis">–</b><span>Visitas</span></div>
+        <div class="kpi"><b id="k-per">–</b><span>Personas distintas</span></div>
+        <div class="kpi"><b id="k-ped">–</b><span>Pedidos por WhatsApp</span><small id="k-jue"></small></div>
+        <div class="kpi"><b id="k-con">–</b><span>Contactos por WhatsApp</span><small>botón de escoger número</small></div>
+      </div>
+      <div id="chw"><h2 style="margin:18px 0 6px">Visitas por día</h2><div class="chart" id="chart" role="img"></div><div class="cax"><span id="ca1"></span><span id="ca2"></span></div></div>
+      <p class="nota" id="es-nota"></p>
+      <div class="msg" id="mes"></div>
+    </section>
+    <section class="card"><h2>Lo que más piden</h2><ul class="rank" id="r-jue"></ul></section>
+    <section class="card"><h2>Buscaron y NO encontraron</h2><p class="nota" style="margin:-6px 0 8px">Juegos que la gente busca y no están en el catálogo: buenas ideas para conseguir.</p><ul class="rank warn" id="r-sin"></ul></section>
+    <section class="card"><h2>Lo más buscado</h2><ul class="rank" id="r-bus"></ul></section>
+    <section class="card"><h2>Catálogos más vistos</h2><ul class="rank" id="r-cat"></ul></section>
+    <section class="card"><h2>Desde dónde entran</h2><ul class="rank" id="r-dis"></ul></section>
+  </div>
+  <div id="t-of">
   <section class="card">
     <div class="stat">
       <div><b id="niph">–</b><small>iPhone con avisos</small></div>
@@ -119,6 +166,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <div id="lista"><p class="vacio">Cargando…</p></div>
     <div class="msg" id="mlista"></div>
   </section>
+  </div>
 </div>
 </main>
 <script>
@@ -144,7 +192,7 @@ async function cargar(){const d=await api('estado');$('niph').textContent=d.ipho
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
 async function entrar(){
   $('bentrar').disabled=true;nomsg('mlogin');
-  try{await cargar();try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}$('login').hidden=true;$('app').hidden=false;$('salir').hidden=false}
+  try{await cargar();try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}$('login').hidden=true;$('app').hidden=false;$('salir').hidden=false;let t='of';try{t=localStorage.getItem('gx_tab')||'of'}catch(e){}tab(t)}
   catch(e){msg('mlogin','bad',esc(e.message))}
   $('bentrar').disabled=false;
 }
@@ -181,6 +229,43 @@ $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)r
   try{const d=await api('borrar',{id:b.dataset.id});pintar(d.avisos);msg('mlista','ok','Oferta quitada. Desaparece de la web y la app en 1–2 minutos.')}
   catch(err){msg('mlista','bad',esc(err.message));b.disabled=false;b.textContent='Quitar'}
 };
+
+// ---------- pestañas y estadísticas ----------
+let DIAS=7,cargadas=false;
+function tab(t){$('tb-of').setAttribute('aria-selected',t==='of');$('tb-es').setAttribute('aria-selected',t==='es');$('t-of').hidden=t!=='of';$('t-es').hidden=t!=='es';
+  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats()}
+$('tb-of').onclick=()=>tab('of');$('tb-es').onclick=()=>tab('es');
+$('rng').onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;DIAS=+b.dataset.d;$('rng').querySelectorAll('[data-d]').forEach(x=>x.setAttribute('aria-pressed',x===b));stats()};
+const N=n=>(n||0).toLocaleString('es');const pl=(n,w)=>N(n)+' '+w+(n===1?'':'s');
+const DISP={app:'App de Android','iphone-app':'iPhone (app en pantalla de inicio)',iphone:'iPhone (Safari)',android:'Android (navegador)',pc:'Computadora',otro:'Otro'};
+function rank(id,filas,fmt,vacio){const el=$(id);if(!filas.length){el.innerHTML=`<li><span class="nm" style="color:var(--muted)">${vacio}</span></li>`;return}
+  const mx=Math.max(...filas.map(f=>f.c));el.innerHTML=filas.map(f=>`<li><span class="nm">${fmt(f.v)}</span><span class="ct">${N(f.c)}</span><span class="br"><i style="width:${Math.max(3,f.c/mx*100)}%"></i></span></li>`).join('')}
+const juego=k=>{const i=k.indexOf('|');return i<0?esc(k):`${esc(k.slice(i+1))} <small>· ${esc(k.slice(0,i))}</small>`};
+function fechaL(f){const[y,m,d]=f.split('-');return +d+' '+MES[+m-1]}
+async function stats(){
+  $('mes').className='msg';
+  try{const d=await api('stats?dias='+DIAS);const t=d.tot||{};
+    $('k-vis').textContent=N(t.visitas);$('k-per').textContent=N(t.personas);$('k-ped').textContent=N(t.pedidos);$('k-con').textContent=N(t.contactos);
+    $('k-jue').textContent=t.juegos?N(t.juegos)+' juegos en total':'';
+    const mapa={};(d.porDia||[]).forEach(x=>mapa[x.dia]=x);
+    const dias=[];const [y,m,dd]=d.hasta.split('-').map(Number);for(let i=d.dias-1;i>=0;i--){const f=new Date(Date.UTC(y,m-1,dd-i)).toISOString().slice(0,10);dias.push(mapa[f]||{dia:f,visitas:0,personas:0,pedidos:0})}
+    $('chw').hidden=d.dias===1;
+    if(d.dias>1){const mx=Math.max(1,...dias.map(x=>x.visitas));
+      $('chart').innerHTML=dias.map(x=>`<div tabindex="0" class="${x.visitas?'':'cero'}" style="height:${x.visitas/mx*100}%" data-t="${fechaL(x.dia)}: ${pl(x.visitas,'visita')} · ${pl(x.personas,'persona')} · ${pl(x.pedidos,'pedido')}"></div>`).join('');
+      $('chart').setAttribute('aria-label','Visitas por día del '+fechaL(d.desde)+' al '+fechaL(d.hasta));
+      $('ca1').textContent=fechaL(d.desde);$('ca2').textContent=fechaL(d.hasta)}
+    rank('r-jue',d.juegos||[],juego,'Todavía no hay pedidos en estas fechas.');
+    rank('r-sin',d.sinResultado||[],esc,'Nadie buscó algo que no estuviera. 👌');
+    rank('r-bus',d.busquedas||[],esc,'Todavía no hay búsquedas.');
+    rank('r-cat',d.catalogos||[],esc,'Todavía no hay visitas a catálogos.');
+    rank('r-dis',d.dispositivos||[],v=>esc(DISP[v]||v),'Todavía no hay visitas.');
+    $('es-nota').textContent=(d.dias===1?'Hoy':`Del ${fechaL(d.desde)} al ${fechaL(d.hasta)}`)+' · Las estadísticas empezaron el 27 de octubre de 2026. No se guarda ningún dato personal; una "persona" es un teléfono o computadora distinto.';
+  }catch(e){msg('mes','bad',esc(e.message))}
+}
+function tipEn(el){document.querySelectorAll('.tip').forEach(x=>x.remove());const b=el&&el.closest&&el.closest('#chart>div');if(!b)return;const t=document.createElement('span');t.className='tip';t.textContent=b.dataset.t;
+  const r=b.getBoundingClientRect(),c=$('chart').getBoundingClientRect();if(r.left-c.left<70)t.style.left='0',t.style.transform='none';else if(c.right-r.right<70)t.style.left='auto',t.style.right='0',t.style.transform='none';b.appendChild(t)}
+$('chart').addEventListener('pointerover',e=>tipEn(e.target));$('chart').addEventListener('focusin',e=>tipEn(e.target));
+$('chart').addEventListener('pointerleave',()=>tipEn(null));$('chart').addEventListener('focusout',()=>tipEn(null));
 prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
 </script>

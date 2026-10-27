@@ -23,18 +23,24 @@ NOMBRE = 'gamex-avisos'
 ns = [n for n in cf('/storage/kv/namespaces?per_page=100')['result'] if n['title'] == NOMBRE]
 ns_id = ns[0]['id'] if ns else cf('/storage/kv/namespaces', 'POST', json.dumps({'title': NOMBRE}).encode())['result']['id']
 meta = {'main_module': 'worker.js', 'compatibility_date': '2025-01-01',
-        'bindings': [{'type': 'kv_namespace', 'name': 'SUBS', 'namespace_id': ns_id}, {'type': 'secret_text', 'name': 'CLAVE', 'text': CF['clave_worker']}]}
+        'bindings': [{'type': 'kv_namespace', 'name': 'SUBS', 'namespace_id': ns_id}, {'type': 'durable_object_namespace', 'name': 'STATS', 'class_name': 'Stats'}, {'type': 'secret_text', 'name': 'CLAVE', 'text': CF['clave_worker']}]}
 for nombre, archivo, campo in [('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None)]:
     try:
         d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
         if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})
     except (FileNotFoundError, KeyError): print('Aviso: falta', nombre, '(el panel no funcionará completo)')
 codigo = open(T + 'push-worker.js').read().replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read()), 1)
-b = uuid.uuid4().hex
-body = (f'--{b}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n{json.dumps(meta)}\r\n'
-        f'--{b}\r\nContent-Disposition: form-data; name="worker.js"; filename="worker.js"\r\nContent-Type: application/javascript+module\r\n\r\n'
-        + codigo + f'\r\n--{b}--\r\n').encode()
-cf(f'/workers/scripts/{NOMBRE}', 'PUT', body, f'multipart/form-data; boundary={b}')
+def subir(m):
+    b = uuid.uuid4().hex
+    body = (f'--{b}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n{json.dumps(m)}\r\n'
+            f'--{b}\r\nContent-Disposition: form-data; name="worker.js"; filename="worker.js"\r\nContent-Type: application/javascript+module\r\n\r\n'
+            + codigo + f'\r\n--{b}--\r\n').encode()
+    return cf(f'/workers/scripts/{NOMBRE}', 'PUT', body, f'multipart/form-data; boundary={b}')
+# La primera vez crea la base de estadísticas (migración v1); las siguientes ya existe.
+try: subir({**meta, 'migrations': {'new_tag': 'v1', 'new_sqlite_classes': ['Stats']}})
+except SystemExit as e:
+    if 'migration' not in str(e).lower() and 'tag' not in str(e).lower(): raise
+    subir(meta)
 cf(f'/workers/scripts/{NOMBRE}/subdomain', 'POST', json.dumps({'enabled': True}).encode())
 sub = cf('/workers/subdomain')['result']['subdomain']
 url = f'https://{NOMBRE}.{sub}.workers.dev'

@@ -7,7 +7,10 @@
 // POST /panel/api/enviar (X-Panel)   -> agrega la oferta a app/avisos.json (GitHub) y la manda por Firebase (Android)
 // POST /panel/api/web    (X-Panel)   -> manda la oferta a los iPhone, de 40 en 40
 // POST /panel/api/borrar (X-Panel)   -> quita una oferta de app/avisos.json
-// Necesita: KV "SUBS" y los secretos CLAVE, PANEL (contraseña), VAPID, FIREBASE y GITHUB.
+// POST /evento          (público)   -> estadísticas anónimas de la web/app (visitas, catálogos, búsquedas, pedidos)
+// GET  /panel/api/stats  (X-Panel)   -> resumen de estadísticas (?dias=1|7|30|90)
+// Necesita: Durable Object STATS (clase Stats, guarda los eventos en SQLite), KV "SUBS" y los secretos CLAVE, PANEL (contraseña), VAPID, FIREBASE y GITHUB.
+import {DurableObject} from 'cloudflare:workers';
 const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type,X-Clave'};
 const r=(b,s=200)=>new Response(typeof b==='string'?b:JSON.stringify(b),{status:s,headers:{...CORS,'Content-Type':'application/json'}});
 const j=(b,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
@@ -94,12 +97,55 @@ const activos=d=>{const h=hoyCuba();return d.avisos.filter(x=>!x.vence||x.vence>
 // ---------- suscripciones ----------
 async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({cursor:cur});out.push(...l.keys.map(k=>k.name));cur=l.list_complete?null:l.cursor}while(cur);return out.sort()}
 
+
+// ---------- estadísticas (Durable Object con SQLite) ----------
+const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta']);
+const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};
+export class Stats extends DurableObject{
+  constructor(ctx,env){super(ctx,env);this.sql=ctx.storage.sql;
+    this.sql.exec('CREATE TABLE IF NOT EXISTS ev(ts INTEGER,dia TEXT,tipo TEXT,v TEXT,n INTEGER,uid TEXT,disp TEXT,org TEXT)');
+    this.sql.exec('CREATE INDEX IF NOT EXISTS ev_dia ON ev(dia,tipo)')}
+  agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
+    for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
+    if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-400*864e5);return filas.length}
+  borrarUid(uid){this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
+  resumen(dias){
+    const hasta=diaCuba(Date.now()),desde=diaCuba(Date.now()-(dias-1)*864e5);
+    const q=(sql,...a)=>this.sql.exec(sql,desde,hasta,...a).toArray();
+    const W='dia>=? AND dia<=?';
+    const tot=q(`SELECT SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos,SUM(CASE WHEN tipo='envio' THEN n ELSE 0 END) juegos,SUM(tipo='contacto') contactos,SUM(tipo='busca') busquedas FROM ev WHERE ${W}`)[0]||{};
+    const porDia=q(`SELECT dia,SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos FROM ev WHERE ${W} GROUP BY dia ORDER BY dia`);
+    const top=(tipo,lim,extra='')=>q(`SELECT v,COUNT(*) c FROM ev WHERE ${W} AND tipo=? ${extra} GROUP BY v ORDER BY c DESC,v LIMIT ${lim}`,tipo);
+    return {desde,hasta,dias,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
+      dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`)};
+  }
+}
+const statsDO=env=>env.STATS.get(env.STATS.idFromName('gamex'));
+async function evento(req,env){
+  if(!env.STATS)return r('ok');
+  let b;try{b=JSON.parse(await req.text())}catch(e){return r('mal',400)}
+  const lista=Array.isArray(b&&b.e)?b.e.slice(0,40):[];
+  const uid=String(b&&b.u||'').replace(/[^a-z0-9]/gi,'').slice(0,24)||'anon';
+  const disp=['app','android','iphone','iphone-app','pc','otro'].includes(b&&b.d)?b.d:'otro';
+  const org=b&&b.o==='app'?'app':'web';
+  const filas=lista.filter(x=>x&&TIPOS.has(x.t)).map(x=>({tipo:x.t,v:String(x.v||'').trim().slice(0,120),n:Number.isFinite(+x.n)?Math.max(0,Math.min(9999,Math.round(+x.n))):null,uid,disp,org}))
+    .map(f=>f.tipo==='busca'?{...f,v:f.v.toLowerCase().replace(/\s+/g,' ')}:f).filter(f=>f.tipo==='visita'||f.tipo==='contacto'||f.tipo==='envio'||f.v);
+  if(filas.length)await statsDO(env).agregar(filas);
+  return r('ok');
+}
+
 async function panel(req,env,u){
   if(u.pathname==='/panel'||u.pathname==='/panel/')return new Response(PANEL_HTML,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer'}});
   if(!u.pathname.startsWith('/panel/api/'))return j({error:'No existe'},404);
   if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
+    if(p==='stats'){
+      if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
+      const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
+      return j(await statsDO(env).resumen(d));
+    }
+    if(p==='stats-limpiar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(!q.uid)return j({error:'Falta uid'},400);await statsDO(env).borrarUid(String(q.uid));return j({ok:true})}
     if(p==='estado'){
       const [ks,{d}]=await Promise.all([claves(env),leerAvisos(env)]);
       return j({iphones:ks.length,avisos:activos(d).reverse(),hoy:hoyCuba()});
@@ -143,6 +189,7 @@ export default{async fetch(req,env){
   const u=new URL(req.url);
   if(u.pathname==='/panel'||u.pathname.startsWith('/panel/'))return panel(req,env,u);
   if(req.method==='OPTIONS')return new Response(null,{headers:CORS});
+  if(u.pathname==='/evento'&&req.method==='POST')return evento(req,env);
   if(u.pathname==='/suscribir'&&req.method==='POST'){
     let s;try{s=await req.json()}catch(e){return r('mal',400)}
     if(!s||typeof s.endpoint!=='string'||!s.endpoint.startsWith('https://')||s.endpoint.length>1000||!s.keys||typeof s.keys.p256dh!=='string'||typeof s.keys.auth!=='string')return r('mal',400);

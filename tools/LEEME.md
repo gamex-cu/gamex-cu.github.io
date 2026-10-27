@@ -24,3 +24,8 @@
 - armar.py guarda en tools/datos/agregados.json la fecha en que cada juego apareció por primera vez en su catálogo.
 - Los juegos con menos de 7 días llevan la etiqueta amarilla "Nuevo" y salen en el filtro "Nuevos"; se quita sola a los 7 días.
 - Siempre subir tools/datos/agregados.json junto con los cambios (git add -A). Si se le cambia el nombre a un juego, poner a mano su fecha vieja en agregados.json para que no salga como nuevo.
+
+## Estadísticas
+- La web (index.html) y la app (app/catalogo.html) mandan eventos anónimos al Worker (/evento): visita, catálogo abierto, búsquedas (con cantidad de resultados), pedidos por WhatsApp y juegos pedidos. La copia de Claude no manda nada.
+- Se guardan en un Durable Object con SQLite (clase Stats del Worker), se borran solos a los 400 días y se ven en el panel → pestaña Estadísticas.
+- Solo se guarda un número al azar por teléfono (para contar personas), nunca datos personales.
