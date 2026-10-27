@@ -106,7 +106,7 @@ WWE 2K22  ->  WWE 2K25 Standard Edition  (0.88)
 WWE 2K23 Deluxe Edition  ->  WWE 2K25 Standard Edition  (0.88)
 Zen Pinball 2  ->  Zen Pinball 2 Full Tilt Bundle  (0.72)
 
-== NO ENCONTRADOS EN LA TIENDA (124) ==
+== NO ENCONTRADOS EN LA TIENDA (138) ==
 Ace Combat 5: The Unsung War
 Ace Combat 7: Skies Unknown
 Adventure Time: Finn & Jake Investigations
@@ -231,3 +231,17 @@ We Happy Few Uncle Jack Live VR
 Yakuza 0
 Yakuza 5
 Zenith
+The Bridge   (la página ya no existe en la tienda)
+Call of Duty: Black Ops 4   (la página ya no existe en la tienda)
+Call of Duty: Black Ops III   (la página ya no existe en la tienda)
+Call of Duty: WWII Gold Edition   (la página ya no existe en la tienda)
+Cars 3: Driven to Win   (la página ya no existe en la tienda)
+Dark Mystery   (la página ya no existe en la tienda)
+DiRT Rally   (la página ya no existe en la tienda)
+Killzone Shadow Fall   (la página ya no existe en la tienda)
+LittleBigPlanet 3   (la página ya no existe en la tienda)
+NASCAR Heat 2   (la página ya no existe en la tienda)
+NASCAR Heat 5   (la página ya no existe en la tienda)
+The Playroom   (la página ya no existe en la tienda)
+Skylanders Imaginators   (la página ya no existe en la tienda)
+Two Point Hospital   (la página ya no existe en la tienda)

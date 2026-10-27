@@ -27,7 +27,7 @@ Wreckfest Complete Edition  ->  The Wreck | PS4 & PS5  (0.71)
 WWE 2K22  ->  WWE 2K26 Standard Edition  (0.88)
 WWE 2K24  ->  WWE 2K26 Standard Edition  (0.88)
 
-== NO ENCONTRADOS EN LA TIENDA (29) ==
+== NO ENCONTRADOS EN LA TIENDA (30) ==
 7 Days to Die Console Edition
 Abandoned Realtime Trailers Demo
 Destruction AllStars
@@ -57,3 +57,4 @@ Transformers: EarthSpark – Expedition
 Tropico 6
 Village in the Shade
 Yonder: The Cloud Catcher Chronicles
+WWE 2K23   (la página ya no existe en la tienda)

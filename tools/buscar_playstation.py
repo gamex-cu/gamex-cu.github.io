@@ -80,6 +80,20 @@ def buscar_viejo(nombre, consola):
         cands.append({'id': l.get('id'), 'n': l.get('name', ''), 'cls': 'Full Game', 'nn': norm(l.get('name', '')), 'nums': numeros(l.get('name', ''))})
     return elegir(nombre, cands) if cands else (None, 0)
 
+class _SinRedir(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, *a, **k): return None
+def _opener_sin_redir():
+    hs = [_SinRedir()]
+    pr = os.environ.get('HTTPS_PROXY') or os.environ.get('https_proxy')
+    if pr: hs.append(urllib.request.ProxyHandler({'https': pr}))
+    ca = '/root/.ccr/ca-bundle.crt'
+    hs.append(urllib.request.HTTPSHandler(context=ssl.create_default_context(cafile=ca) if os.path.exists(ca) else ssl.create_default_context()))
+    return urllib.request.build_opener(*hs)
+OP2 = _opener_sin_redir()
+def abre(pid):
+    try: return OP2.open(urllib.request.Request('https://store.playstation.com/es-mx/product/' + pid, headers={'User-Agent': 'Mozilla/5.0'}), timeout=30).status == 200
+    except Exception: return False
+
 def main():
     consolas = [a for a in sys.argv[1:] if a in CATS] or ['PS4', 'PS5']
     tienda = catalogo()
@@ -99,6 +113,11 @@ def main():
             if x and r >= 0.9: ok[n] = x['id']
             elif x and r >= 0.7: dudas.append((n, x['n'], round(r, 2), x['id']))
             else: no.append(n)
+        vivos = {x['id'] for x in tienda}
+        from concurrent.futures import ThreadPoolExecutor
+        dudar = [n for n, pid in ok.items() if pid not in vivos]
+        with ThreadPoolExecutor(8) as ex: muertos = [n for n, v in zip(dudar, ex.map(lambda n: abre(ok[n]), dudar)) if not v]
+        for n in muertos: del ok[n]; no.append(n + '   (la página ya no existe en la tienda)')
         print(c, 'tienda:', len(cands), '| con enlace:', len(ok), '| dudosos:', len(dudas), '| no encontrados:', len(no))
         if '--probar' in sys.argv: continue
         json.dump(dict(sorted(ok.items())), open(T + f'datos/enlaces_{c.lower()}.json', 'w'), ensure_ascii=False, indent=0)
