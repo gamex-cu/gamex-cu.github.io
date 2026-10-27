@@ -38,6 +38,7 @@ MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septie
 NOTES={}
 if GP.get('fecha'):
     _y,_m,_d=GP['fecha'].split('-');NOTES['Xbox Game Pass']=f'Lista tomada del <b>catálogo oficial de Xbox Game Pass</b> · actualizada el {int(_d)} de {MESES[int(_m)-1]} de {_y}'
+NOTES['Xbox pago']='¿No ves el juego que buscas? <b>Pregunta por él</b> por <a href="https://wa.me/5353441089?text=Hola%20GameX%2C%20%C2%BFtienen%20este%20juego%20para%20Xbox%3F" target="_blank" rel="noopener">WhatsApp</a> y te lo conseguimos.'
 LINKS={'Xbox Game Pass|'+n:i for n,i in GP.get('ids',{}).items()}
 for _c in ['PS4','PS5']:
     try:

@@ -79,7 +79,7 @@ function route(){
     const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
-    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';
+    const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');
     if(was!==current){active.clear();if(h!=='todas'){query='';$('q').value=''}window.scrollTo(0,0)}
     render();
   }else if(h==='catalogos'){

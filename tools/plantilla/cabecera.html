@@ -203,6 +203,8 @@ section{scroll-margin-top:215px}
 .fchip:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
 .vnote{margin:0;font-size:.82rem;line-height:1.4;color:var(--muted)}
 .vnote::before{content:"✓ ";color:#2fbf4a;font-weight:700}
+.vnote.ask::before{content:"💬 "}
+.vnote a{color:#2fbf4a;font-weight:600}
 .vnote b{color:var(--fg);font-weight:600}
 li .info{position:absolute;right:38px;top:50%;transform:translateY(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--muted);font:700 14px/1 Georgia,serif;font-style:italic;display:grid;place-items:center;text-decoration:none}
 li .info:hover,li .info:focus-visible{color:var(--fg);border-color:var(--accent);outline:none}
