@@ -10,7 +10,7 @@ const badges=k=>(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' 
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
-const key=n=>n.replace(/^(the|a|el) /i,'');
+const key=n=>n;
 const letterOf=n=>{const c=key(n).normalize('NFD')[0].toUpperCase();return /[A-Z]/.test(c)?c:'#'};
 const ORDER=['#',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
