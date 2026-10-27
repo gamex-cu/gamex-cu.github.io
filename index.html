@@ -204,7 +204,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
   <p class="sectitle">Escríbenos</p>
   <div class="wa"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089 <small>WhatsApp</small></a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989 <small>WhatsApp</small></a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943 <small>WhatsApp</small></a></div>
   <a class="chan" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener"><b>Canal de GAMEX en WhatsApp</b><span>Novedades, juegos nuevos y promociones</span><i>Seguir canal</i></a>
-<a class="dlapp" id="dlapp" href="https://gamex-cu.github.io/app/GAMEX-Catalogo.apk" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
+<a class="dlapp" id="dlapp" href="https://gamex-cu.github.io/app/GAMEX-Catalogo.apk" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Funciona sin internet</small></span></a>
 
 
 </div>
@@ -372,7 +372,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=72;
+const GXV=73;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
@@ -382,7 +382,6 @@ async function gxRefresh(){const b=document.getElementById('refresh');
 navigator.serviceWorker?.ready.then(rg=>{rg.active&&rg.active.postMessage('guardar')}).catch(()=>{});
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
 function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV)document.getElementById('upd').hidden=false}).catch(()=>{})}
-fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
 gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)gxCheck()});
 </script>
 
