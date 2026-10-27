@@ -139,8 +139,11 @@ function toggle(k){const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);syn
 list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
 const wp=$('wapick');
-document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();const tx=a.dataset.t||'Hola GameX';
-  wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`);wp.hidden=false});
+let wpTx='Hola GameX',wpAsk=false;
+function wpLinks(){const g=$('wpq').value.trim();const tx=wpAsk&&g?wpTx+'\n\n*Juego:* '+g:wpTx;wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
+document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();wpTx=a.dataset.t||'Hola GameX';wpAsk=!!a.dataset.ask;
+  $('wpqw').hidden=!wpAsk;$('wpq').value=wpAsk&&query.trim()&&current==='Xbox pago'?query.trim():'';wpLinks();wp.hidden=false;if(wpAsk)setTimeout(()=>$('wpq').focus(),50)});
+$('wpq').addEventListener('input',wpLinks);
 $('wpx').onclick=()=>wp.hidden=true;wp.addEventListener('click',e=>{if(e.target===wp||e.target.closest('[data-n]'))setTimeout(()=>wp.hidden=true,50)});
 const sheet=$('sheet');
 $('open').onclick=()=>{sheet.hidden=false;$('close').focus()};
