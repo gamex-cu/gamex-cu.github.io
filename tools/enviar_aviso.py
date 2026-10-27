@@ -50,7 +50,7 @@ def enviar_web(aviso):
     import webpush
     cfg = json.load(open(T + 'datos/push.json'))
     clave = json.load(open(os.path.dirname(webpush.ruta_claves()) + '/cloudflare.json'))['clave_worker']
-    op = opener(); h = {'X-Clave': clave}
+    op = opener(); h = {'X-Clave': clave, 'User-Agent': 'GameX-avisos/1.0'}
     subs = json.load(op.open(urllib.request.Request(cfg['url'] + '/lista', headers=h), timeout=30))
     ok = borradas = 0
     datos = {k: v for k, v in aviso.items() if k in ('id', 'titulo', 'texto', 'url')}
