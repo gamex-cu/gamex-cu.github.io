@@ -22,6 +22,43 @@ h2{font-size:1.05rem;margin:0 0 12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
 label{display:block;font-weight:600;font-size:.92rem;margin:12px 0 6px}
 label small{font-weight:400;color:var(--muted)}
+.bdg{display:inline-block;min-width:22px;padding:2px 7px;border-radius:99px;background:var(--warn);color:#1a1300;font-size:.8rem;text-align:center;vertical-align:2px}
+.bdg:empty{display:none}
+.fh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px}
+h3{font-size:1rem;margin:20px 0 8px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 10px}
+.tipos{display:flex;flex-wrap:wrap;gap:6px}
+.tipos label{margin:0;font-weight:500;font-size:.88rem;padding:7px 10px;border:1px solid var(--line);border-radius:99px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.tipos input{width:auto;margin:0;accent-color:var(--accent)}
+.tipos label:has(input:checked){border-color:var(--accent);background:rgba(61,123,255,.15)}
+.prevgx{margin-top:10px;padding:10px 12px;border-radius:10px;background:#0b0f20;border:1px dashed var(--line);font-size:.92rem;min-height:20px}
+.prevgx:empty{display:none}
+.barra{height:10px;border-radius:99px;background:#0b0f20;border:1px solid var(--line);overflow:hidden;margin-top:12px}
+.barra div{height:100%;background:linear-gradient(90deg,var(--warn),var(--ok));width:0}
+.clist{margin-top:10px}
+.cl{display:flex;gap:10px;align-items:center;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-top:1px solid var(--line);padding:10px 2px;cursor:pointer}
+.cl:hover{background:rgba(255,255,255,.03)}
+.cl .gx{font-weight:700;font-variant-numeric:tabular-nums;min-width:62px;color:var(--warn)}
+.cl .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cl .nm small{display:block;color:var(--muted);font-size:.78rem}
+.cl .sd{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.cl .sd small{display:block;color:var(--muted);font-size:.75rem}
+.cl.res{opacity:.55}
+.hm{display:flex;gap:10px;border-top:1px solid var(--line);padding:9px 0;align-items:flex-start}
+.hm div{flex:1;min-width:0}
+.hm small{color:var(--muted);font-size:.78rem;display:block}
+.hm .gxv{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.hm .gxv.mas{color:var(--ok)}.hm .gxv.menos{color:var(--bad)}
+.hm button{flex:none;font:inherit;font-size:.75rem;padding:4px 8px;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.solc{border-top:1px solid var(--line);padding:12px 0}
+.solc:first-child{border-top:0;padding-top:0}
+.solc .acc{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;margin-top:8px}
+.solc .acc input{width:110px}
+.solc .acc button{font:inherit;font-weight:600;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+.det{margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+.det summary{cursor:pointer;font-weight:600}
+a.chip{text-decoration:none;display:inline-block}
+
 label.sw{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;padding:12px;border:1px solid var(--line,#2a3360);border-radius:12px;cursor:pointer;font-weight:400}
 label.sw input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:#2fbf4a}
 label.sw small{display:block}
@@ -101,7 +138,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 <body>
 <main>
 <h1><img src="https://gamex-cu.github.io/icon-192.png" alt="">Panel GameX <button class="salir" id="salir" hidden>Salir</button></h1>
-<p class="sub">Manda ofertas y avisos a la app de Android, a los iPhone y a la sección Ofertas de la web.</p>
+<p class="sub">Ofertas y avisos, estadísticas y clientes de GameX Rewards.</p>
 
 <section class="card" id="login">
   <h2>Entrar</h2>
@@ -114,7 +151,86 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 </section>
 
 <div id="app" hidden>
-  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Estadísticas</button></div>
+  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Estadísticas</button><button role="tab" id="tb-cl" aria-selected="false">👥 Clientes <span class="bdg" id="nsol2"></span></button></div>
+  <div id="t-cl" hidden>
+    <section class="card" id="s-sol">
+      <h2>Solicitudes de cuenta <span class="bdg" id="nsol"></span></h2>
+      <div id="sols"><p class="vacio">Cargando…</p></div>
+      <div class="msg" id="msol"></div>
+    </section>
+    <section class="card" id="s-ficha" hidden>
+      <div class="fh"><div><h2 id="f-tit" style="margin:0"></h2><small id="f-sub" class="nota"></small></div><button type="button" class="chip" id="f-cerrar">✕ Cerrar</button></div>
+      <div class="kpis" id="f-kpis"></div>
+      <div class="barra"><div id="f-barra"></div></div><p class="nota" id="f-barra-t"></p>
+      <h3>Registrar movimiento</h3>
+      <form id="fmov">
+        <div class="tipos" id="m-tipos">
+          <label><input type="radio" name="mt" value="Compra" checked> 🛒 Compra</label>
+          <label><input type="radio" name="mt" value="Canje"> 🎁 Canje</label>
+          <label><input type="radio" name="mt" value="Referido"> 🤝 Referido</label>
+          <label><input type="radio" name="mt" value="Ajuste +"> ➕ Ajuste +</label>
+          <label><input type="radio" name="mt" value="Ajuste -"> ➖ Ajuste −</label>
+        </div>
+        <div class="g2">
+          <div><label for="m-fecha">Fecha</label><input id="m-fecha" type="date" required></div>
+          <div id="m-imp-w"><label for="m-imp">Importe ($)</label><input id="m-imp" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Ej: 30"></div>
+          <div id="m-n-w" hidden><label for="m-n">GX</label><input id="m-n" type="number" step="1" min="1" inputmode="numeric" placeholder="Ej: 1500"></div>
+        </div>
+        <label for="m-desc" id="m-desc-l">Qué compró</label>
+        <input id="m-desc" maxlength="120" placeholder="Ej: Inyección Xbox">
+        <div class="prevgx" id="m-prev"></div>
+        <button class="btn" id="m-btn">Guardar movimiento</button>
+      </form>
+      <div class="msg" id="mmov"></div>
+      <h3>Historial</h3>
+      <div id="f-hist"></div>
+      <details class="det"><summary>Datos del cliente</summary>
+        <form id="fdat">
+          <div class="g2">
+            <div><label for="d-nom">Nombre y apellidos</label><input id="d-nom" maxlength="80"></div>
+            <div><label for="d-tel">WhatsApp (8 dígitos)</label><input id="d-tel" inputmode="numeric" maxlength="12"></div>
+            <div><label for="d-nac">Nacimiento</label><input id="d-nac" type="date"></div>
+            <div><label for="d-pla">Plataforma</label><input id="d-pla" list="plats" maxlength="30"></div>
+          </div>
+          <button class="btn sec" id="d-btn">Guardar datos</button>
+        </form>
+        <div class="row" style="margin-top:12px"><a class="chip" id="f-wa" target="_blank" rel="noopener">💬 Mandarle su GX por WhatsApp</a><button type="button" class="chip" id="f-clave">🔑 Reiniciar contraseña</button></div>
+        <p class="nota" id="f-cuenta"></p>
+        <div class="msg" id="mdat"></div>
+      </details>
+    </section>
+    <section class="card">
+      <h2>Clientes</h2>
+      <div class="kpis" id="c-kpis"></div>
+      <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
+      <div class="row" style="margin-top:8px"><button type="button" class="chip" id="c-res" aria-pressed="false">Ver IDs reservados</button></div>
+      <div id="c-lista" class="clist"><p class="vacio">Cargando…</p></div>
+      <div class="msg" id="mcli"></div>
+    </section>
+    <section class="card">
+      <h2>Cliente nuevo a mano</h2>
+      <p class="nota" style="margin:-6px 0 8px">Para alguien que se registró en la tienda. Si usas un ID reservado, se le asigna ese.</p>
+      <form id="fnue">
+        <div class="g2">
+          <div><label for="n-gx">ID GX</label><input id="n-gx" required></div>
+          <div><label for="n-nom">Nombre y apellidos</label><input id="n-nom" required maxlength="80"></div>
+          <div><label for="n-tel">WhatsApp (8 dígitos)</label><input id="n-tel" inputmode="numeric" maxlength="12"></div>
+          <div><label for="n-nac">Nacimiento</label><input id="n-nac" type="date"></div>
+          <div><label for="n-pla">Plataforma</label><input id="n-pla" list="plats" maxlength="30"></div>
+        </div>
+        <button class="btn sec">Crear cliente</button>
+      </form>
+      <div class="msg" id="mnue"></div>
+      <datalist id="plats"><option>Xbox</option><option>PlayStation</option><option>Nintendo</option><option>PC</option><option>Meta Quest / VR</option><option>Varias</option><option>Otro</option></datalist>
+    </section>
+    <section class="card">
+      <h2>Copia de seguridad</h2>
+      <p class="nota" style="margin:-6px 0 8px">Baja todo (clientes, movimientos y solicitudes) en un Excel.</p>
+      <button type="button" class="btn sec" id="c-exp">⬇️ Bajar Excel</button>
+      <div class="msg" id="mexp"></div>
+    </section>
+  </div>
+
   <div id="t-es" hidden>
     <section class="card">
       <div class="rng" id="rng"><button type="button" class="chip" data-d="1">Hoy</button><button type="button" class="chip" data-d="7" aria-pressed="true">7 días</button><button type="button" class="chip" data-d="30">30 días</button><button type="button" class="chip" data-d="90">90 días</button></div>
@@ -226,7 +342,7 @@ async function cargar(){const d=await api('estado');$('niph').textContent=d.ipho
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
 async function entrar(){
   $('bentrar').disabled=true;nomsg('mlogin');
-  try{await cargar();try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}$('login').hidden=true;$('app').hidden=false;$('salir').hidden=false;let t='of';try{t=localStorage.getItem('gx_tab')||'of'}catch(e){}tab(t)}
+  try{await cargar();try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}$('login').hidden=true;$('app').hidden=false;$('salir').hidden=false;let t='of';try{t=localStorage.getItem('gx_tab')||'of'}catch(e){}tab(t);if(t!=='cl')api('cli-solicitudes').then(pintarSol).catch(()=>{})}
   catch(e){msg('mlogin','bad',esc(e.message))}
   $('bentrar').disabled=false;
 }
@@ -280,8 +396,9 @@ $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)r
 
 // ---------- pestañas y estadísticas ----------
 let DIAS=7,cargadas=false;
-function tab(t){$('tb-of').setAttribute('aria-selected',t==='of');$('tb-es').setAttribute('aria-selected',t==='es');$('t-of').hidden=t!=='of';$('t-es').hidden=t!=='es';
-  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats()}
+function tab(t){['of','es','cl'].forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});
+  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes()}
+$('tb-cl').onclick=()=>tab('cl');
 $('tb-of').onclick=()=>tab('of');
 const copiar=t=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t);
 $('cp-nc').onclick=()=>copiar('https://gamex-cu.github.io/#no-contar');$('cp-c').onclick=()=>copiar('https://gamex-cu.github.io/#contar');
@@ -332,6 +449,103 @@ function tipEn(el){document.querySelectorAll('.tip').forEach(x=>x.remove());cons
   const r=b.getBoundingClientRect(),c=$('chart').getBoundingClientRect();if(r.left-c.left<70)t.style.left='0',t.style.transform='none';else if(c.right-r.right<70)t.style.left='auto',t.style.right='0',t.style.transform='none';b.appendChild(t)}
 $('chart').addEventListener('pointerover',e=>tipEn(e.target));$('chart').addEventListener('focusin',e=>tipEn(e.target));
 $('chart').addEventListener('pointerleave',()=>tipEn(null));$('chart').addEventListener('focusout',()=>tipEn(null));
+// ---------- Clientes (GameX Rewards) ----------
+let CLI=null,FICHA=null,VERRES=false;
+const hoyL=()=>new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
+const money=x=>'$'+(Math.round(x*100)/100).toLocaleString('es',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fechaA=f=>{if(!f)return'—';const[y,m,d]=f.split('-');return +d+' '+MES[+m-1]+' '+y};
+const nivelCls=n=>n.startsWith('Nivel 3')?'🥇':n.startsWith('Nivel 2')?'🥈':n.startsWith('Nivel 1')?'🥉':'⚪';
+function enCumple(fecha,nac){if(!fecha||!nac)return false;const[y,m,d]=fecha.split('-').map(Number),[,mn,dn]=nac.split('-').map(Number),f=Date.UTC(y,m-1,d);return [y-1,y,y+1].some(a=>Math.abs(f-Date.UTC(a,mn-1,dn))<=3*864e5)}
+function pintarSol(d){
+  const p=d.solicitudes.filter(s=>s.estado==='pendiente'),otras=d.solicitudes.filter(s=>s.estado!=='pendiente').slice(0,5);
+  $('nsol').textContent=p.length||'';$('nsol2').textContent=p.length||'';
+  $('sols').innerHTML=(p.length?p.map(s=>`<div class="solc"><b>${esc(s.nombre)} ${esc(s.apellidos)}</b><br><small class="nota">Nació el ${fechaA(s.nac)} · WhatsApp ${esc(s.tel)} · ${esc(s.plataforma||'—')} · pidió el ${fechaA(s.fecha)} · solicitud n.º ${s.id}</small>
+    <div class="acc"><div><label for="sg${s.id}" style="margin:6px 0 4px">ID que le das</label><input id="sg${s.id}" value="${esc(d.siguiente)}"></div>
+    <button type="button" data-sol="${s.id}" data-a="aprobar" style="background:var(--ok);color:#fff">✓ Aceptar</button><button type="button" data-sol="${s.id}" data-a="rechazar" style="background:transparent;border:1px solid var(--bad);color:var(--bad)">Rechazar</button></div></div>`).join(''):'<p class="vacio">No hay solicitudes pendientes.</p>')
+    +(otras.length?`<p class="nota" style="margin-top:14px">Últimas resueltas: ${otras.map(s=>esc(s.nombre)+' '+(s.estado==='aprobada'?'✓ '+esc(s.gx):'✕')).join(' · ')}</p>`:'');
+}
+async function clientes(){
+  try{const [l,s]=await Promise.all([api('cli-lista'),api('cli-solicitudes')]);CLI=l;pintarSol(s);pintarClientes();if(!$('n-gx').value)$('n-gx').value=l.siguiente}
+  catch(e){msg('mcli','bad',esc(e.message))}
+}
+function pintarClientes(){
+  if(!CLI)return;const q=$('c-bus').value.trim().toLowerCase().replace(/\s/g,'');
+  const act=CLI.clientes.filter(c=>c.estado==='activo'),gx=act.reduce((a,c)=>a+c.saldo,0),val=act.reduce((a,c)=>a+c.valor,0);
+  $('c-kpis').innerHTML=`<div class="kpi"><b>${N(act.length)}</b><span>Clientes</span><small>${N(act.filter(c=>c.activada).length)} con cuenta activada</small></div><div class="kpi"><b>${N(gx)}</b><span>GX en saldo</span><small>${money(val)} en premios posibles</small></div><div class="kpi"><b>${N(act.filter(c=>c.nivel!=='Base').length)}</b><span>Con nivel 1 o más</span></div>`;
+  let ls=CLI.clientes.filter(c=>VERRES||c.estado==='activo');
+  if(q)ls=ls.filter(c=>(c.gx+c.nombre+c.tel).toLowerCase().replace(/\s/g,'').includes(q.replace(/^gx/,'gx')));
+  ls.sort((a,b)=>(b.ultima||'').localeCompare(a.ultima||'')||a.gx.localeCompare(b.gx));
+  $('c-lista').innerHTML=ls.length?ls.map(c=>`<button type="button" class="cl${c.estado==='reservado'?' res':''}" data-gx="${c.gx}"><span class="gx">${c.gx}</span><span class="nm">${c.estado==='reservado'?'<i>Reservado</i>':esc(c.nombre)}<small>${c.estado==='reservado'?'Libre para dar':(c.activada?'🔓 cuenta activada':'🔒 sin activar')+(c.ultima?' · última compra '+fecha(c.ultima):'')}</small></span><span class="sd">${nivelCls(c.nivel)} ${N(c.saldo)} GX<small>${c.prestigio?'⭐'.repeat(Math.min(c.prestigio,5))+' ':''}${money(c.valor)}</small></span></button>`).join(''):'<p class="vacio">Nadie coincide con la búsqueda.</p>';
+}
+$('c-bus').oninput=pintarClientes;
+$('c-res').onclick=()=>{VERRES=!VERRES;$('c-res').setAttribute('aria-pressed',VERRES);$('c-res').textContent=VERRES?'Ocultar reservados':'Ver IDs reservados';pintarClientes()};
+$('c-lista').onclick=e=>{const b=e.target.closest('[data-gx]');if(b)abrirFicha(b.dataset.gx)};
+async function abrirFicha(gx){try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
+$('f-cerrar').onclick=()=>{$('s-ficha').hidden=true;FICHA=null};
+function pintarFicha(f){
+  FICHA=f;const c=f.cliente,r=f.resumen,R=f.reglas;
+  $('f-tit').innerHTML=`<span style="color:var(--warn)">${c.gx}</span> · ${esc(c.nombre||'Reservado')}`;
+  $('f-sub').textContent=[c.tel&&'WhatsApp '+c.tel,c.nac&&'nació el '+fechaA(c.nac),c.plataforma,c.registro&&'cliente desde '+fechaA(c.registro)].filter(Boolean).join(' · ');
+  $('f-kpis').innerHTML=`<div class="kpi"><b>${N(r.saldo)}</b><span>GX de saldo</span><small>${N(r.historicos)} ganados en total</small></div><div class="kpi"><b>${nivelCls(r.nivel)} ${esc(r.nivel)}</b><span>Nivel</span><small>puede canjear ${money(r.valor)}</small></div><div class="kpi"><b>${r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5)):'0'}</b><span>Prestigio ${r.prestigio}</span><small>faltan ${N(r.faltaPrestigio)} GX para el siguiente</small></div><div class="kpi"><b>${money(r.gastado)}</b><span>Gastado</span><small>${pl(r.compras,'compra')}${r.referidos?' · '+pl(r.referidos,'referido'):''}</small></div>`;
+  const ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;$('f-barra').style.width=(r.siguiente?Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100):100)+'%';
+  $('f-barra-t').textContent=r.siguiente?`Le faltan ${N(r.faltan)} GX para el ${r.siguiente===R.n1?'Nivel 1 ($'+R.p1+')':r.siguiente===R.n2?'Nivel 2 ($'+R.p2+')':'Nivel 3 / MAX ($'+R.p3+')'}`:'¡Está en el nivel máximo!';
+  $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${esc(m.descr)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span><button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
+  $('d-nom').value=c.nombre||'';$('d-tel').value=c.tel||'';$('d-nac').value=c.nac||'';$('d-pla').value=c.plataforma||'';
+  $('f-cuenta').textContent=c.activada?'🔓 Ya activó su cuenta en la web o la app.':'🔒 Todavía no ha activado su cuenta. Para hacerlo necesita su ID, su fecha de nacimiento y los 4 últimos dígitos de su teléfono.';
+  const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
+  $('f-wa').href=c.tel?'https://wa.me/53'+c.tel+'?text='+encodeURIComponent(txt):'#';$('f-wa').hidden=!c.tel;
+  if(!$('m-fecha').value)$('m-fecha').value=hoyL();movPrev();
+}
+const MT=()=>(document.querySelector('input[name=mt]:checked')||{}).value||'Compra';
+function movPrev(){
+  if(!FICHA)return;const t=MT(),R=FICHA.reglas,c=FICHA.cliente,imp=+$('m-imp').value||0,n=Math.round(+$('m-n').value||0);
+  $('m-imp-w').hidden=t!=='Compra';$('m-n-w').hidden=!['Canje','Ajuste +','Ajuste -'].includes(t);
+  $('m-desc-l').textContent=t==='Compra'?'Qué compró':t==='Canje'?'En qué lo canjea':t==='Referido'?'Nombre del amigo que trajo (ya hizo su primera compra)':'Motivo';
+  let h='';
+  if(t==='Compra'&&imp>0){const b=Math.round(imp*R.porDolar),cu=enCumple($('m-fecha').value,c.nac);h=`Ganará <b>${N(cu?b*2:b)} GX</b>${cu?' 🎂 (semana de cumpleaños: x2)':''} · suma ${N(cu?b*2:b)} al prestigio`}
+  else if(t==='Referido')h=`Ganará <b>${R.referido} GX</b> por referido (no suma prestigio)`;
+  else if(t==='Canje'&&n>0)h=n>FICHA.resumen.saldo?`⚠️ Solo tiene ${N(FICHA.resumen.saldo)} GX`:`Se descuentan <b>${N(n)} GX</b> · le quedan ${N(FICHA.resumen.saldo-n)} GX (puede canjear hasta ${money(FICHA.resumen.valor)} con su saldo actual)`;
+  else if(t==='Canje')h=`Tiene ${N(FICHA.resumen.saldo)} GX = ${money(FICHA.resumen.valor)} para canjear (${esc(FICHA.resumen.nivel)})`;
+  else if(t==='Ajuste +'&&n>0)h=`Se suman <b>${N(n)} GX</b> (no cuentan para prestigio)`;
+  else if(t==='Ajuste -'&&n>0)h=`Se quitan <b>${N(n)} GX</b>`;
+  $('m-prev').innerHTML=h;
+}
+['m-imp','m-n','m-fecha'].forEach(i=>$(i).addEventListener('input',movPrev));$('m-tipos').addEventListener('change',movPrev);
+$('fmov').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;nomsg('mmov');$('m-btn').disabled=true;
+  try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:$('m-desc').value.trim()});
+    pintarFicha(d);msg('mmov','ok',`✅ ${esc(t)} guardada: ${d.nuevo.ganados?'+'+N(d.nuevo.ganados):'−'+N(d.nuevo.usados)} GX${d.nuevo.cumple?' 🎂 (x2 cumpleaños)':''}. Saldo: ${N(d.resumen.saldo)} GX · ${esc(d.resumen.nivel)}.`);
+    $('m-imp').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes()}
+  catch(err){msg('mmov','bad',esc(err.message))}$('m-btn').disabled=false};
+$('f-hist').onclick=async e=>{const b=e.target.closest('[data-mb]');if(!b)return;
+  if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro?';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Borrar'}},4000);return}
+  b.disabled=true;try{pintarFicha(await api('cli-mov-borrar',{id:+b.dataset.mb}));msg('mmov','ok','Movimiento borrado.');clientes()}catch(err){msg('mmov','bad',esc(err.message))}};
+$('fdat').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;const c=FICHA.cliente;
+  try{pintarFicha(await api('cli-guardar',{gx:c.gx,nombre:$('d-nom').value,tel:$('d-tel').value,nac:$('d-nac').value,plataforma:$('d-pla').value,registro:c.registro,estado:$('d-nom').value.trim()?'activo':c.estado}));msg('mdat','ok','Datos guardados. Si cambiaste la fecha de nacimiento, se recalcularon los bonos de cumpleaños.');clientes()}
+  catch(err){msg('mdat','bad',esc(err.message))}};
+$('f-clave').onclick=async()=>{const b=$('f-clave');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{b.dataset.ok='';b.textContent='🔑 Reiniciar contraseña'},4000);return}
+  try{pintarFicha(await api('cli-clave',{gx:FICHA.cliente.gx}));msg('mdat','ok','Contraseña borrada. El cliente vuelve a activar su cuenta con "Ya soy cliente" y pone una nueva.')}catch(err){msg('mdat','bad',esc(err.message))}b.dataset.ok='';b.textContent='🔑 Reiniciar contraseña'};
+$('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;const id=+b.dataset.sol,a=b.dataset.a;
+  if(a==='rechazar'&&b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Rechazar?';return}
+  b.disabled=true;nomsg('msol');
+  try{const d=await api('cli-solicitud',{id,accion:a,gx:($('sg'+id)||{}).value});pintarSol(d);
+    if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.`;
+      msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/53${esc(x.tel)}?text=${encodeURIComponent(t)}">💬 Avisarle por WhatsApp</a>`)}
+    else msg('msol','ok','Solicitud rechazada.');clientes()}
+  catch(err){msg('msol','bad',esc(err.message));b.disabled=false}};
+$('fnue').onsubmit=async e=>{e.preventDefault();nomsg('mnue');
+  try{const gx=$('n-gx').value,ya=CLI&&CLI.clientes.find(c=>c.gx===gx.toUpperCase());
+    const d=await api('cli-guardar',{gx,nuevo:!ya,nombre:$('n-nom').value,tel:$('n-tel').value,nac:$('n-nac').value,plataforma:$('n-pla').value,estado:'activo'});
+    msg('mnue','ok','✅ Cliente '+esc(d.cliente.gx)+' creado.');$('fnue').reset();$('n-gx').value='';await clientes();abrirFicha(d.cliente.gx)}
+  catch(err){msg('mnue','bad',esc(err.message))}};
+$('c-exp').onclick=async()=>{nomsg('mexp');$('c-exp').disabled=true;
+  try{const d=await api('cli-exportar');
+    if(!window.XLSX)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=ok;s.onerror=()=>no(new Error('No se pudo cargar el generador de Excel'));document.head.appendChild(s)});
+    const wb=XLSX.utils.book_new(),hoja=(n,f)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(f),n);
+    hoja('Clientes',d.clientes.map(c=>({'ID GX':c.gx,'Nombre':c.nombre,'WhatsApp':c.tel,'Nacimiento':c.nac,'Registro':c.registro,'Plataforma':c.plataforma,'Estado':c.estado,'Cuenta activada':c.activada?'Sí':'No','GX saldo':c.saldo,'Nivel':c.nivel,'Valor disponible $':c.valor,'GX históricos':c.historicos,'GX prestigio':c.prestigioGX,'Prestigio':c.prestigio,'Total gastado $':c.gastado,'# Compras':c.compras,'# Referidos':c.referidos})));
+    hoja('Movimientos',d.movs.map(m=>({'Fecha':m.fecha,'ID GX':m.gx,'Tipo':m.tipo,'Descripción':m.descr,'Importe $':m.importe||'','Cumpleaños x2':m.tipo==='Compra'?(m.cumple?'Sí':'No'):'','GX base':m.base,'GX bono':m.bono,'GX ganados':m.ganados,'GX usados':m.usados,'GX prestigio':m.prest})));
+    hoja('Solicitudes',d.solicitudes.map(s=>({'N.º':s.id,'Fecha':s.fecha,'Nombre':s.nombre,'Apellidos':s.apellidos,'Nacimiento':s.nac,'WhatsApp':s.tel,'Plataforma':s.plataforma,'Estado':s.estado,'GX dado':s.gx})));
+    XLSX.writeFile(wb,'GameX-Rewards-'+hoyL()+'.xlsx');msg('mexp','ok','✅ Excel bajado.')}
+  catch(err){msg('mexp','bad',esc(err.message))}$('c-exp').disabled=false};
 prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
 </script>

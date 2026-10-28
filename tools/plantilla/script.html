@@ -86,6 +86,7 @@ function render(){
 function route(){
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
+  $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}
   const esServ=SERV.length&&(h==='servicios'||SERV.some(y=>svSlug(y)===h));
   if(!h.startsWith('l-'))$('serv').hidden=!esServ;
   if(h.startsWith('l-'))return;
@@ -111,6 +112,65 @@ function route(){
     current=null;$('view').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('home').hidden=false;sync();
   }
 }
+// ---------- Mi cuenta GameX (GameX Rewards) ----------
+const CU_API=()=>((typeof PUSH!=='undefined'&&PUSH.url)||'https://gamex-avisos.gamex-cu.workers.dev')+'/cuenta/';
+const cuLS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+let CU=null;
+const cuN=n=>(n||0).toLocaleString('es');
+const cuMoney=x=>'$'+(+x).toFixed(2);
+const cuMES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const cuF=f=>{if(!f)return'';const[y,m,d]=f.split('-');return +d+' '+cuMES[+m-1]+' '+y};
+async function cuPost(ruta,body,tok){
+  const o={method:body?'POST':'GET',headers:{}};if(body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(body)}if(tok)o.headers.Authorization='Bearer '+tok;
+  let r;try{r=await fetch(CU_API()+ruta,o)}catch(e){throw new Error('No hay conexión a internet. Prueba otra vez.')}
+  const d=await r.json().catch(()=>({error:'Respuesta rara del servidor'}));if(!r.ok){const e=new Error(d.error||'Error '+r.status);e.status=r.status;throw e}return d}
+function cuMsg(tipo,html){const m=$('cu-msg');m.className='cu-msg '+(tipo||'');m.innerHTML=html;m.hidden=!html}
+function cuTab(t){document.querySelectorAll('[data-cu]').forEach(b=>b.setAttribute('aria-selected',b.dataset.cu===t));['entrar','activar','pedir'].forEach(x=>$('cu-'+x).hidden=x!==t);cuMsg('','')}
+document.querySelector('.cu-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-cu]');if(b)cuTab(b.dataset.cu)});
+const gxFirma=tx=>CU&&!/crear mi cuenta/.test(tx)?`\n\nCliente GameX: ${CU.gx}${CU.nombre?' ('+CU.nombre+')':''}`:'';
+function cuTile(){$('b-cuenta-sub').textContent=CU?`${CU.gx} · ${cuN(CU.resumen.saldo)} GX · ${CU.resumen.nivel}`:'Rewards: mira tus GX, tu nivel, tu prestigio y tus compras'}
+async function cuCargar(){
+  const tok=cuLS.get('gx-sesion');
+  if(!tok){CU=null;cuTile();cuPintar();return}
+  try{CU=await cuPost('yo',null,tok)}catch(e){if(e.status===401){cuLS.set('gx-sesion',null);CU=null}}
+  cuTile();cuPintar();
+}
+async function cuSolEstado(){
+  const s=cuLS.get('gx-solicitud');if(!s)return $('cu-sol').hidden=true;const [id,k]=s.split(':');
+  try{const d=await cuPost(`solicitud?id=${id}&k=${k}`);const el=$('cu-sol');el.hidden=false;
+    if(d.estado==='aprobada'){el.innerHTML=`🎉 <b>¡Tu cuenta fue aprobada!</b> Tu ID es <b>${esc(d.gx)}</b>. Entra con él y la contraseña que pusiste.`;$('ce-gx').value=d.gx}
+    else if(d.estado==='rechazada'){el.innerHTML='Tu solicitud no fue aprobada. Escríbenos por WhatsApp si crees que es un error.';cuLS.set('gx-solicitud',null)}
+    else el.innerHTML=`⏳ Tu solicitud n.º ${esc(id)} está <b>en revisión</b>. Te avisamos por WhatsApp cuando esté lista.`}
+  catch(e){$('cu-sol').hidden=true}
+}
+function cuPintar(){
+  $('cu-fuera').hidden=!!CU;$('cu-dentro').hidden=!CU;
+  if(!CU){cuSolEstado();return}
+  const r=CU.resumen,R=CU.reglas;
+  $('cu-gx').textContent=CU.gx;$('cu-nom').textContent=CU.nombre||'';$('cu-saldo').textContent=cuN(r.saldo);
+  $('cu-niv').textContent=(r.nivel.startsWith('Nivel 3')?'🥇 ':r.nivel.startsWith('Nivel 2')?'🥈 ':r.nivel.startsWith('Nivel 1')?'🥉 ':'')+r.nivel;
+  $('cu-val').textContent='Vale '+cuMoney(r.valor);
+  const ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;setTimeout(()=>$('cu-barra').style.width=(r.siguiente?Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100):100)+'%',60);
+  $('cu-falta').textContent=r.siguiente?`Te faltan ${cuN(r.faltan)} GX para el ${r.siguiente===R.n1?'Nivel 1 ('+cuMoney(R.p1)+')':r.siguiente===R.n2?'Nivel 2 ('+cuMoney(R.p2)+')':'Nivel 3 / MAX ('+cuMoney(R.p3)+')'}`:'¡Estás en el nivel máximo! 🏆';
+  $('cu-pres').textContent=r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5))+(r.prestigio>5?' '+r.prestigio:''):'0';
+  $('cu-pres2').textContent=`faltan ${cuN(r.faltaPrestigio)} GX para el siguiente`;
+  $('cu-comp').textContent=cuN(r.compras);$('cu-gast').textContent=cuMoney(r.gastado)+' en total';$('cu-hist').textContent=cuN(r.historicos);
+  $('cu-lista').innerHTML=CU.historial.length?CU.historial.map(m=>`<div class="cu-mv"><div><b style="font-weight:600">${esc(m.tipo==='Compra'?(m.descr||'Compra'):m.tipo==='Canje'?'Canje'+(m.descr?': '+m.descr:''):m.tipo==='Referido'?'Referido'+(m.descr?': '+m.descr:''):(m.descr||'Ajuste'))}</b><small>${cuF(m.fecha)}${m.importe?' · '+cuMoney(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><b class="${m.ganados?'mas':m.usados?'menos':''}">${m.ganados?'+'+cuN(m.ganados):m.usados?'−'+cuN(m.usados):'0'} GX</b></div>`).join(''):'<p class="cu-help">Todavía no tienes movimientos.</p>';
+  $('cu-reglas').innerHTML=`<ul><li>Cada <b>$1</b> que gastas te da <b>${R.porDolar} GX</b>.</li><li>En tu <b>semana de cumpleaños</b> (3 días antes, el día y 3 días después) ganas <b>el doble</b>.</li><li>Si traes a un amigo nuevo, ganas <b>${R.referido} GX</b> cuando haga su primera compra.</li><li>Niveles: <b>${cuN(R.n1)} GX = ${cuMoney(R.p1)}</b> · <b>${cuN(R.n2)} GX = ${cuMoney(R.p2)}</b> · <b>${cuN(R.n3)} GX = ${cuMoney(R.p3)}</b> (máximo). Canjéalos en tus compras.</li><li><b>Prestigio:</b> +1 ⭐ por cada ${cuN(R.prestigio)} GX ganados en compras. Canjear no te quita prestigio.</li></ul>`;
+}
+function cuEntro(d){cuLS.set('gx-sesion',d.token);cuLS.set('gx-solicitud',null);cuMsg('','');cuCargar()}
+$('cu-entrar').onsubmit=async e=>{e.preventDefault();const b=e.submitter||e.target.querySelector('button');b.disabled=true;
+  try{cuEntro(await cuPost('entrar',{gx:$('ce-gx').value,pass:$('ce-pw').value}));$('ce-pw').value=''}catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-activar').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;
+  try{cuEntro(await cuPost('activar',{gx:$('ca-gx').value,nac:$('ca-nac').value,tel4:$('ca-tel').value,pass:$('ca-pw').value}));e.target.reset()}catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-pedir').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;
+  const d={nombre:$('cp-nom').value.trim(),apellidos:$('cp-ape').value.trim(),nac:$('cp-nac').value,tel:$('cp-tel').value,plataforma:$('cp-pla').value,pass:$('cp-pw').value};
+  try{const r=await cuPost('solicitar',d);cuLS.set('gx-solicitud',r.id+':'+r.k);e.target.reset();
+    const t=`Hola GameX, quiero crear mi cuenta de GameX Rewards.\n*Nombre:* ${d.nombre} ${d.apellidos}\n*Nacimiento:* ${cuF(d.nac)}\n*WhatsApp:* ${d.tel}\n*Juego en:* ${d.plataforma}\n*Solicitud n.º* ${r.id}`;
+    cuMsg('ok',`✅ <b>Solicitud n.º ${r.id} enviada.</b> Para que la veamos antes, mándanosla también por WhatsApp:<br><a class="op wa-pick" href="#" data-t="${esc(t)}">Enviar por WhatsApp</a>`);cuSolEstado()}
+  catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-salir').onclick=async()=>{const tok=cuLS.get('gx-sesion');cuLS.set('gx-sesion',null);CU=null;cuTile();cuPintar();try{await cuPost('salir',{},tok)}catch(e){}};
+cuCargar();
 addEventListener('hashchange',route);
 $('filt').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=b.dataset.f;
   if(!f)active.clear();else{active.has(f)?active.delete(f):active.add(f);
@@ -136,6 +196,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('back-cuenta').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('olist').addEventListener('click',e=>{const b=e.target.closest('.oh');if(!b)return;const c=b.closest('.ocard'),on=!c.classList.contains('abierta');c.classList.toggle('abierta',on);b.setAttribute('aria-expanded',on)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
@@ -158,7 +219,7 @@ const save=()=>{try{localStorage.setItem('gamex-cart-v2',JSON.stringify(cart))}c
 const split=k=>{const i=k.indexOf('|');return [k.slice(0,i),k.slice(i+1)]};
 const sorted=()=>[...cart].sort((a,b)=>CI[split(a)[0]]-CI[split(b)[0]]);
 function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]).push(n)});
-  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`}
+  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`+gxFirma('')}
 function sync(){
   $('cn').textContent=cart.length;
   $('clear').hidden=!cart.length;
@@ -179,6 +240,7 @@ function wpLinks(){const g=$('wpq').value.trim();let tx=wpAsk&&g?wpTx+'\n\n*Jueg
     if(ok)tx=wpTx+'\n'+L.map(([m,c])=>`• ${c} × $${m}`).join('\n')+`\n*Total: $${tot}*`}
   else if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' – '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
   else wp.querySelector('.wpl').classList.remove('off');
+  tx+=gxFirma(tx);
   wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
 function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];wpM=null;o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
   const [si,ii]=sv.split(':').map(Number),it=SERV[si]&&SERV[si].items[ii];if(!it)return;

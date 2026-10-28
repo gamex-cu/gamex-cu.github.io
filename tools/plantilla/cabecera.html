@@ -144,6 +144,56 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sb-of{background:linear-gradient(135deg,rgba(242,169,0,.18),rgba(217,43,43,.10))}
 .sb-of .sbi{background:var(--hot);color:#0d1124}
 .olist{display:grid;gap:12px;padding:16px 0 28px}
+.sb-gx{background:linear-gradient(135deg,rgba(255,181,61,.16),rgba(150,90,255,.14))}
+.sb-gx .sbi{background:linear-gradient(135deg,#ffb53d,#a66bff);color:#0d1124}
+.cu{padding:16px 16px 40px;max-width:560px}
+.cu-tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px}
+.cu-tabs button{flex:1;font:inherit;font-size:.9rem;font-weight:600;padding:10px 6px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
+.cu-tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+.cu-f{display:flex;flex-direction:column;margin-top:14px}
+.cu-f label{font-weight:600;font-size:.92rem;margin:12px 0 6px}
+.cu-f label small{font-weight:400;color:var(--muted)}
+.cu-f input,.cu-f select{font:inherit;font-size:1rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px}
+.cu-f input:focus,.cu-f select:focus{outline:2px solid var(--accent);border-color:transparent}
+.cu-intro{color:var(--muted);margin:4px 0 4px;line-height:1.45}
+.cu-help{color:var(--muted);font-size:.85rem;margin-top:12px}
+.cu-btn{margin-top:18px;font:700 1rem var(--display);padding:14px;border:0;border-radius:11px;background:var(--hot);color:#0d1124;cursor:pointer}
+.cu-btn:disabled{opacity:.6}
+.cu-msg{margin-top:14px;padding:14px;border-radius:11px;line-height:1.45;background:rgba(61,123,255,.12);border:1px solid var(--line)}
+.cu-msg.bad{background:rgba(255,90,90,.12);border-color:rgba(255,90,90,.5)}
+.cu-msg.ok{background:rgba(47,191,113,.12);border-color:rgba(47,191,113,.5)}
+.cu-msg .op{display:inline-block;margin-top:10px}
+.cu-sol{margin-top:14px;padding:14px;border-radius:11px;background:rgba(255,181,61,.1);border:1px solid rgba(255,181,61,.45);line-height:1.45}
+.cu-card{border-radius:18px;padding:18px;background:linear-gradient(135deg,#2a1f4d,#16224a 60%,#3a2a12);border:1px solid rgba(255,181,61,.35)}
+.cu-top{display:flex;justify-content:space-between;align-items:flex-start}
+.cu-top small{display:block;color:var(--muted);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.cu-top b{font:700 1.5rem var(--display);color:var(--hot);letter-spacing:.04em}
+.cu-salir{font:inherit;font-size:.85rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--fg);cursor:pointer}
+.cu-nom{margin:2px 0 14px;font-weight:600}
+.cu-saldo{display:flex;align-items:baseline;gap:8px}
+.cu-saldo b{font:800 3rem/1 var(--display);font-variant-numeric:tabular-nums}
+.cu-saldo span{color:var(--muted);font-weight:700}
+.cu-nivel{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-weight:600}
+.cu-nivel span:last-child{color:#7fe0a5}
+.cu-barra{height:10px;border-radius:99px;background:rgba(0,0,0,.35);overflow:hidden;margin-top:10px}
+.cu-barra div{height:100%;width:0;background:linear-gradient(90deg,#ffb53d,#7fe0a5);transition:width .6s}
+.cu-falta{color:var(--muted);font-size:.88rem;margin:8px 0 0}
+.cu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.cu-kpis div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cu-kpis b{font:700 1.3rem var(--display)}
+.cu-kpis span{font-size:.85rem;font-weight:600}
+.cu-kpis small{color:var(--muted);font-size:.74rem;line-height:1.3}
+.cu-h{font:700 1.1rem var(--display);margin:22px 0 6px}
+.cu-mv{display:flex;gap:10px;padding:11px 0;border-top:1px solid var(--line);align-items:center}
+.cu-mv div{flex:1;min-width:0}
+.cu-mv small{display:block;color:var(--muted);font-size:.8rem}
+.cu-mv b.mas{color:#7fe0a5}.cu-mv b.menos{color:#ff8a8a}
+.cu-mv b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.cu-como{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.cu-como summary{cursor:pointer;font-weight:600}
+.cu-como ul{margin:10px 0 0;padding-left:18px;color:var(--muted);line-height:1.5}
+.cu-como b{color:var(--fg)}
+
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
 .ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
@@ -296,6 +346,11 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
     <span class="sbt"><b>Servicios</b><small id="b-serv-sub">Todo lo que hacemos además de los juegos</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
+  <a class="sbtn sb-gx" href="#cuenta" id="b-cuenta">
+    <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg></span>
+    <span class="sbt"><b>Mi cuenta GameX</b><small id="b-cuenta-sub">Rewards: mira tus GX, tu nivel, tu prestigio y tus compras</small></span>
+    <span class="sgo" aria-hidden="true">→</span>
+  </a>
   <p class="sectitle">Escríbenos</p>
   <div class="wa"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089 <small>WhatsApp</small></a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989 <small>WhatsApp</small></a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943 <small>WhatsApp</small></a></div>
   <a class="chan" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener"><b>Canal de GAMEX en WhatsApp</b><span>Novedades, juegos nuevos y promociones</span><i>Seguir canal</i></a>
@@ -309,6 +364,63 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="wrap">
   <div class="consoles" id="consoles"></div>
   <div class="hsearch"><input id="hq" type="search" placeholder="O busca un juego en todas las consolas…" autocomplete="off" aria-label="Buscar en todas las consolas" style="width:100%;font:inherit;font-size:1.05rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px"></div>
+</div>
+</div>
+
+<div id="cuenta" hidden>
+<div class="bar"><div class="wrap">
+  <div class="vtitle"><a class="back" href="#" id="back-cuenta">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Mi cuenta GameX</span><span class="vc" id="cu-vc">GameX Rewards · GX, nivel y prestigio</span></span></div>
+</div></div>
+<div class="wrap cu">
+  <div id="cu-fuera">
+    <div class="cu-tabs" role="tablist"><button type="button" data-cu="entrar" aria-selected="true">Entrar</button><button type="button" data-cu="activar" aria-selected="false">Ya soy cliente</button><button type="button" data-cu="pedir" aria-selected="false">Quiero una cuenta</button></div>
+    <div class="cu-sol" id="cu-sol" hidden></div>
+    <form class="cu-f" id="cu-entrar">
+      <p class="cu-intro">Entra con tu <b>ID GX</b> y tu contraseña.</p>
+      <label for="ce-gx">ID GX</label><input id="ce-gx" autocomplete="username" placeholder="Ej: GX0012" required autocapitalize="characters">
+      <label for="ce-pw">Contraseña</label><input id="ce-pw" type="password" autocomplete="current-password" required>
+      <button class="cu-btn">Entrar</button>
+      <p class="cu-help">¿Olvidaste la contraseña? Escríbenos por WhatsApp y te la reiniciamos.</p>
+    </form>
+    <form class="cu-f" id="cu-activar" hidden>
+      <p class="cu-intro">Si ya eres cliente de GameX y te dimos tu <b>ID GX</b>, activa tu cuenta aquí. Lo hacemos con tus datos de cliente para que nadie más pueda entrar.</p>
+      <label for="ca-gx">ID GX</label><input id="ca-gx" placeholder="Ej: GX0012" required autocapitalize="characters">
+      <label for="ca-nac">Fecha de nacimiento</label><input id="ca-nac" type="date" required>
+      <label for="ca-tel">Últimos 4 dígitos de tu teléfono</label><input id="ca-tel" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="Ej: 1089" required>
+      <label for="ca-pw">Crea tu contraseña <small>(mínimo 6)</small></label><input id="ca-pw" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="cu-btn">Activar mi cuenta</button>
+      <p class="cu-help">¿No sabes tu ID GX? Pregúntanos por WhatsApp.</p>
+    </form>
+    <form class="cu-f" id="cu-pedir" hidden>
+      <p class="cu-intro">Llena tus datos. Revisamos la solicitud y, si la aprobamos, te damos tu <b>ID GX</b> para entrar.</p>
+      <label for="cp-nom">Nombre</label><input id="cp-nom" required maxlength="40" autocomplete="given-name">
+      <label for="cp-ape">Apellidos</label><input id="cp-ape" required maxlength="60" autocomplete="family-name">
+      <label for="cp-nac">Fecha de nacimiento</label><input id="cp-nac" type="date" required>
+      <label for="cp-tel">Tu WhatsApp</label><input id="cp-tel" inputmode="numeric" required placeholder="Ej: 5344 1089" autocomplete="tel">
+      <label for="cp-pla">¿En qué juegas más?</label><select id="cp-pla"><option>Xbox</option><option>PlayStation</option><option>Nintendo</option><option>PC</option><option>Meta Quest / VR</option><option>Varias</option><option>Otro</option></select>
+      <label for="cp-pw">Crea tu contraseña <small>(mínimo 6)</small></label><input id="cp-pw" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="cu-btn">Enviar solicitud</button>
+    </form>
+    <div class="cu-msg" id="cu-msg" hidden></div>
+  </div>
+  <div id="cu-dentro" hidden>
+    <div class="cu-card">
+      <div class="cu-top"><div><small>ID GX</small><b id="cu-gx"></b></div><button type="button" class="cu-salir" id="cu-salir">Salir</button></div>
+      <p class="cu-nom" id="cu-nom"></p>
+      <div class="cu-saldo"><b id="cu-saldo"></b><span>GX</span></div>
+      <div class="cu-nivel"><span id="cu-niv"></span><span id="cu-val"></span></div>
+      <div class="cu-barra"><div id="cu-barra"></div></div>
+      <p class="cu-falta" id="cu-falta"></p>
+    </div>
+    <div class="cu-kpis">
+      <div><b id="cu-pres"></b><span>Prestigio</span><small id="cu-pres2"></small></div>
+      <div><b id="cu-comp"></b><span>Compras</span><small id="cu-gast"></small></div>
+      <div><b id="cu-hist"></b><span>GX ganados</span><small>desde que eres cliente</small></div>
+    </div>
+    <h3 class="cu-h">Historial</h3>
+    <div class="cu-lista" id="cu-lista"></div>
+    <details class="cu-como"><summary>¿Cómo funciona GameX Rewards?</summary><div id="cu-reglas"></div></details>
+  </div>
 </div>
 </div>
 

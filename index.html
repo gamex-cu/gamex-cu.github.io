@@ -172,6 +172,56 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sb-of{background:linear-gradient(135deg,rgba(242,169,0,.18),rgba(217,43,43,.10))}
 .sb-of .sbi{background:var(--hot);color:#0d1124}
 .olist{display:grid;gap:12px;padding:16px 0 28px}
+.sb-gx{background:linear-gradient(135deg,rgba(255,181,61,.16),rgba(150,90,255,.14))}
+.sb-gx .sbi{background:linear-gradient(135deg,#ffb53d,#a66bff);color:#0d1124}
+.cu{padding:16px 16px 40px;max-width:560px}
+.cu-tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px}
+.cu-tabs button{flex:1;font:inherit;font-size:.9rem;font-weight:600;padding:10px 6px;border:0;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}
+.cu-tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
+.cu-f{display:flex;flex-direction:column;margin-top:14px}
+.cu-f label{font-weight:600;font-size:.92rem;margin:12px 0 6px}
+.cu-f label small{font-weight:400;color:var(--muted)}
+.cu-f input,.cu-f select{font:inherit;font-size:1rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px}
+.cu-f input:focus,.cu-f select:focus{outline:2px solid var(--accent);border-color:transparent}
+.cu-intro{color:var(--muted);margin:4px 0 4px;line-height:1.45}
+.cu-help{color:var(--muted);font-size:.85rem;margin-top:12px}
+.cu-btn{margin-top:18px;font:700 1rem var(--display);padding:14px;border:0;border-radius:11px;background:var(--hot);color:#0d1124;cursor:pointer}
+.cu-btn:disabled{opacity:.6}
+.cu-msg{margin-top:14px;padding:14px;border-radius:11px;line-height:1.45;background:rgba(61,123,255,.12);border:1px solid var(--line)}
+.cu-msg.bad{background:rgba(255,90,90,.12);border-color:rgba(255,90,90,.5)}
+.cu-msg.ok{background:rgba(47,191,113,.12);border-color:rgba(47,191,113,.5)}
+.cu-msg .op{display:inline-block;margin-top:10px}
+.cu-sol{margin-top:14px;padding:14px;border-radius:11px;background:rgba(255,181,61,.1);border:1px solid rgba(255,181,61,.45);line-height:1.45}
+.cu-card{border-radius:18px;padding:18px;background:linear-gradient(135deg,#2a1f4d,#16224a 60%,#3a2a12);border:1px solid rgba(255,181,61,.35)}
+.cu-top{display:flex;justify-content:space-between;align-items:flex-start}
+.cu-top small{display:block;color:var(--muted);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}
+.cu-top b{font:700 1.5rem var(--display);color:var(--hot);letter-spacing:.04em}
+.cu-salir{font:inherit;font-size:.85rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--fg);cursor:pointer}
+.cu-nom{margin:2px 0 14px;font-weight:600}
+.cu-saldo{display:flex;align-items:baseline;gap:8px}
+.cu-saldo b{font:800 3rem/1 var(--display);font-variant-numeric:tabular-nums}
+.cu-saldo span{color:var(--muted);font-weight:700}
+.cu-nivel{display:flex;justify-content:space-between;gap:10px;margin-top:10px;font-weight:600}
+.cu-nivel span:last-child{color:#7fe0a5}
+.cu-barra{height:10px;border-radius:99px;background:rgba(0,0,0,.35);overflow:hidden;margin-top:10px}
+.cu-barra div{height:100%;width:0;background:linear-gradient(90deg,#ffb53d,#7fe0a5);transition:width .6s}
+.cu-falta{color:var(--muted);font-size:.88rem;margin:8px 0 0}
+.cu-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.cu-kpis div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.cu-kpis b{font:700 1.3rem var(--display)}
+.cu-kpis span{font-size:.85rem;font-weight:600}
+.cu-kpis small{color:var(--muted);font-size:.74rem;line-height:1.3}
+.cu-h{font:700 1.1rem var(--display);margin:22px 0 6px}
+.cu-mv{display:flex;gap:10px;padding:11px 0;border-top:1px solid var(--line);align-items:center}
+.cu-mv div{flex:1;min-width:0}
+.cu-mv small{display:block;color:var(--muted);font-size:.8rem}
+.cu-mv b.mas{color:#7fe0a5}.cu-mv b.menos{color:#ff8a8a}
+.cu-mv b{white-space:nowrap;font-variant-numeric:tabular-nums}
+.cu-como{margin-top:20px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.cu-como summary{cursor:pointer;font-weight:600}
+.cu-como ul{margin:10px 0 0;padding-left:18px;color:var(--muted);line-height:1.5}
+.cu-como b{color:var(--fg)}
+
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
 .ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
@@ -349,6 +399,11 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
     <span class="sbt"><b>Servicios</b><small id="b-serv-sub">Todo lo que hacemos además de los juegos</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
+  <a class="sbtn sb-gx" href="#cuenta" id="b-cuenta">
+    <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"/></svg></span>
+    <span class="sbt"><b>Mi cuenta GameX</b><small id="b-cuenta-sub">Rewards: mira tus GX, tu nivel, tu prestigio y tus compras</small></span>
+    <span class="sgo" aria-hidden="true">→</span>
+  </a>
   <p class="sectitle">Escríbenos</p>
   <div class="wa"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089 <small>WhatsApp</small></a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989 <small>WhatsApp</small></a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943 <small>WhatsApp</small></a></div>
   <a class="chan" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener"><b>Canal de GAMEX en WhatsApp</b><span>Novedades, juegos nuevos y promociones</span><i>Seguir canal</i></a>
@@ -364,6 +419,63 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="wrap">
   <div class="consoles" id="consoles"></div>
   <div class="hsearch"><input id="hq" type="search" placeholder="O busca un juego en todas las consolas…" autocomplete="off" aria-label="Buscar en todas las consolas" style="width:100%;font:inherit;font-size:1.05rem;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px"></div>
+</div>
+</div>
+
+<div id="cuenta" hidden>
+<div class="bar"><div class="wrap">
+  <div class="vtitle"><a class="back" href="#" id="back-cuenta">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Mi cuenta GameX</span><span class="vc" id="cu-vc">GameX Rewards · GX, nivel y prestigio</span></span></div>
+</div></div>
+<div class="wrap cu">
+  <div id="cu-fuera">
+    <div class="cu-tabs" role="tablist"><button type="button" data-cu="entrar" aria-selected="true">Entrar</button><button type="button" data-cu="activar" aria-selected="false">Ya soy cliente</button><button type="button" data-cu="pedir" aria-selected="false">Quiero una cuenta</button></div>
+    <div class="cu-sol" id="cu-sol" hidden></div>
+    <form class="cu-f" id="cu-entrar">
+      <p class="cu-intro">Entra con tu <b>ID GX</b> y tu contraseña.</p>
+      <label for="ce-gx">ID GX</label><input id="ce-gx" autocomplete="username" placeholder="Ej: GX0012" required autocapitalize="characters">
+      <label for="ce-pw">Contraseña</label><input id="ce-pw" type="password" autocomplete="current-password" required>
+      <button class="cu-btn">Entrar</button>
+      <p class="cu-help">¿Olvidaste la contraseña? Escríbenos por WhatsApp y te la reiniciamos.</p>
+    </form>
+    <form class="cu-f" id="cu-activar" hidden>
+      <p class="cu-intro">Si ya eres cliente de GameX y te dimos tu <b>ID GX</b>, activa tu cuenta aquí. Lo hacemos con tus datos de cliente para que nadie más pueda entrar.</p>
+      <label for="ca-gx">ID GX</label><input id="ca-gx" placeholder="Ej: GX0012" required autocapitalize="characters">
+      <label for="ca-nac">Fecha de nacimiento</label><input id="ca-nac" type="date" required>
+      <label for="ca-tel">Últimos 4 dígitos de tu teléfono</label><input id="ca-tel" inputmode="numeric" maxlength="4" pattern="\d{4}" placeholder="Ej: 1089" required>
+      <label for="ca-pw">Crea tu contraseña <small>(mínimo 6)</small></label><input id="ca-pw" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="cu-btn">Activar mi cuenta</button>
+      <p class="cu-help">¿No sabes tu ID GX? Pregúntanos por WhatsApp.</p>
+    </form>
+    <form class="cu-f" id="cu-pedir" hidden>
+      <p class="cu-intro">Llena tus datos. Revisamos la solicitud y, si la aprobamos, te damos tu <b>ID GX</b> para entrar.</p>
+      <label for="cp-nom">Nombre</label><input id="cp-nom" required maxlength="40" autocomplete="given-name">
+      <label for="cp-ape">Apellidos</label><input id="cp-ape" required maxlength="60" autocomplete="family-name">
+      <label for="cp-nac">Fecha de nacimiento</label><input id="cp-nac" type="date" required>
+      <label for="cp-tel">Tu WhatsApp</label><input id="cp-tel" inputmode="numeric" required placeholder="Ej: 5344 1089" autocomplete="tel">
+      <label for="cp-pla">¿En qué juegas más?</label><select id="cp-pla"><option>Xbox</option><option>PlayStation</option><option>Nintendo</option><option>PC</option><option>Meta Quest / VR</option><option>Varias</option><option>Otro</option></select>
+      <label for="cp-pw">Crea tu contraseña <small>(mínimo 6)</small></label><input id="cp-pw" type="password" autocomplete="new-password" minlength="6" required>
+      <button class="cu-btn">Enviar solicitud</button>
+    </form>
+    <div class="cu-msg" id="cu-msg" hidden></div>
+  </div>
+  <div id="cu-dentro" hidden>
+    <div class="cu-card">
+      <div class="cu-top"><div><small>ID GX</small><b id="cu-gx"></b></div><button type="button" class="cu-salir" id="cu-salir">Salir</button></div>
+      <p class="cu-nom" id="cu-nom"></p>
+      <div class="cu-saldo"><b id="cu-saldo"></b><span>GX</span></div>
+      <div class="cu-nivel"><span id="cu-niv"></span><span id="cu-val"></span></div>
+      <div class="cu-barra"><div id="cu-barra"></div></div>
+      <p class="cu-falta" id="cu-falta"></p>
+    </div>
+    <div class="cu-kpis">
+      <div><b id="cu-pres"></b><span>Prestigio</span><small id="cu-pres2"></small></div>
+      <div><b id="cu-comp"></b><span>Compras</span><small id="cu-gast"></small></div>
+      <div><b id="cu-hist"></b><span>GX ganados</span><small>desde que eres cliente</small></div>
+    </div>
+    <h3 class="cu-h">Historial</h3>
+    <div class="cu-lista" id="cu-lista"></div>
+    <details class="cu-como"><summary>¿Cómo funciona GameX Rewards?</summary><div id="cu-reglas"></div></details>
+  </div>
 </div>
 </div>
 
@@ -528,6 +640,7 @@ function render(){
 function route(){
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
+  $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}
   const esServ=SERV.length&&(h==='servicios'||SERV.some(y=>svSlug(y)===h));
   if(!h.startsWith('l-'))$('serv').hidden=!esServ;
   if(h.startsWith('l-'))return;
@@ -553,6 +666,65 @@ function route(){
     current=null;$('view').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('home').hidden=false;sync();
   }
 }
+// ---------- Mi cuenta GameX (GameX Rewards) ----------
+const CU_API=()=>((typeof PUSH!=='undefined'&&PUSH.url)||'https://gamex-avisos.gamex-cu.workers.dev')+'/cuenta/';
+const cuLS={get:k=>{try{return localStorage.getItem(k)}catch(e){return null}},set:(k,v)=>{try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
+let CU=null;
+const cuN=n=>(n||0).toLocaleString('es');
+const cuMoney=x=>'$'+(+x).toFixed(2);
+const cuMES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const cuF=f=>{if(!f)return'';const[y,m,d]=f.split('-');return +d+' '+cuMES[+m-1]+' '+y};
+async function cuPost(ruta,body,tok){
+  const o={method:body?'POST':'GET',headers:{}};if(body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(body)}if(tok)o.headers.Authorization='Bearer '+tok;
+  let r;try{r=await fetch(CU_API()+ruta,o)}catch(e){throw new Error('No hay conexión a internet. Prueba otra vez.')}
+  const d=await r.json().catch(()=>({error:'Respuesta rara del servidor'}));if(!r.ok){const e=new Error(d.error||'Error '+r.status);e.status=r.status;throw e}return d}
+function cuMsg(tipo,html){const m=$('cu-msg');m.className='cu-msg '+(tipo||'');m.innerHTML=html;m.hidden=!html}
+function cuTab(t){document.querySelectorAll('[data-cu]').forEach(b=>b.setAttribute('aria-selected',b.dataset.cu===t));['entrar','activar','pedir'].forEach(x=>$('cu-'+x).hidden=x!==t);cuMsg('','')}
+document.querySelector('.cu-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-cu]');if(b)cuTab(b.dataset.cu)});
+const gxFirma=tx=>CU&&!/crear mi cuenta/.test(tx)?`\n\nCliente GameX: ${CU.gx}${CU.nombre?' ('+CU.nombre+')':''}`:'';
+function cuTile(){$('b-cuenta-sub').textContent=CU?`${CU.gx} · ${cuN(CU.resumen.saldo)} GX · ${CU.resumen.nivel}`:'Rewards: mira tus GX, tu nivel, tu prestigio y tus compras'}
+async function cuCargar(){
+  const tok=cuLS.get('gx-sesion');
+  if(!tok){CU=null;cuTile();cuPintar();return}
+  try{CU=await cuPost('yo',null,tok)}catch(e){if(e.status===401){cuLS.set('gx-sesion',null);CU=null}}
+  cuTile();cuPintar();
+}
+async function cuSolEstado(){
+  const s=cuLS.get('gx-solicitud');if(!s)return $('cu-sol').hidden=true;const [id,k]=s.split(':');
+  try{const d=await cuPost(`solicitud?id=${id}&k=${k}`);const el=$('cu-sol');el.hidden=false;
+    if(d.estado==='aprobada'){el.innerHTML=`🎉 <b>¡Tu cuenta fue aprobada!</b> Tu ID es <b>${esc(d.gx)}</b>. Entra con él y la contraseña que pusiste.`;$('ce-gx').value=d.gx}
+    else if(d.estado==='rechazada'){el.innerHTML='Tu solicitud no fue aprobada. Escríbenos por WhatsApp si crees que es un error.';cuLS.set('gx-solicitud',null)}
+    else el.innerHTML=`⏳ Tu solicitud n.º ${esc(id)} está <b>en revisión</b>. Te avisamos por WhatsApp cuando esté lista.`}
+  catch(e){$('cu-sol').hidden=true}
+}
+function cuPintar(){
+  $('cu-fuera').hidden=!!CU;$('cu-dentro').hidden=!CU;
+  if(!CU){cuSolEstado();return}
+  const r=CU.resumen,R=CU.reglas;
+  $('cu-gx').textContent=CU.gx;$('cu-nom').textContent=CU.nombre||'';$('cu-saldo').textContent=cuN(r.saldo);
+  $('cu-niv').textContent=(r.nivel.startsWith('Nivel 3')?'🥇 ':r.nivel.startsWith('Nivel 2')?'🥈 ':r.nivel.startsWith('Nivel 1')?'🥉 ':'')+r.nivel;
+  $('cu-val').textContent='Vale '+cuMoney(r.valor);
+  const ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;setTimeout(()=>$('cu-barra').style.width=(r.siguiente?Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100):100)+'%',60);
+  $('cu-falta').textContent=r.siguiente?`Te faltan ${cuN(r.faltan)} GX para el ${r.siguiente===R.n1?'Nivel 1 ('+cuMoney(R.p1)+')':r.siguiente===R.n2?'Nivel 2 ('+cuMoney(R.p2)+')':'Nivel 3 / MAX ('+cuMoney(R.p3)+')'}`:'¡Estás en el nivel máximo! 🏆';
+  $('cu-pres').textContent=r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5))+(r.prestigio>5?' '+r.prestigio:''):'0';
+  $('cu-pres2').textContent=`faltan ${cuN(r.faltaPrestigio)} GX para el siguiente`;
+  $('cu-comp').textContent=cuN(r.compras);$('cu-gast').textContent=cuMoney(r.gastado)+' en total';$('cu-hist').textContent=cuN(r.historicos);
+  $('cu-lista').innerHTML=CU.historial.length?CU.historial.map(m=>`<div class="cu-mv"><div><b style="font-weight:600">${esc(m.tipo==='Compra'?(m.descr||'Compra'):m.tipo==='Canje'?'Canje'+(m.descr?': '+m.descr:''):m.tipo==='Referido'?'Referido'+(m.descr?': '+m.descr:''):(m.descr||'Ajuste'))}</b><small>${cuF(m.fecha)}${m.importe?' · '+cuMoney(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><b class="${m.ganados?'mas':m.usados?'menos':''}">${m.ganados?'+'+cuN(m.ganados):m.usados?'−'+cuN(m.usados):'0'} GX</b></div>`).join(''):'<p class="cu-help">Todavía no tienes movimientos.</p>';
+  $('cu-reglas').innerHTML=`<ul><li>Cada <b>$1</b> que gastas te da <b>${R.porDolar} GX</b>.</li><li>En tu <b>semana de cumpleaños</b> (3 días antes, el día y 3 días después) ganas <b>el doble</b>.</li><li>Si traes a un amigo nuevo, ganas <b>${R.referido} GX</b> cuando haga su primera compra.</li><li>Niveles: <b>${cuN(R.n1)} GX = ${cuMoney(R.p1)}</b> · <b>${cuN(R.n2)} GX = ${cuMoney(R.p2)}</b> · <b>${cuN(R.n3)} GX = ${cuMoney(R.p3)}</b> (máximo). Canjéalos en tus compras.</li><li><b>Prestigio:</b> +1 ⭐ por cada ${cuN(R.prestigio)} GX ganados en compras. Canjear no te quita prestigio.</li></ul>`;
+}
+function cuEntro(d){cuLS.set('gx-sesion',d.token);cuLS.set('gx-solicitud',null);cuMsg('','');cuCargar()}
+$('cu-entrar').onsubmit=async e=>{e.preventDefault();const b=e.submitter||e.target.querySelector('button');b.disabled=true;
+  try{cuEntro(await cuPost('entrar',{gx:$('ce-gx').value,pass:$('ce-pw').value}));$('ce-pw').value=''}catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-activar').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;
+  try{cuEntro(await cuPost('activar',{gx:$('ca-gx').value,nac:$('ca-nac').value,tel4:$('ca-tel').value,pass:$('ca-pw').value}));e.target.reset()}catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-pedir').onsubmit=async e=>{e.preventDefault();const b=e.target.querySelector('button');b.disabled=true;
+  const d={nombre:$('cp-nom').value.trim(),apellidos:$('cp-ape').value.trim(),nac:$('cp-nac').value,tel:$('cp-tel').value,plataforma:$('cp-pla').value,pass:$('cp-pw').value};
+  try{const r=await cuPost('solicitar',d);cuLS.set('gx-solicitud',r.id+':'+r.k);e.target.reset();
+    const t=`Hola GameX, quiero crear mi cuenta de GameX Rewards.\n*Nombre:* ${d.nombre} ${d.apellidos}\n*Nacimiento:* ${cuF(d.nac)}\n*WhatsApp:* ${d.tel}\n*Juego en:* ${d.plataforma}\n*Solicitud n.º* ${r.id}`;
+    cuMsg('ok',`✅ <b>Solicitud n.º ${r.id} enviada.</b> Para que la veamos antes, mándanosla también por WhatsApp:<br><a class="op wa-pick" href="#" data-t="${esc(t)}">Enviar por WhatsApp</a>`);cuSolEstado()}
+  catch(err){cuMsg('bad',esc(err.message))}b.disabled=false};
+$('cu-salir').onclick=async()=>{const tok=cuLS.get('gx-sesion');cuLS.set('gx-sesion',null);CU=null;cuTile();cuPintar();try{await cuPost('salir',{},tok)}catch(e){}};
+cuCargar();
 addEventListener('hashchange',route);
 $('filt').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;const f=b.dataset.f;
   if(!f)active.clear();else{active.has(f)?active.delete(f):active.add(f);
@@ -578,6 +750,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('back-cuenta').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('olist').addEventListener('click',e=>{const b=e.target.closest('.oh');if(!b)return;const c=b.closest('.ocard'),on=!c.classList.contains('abierta');c.classList.toggle('abierta',on);b.setAttribute('aria-expanded',on)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
@@ -600,7 +773,7 @@ const save=()=>{try{localStorage.setItem('gamex-cart-v2',JSON.stringify(cart))}c
 const split=k=>{const i=k.indexOf('|');return [k.slice(0,i),k.slice(i+1)]};
 const sorted=()=>[...cart].sort((a,b)=>CI[split(a)[0]]-CI[split(b)[0]]);
 function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]).push(n)});
-  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`}
+  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`+gxFirma('')}
 function sync(){
   $('cn').textContent=cart.length;
   $('clear').hidden=!cart.length;
@@ -621,6 +794,7 @@ function wpLinks(){const g=$('wpq').value.trim();let tx=wpAsk&&g?wpTx+'\n\n*Jueg
     if(ok)tx=wpTx+'\n'+L.map(([m,c])=>`• ${c} × $${m}`).join('\n')+`\n*Total: $${tot}*`}
   else if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' – '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
   else wp.querySelector('.wpl').classList.remove('off');
+  tx+=gxFirma(tx);
   wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
 function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];wpM=null;o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
   const [si,ii]=sv.split(':').map(Number),it=SERV[si]&&SERV[si].items[ii];if(!it)return;
@@ -690,7 +864,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=161;
+const GXV=162;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

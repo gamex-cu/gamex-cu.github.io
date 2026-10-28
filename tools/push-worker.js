@@ -11,7 +11,7 @@
 // GET  /panel/api/stats  (X-Panel)   -> resumen de estadísticas (?dias=1|7|30|90)
 // Necesita: Durable Object STATS (clase Stats, guarda los eventos en SQLite), KV "SUBS" y los secretos CLAVE, PANEL (contraseña), VAPID, FIREBASE y GITHUB.
 import {DurableObject} from 'cloudflare:workers';
-const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type,X-Clave'};
+const CORS={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Methods':'GET,POST,OPTIONS','Access-Control-Allow-Headers':'Content-Type,X-Clave,Authorization'};
 const r=(b,s=200)=>new Response(typeof b==='string'?b:JSON.stringify(b),{status:s,headers:{...CORS,'Content-Type':'application/json'}});
 const j=(b,s=200)=>new Response(JSON.stringify(b),{status:s,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});
 const TE=new TextEncoder(),TD=new TextDecoder();
@@ -145,6 +145,7 @@ export class Stats extends DurableObject{
   }
 }
 const statsDO=env=>env.STATS.get(env.STATS.idFromName('gamex'));
+// __CLIENTES__
 async function evento(req,env){
   if(!env.STATS)return r('ok');
   let b;try{b=JSON.parse(await req.text())}catch(e){return r('mal',400)}
@@ -164,6 +165,7 @@ async function panel(req,env,u){
   if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
+    if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
       const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
@@ -219,6 +221,7 @@ export default{async fetch(req,env){
   const u=new URL(req.url);
   if(u.pathname==='/panel'||u.pathname.startsWith('/panel/'))return panel(req,env,u);
   if(req.method==='OPTIONS')return new Response(null,{headers:CORS});
+  if(u.pathname.startsWith('/cuenta/'))return cuenta(req,env,u); // Mi cuenta GameX (clientes)
   if(u.pathname==='/evento'&&req.method==='POST')return evento(req,env);
   if(u.pathname==='/no-contar'&&req.method==='POST'){ /* un equipo se saca a sí mismo de las estadísticas */
     let b={};try{b=JSON.parse(await req.text())}catch(e){}
