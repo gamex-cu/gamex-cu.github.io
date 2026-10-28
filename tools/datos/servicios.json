@@ -197,5 +197,29 @@
     ]
    }
   ]
+ },
+ {
+  "s": "Mantenimientos",
+  "icono": "🛠️",
+  "color": "#13a8a8",
+  "texto": "#7fe6e6",
+  "items": [
+   {
+    "t": "PlayStation 4",
+    "pedido": "Mantenimiento de PlayStation 4"
+   },
+   {
+    "t": "PlayStation 5",
+    "pedido": "Mantenimiento de PlayStation 5"
+   },
+   {
+    "t": "Xbox One",
+    "pedido": "Mantenimiento de Xbox One"
+   },
+   {
+    "t": "Xbox Series X|S",
+    "pedido": "Mantenimiento de Xbox Series X|S"
+   }
+  ]
  }
 ]
