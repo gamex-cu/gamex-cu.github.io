@@ -664,6 +664,7 @@ async function dibujarComp(c,m,est){
   caja(45,922,935,112);tile(80,930,96,s=>{g.fillStyle='#ffe100';g.beginPath();g.moveTo(-s*.33,s*.14);g.lineTo(-s*.36,-s*.17);g.lineTo(-s*.15,-s*.01);g.lineTo(0,-s*.25);g.lineTo(s*.15,-s*.01);g.lineTo(s*.36,-s*.17);g.lineTo(s*.33,s*.14);g.closePath();g.fill();g.fillRect(-s*.33,s*.19,s*.66,s*.07);[[-.36,-.2],[0,-.29],[.36,-.2]].forEach(([a,b])=>{g.beginPath();g.arc(a*s,b*s,s*.045,0,7);g.fill()})});
   g.textBaseline='middle';lbl('PRESTIGIO',205,950);val('P'+est.prest,205,996,62,700);
   g.strokeStyle='rgba(255,255,255,.22)';g.beginPath();g.moveTo(515,945);g.lineTo(515,1012);g.stroke();
+  lbl('NIVEL',560,950);const niv=est.saldo>=3500?'NIVEL MAX':est.saldo>=2500?'NIVEL 2':est.saldo>=1500?'NIVEL 1':'BASE';val(niv,560,996,56,700,est.saldo>=1500?V:'#fff');
   // ---- progreso ----
   caja(45,1050,935,218);g.textAlign='left';g.fillStyle='#fff';g.font=`700 34px ${F}`;g.fillText('TU PROGRESO',80,1095);
   const bx=82,bw=852,by=1138,bh=40,px=gx=>bx+bw*Math.min(gx,3650)/3650;
