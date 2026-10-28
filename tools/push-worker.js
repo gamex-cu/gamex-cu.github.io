@@ -208,6 +208,18 @@ async function panel(req,env,u){
       }));
       return j({total:ks.length,ok,viejos,fallos,despues:lote.length?lote[lote.length-1]:null,fin:resto.length<=LOTE});
     }
+    if(p==='editar'){ /* cambia una oferta ya publicada (sin volver a notificar) */
+      const idA=String(q.id||'');if(!idA)return j({error:'Falta la oferta'},400);
+      let titulo=String(q.titulo||'').trim().replace(/🎮/g,'🥷').slice(0,80),texto=String(q.texto||'').trim().slice(0,1500);
+      const url=String(q.url||'').trim().slice(0,500),vence=/^\d{4}-\d{2}-\d{2}$/.test(q.vence||'')?q.vence:'';
+      if(!titulo||!texto)return j({error:'Falta el título o el texto'},400);
+      if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
+      if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
+      let hallada=false;
+      const d=await cambiarAvisos(env,d=>{for(const l of [d.avisos,d.silenciosas||[]])for(const x of l)if(x.id===idA){hallada=true;x.titulo=titulo;x.texto=texto;if(url)x.url=url;else delete x.url;if(vence)x.vence=vence;else delete x.vence;x.editada=hoyCuba()}},'Panel: editar oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');
+      if(!hallada)return j({error:'No encontré esa oferta (¿ya la quitaron?)'},404);
+      return j({ok:true,avisos:activos(d).reverse()});
+    }
     if(p==='borrar'){
       const idA=String(q.id||'');if(!idA)return j({error:'Falta la oferta'},400);
       const d=await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>x.id!==idA);d.silenciosas=(d.silenciosas||[]).filter(x=>x.id!==idA)},'Panel: quitar oferta');

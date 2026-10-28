@@ -72,6 +72,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .chip{font:inherit;font-size:.85rem;padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
 .chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn{display:block;width:100%;font:inherit;font-weight:700;padding:13px;border:0;border-radius:10px;background:var(--accent);color:#fff;cursor:pointer;margin-top:16px}
 .btn:disabled{opacity:.55;cursor:default}
 .btn.sec{background:transparent;border:1px solid var(--line);color:var(--fg);font-weight:600}
@@ -91,6 +92,9 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .of b{display:block}
 .of p{margin:2px 0;color:var(--muted);font-size:.88rem;white-space:pre-wrap;word-break:break-word}
 .of small{color:var(--muted);font-size:.78rem}
+.ofb{display:flex;flex-direction:column;gap:6px;flex:none}
+.of button.ed{border-color:var(--accent);color:#cfe0ff}
+.edf{border:1px solid var(--accent);border-radius:12px;padding:12px;margin:4px 0 12px;background:rgba(61,123,255,.06)}
 .of button{flex:none;font:inherit;font-size:.82rem;padding:6px 10px;border-radius:8px;border:1px solid var(--bad);background:transparent;color:var(--bad);cursor:pointer}
 .msg{margin-top:12px;padding:12px;border-radius:10px;font-size:.92rem;display:none}
 .msg.on{display:block}
@@ -203,7 +207,9 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
       <h2>Clientes</h2>
       <div class="kpis" id="c-kpis"></div>
       <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
-      <div class="row" style="margin-top:8px"><button type="button" class="chip" id="c-res" aria-pressed="false">Ver IDs reservados</button></div>
+      <div class="row" style="margin-top:10px;align-items:center" id="c-ord"><span class="nota" style="margin:0">Ordenar:</span><button type="button" class="chip" data-o="rec" aria-pressed="true">Recientes</button><button type="button" class="chip" data-o="gx" aria-pressed="false">Por GX</button><button type="button" class="chip" data-o="pts" aria-pressed="false">Más puntos</button><button type="button" class="chip" data-o="nom" aria-pressed="false">Nombre A–Z</button></div>
+      <div class="row" style="margin-top:8px;align-items:center"><span class="nota" style="margin:0">Puntos:</span><input id="c-min" type="number" inputmode="numeric" placeholder="desde" style="width:90px;padding:7px 9px"><input id="c-max" type="number" inputmode="numeric" placeholder="hasta" style="width:90px;padding:7px 9px"><button type="button" class="chip" id="c-res" aria-pressed="false">Ver IDs reservados</button></div>
+      <p class="nota" id="c-cuenta" style="margin:8px 0 0"></p>
       <div id="c-lista" class="clist"><p class="vacio">Cargando…</p></div>
       <div class="msg" id="mcli"></div>
     </section>
@@ -334,9 +340,10 @@ async function api(p,body){
   if(r.status===401){salir();throw new Error('Contraseña incorrecta')}
   if(!r.ok)throw new Error(d.error||('Error '+r.status));return d;
 }
-function pintar(avisos){
+let AVS={};
+function pintar(avisos){AVS={};avisos.forEach(a=>AVS[a.id]=a);
   $('nof').textContent=avisos.length;
-  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.url?' · con enlace':''}</small></div><button data-id="${esc(a.id)}">Quitar</button></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
+  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
 }
 async function cargar(){const d=await api('estado');$('niph').textContent=d.iphones;pintar(d.avisos);return d}
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
@@ -387,6 +394,18 @@ $('bsi').onclick=async()=>{
   }catch(e){msg('menv','bad','<b>No se pudo enviar.</b> '+esc(e.message)+(L.length?'<ul><li>'+L.join('</li><li>')+'</li></ul>':''))}
   $('bsi').disabled=$('bno').disabled=false;$('conf').classList.remove('on');$('benv').hidden=false;
 };
+$('lista').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if(!b)return;const a=AVS[b.dataset.ed];if(!a)return;
+  document.querySelectorAll('.edf').forEach(x=>x.remove());const row=b.closest('.of');const f=document.createElement('form');f.className='edf';f.dataset.id=a.id;
+  f.innerHTML=`<label>Título</label><input name="titulo" maxlength="80" required value="${esc(a.titulo.replace(/^🥷\s*/,''))}"><label>Texto</label><textarea name="texto" maxlength="1500" rows="8" required>${esc(a.texto)}</textarea>
+  <label>Enlace <small>(opcional)</small></label><input name="url" type="url" value="${esc(a.url||'')}" placeholder="https://…"><label>Se quita de Ofertas el <small>(vacío = sin fecha)</small></label><input name="vence" type="date" value="${esc(a.vence||'')}">
+  <p class="nota">Los cambios se ven en Ofertas (web y app) en 1–2 minutos. No se vuelve a mandar la notificación.</p>
+  <div class="row"><button class="btn" style="flex:1;margin-top:8px">Guardar cambios</button><button type="button" class="btn sec ec" style="flex:1;margin-top:8px">Cancelar</button></div>`;
+  row.after(f);f.querySelector('input').focus()});
+$('lista').addEventListener('click',e=>{if(e.target.closest('.ec'))e.target.closest('.edf').remove()});
+$('lista').addEventListener('submit',async e=>{const f=e.target.closest('.edf');if(!f)return;e.preventDefault();const bt=f.querySelector('.btn');bt.disabled=true;nomsg('mlista');
+  const v=n=>f.elements[n].value;
+  try{const d=await api('editar',{id:f.dataset.id,titulo:v('titulo'),texto:v('texto'),url:v('url').trim(),vence:v('vence')});pintar(d.avisos);msg('mlista','ok','✅ Oferta actualizada. Se ve en la web y la app en 1–2 minutos.')}
+  catch(err){msg('mlista','bad',esc(err.message));bt.disabled=false}});
 $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)return;
   if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Quitar?';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Quitar'}},4000);return}
   b.disabled=true;b.textContent='Quitando…';nomsg('mlista');
@@ -450,7 +469,7 @@ function tipEn(el){document.querySelectorAll('.tip').forEach(x=>x.remove());cons
 $('chart').addEventListener('pointerover',e=>tipEn(e.target));$('chart').addEventListener('focusin',e=>tipEn(e.target));
 $('chart').addEventListener('pointerleave',()=>tipEn(null));$('chart').addEventListener('focusout',()=>tipEn(null));
 // ---------- Clientes (GameX Rewards) ----------
-let CLI=null,FICHA=null,VERRES=false;
+let CLI=null,FICHA=null,VERRES=false,ORD='rec';
 const hoyL=()=>new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
 const money=x=>'$'+(Math.round(x*100)/100).toLocaleString('es',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fechaA=f=>{if(!f)return'—';const[y,m,d]=f.split('-');return +d+' '+MES[+m-1]+' '+y};
@@ -474,10 +493,15 @@ function pintarClientes(){
   $('c-kpis').innerHTML=`<div class="kpi"><b>${N(act.length)}</b><span>Clientes</span><small>${N(act.filter(c=>c.activada).length)} con cuenta activada</small></div><div class="kpi"><b>${N(gx)}</b><span>GX en saldo</span><small>${money(val)} en premios posibles</small></div><div class="kpi"><b>${N(act.filter(c=>c.nivel!=='Base').length)}</b><span>Con nivel 1 o más</span></div>`;
   let ls=CLI.clientes.filter(c=>VERRES||c.estado==='activo');
   if(q)ls=ls.filter(c=>(c.gx+c.nombre+c.tel).toLowerCase().replace(/\s/g,'').includes(q.replace(/^gx/,'gx')));
-  ls.sort((a,b)=>(b.ultima||'').localeCompare(a.ultima||'')||a.gx.localeCompare(b.gx));
+  const mn=$('c-min').value===''?null:+$('c-min').value,mx=$('c-max').value===''?null:+$('c-max').value;
+  if(mn!=null)ls=ls.filter(c=>c.saldo>=mn);if(mx!=null)ls=ls.filter(c=>c.saldo<=mx);
+  const so={rec:(a,b)=>(b.ultima||'').localeCompare(a.ultima||'')||a.gx.localeCompare(b.gx),gx:(a,b)=>a.gx.localeCompare(b.gx),pts:(a,b)=>b.saldo-a.saldo||b.prestigio-a.prestigio||a.gx.localeCompare(b.gx),nom:(a,b)=>(a.nombre||'~').localeCompare(b.nombre||'~','es')};
+  ls.sort(so[ORD]);$('c-cuenta').textContent=ls.length+' cliente'+(ls.length===1?'':'s')+(q||mn!=null||mx!=null?' con ese filtro':'');
   $('c-lista').innerHTML=ls.length?ls.map(c=>`<button type="button" class="cl${c.estado==='reservado'?' res':''}" data-gx="${c.gx}"><span class="gx">${c.gx}</span><span class="nm">${c.estado==='reservado'?'<i>Reservado</i>':esc(c.nombre)}<small>${c.estado==='reservado'?'Libre para dar':(c.activada?'🔓 cuenta activada':'🔒 sin activar')+(c.ultima?' · última compra '+fecha(c.ultima):'')}</small></span><span class="sd">${nivelCls(c.nivel)} ${N(c.saldo)} GX<small>${c.prestigio?'⭐'.repeat(Math.min(c.prestigio,5))+' ':''}${money(c.valor)}</small></span></button>`).join(''):'<p class="vacio">Nadie coincide con la búsqueda.</p>';
 }
 $('c-bus').oninput=pintarClientes;
+$('c-min').oninput=pintarClientes;$('c-max').oninput=pintarClientes;
+$('c-ord').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;ORD=b.dataset.o;$('c-ord').querySelectorAll('[data-o]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-res').onclick=()=>{VERRES=!VERRES;$('c-res').setAttribute('aria-pressed',VERRES);$('c-res').textContent=VERRES?'Ocultar reservados':'Ver IDs reservados';pintarClientes()};
 $('c-lista').onclick=e=>{const b=e.target.closest('[data-gx]');if(b)abrirFicha(b.dataset.gx)};
 async function abrirFicha(gx){try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
