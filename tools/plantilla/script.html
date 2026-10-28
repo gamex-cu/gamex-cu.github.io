@@ -128,7 +128,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
   $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
   if(!x)return;
-  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc('Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc('Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
@@ -166,19 +166,25 @@ list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
 const wp=$('wapick');
 let wpTx='Hola GameX',wpAsk=false;
-let wpG=null,wpSel=[];
+let wpG=null,wpSel=[],wpM=null;
 function wpLinks(){const g=$('wpq').value.trim();let tx=wpAsk&&g?wpTx+'\n\n*Juego:* '+g:wpTx;
-  if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' – '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
+  if(wpM){const L=Object.entries(wpM).filter(([,c])=>c>0),tot=L.reduce((a,[m,c])=>a+m*c,0),ok=tot>0;wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h').hidden=ok;$('wpo-t').textContent=ok?'Total: $'+tot:'';
+    if(ok)tx=wpTx+'\n'+L.map(([m,c])=>`• ${c} × $${m}`).join('\n')+`\n*Total: $${tot}*`}
+  else if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' – '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
   else wp.querySelector('.wpl').classList.remove('off');
   wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
-function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
-  const [si,ii]=sv.split(':').map(Number),it=SERV[si]&&SERV[si].items[ii];if(!it||!it.grupos)return;
+function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];wpM=null;o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
+  const [si,ii]=sv.split(':').map(Number),it=SERV[si]&&SERV[si].items[ii];if(!it)return;
+  if(it.montos){wpM={};it.montos.forEach(m=>wpM[m]=0);o.hidden=false;
+    o.innerHTML='<div><b>Montos</b><div class="og">'+it.montos.map(m=>`<div class="mrow"><span>$${m}</span><span class="stp"><button type="button" data-m="${m}" data-d="-1" aria-label="Quitar una de $${m}">−</button><output id="mc-${m}">0</output><button type="button" data-m="${m}" data-d="1" aria-label="Añadir una de $${m}">+</button></span></div>`).join('')+'</div></div><p class="wpo-t" id="wpo-t"></p><p class="wpo-h" id="wpo-h">Toca + en los montos que quieras (puedes pedir varias del mismo) y luego el número.</p>';return}
+  if(!it.grupos)return;
   wpG=it.grupos;wpSel=wpG.map(()=>null);o.hidden=false;
   o.innerHTML=wpG.map((g,gi)=>`<div><b>${esc(g.n)}</b><div class="og${g.o.some(x=>x.d)?'':' ch'}">${g.o.map((x,xi)=>`<button type="button" data-g="${gi}" data-o="${xi}" aria-pressed="false">${esc(x.t)}${x.d?`<small>${esc(x.d)}</small>`:''}</button>`).join('')}</div></div>`).join('')+'<p class="wpo-h" id="wpo-h">Escoge una opción de cada grupo y luego el número.</p>'}
-$('wpo').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const gi=+b.dataset.g;wpSel[gi]=+b.dataset.o;
+$('wpo').addEventListener('click',e=>{const mb=e.target.closest('[data-m]');if(mb&&wpM){const m=mb.dataset.m;wpM[m]=Math.max(0,Math.min(20,wpM[m]+ +mb.dataset.d));$('mc-'+m).textContent=wpM[m];wpLinks();return}
+  const b=e.target.closest('[data-g]');if(!b)return;const gi=+b.dataset.g;wpSel[gi]=+b.dataset.o;
   $('wpo').querySelectorAll(`[data-g="${gi}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));wpLinks()});
 document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();wpTx=a.dataset.t||'Hola GameX';wpAsk=!!a.dataset.ask;
-  wpOpciones(a);$('wph').firstChild.textContent=wpG?((it=>(it.boton||'Escoger plan').replace(/^Escoger /,'Escoge el ')+' · '+it.t)(SERV[+a.dataset.sv.split(':')[0]].items[+a.dataset.sv.split(':')[1]]))+' ':'¿A qué número escribes? ';
+  wpOpciones(a);$('wph').firstChild.textContent=(wpG||wpM)?((it=>(it.boton||'Escoger plan').replace(/^Escoger montos/,'Escoge los montos').replace(/^Escoger /,'Escoge el ')+' · '+it.t)(SERV[+a.dataset.sv.split(':')[0]].items[+a.dataset.sv.split(':')[1]]))+' ':'¿A qué número escribes? ';
   $('wpqw').hidden=!wpAsk;$('wpq').value=wpAsk&&query.trim()&&current==='Xbox pago'?query.trim():'';wpLinks();wp.hidden=false;if(wpAsk)setTimeout(()=>$('wpq').focus(),50)});
 $('wpq').addEventListener('input',wpLinks);
 $('wpx').onclick=()=>wp.hidden=true;wp.addEventListener('click',e=>{if(e.target===wp||e.target.closest('[data-n]'))setTimeout(()=>wp.hidden=true,50)});

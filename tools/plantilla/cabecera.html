@@ -121,6 +121,12 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .wpo button small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
 .wpo button[aria-pressed="true"]{border-color:var(--hot);background:rgba(242,169,0,.14)}
 .wpo button[aria-pressed="true"]::before{content:"✓ ";color:var(--hot);font-weight:700}
+.mrow{display:flex;align-items:center;justify-content:space-between;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 8px 6px 14px;font:700 1.1rem var(--display)}
+.stp{display:flex;align-items:center;gap:10px}
+.wpo .stp button{width:40px;height:40px;padding:0;text-align:center;font:700 1.3rem/1 var(--display);border-radius:9px}
+.wpo .stp button[data-d="1"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.stp output{min-width:22px;text-align:center;font-variant-numeric:tabular-nums}
+.wpo-t{margin:4px 0 0;font:700 1.05rem var(--display);color:var(--hot);min-height:1.2em}
 .wpl.off{opacity:.4;pointer-events:none}
 .wpo-h{color:var(--muted);font-size:.85rem;margin:-4px 0 8px}
 .ccard.stl .cn{font-size:clamp(1rem,4.2vw,1.35rem);overflow-wrap:break-word}

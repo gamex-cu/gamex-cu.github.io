@@ -93,7 +93,52 @@
   "icono": "🎁",
   "color": "#f2a900",
   "texto": "#ffd27a",
-  "items": []
+  "items": [
+   {
+    "t": "Steam",
+    "pedido": "Gift Card de Steam",
+    "boton": "Escoger montos",
+    "montos": [
+     10,
+     20,
+     30,
+     50
+    ]
+   },
+   {
+    "t": "PlayStation",
+    "pedido": "Gift Card de PlayStation",
+    "boton": "Escoger montos",
+    "montos": [
+     10,
+     20,
+     30,
+     50
+    ]
+   },
+   {
+    "t": "Nintendo",
+    "pedido": "Gift Card de Nintendo",
+    "boton": "Escoger montos",
+    "montos": [
+     10,
+     20,
+     30,
+     50
+    ]
+   },
+   {
+    "t": "Xbox",
+    "pedido": "Gift Card de Xbox",
+    "boton": "Escoger montos",
+    "montos": [
+     10,
+     20,
+     30,
+     50
+    ]
+   }
+  ]
  },
  {
   "s": "Desbloqueos",
