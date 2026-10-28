@@ -135,7 +135,9 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <section class="card"><h2>Que un equipo no cuente</h2>
       <p class="nota" style="margin:-6px 0 10px">Abre este enlace en el teléfono o PC que no quieres contar (tus equipos de prueba). Se aparta solo y se borran sus datos de las estadísticas.</p>
       <div class="row"><a class="btn" style="margin:0;flex:1;text-align:center;text-decoration:none" href="https://gamex-cu.github.io/#no-contar" target="_blank" rel="noopener">🚫 Que este equipo no cuente</a>
-      <button type="button" class="btn sec" style="margin:0;flex:1" id="cp-nc">📋 Copiar enlace</button></div>
+      <a class="btn sec" style="margin:0;flex:1;text-align:center;text-decoration:none" href="https://gamex-cu.github.io/#contar" target="_blank" rel="noopener">✅ Que vuelva a contar</a></div>
+      <div class="row" style="margin-top:8px"><button type="button" class="btn sec" style="margin:0;flex:1" id="cp-nc">📋 Copiar enlace “no contar”</button>
+      <button type="button" class="btn sec" style="margin:0;flex:1" id="cp-c">📋 Copiar enlace “contar”</button></div>
       <p class="nota" id="cp-nc-m" style="margin-top:8px"></p>
     </section>
     <section class="card" id="s-ign" hidden><h2>Equipos que no cuentan</h2><p class="nota" style="margin:-6px 0 8px">Sus visitas no salen en ninguna estadística (por ejemplo, tus propios teléfonos).</p><ul class="rank eq" id="r-ign"></ul></section>
@@ -252,7 +254,8 @@ let DIAS=7,cargadas=false;
 function tab(t){$('tb-of').setAttribute('aria-selected',t==='of');$('tb-es').setAttribute('aria-selected',t==='es');$('t-of').hidden=t!=='of';$('t-es').hidden=t!=='es';
   try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats()}
 $('tb-of').onclick=()=>tab('of');
-$('cp-nc').onclick=()=>{const t='https://gamex-cu.github.io/#no-contar';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t)};
+const copiar=t=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t);
+$('cp-nc').onclick=()=>copiar('https://gamex-cu.github.io/#no-contar');$('cp-c').onclick=()=>copiar('https://gamex-cu.github.io/#contar');
 document.addEventListener('click',async e=>{const b=e.target.closest('.ign');if(!b)return;
   if(b.dataset.si&&b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='No contar este equipo'}},4000);return}
   b.disabled=true;try{await api('stats-ignorar',{uid:b.dataset.uid,si:!!b.dataset.si});stats()}catch(err){msg('mes','bad',esc(err.message));b.disabled=false}});$('tb-es').onclick=()=>tab('es');
