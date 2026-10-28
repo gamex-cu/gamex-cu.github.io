@@ -113,6 +113,16 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .ccard{min-height:100px!important}
 .ccard{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:120px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);text-decoration:none;font:inherit;text-align:left;cursor:pointer;overflow:hidden}
 .ccard::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--cc)}
+.wpo{display:grid;gap:12px;margin:4px 0 12px}
+.wpo b{display:block;font:700 .82rem var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--hot);margin-bottom:6px}
+.wpo .og{display:grid;gap:6px}
+.wpo .og.ch{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+.wpo button{font:inherit;text-align:left;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.wpo button small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.wpo button[aria-pressed="true"]{border-color:var(--hot);background:rgba(242,169,0,.14)}
+.wpo button[aria-pressed="true"]::before{content:"✓ ";color:var(--hot);font-weight:700}
+.wpl.off{opacity:.4;pointer-events:none}
+.wpo-h{color:var(--muted);font-size:.85rem;margin:-4px 0 8px}
 .ccard.stl .cn{font-size:clamp(1rem,4.2vw,1.35rem);overflow-wrap:break-word}
 .ccard .si2{font-size:1.6rem;line-height:1}
 .ccard .cn{font:700 1.45rem/1.1 var(--display);letter-spacing:.02em;color:var(--ct)}
@@ -355,6 +365,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
 <div class="sheet" id="wapick" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="wph">
 <h3 id="wph">¿A qué número escribes? <button type="button" id="wpx" aria-label="Cerrar">×</button></h3>
+<div class="wpo" id="wpo" hidden></div>
 <label class="wpq" id="wpqw" hidden><span>¿Qué juego buscas?</span><input id="wpq" type="text" placeholder="Escribe el nombre del juego" autocomplete="off"></label>
 <div class="wpl"><a class="btn wa2" data-n="5353441089" target="_blank" rel="noopener" href="#">5344 1089</a><a class="btn wa2" data-n="5353827989" target="_blank" rel="noopener" href="#">5382 7989</a><a class="btn wa2" data-n="5352933943" target="_blank" rel="noopener" href="#">5293 3943</a></div>
 <p class="note">Se abrirá WhatsApp con el mensaje ya escrito.</p>
@@ -489,7 +500,7 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   const ok=('Notification' in window)&&Notification.permission==='granted';
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
-const SERV=[{"s": "Suscripciones", "icono": "🔄", "color": "#d92b2b", "texto": "#ff9a9a", "items": [{"t": "Xbox Game Pass Ultimate"}, {"t": "PlayStation Plus"}, {"t": "Nintendo Switch Online"}, {"t": "Fortnite Crew"}, {"t": "EA Play"}, {"t": "Ubisoft+"}]}, {"s": "Gift Cards", "icono": "🎁", "color": "#f2a900", "texto": "#ffd27a", "items": []}, {"s": "Desbloqueos", "icono": "🔓", "color": "#7a3fe0", "texto": "#cdb0ff", "items": []}];
+const SERV=[{"s": "Suscripciones", "icono": "🔄", "color": "#d92b2b", "texto": "#ff9a9a", "items": [{"t": "Xbox Game Pass Ultimate"}, {"t": "PlayStation Plus", "d": "Escoge el plan y el tiempo.", "grupos": [{"n": "Plan", "o": [{"t": "Essential", "d": "Juego online, juegos mensuales y descuentos"}, {"t": "Extra", "d": "Todo lo de Essential + catálogo de cientos de juegos de PS4 y PS5"}, {"t": "Premium", "d": "Todo lo de Extra + clásicos, pruebas de juegos y juego en la nube"}]}, {"n": "Tiempo", "o": [{"t": "1 mes"}, {"t": "3 meses"}, {"t": "12 meses"}]}]}, {"t": "Nintendo Switch Online"}, {"t": "Fortnite Crew"}, {"t": "EA Play"}, {"t": "Ubisoft+"}]}, {"s": "Gift Cards", "icono": "🎁", "color": "#f2a900", "texto": "#ffd27a", "items": []}, {"s": "Desbloqueos", "icono": "🔓", "color": "#7a3fe0", "texto": "#cdb0ff", "items": []}];
 const svSlug=x=>'sv-'+slug(x.s);
 if(SERV.length){$('b-servicios').hidden=false;$('b-serv-sub').textContent=SERV.map(x=>x.s).join(', ').replace(/, ([^,]*)$/,' y $1');
   $('stiles').innerHTML=SERV.map(x=>{const n=(x.items||[]).length;return `<a class="ccard stl" href="#${svSlug(x)}" style="--cc:${x.color||'#d92b2b'};--ct:${x.texto||'var(--fg)'}">${x.icono?`<span class="si2" aria-hidden="true">${esc(x.icono)}</span>`:''}<span class="cn">${esc(x.s)}</span><span class="cq">${n?n+' opci'+(n===1?'ón':'ones'):'Pregunta por WhatsApp'}<span class="go">→</span></span></a>`}).join('')}
@@ -498,7 +509,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
   $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
   if(!x)return;
-  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map(it=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa: '+it.t+' ('+x.s+')')}">Pedir por WhatsApp</a></article>`).join('')
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.grupos?`<p>${it.grupos.map(g=>esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc('Hola GameX, me interesa: '+it.t+(it.grupos?'':' ('+x.s+')'))}">${it.grupos?'Escoger plan':'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
@@ -536,8 +547,19 @@ list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
 const wp=$('wapick');
 let wpTx='Hola GameX',wpAsk=false;
-function wpLinks(){const g=$('wpq').value.trim();const tx=wpAsk&&g?wpTx+'\n\n*Juego:* '+g:wpTx;wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
+let wpG=null,wpSel=[];
+function wpLinks(){const g=$('wpq').value.trim();let tx=wpAsk&&g?wpTx+'\n\n*Juego:* '+g:wpTx;
+  if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
+  else wp.querySelector('.wpl').classList.remove('off');
+  wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
+function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
+  const [si,ii]=sv.split(':').map(Number),it=SERV[si]&&SERV[si].items[ii];if(!it||!it.grupos)return;
+  wpG=it.grupos;wpSel=wpG.map(()=>null);o.hidden=false;
+  o.innerHTML=wpG.map((g,gi)=>`<div><b>${esc(g.n)}</b><div class="og${g.o.some(x=>x.d)?'':' ch'}">${g.o.map((x,xi)=>`<button type="button" data-g="${gi}" data-o="${xi}" aria-pressed="false">${esc(x.t)}${x.d?`<small>${esc(x.d)}</small>`:''}</button>`).join('')}</div></div>`).join('')+'<p class="wpo-h" id="wpo-h">Escoge una opción de cada grupo y luego el número.</p>'}
+$('wpo').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const gi=+b.dataset.g;wpSel[gi]=+b.dataset.o;
+  $('wpo').querySelectorAll(`[data-g="${gi}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));wpLinks()});
 document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();wpTx=a.dataset.t||'Hola GameX';wpAsk=!!a.dataset.ask;
+  wpOpciones(a);$('wph').firstChild.textContent=wpG?'Escoge tu '+(SERV[+a.dataset.sv.split(':')[0]].items[+a.dataset.sv.split(':')[1]].t)+' ':'¿A qué número escribes? ';
   $('wpqw').hidden=!wpAsk;$('wpq').value=wpAsk&&query.trim()&&current==='Xbox pago'?query.trim():'';wpLinks();wp.hidden=false;if(wpAsk)setTimeout(()=>$('wpq').focus(),50)});
 $('wpq').addEventListener('input',wpLinks);
 $('wpx').onclick=()=>wp.hidden=true;wp.addEventListener('click',e=>{if(e.target===wp||e.target.closest('[data-n]'))setTimeout(()=>wp.hidden=true,50)});

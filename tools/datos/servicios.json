@@ -9,7 +9,41 @@
     "t": "Xbox Game Pass Ultimate"
    },
    {
-    "t": "PlayStation Plus"
+    "t": "PlayStation Plus",
+    "d": "Escoge el plan y el tiempo.",
+    "grupos": [
+     {
+      "n": "Plan",
+      "o": [
+       {
+        "t": "Essential",
+        "d": "Juego online, juegos mensuales y descuentos"
+       },
+       {
+        "t": "Extra",
+        "d": "Todo lo de Essential + catálogo de cientos de juegos de PS4 y PS5"
+       },
+       {
+        "t": "Premium",
+        "d": "Todo lo de Extra + clásicos, pruebas de juegos y juego en la nube"
+       }
+      ]
+     },
+     {
+      "n": "Tiempo",
+      "o": [
+       {
+        "t": "1 mes"
+       },
+       {
+        "t": "3 meses"
+       },
+       {
+        "t": "12 meses"
+       }
+      ]
+     }
+    ]
    },
    {
     "t": "Nintendo Switch Online"

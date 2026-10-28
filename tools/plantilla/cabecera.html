@@ -113,6 +113,16 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .ccard{min-height:100px!important}
 .ccard{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:120px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);text-decoration:none;font:inherit;text-align:left;cursor:pointer;overflow:hidden}
 .ccard::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--cc)}
+.wpo{display:grid;gap:12px;margin:4px 0 12px}
+.wpo b{display:block;font:700 .82rem var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--hot);margin-bottom:6px}
+.wpo .og{display:grid;gap:6px}
+.wpo .og.ch{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+.wpo button{font:inherit;text-align:left;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer}
+.wpo button small{display:block;color:var(--muted);font-size:.8rem;margin-top:2px}
+.wpo button[aria-pressed="true"]{border-color:var(--hot);background:rgba(242,169,0,.14)}
+.wpo button[aria-pressed="true"]::before{content:"✓ ";color:var(--hot);font-weight:700}
+.wpl.off{opacity:.4;pointer-events:none}
+.wpo-h{color:var(--muted);font-size:.85rem;margin:-4px 0 8px}
 .ccard.stl .cn{font-size:clamp(1rem,4.2vw,1.35rem);overflow-wrap:break-word}
 .ccard .si2{font-size:1.6rem;line-height:1}
 .ccard .cn{font:700 1.45rem/1.1 var(--display);letter-spacing:.02em;color:var(--ct)}
@@ -347,6 +357,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="cartbar" id="cartbar"><div class="in"><span class="n"><b id="cn">0</b> juegos seleccionados</span><button class="btn" id="clear" type="button" hidden>Vaciar</button><button class="btn go" id="open" type="button">Ver selección</button></div></div>
 <div class="sheet" id="wapick" hidden><div class="box" role="dialog" aria-modal="true" aria-labelledby="wph">
 <h3 id="wph">¿A qué número escribes? <button type="button" id="wpx" aria-label="Cerrar">×</button></h3>
+<div class="wpo" id="wpo" hidden></div>
 <label class="wpq" id="wpqw" hidden><span>¿Qué juego buscas?</span><input id="wpq" type="text" placeholder="Escribe el nombre del juego" autocomplete="off"></label>
 <div class="wpl"><a class="btn wa2" data-n="5353441089" target="_blank" rel="noopener" href="#">5344 1089</a><a class="btn wa2" data-n="5353827989" target="_blank" rel="noopener" href="#">5382 7989</a><a class="btn wa2" data-n="5352933943" target="_blank" rel="noopener" href="#">5293 3943</a></div>
 <p class="note">Se abrirá WhatsApp con el mensaje ya escrito.</p>
