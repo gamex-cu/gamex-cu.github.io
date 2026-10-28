@@ -81,6 +81,7 @@ function render(){
 }
 function route(){
   const h=location.hash.slice(1);
+  if(!h.startsWith('l-'))$('serv').hidden=h!=='servicios'||!SERV.length;
   if(h.startsWith('l-'))return;
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
@@ -96,6 +97,8 @@ function route(){
     current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
   }else if(h==='iphone'){
     current=null;['view','home','cats','ofer'].forEach(x=>$(x).hidden=true);$('iphone').hidden=false;const it=document.getElementById('ios-tip');if(it)it.hidden=true;window.scrollTo(0,0);sync();
+  }else if(h==='servicios'&&SERV.length){
+    current=null;['view','home','cats','ofer','iphone'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);sync();
   }else if(h==='ofertas'){
     current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('iphone').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
   }else{
@@ -115,6 +118,10 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   const ok=('Notification' in window)&&Notification.permission==='granted';
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
+const SERV=__SERV__;
+if(SERV.length){$('b-servicios').hidden=false;
+  $('slist').innerHTML=SERV.map(x=>`<article class="scard">${x.icono?`<span class="si" aria-hidden="true">${esc(x.icono)}</span>`:''}<h3>${esc(x.t)}</h3>${x.d?`<p>${esc(x.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa el servicio: '+x.t)}">Pedir por WhatsApp</a></article>`).join('')}
+$('back-serv').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};

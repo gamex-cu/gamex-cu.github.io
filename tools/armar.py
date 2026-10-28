@@ -81,7 +81,9 @@ for _c,_b in [('PS4','ps4'),('PS5','ps5'),('PC','pc'),('Meta Quest','meta_quest'
     _f=_fecha(*['tools/datos/'+x+_b+'.json' for x in ('','enlaces_','etiquetas_')])
     if _f:
         _y,_m,_d=_f.split('-');NOTES[_c]=f'Catálogo actualizado el <b>{int(_d)} de {MESES[int(_m)-1]} de {_y}</b>'
-js=js.replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
+try: SERV=json.load(open(D+'servicios.json'))
+except FileNotFoundError: SERV=[]
+js=js.replace('__SERV__',json.dumps(SERV,ensure_ascii=False).replace('</','<\\/')).replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
 head=head.replace('__ICONO__',ICONO)

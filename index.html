@@ -164,6 +164,15 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .g-ayuda h3{margin:0 0 8px;font:700 1.05rem var(--display)}
 .g-ayuda ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.55}
 .g-ayuda b{color:var(--fg)}
+.sb-sv{background:linear-gradient(135deg,rgba(31,168,85,.18),rgba(61,123,255,.10))}
+.sb-sv .sbi{background:#1fa855}
+.slist{display:grid;gap:12px;padding:16px 0 28px}
+@media(min-width:720px){.slist{grid-template-columns:1fr 1fr}}
+.scard{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;background:linear-gradient(135deg,rgba(31,168,85,.10),rgba(61,123,255,.06));padding:16px}
+.scard .si{font-size:1.8rem;line-height:1;margin-bottom:8px}
+.scard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
+.scard p{margin:0;color:var(--muted);line-height:1.45;white-space:pre-line;flex:1}
+.scard a.op{align-self:flex-start;margin-top:12px;background:#1fa855;color:#fff;font:600 .95rem var(--display);padding:10px 14px;border-radius:9px;text-decoration:none}
 .sbtn{display:flex;align-items:center;gap:14px;margin:22px 0 0;padding:18px 16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(135deg,rgba(61,123,255,.16),rgba(242,169,0,.08));color:var(--fg);text-decoration:none;transition:border-color .15s,transform .15s}
 .sbtn:hover,.sbtn:focus-visible{border-color:var(--hot);outline:none;transform:translateY(-1px)}
 .sbi{flex:none;width:54px;height:54px;border-radius:14px;display:grid;place-items:center;background:var(--accent);color:#fff}
@@ -289,6 +298,11 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
     <span class="sbt"><b>Ofertas</b><small>Promociones y precios especiales de la semana</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
+  <a class="sbtn sb-sv" href="#servicios" id="b-servicios" hidden>
+    <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3.6 17.2a1.9 1.9 0 0 0 2.7 2.7l5.7-5.7a4 4 0 0 0 5.2-5.4l-2.5 2.5-2.3-.4-.4-2.3z"/></svg></span>
+    <span class="sbt"><b>Servicios</b><small id="b-serv-sub">Todo lo que hacemos además de los juegos</small></span>
+    <span class="sgo" aria-hidden="true">→</span>
+  </a>
   <p class="sectitle">Escríbenos</p>
   <div class="wa"><a href="https://wa.me/5353441089" target="_blank" rel="noopener">5344 1089 <small>WhatsApp</small></a><a href="https://wa.me/5353827989" target="_blank" rel="noopener">5382 7989 <small>WhatsApp</small></a><a href="https://wa.me/5352933943" target="_blank" rel="noopener">5293 3943 <small>WhatsApp</small></a></div>
   <a class="chan" href="https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O" target="_blank" rel="noopener"><b>Canal de GAMEX en WhatsApp</b><span>Novedades, juegos nuevos y promociones</span><i>Seguir canal</i></a>
@@ -312,6 +326,13 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
   <div class="vtitle"><a class="back" href="#" id="back-ofer">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Ofertas</span><span class="vc">Promociones vigentes. Pídelas por WhatsApp.</span></span></div>
 </div></div>
 <div class="wrap"><div class="olist" id="olist"><p class="empty">Cargando ofertas…</p></div></div>
+</div>
+
+<div id="serv" hidden>
+<div class="bar"><div class="wrap">
+  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Escoge el servicio y pídelo por WhatsApp.</span></span></div>
+</div></div>
+<div class="wrap"><div class="slist" id="slist"></div></div>
 </div>
 
 <div id="iphone" hidden>
@@ -455,6 +476,7 @@ function render(){
 }
 function route(){
   const h=location.hash.slice(1);
+  if(!h.startsWith('l-'))$('serv').hidden=h!=='servicios'||!SERV.length;
   if(h.startsWith('l-'))return;
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
@@ -470,6 +492,8 @@ function route(){
     current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
   }else if(h==='iphone'){
     current=null;['view','home','cats','ofer'].forEach(x=>$(x).hidden=true);$('iphone').hidden=false;const it=document.getElementById('ios-tip');if(it)it.hidden=true;window.scrollTo(0,0);sync();
+  }else if(h==='servicios'&&SERV.length){
+    current=null;['view','home','cats','ofer','iphone'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);sync();
   }else if(h==='ofertas'){
     current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('iphone').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
   }else{
@@ -489,6 +513,10 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   const ok=('Notification' in window)&&Notification.permission==='granted';
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
+const SERV=[];
+if(SERV.length){$('b-servicios').hidden=false;
+  $('slist').innerHTML=SERV.map(x=>`<article class="scard">${x.icono?`<span class="si" aria-hidden="true">${esc(x.icono)}</span>`:''}<h3>${esc(x.t)}</h3>${x.d?`<p>${esc(x.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa el servicio: '+x.t)}">Pedir por WhatsApp</a></article>`).join('')}
+$('back-serv').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
@@ -567,7 +595,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=112;
+const GXV=114;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
