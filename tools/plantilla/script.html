@@ -128,7 +128,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
   $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
   if(!x)return;
-  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc('Hola GameX, me interesa: '+it.t+(it.grupos?'':' ('+x.s+')'))}">${it.grupos?'Escoger plan':'Pedir por WhatsApp'}</a></article>`).join('')
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc('Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
@@ -168,7 +168,7 @@ const wp=$('wapick');
 let wpTx='Hola GameX',wpAsk=false;
 let wpG=null,wpSel=[];
 function wpLinks(){const g=$('wpq').value.trim();let tx=wpAsk&&g?wpTx+'\n\n*Juego:* '+g:wpTx;
-  if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
+  if(wpG){const ok=wpSel.every(v=>v!=null);wp.querySelector('.wpl').classList.toggle('off',!ok);$('wpo-h')&&($('wpo-h').hidden=ok);if(ok)tx=wpTx+' – '+wpSel.map((v,i)=>wpG[i].o[v].t).join(' – ')}
   else wp.querySelector('.wpl').classList.remove('off');
   wp.querySelectorAll('[data-n]').forEach(b=>b.href=`https://wa.me/${b.dataset.n}?text=${encodeURIComponent(tx)}`)}
 function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];o.hidden=true;o.innerHTML='';const sv=a.dataset.sv;if(!sv)return;
@@ -178,7 +178,7 @@ function wpOpciones(a){const o=$('wpo');wpG=null;wpSel=[];o.hidden=true;o.innerH
 $('wpo').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;const gi=+b.dataset.g;wpSel[gi]=+b.dataset.o;
   $('wpo').querySelectorAll(`[data-g="${gi}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b));wpLinks()});
 document.addEventListener('click',e=>{const a=e.target.closest('.wa-pick');if(!a)return;e.preventDefault();wpTx=a.dataset.t||'Hola GameX';wpAsk=!!a.dataset.ask;
-  wpOpciones(a);$('wph').firstChild.textContent=wpG?'Escoge tu '+(SERV[+a.dataset.sv.split(':')[0]].items[+a.dataset.sv.split(':')[1]].t)+' ':'¿A qué número escribes? ';
+  wpOpciones(a);$('wph').firstChild.textContent=wpG?((it=>(it.boton||'Escoger plan').replace(/^Escoger /,'Escoge el ')+' · '+it.t)(SERV[+a.dataset.sv.split(':')[0]].items[+a.dataset.sv.split(':')[1]]))+' ':'¿A qué número escribes? ';
   $('wpqw').hidden=!wpAsk;$('wpq').value=wpAsk&&query.trim()&&current==='Xbox pago'?query.trim():'';wpLinks();wp.hidden=false;if(wpAsk)setTimeout(()=>$('wpq').focus(),50)});
 $('wpq').addEventListener('input',wpLinks);
 $('wpx').onclick=()=>wp.hidden=true;wp.addEventListener('click',e=>{if(e.target===wp||e.target.closest('[data-n]'))setTimeout(()=>wp.hidden=true,50)});

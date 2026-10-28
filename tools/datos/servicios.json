@@ -100,6 +100,57 @@
   "icono": "🔓",
   "color": "#7a3fe0",
   "texto": "#cdb0ff",
-  "items": []
+  "items": [
+   {
+    "t": "PlayStation 5",
+    "d": "Hasta la versión 13.60",
+    "pedido": "Desbloqueo de PlayStation 5 (hasta 13.60)"
+   },
+   {
+    "t": "PlayStation 4",
+    "d": "Hasta la versión 13.52",
+    "pedido": "Desbloqueo de PlayStation 4 (hasta 13.52)"
+   },
+   {
+    "t": "Nintendo Switch",
+    "pedido": "Desbloqueo de Nintendo Switch",
+    "boton": "Escoger tipo",
+    "grupos": [
+     {
+      "n": "Tipo",
+      "o": [
+       {
+        "t": "Por software",
+        "d": "Solo en los modelos compatibles"
+       },
+       {
+        "t": "Por chip"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "t": "Meta Quest",
+    "pedido": "Desbloqueo de Meta Quest",
+    "boton": "Escoger modelo",
+    "grupos": [
+     {
+      "n": "Modelo",
+      "o": [
+       {
+        "t": "Quest 2"
+       },
+       {
+        "t": "Quest 3"
+       },
+       {
+        "t": "Quest 3S"
+       }
+      ]
+     }
+    ]
+   }
+  ]
  }
 ]
