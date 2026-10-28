@@ -136,6 +136,7 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .wpl.off{opacity:.4;pointer-events:none}
 .wpo-h{color:var(--muted);font-size:.85rem;margin:-4px 0 8px}
 .ccard.stl .cn{font-size:clamp(1rem,4.2vw,1.35rem);overflow-wrap:break-word}
+.lk{font-size:.8em;vertical-align:.08em;margin-left:2px}
 .ccard .si2{font-size:1.6rem;line-height:1}
 .ccard .cn{font:700 1.45rem/1.1 var(--display);letter-spacing:.02em;color:var(--ct)}
 .ccard .cq{font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -388,6 +389,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <script>
 const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a'],['PlayStation Plus','playstation-plus','#f5c400','#0d1124','#ffd84d']];
 const PSPMES="Octubre 2026";
+const CAND=new Set(['PS4','PS5','Switch']),lk=c=>CAND.has(c)?' <span class="lk" title="Consola desbloqueada" aria-label="desbloqueada">🔓</span>':'';
 const NOM={'Switch':'Nintendo Switch','PS4':'PlayStation 4','PS5':'PlayStation 5'},nom=c=>NOM[c]||c;
 const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
 const ICO={pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12a4 4 0 0 1 3.9 4.9l-.8 3.4a2.2 2.2 0 0 1-3.9.8L15.5 16h-7l-1.7 2.1a2.2 2.2 0 0 1-3.9-.8l-.8-3.4A4 4 0 0 1 6 9z"/><path d="M8 11.5v3M6.5 13h3"/><circle cx="15.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="14" r=".6" fill="currentColor"/></svg>',
@@ -450,7 +452,7 @@ function drawFilters(){
 }
 
 $('consoles').innerHTML=CONS.map(([n,s,col,,txt])=>{const q=countOf(n);return q
-  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${nom(n)}</span><span class="cq">${n==='PlayStation Plus'?'Juegos del mes · '+PSPMES.split(' ')[0]:q.toLocaleString('es')+' juegos'}<span class="go">→</span></span></a>`
+  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${nom(n)}${lk(n)}</span><span class="cq">${n==='PlayStation Plus'?'Juegos del mes · '+PSPMES.split(' ')[0]:q.toLocaleString('es')+' juegos'}<span class="go">→</span></span></a>`
   :`<div class="ccard soon" style="--cc:${col};--ct:${txt}" aria-disabled="true"><span class="cn">${nom(n)}</span><span class="cq">Próximamente</span></div>`}).join('');
 
 function render(){
@@ -476,7 +478,7 @@ function route(){
   if(c&&countOf(c[0])||h==='todas'){
     const was=current;current=c?c[0]:'todas';
     $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('view').hidden=false;
-    const vn=$('vn');vn.textContent=c?nom(c[0]):'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
+    const vn=$('vn');vn.innerHTML=c?esc(nom(c[0]))+lk(c[0]):'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=c&&c[0]==='PlayStation Plus'?`Juegos del mes · ${PSPMES}`:`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
     const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');pintarMarq(c&&c[0]);
