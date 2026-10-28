@@ -25,6 +25,9 @@ label small{font-weight:400;color:var(--muted)}
 label.sw{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;padding:12px;border:1px solid var(--line,#2a3360);border-radius:12px;cursor:pointer;font-weight:400}
 label.sw input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:#2fbf4a}
 label.sw small{display:block}
+input.fecha{font-size:1.05rem;padding:12px;min-height:48px}
+.vtxt{margin-top:6px;font-size:.88rem;color:var(--muted)}.vtxt b{color:var(--fg)}
+.chip.cal{border-color:var(--accent);color:#cfe0ff}
 .modos{display:grid;gap:8px}.modos label.sw{margin:0}.modos label.sw:has(input:checked){border-color:#2fbf4a;background:rgba(47,191,74,.08)}
 input,textarea{width:100%;font:inherit;color:var(--fg);background:#0b0f20;border:1px solid var(--line);border-radius:8px;padding:11px 12px}
 textarea{min-height:96px;resize:vertical}
@@ -166,11 +169,13 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
       <label for="url">Enlace <small>(opcional; si lo dejas vacío, el botón de la oferta abre el WhatsApp de GameX)</small></label>
       <input id="url" type="url" inputmode="url" placeholder="https://…">
       <div id="bvence"><label for="vence">Se quita de Ofertas el <small>(opcional)</small></label>
-      <input id="vence" type="date">
+      <input id="vence" type="date" class="fecha">
+      <div class="vtxt" id="vtxt">Sin fecha de fin: se queda hasta que la quites</div>
       <div class="row" style="margin-top:8px">
         <button type="button" class="chip" data-d="3">3 días</button>
         <button type="button" class="chip" data-d="7">1 semana</button>
         <button type="button" class="chip" data-d="30">1 mes</button>
+        <button type="button" class="chip cal" id="bcal">📅 Escoger en el calendario</button>
         <button type="button" class="chip" data-d="0">Sin fecha</button>
       </div></div>
       <label>¿Qué quieres hacer?</label>
@@ -236,7 +241,12 @@ function modo(){const m=MODO(),n=m!=='oferta';$('lprev').textContent=n?'Así se 
   $('benv').textContent=m==='ambas'?'Publicar y notificar':m==='oferta'?'Publicar sin notificar':'Mandar notificación';$('bsi').textContent=m==='oferta'?'Sí, publicar':'Sí, enviar';
   $('conft').textContent=m==='oferta'?'Se publicará en Ofertas (web y app) sin mandar notificación.':m==='aviso'?'Les llegará la notificación a todos los clientes (no se pone en Ofertas) y no se puede deshacer.':'Les llegará a todos los clientes y no se puede deshacer la notificación.'}
 document.querySelectorAll('input[name=modo]').forEach(r=>r.onchange=modo);modo();
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const n=+b.dataset.d;if(!n){$('vence').value='';return}const d=new Date();d.setDate(d.getDate()+n);$('vence').value=d.toLocaleDateString('en-CA')});
+const DIASV='domingo lunes martes miércoles jueves viernes sábado'.split(' '),MESV='enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre'.split(' ');
+function vtxt(){const v=$('vence').value;if(!v){$('vtxt').textContent='Sin fecha de fin: se queda hasta que la quites';return}
+  const [y,m,d]=v.split('-').map(Number),f=new Date(y,m-1,d);$('vtxt').innerHTML='Se quita de Ofertas al terminar el <b>'+DIASV[f.getDay()]+' '+d+' de '+MESV[m-1]+'</b>'}
+$('vence').min=new Date().toLocaleDateString('en-CA');$('vence').addEventListener('input',vtxt);$('vence').addEventListener('change',vtxt);
+$('bcal').onclick=()=>{const i=$('vence');try{i.showPicker()}catch(e){i.focus();i.click()}};
+document.querySelectorAll('.chip:not(.cal)').forEach(b=>b.onclick=()=>{const n=+b.dataset.d;if(!n){$('vence').value='';vtxt();return}const d=new Date();d.setDate(d.getDate()+n);$('vence').value=d.toLocaleDateString('en-CA');vtxt()});
 $('fenv').onsubmit=e=>{e.preventDefault();nomsg('menv');
   const u=$('url').value.trim();if(u&&!/^https:\/\//.test(u)){msg('menv','bad','El enlace tiene que empezar con <b>https://</b>');return}
   $('conf').classList.add('on');$('benv').hidden=true;$('bsi').focus()};
@@ -255,7 +265,7 @@ $('bsi').onclick=async()=>{
     if(notificar)L.push(total?(ok?'✅':'⚠️')+` Enviada a <b>${ok} de ${total} iPhone</b>`+(viejos?` (${viejos} ya no tenían la web y se borraron)`:'')+(fallos?` · ${fallos} con error`:''):'ℹ️ Todavía no hay iPhone con avisos activados');
     const malo=(m!=='aviso'&&r.ofertas!=='ok')||(notificar&&r.android!=='ok');
     msg('menv',malo?'bad':'ok','<b>'+(malo?'Se envió con problemas':'¡Listo!')+'</b><ul><li>'+L.join('</li><li>')+'</li></ul>');
-    if(!malo){$('fenv').reset();prev();modo()}
+    if(!malo){$('fenv').reset();prev();modo();vtxt()}
     cargar().catch(()=>{});
   }catch(e){msg('menv','bad','<b>No se pudo enviar.</b> '+esc(e.message)+(L.length?'<ul><li>'+L.join('</li><li>')+'</li></ul>':''))}
   $('bsi').disabled=$('bno').disabled=false;$('conf').classList.remove('on');$('benv').hidden=false;
