@@ -1,7 +1,7 @@
 {
-  "catalogo": 159,
-  "apk": 5,
-  "apkNombre": "1.4",
+  "catalogo": 161,
+  "apk": 6,
+  "apkNombre": "1.5",
   "apkUrl": "https://gamex-cu.github.io/app/GAMEX-Catalogo.apk",
-  "notas": "Ahora te avisamos de ofertas y juegos nuevos con notificaciones. Además trae el catálogo de PC y Meta Quest."
+  "notas": "Al tocar el aviso de una oferta se abre esa oferta en la app. Las ofertas largas se ven plegadas: toca \"Ver detalles\" para leerlas completas."
 }

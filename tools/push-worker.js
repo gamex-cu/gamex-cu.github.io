@@ -72,6 +72,8 @@ function corto(t){t=String(t||'');if(t.length<=230)return t;const c=t.slice(0,22
 async function pushAndroid(env,aviso){
   const key=JSON.parse(env.FIREBASE),tok=await tokenGoogle(key);
   const data={};for(const k of ['id','titulo','texto','url'])if(aviso[k])data[k]=k==='texto'?corto(aviso[k]):String(aviso[k]);
+  if(data.url&&/wa\.me\/|whatsapp/i.test(data.url))delete data.url; // al tocar el aviso se abre la oferta en la app, no WhatsApp
+  if(!aviso.solo)data.dest='ofertas';
   const res=await fetch(`https://fcm.googleapis.com/v1/projects/${key.project_id}/messages:send`,{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},
     body:JSON.stringify({message:{topic:'ofertas',data,android:{priority:'high',ttl:'604800s'}}})});
   if(!res.ok)throw new Error('Firebase '+res.status+': '+(await res.text()).slice(0,200));
@@ -83,7 +85,7 @@ async function leerAvisos(env){
   const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${ARCH}?ref=main`,{headers:GH(env)});
   if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));
   const f=await res.json();let d;try{d=JSON.parse(TD.decode(unb64(f.content)))}catch(e){d={avisos:[]}}
-  if(!Array.isArray(d.avisos))d.avisos=[];return {d,sha:f.sha};
+  if(!Array.isArray(d.avisos))d.avisos=[];if(!Array.isArray(d.silenciosas))d.silenciosas=[];return {d,sha:f.sha};
 }
 async function guardarAvisos(env,d,sha,msg){
   const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${ARCH}`,{method:'PUT',headers:{...GH(env),'Content-Type':'application/json'},
@@ -93,7 +95,8 @@ async function guardarAvisos(env,d,sha,msg){
 async function cambiarAvisos(env,fn,msg){ // reintenta si alguien más cambió el archivo a la vez
   for(let i=0;i<3;i++){const {d,sha}=await leerAvisos(env);fn(d);try{await guardarAvisos(env,d,sha,msg);return d}catch(e){if(i===2||!/ 409| 422/.test(e.message))throw e}}
 }
-const activos=d=>{const h=hoyCuba();return d.avisos.filter(x=>!x.vence||x.vence>=h)};
+// Las ofertas sin notificación van aparte (silenciosas) para que las apps viejas de Android no las avisen.
+const activos=d=>{const h=hoyCuba();return d.avisos.concat(d.silenciosas||[]).filter(x=>!x.vence||x.vence>=h).sort((a,b)=>a.id<b.id?-1:1)};
 
 // ---------- suscripciones ----------
 async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({cursor:cur});out.push(...l.keys.map(k=>k.name));cur=l.list_complete?null:l.cursor}while(cur);return out.sort()}
@@ -186,13 +189,14 @@ async function panel(req,env,u){
       if(url)aviso.url=url;if(vence)aviso.vence=vence;
       const modo=['ambas','oferta','aviso'].includes(q.modo)?q.modo:(q.notificar===false?'oferta':'ambas');
       const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
-      const res={aviso:modo==='aviso'?{...aviso,solo:true}:aviso,notificar,modo};
-      if(modo==='aviso')res.ofertas='no';else try{await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
+      if(modo==='aviso')aviso.solo=true; // no se guarda en Ofertas
+      const res={aviso,notificar,modo};
+      if(modo==='aviso')res.ofertas='no';else try{await cambiarAvisos(env,d=>{if(aviso.silenciosa)d.silenciosas=(d.silenciosas||[]).filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso]);else d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
       if(notificar){try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}}else res.android='no';
       return j(res);
     }
     if(p==='web'){
-      const a=q.aviso||{},datos={};for(const k of ['id','titulo','texto','url'])if(a[k])datos[k]=k==='texto'?corto(a[k]):String(a[k]).slice(0,500);if(!a.solo&&!a.url)datos.dest='ofertas';
+      const a=q.aviso||{},datos={};for(const k of ['id','titulo','texto','url'])if(a[k])datos[k]=k==='texto'?corto(a[k]):String(a[k]).slice(0,500);if(datos.url&&/wa\.me\/|whatsapp/i.test(datos.url))delete datos.url;if(!a.solo&&!datos.url)datos.dest='ofertas';
       if(!datos.id||!datos.titulo)return j({error:'Falta la oferta'},400);
       const ks=await claves(env),resto=ks.filter(k=>!q.despues||k>q.despues),lote=resto.slice(0,LOTE);
       let ok=0,viejos=0,fallos=0;
@@ -204,7 +208,7 @@ async function panel(req,env,u){
     }
     if(p==='borrar'){
       const idA=String(q.id||'');if(!idA)return j({error:'Falta la oferta'},400);
-      const d=await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>x.id!==idA)},'Panel: quitar oferta');
+      const d=await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>x.id!==idA);d.silenciosas=(d.silenciosas||[]).filter(x=>x.id!==idA)},'Panel: quitar oferta');
       return j({ok:true,avisos:activos(d).reverse()});
     }
     return j({error:'No existe'},404);

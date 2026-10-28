@@ -84,6 +84,7 @@ function render(){
   sync();
 }
 function route(){
+  if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
   const esServ=SERV.length&&(h==='servicios'||SERV.some(y=>svSlug(y)===h));
   if(!h.startsWith('l-'))$('serv').hidden=!esServ;
@@ -140,7 +141,7 @@ $('olist').addEventListener('click',e=>{const b=e.target.closest('.oh');if(!b)re
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
   fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
-    const a=(j.avisos||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).reverse();
+    const a=(j.avisos||[]).concat(j.silenciosas||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).sort((p,q)=>p.id<q.id?1:-1);
     el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}"><button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p></div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
       :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
     const ab=el.querySelector('.ocard.abierta');if(ab){window.gxAbrir=null;setTimeout(()=>ab.scrollIntoView({block:'start',behavior:'smooth'}),50)}
