@@ -126,6 +126,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
       <div class="msg" id="mes"></div>
     </section>
     <section class="card"><h2>Lo que más piden</h2><ul class="rank" id="r-jue"></ul></section>
+    <section class="card"><h2>Pedidos desde las consolas</h2><p class="nota" style="margin:-6px 0 8px">Cuentan cuando el cliente escanea el QR de la app de PS4, PS5 o Switch.</p><ul class="rank" id="r-con"></ul></section>
     <section class="card"><h2>Buscaron y NO encontraron</h2><p class="nota" style="margin:-6px 0 8px">Juegos que la gente busca y no están en el catálogo: buenas ideas para conseguir.</p><ul class="rank warn" id="r-sin"></ul></section>
     <section class="card"><h2>Lo más buscado</h2><ul class="rank" id="r-bus"></ul></section>
     <section class="card"><h2>Catálogos más vistos</h2><ul class="rank" id="r-cat"></ul></section>
@@ -250,7 +251,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('.ign');if(
   b.disabled=true;try{await api('stats-ignorar',{uid:b.dataset.uid,si:!!b.dataset.si});stats()}catch(err){msg('mes','bad',esc(err.message));b.disabled=false}});$('tb-es').onclick=()=>tab('es');
 $('rng').onclick=e=>{const b=e.target.closest('[data-d]');if(!b)return;DIAS=+b.dataset.d;$('rng').querySelectorAll('[data-d]').forEach(x=>x.setAttribute('aria-pressed',x===b));stats()};
 const N=n=>(n||0).toLocaleString('es');const pl=(n,w)=>N(n)+' '+w+(n===1?'':'s');
-const DISP={app:'App de Android','iphone-app':'iPhone (app en pantalla de inicio)',iphone:'iPhone (Safari)',android:'Android (navegador)',pc:'Computadora',otro:'Otro'};
+const DISP={ps4:'App de PS4',ps5:'App de PS5',switch:'App de Nintendo Switch',app:'App de Android','iphone-app':'iPhone (app en pantalla de inicio)',iphone:'iPhone (Safari)',android:'Android (navegador)',pc:'Computadora',otro:'Otro'};
 function rank(id,filas,fmt,vacio){const el=$(id);if(!filas.length){el.innerHTML=`<li><span class="nm" style="color:var(--muted)">${vacio}</span></li>`;return}
   const mx=Math.max(...filas.map(f=>f.c));el.innerHTML=filas.map(f=>`<li><span class="nm">${fmt(f.v)}</span><span class="ct">${N(f.c)}</span><span class="br"><i style="width:${Math.max(3,f.c/mx*100)}%"></i></span></li>`).join('')}
 const juego=k=>{const i=k.indexOf('|');return i<0?esc(k):`${esc(k.slice(i+1))} <small>· ${esc(k.slice(0,i))}</small>`};
@@ -263,10 +264,10 @@ async function stats(){
     const dur=sg=>{sg=sg||0;if(sg<60)return sg+' s';const m=Math.round(sg/60);return m<60?m+' min':Math.floor(m/60)+' h '+(m%60)+' min'};
     $('k-tpo').textContent=t.visitas?dur(Math.round((d.tiempo||0)/t.visitas)):'–';$('k-tpo2').textContent='En total: '+dur(d.tiempo);
     $('k-eq').textContent=N((d.equipos||[]).length>=30?t.personas:(d.equipos||[]).length);
-    const IC={app:'📱',android:'📱','iphone-app':'🍏',iphone:'🍏',pc:'💻',otro:'❔'};
+    const IC={ps4:'🎮',ps5:'🎮',switch:'🎮',app:'📱',android:'📱','iphone-app':'🍏',iphone:'🍏',pc:'💻',otro:'❔'};
     const cuando=ms=>{const x=new Date(ms),h=new Date();const hh=x.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});return x.toDateString()===h.toDateString()?'hoy '+hh:x.getDate()+' '+MES[x.getMonth()]+' '+hh};
     const eq=d.equipos||[],mxs=Math.max(1,...eq.map(e=>e.seg));
-    $('r-eq').innerHTML=eq.length?eq.map(e=>`<li><span class="nm">${IC[e.disp]||'❔'} <b>#${esc(e.v)}</b> <small>· ${e.modelo?'<b style="color:var(--fg)">'+esc(e.modelo)+'</b> · ':''}${esc(DISP[e.disp]||e.disp)} · ${N(e.visitas)} visita${e.visitas==1?'':'s'}${e.pedidos?' · '+N(e.pedidos)+' pedido'+(e.pedidos==1?'':'s'):''} · último: ${cuando(e.ultimo)}</small></span><span class="ct">${dur(e.seg)}</span><span class="br"><i style="width:${Math.max(3,e.seg/mxs*100)}%"></i></span><button class="ign" data-uid="${esc(e.uid)}" data-si="1">No contar este equipo</button></li>`).join(''):'<li><span class="nm" style="color:var(--muted)">Todavía no hay datos.</span></li>';
+    $('r-eq').innerHTML=eq.length?eq.map(e=>`<li><span class="nm">${IC[e.disp]||'❔'} <b>#${esc(e.v)}</b> ${e.modelo?'<b style="color:var(--amar,#f2a900)">'+esc(e.modelo)+'</b>':(/iphone/.test(e.disp)?'<b style="color:var(--fg)">iPhone</b>':e.disp==='pc'?'<b style="color:var(--fg)">Computadora</b>':'<small style="color:var(--muted)">(modelo aún sin detectar)</small>')} <small>· ${esc(DISP[e.disp]||e.disp)} · ${N(e.visitas)} visita${e.visitas==1?'':'s'}${e.pedidos?' · '+N(e.pedidos)+' pedido'+(e.pedidos==1?'':'s'):''} · último: ${cuando(e.ultimo)}</small></span><span class="ct">${dur(e.seg)}</span><span class="br"><i style="width:${Math.max(3,e.seg/mxs*100)}%"></i></span><button class="ign" data-uid="${esc(e.uid)}" data-si="1">No contar este equipo</button></li>`).join(''):'<li><span class="nm" style="color:var(--muted)">Todavía no hay datos.</span></li>';
     const ig=d.ignorados||[];$('s-ign').hidden=!ig.length;
     $('r-ign').innerHTML=ig.map(e=>`<li><span class="nm">${IC[e.disp]||'❔'} <b>#${esc(e.v)}</b> <small>${e.modelo?'· '+esc(e.modelo)+' ':''}· ${esc(DISP[e.disp]||e.disp||'')}</small></span><span></span><button class="ign" data-uid="${esc(e.uid)}" data-si="">Volver a contar</button></li>`).join('');
     const ap=d.app||{};$('k-des').textContent=N(ap.descargas);$('k-apu').textContent=N(ap.usuarios);
@@ -282,6 +283,7 @@ async function stats(){
     rank('r-sin',d.sinResultado||[],esc,'Nadie buscó algo que no estuviera. 👌');
     rank('r-bus',d.busquedas||[],esc,'Todavía no hay búsquedas.');
     rank('r-cat',d.catalogos||[],esc,'Todavía no hay visitas a catálogos.');
+    rank('r-con',(d.consolas||[]).map(x=>({v:(DISP[x.v]||x.v)+' · '+N(x.j)+' juegos',c:x.c})),esc,'Todavía no hay pedidos desde las consolas.');
     rank('r-mod',d.modelos||[],esc,'Todavía no hay datos (empieza a contar desde hoy).');
     rank('r-dis',d.dispositivos||[],v=>esc(DISP[v]||v),'Todavía no hay visitas.');
     $('es-nota').textContent=(d.dias===1?'Hoy':`Del ${fechaL(d.desde)} al ${fechaL(d.hasta)}`)+' · Las estadísticas empezaron el 27 de octubre de 2026. No se guarda ningún dato personal; una "persona" es un teléfono o computadora distinto.';

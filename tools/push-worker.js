@@ -133,6 +133,7 @@ export class Stats extends DurableObject{
       tiempo:q(`SELECT COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg FROM ev WHERE ${W}`)[0].seg,
       modelos:q(`SELECT v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='equipo' AND v!='' GROUP BY v ORDER BY c DESC LIMIT 20`).map(x=>({v:nombreModelo(x.v),c:x.c})),
       equipos:q(`SELECT substr(uid,1,4) v,uid,MAX(disp) disp,MAX(CASE WHEN tipo='equipo' THEN v END) modelo,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`).map(x=>({...x,modelo:nombreModelo(x.modelo)})),
+      consolas:q(`SELECT disp v,COUNT(*) c,SUM(n) j FROM ev WHERE ${W} AND tipo='envio' AND disp IN ('ps4','ps5','switch') GROUP BY disp ORDER BY c DESC`),
       app:{descargas:q(`SELECT COUNT(*) c FROM ev WHERE ${W} AND tipo='descarga'`)[0].c||0,
            usuarios:q(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND disp='app'`)[0].c||0,
            descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga' AND uid NOT IN (SELECT uid FROM ign)`).one().c||0,
@@ -145,7 +146,7 @@ async function evento(req,env){
   let b;try{b=JSON.parse(await req.text())}catch(e){return r('mal',400)}
   const lista=Array.isArray(b&&b.e)?b.e.slice(0,40):[];
   const uid=String(b&&b.u||'').replace(/[^a-z0-9]/gi,'').slice(0,24)||'anon';
-  const disp=['app','android','iphone','iphone-app','pc','otro'].includes(b&&b.d)?b.d:'otro';
+  const disp=['app','android','iphone','iphone-app','pc','ps4','ps5','switch','otro'].includes(b&&b.d)?b.d:'otro';
   const org=b&&b.o==='app'?'app':'web';
   const filas=lista.filter(x=>x&&TIPOS.has(x.t)).map(x=>({tipo:x.t,v:String(x.v||'').trim().slice(0,120),n:Number.isFinite(+x.n)?Math.max(0,Math.min(x.t==='tiempo'?10800:9999,Math.round(+x.n))):null,uid,disp,org}))
     .map(f=>f.tipo==='busca'?{...f,v:f.v.toLowerCase().replace(/\s+/g,' ')}:f).filter(f=>f.tipo==='visita'||f.tipo==='contacto'||f.tipo==='envio'||f.v);
@@ -211,6 +212,19 @@ export default{async fetch(req,env){
   if(u.pathname==='/panel'||u.pathname.startsWith('/panel/'))return panel(req,env,u);
   if(req.method==='OPTIONS')return new Response(null,{headers:CORS});
   if(u.pathname==='/evento'&&req.method==='POST')return evento(req,env);
+  if(u.pathname==='/p'){ /* pedido hecho desde la app de consola (QR): se cuenta y se abre WhatsApp */
+    const NUMS=['5353441089','5353827989','5352933943'],num=NUMS[+u.searchParams.get('n')]||NUMS[0];
+    const app=['ps4','ps5','switch'].includes(u.searchParams.get('a'))?u.searchParams.get('a'):'otro',t=(u.searchParams.get('t')||'').slice(0,3000);
+    if(env.STATS&&t){try{
+      const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
+      const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
+      const filas=[];let cat='';
+      for(const l of t.split('\n')){const m1=l.match(/^\*(.+)\*$/);if(m1){cat=m1[1];continue}
+        const m2=l.match(/^\d+\.\s+(.+?)(?:\s+\((?:online|Series X\|S|online, Series X\|S)\))?$/);if(m2&&cat)filas.push({tipo:'juego',v:(cat+'|'+m2[1]).slice(0,120),n:null,uid,disp:app,org:app})}
+      filas.unshift({tipo:'envio',v:'consola',n:filas.length,uid,disp:app,org:app});
+      await statsDO(env).agregar(filas)}catch(e){}}
+    return Response.redirect('https://wa.me/'+num+'?text='+encodeURIComponent(t),302);
+  }
   if(u.pathname==='/descargar'){ /* cuenta la descarga de la app y manda al APK */
     if(env.STATS){const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
       const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
