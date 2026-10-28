@@ -12,6 +12,7 @@
 <meta name="apple-mobile-web-app-title" content="GameX">
 <meta name="theme-color" content="#0d1124">
 <meta name="description" content="Tienda de videojuegos GameX en La Habana (Vedado): juegos para PS4, PS5, PC, Xbox, Nintendo Switch y Meta Quest, Game Pass, PS Plus, gift cards, desbloqueos y mantenimiento. Pide por WhatsApp.">
+<meta name="google-site-verification" content="WUsH5ukAr1ZdJa2tdYhEMmoTKJ0mr0MI1CSk8bmBsnI">
 <link rel="canonical" href="https://gamex-cu.github.io/">
 <meta name="robots" content="index,follow">
 <meta property="og:type" content="website">
@@ -664,7 +665,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=143;
+const GXV=144;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
