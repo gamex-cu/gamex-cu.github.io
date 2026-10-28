@@ -628,12 +628,20 @@ async function dibujarComp(c,m,est){
   g.setLineDash([12,10]);g.strokeStyle='rgba(255,255,255,.35)';g.beginPath();g.moveTo(60,708);g.lineTo(965,708);g.stroke();g.setLineDash([]);
   // tres cajas verdes
   const tri=[[45,'TOTAL PAGADO','$ '+(+m.importe).toFixed(2)],[377,'GX OBTENIDOS','+ '+m.ganados+' GX'],[692,'SALDO GX ACTUAL',est.saldo+' GX']];
-  tri.forEach(([x,l,v],i)=>{const w=i===1?306:288;caja(x,730,w,158);g.textAlign='left';g.fillStyle='#e8eee9';let lf=26;g.font=`700 ${lf}px ${F}`;while(g.measureText(l).width>w-96&&lf>16){lf--;g.font=`700 ${lf}px ${F}`}g.fillText(l,x+82,764);
-    const gr=g.createLinearGradient(0,792,0,872);gr.addColorStop(0,'#8dff52');gr.addColorStop(1,'#46d11f');g.fillStyle=gr;g.beginPath();g.roundRect(x+22,792,w-44,80,10);g.fill();
-    g.fillStyle='#0b1a06';g.textAlign='center';let fs=50;g.font=`700 ${fs}px ${F}`;while(g.measureText(v).width>w-70&&fs>28){fs-=2;g.font=`700 ${fs}px ${F}`}g.fillText(v,x+w/2,834);
-    // iconito
-    g.save();g.translate(x+44,768);g.scale(.8,.8);if(i===1){g.strokeStyle='#fff';g.lineWidth=5;g.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k-Math.PI/2;g.lineTo(Math.cos(a)*30,Math.sin(a)*30)}g.closePath();g.fillStyle='#0a0d0b';g.fill();g.stroke();g.fillStyle='#fff';g.font=`700 24px ${F}`;g.textAlign='center';g.fillText('GX',0,2)}
-    else{for(let k=2;k>=0;k--){g.fillStyle='#fff';g.strokeStyle='#0a0d0b';g.lineWidth=3;g.beginPath();g.ellipse(0,k*11-10,26,11,0,0,7);g.fill();g.stroke()}}g.restore()});
+  tri.forEach(([x,l,v],i)=>{const w=i===1?306:288,y=730;caja(x,y,w,158);
+    // etiqueta arriba a la derecha (como el diseño)
+    g.textAlign='left';g.fillStyle='#ffffff';let lf=27;g.font=`700 ${lf}px ${F}`;while(g.measureText(l).width>w-112&&lf>16){lf--;g.font=`700 ${lf}px ${F}`}g.fillText(l,x+100,y+36);
+    // barra verde con el valor
+    const gr=g.createLinearGradient(0,y+60,0,y+144);gr.addColorStop(0,'#93ff57');gr.addColorStop(1,'#42cc1d');g.fillStyle=gr;g.shadowColor='rgba(124,255,63,.45)';g.shadowBlur=18;g.beginPath();g.roundRect(x+20,y+62,w-40,80,10);g.fill();g.shadowBlur=0;
+    g.fillStyle='#0b1a06';g.textAlign='center';let fs=54;g.font=`700 ${fs}px ${F}`;const cx=x+20+(w-40)/2+(i===1?18:22);while(g.measureText(v).width>w-130&&fs>28){fs-=2;g.font=`700 ${fs}px ${F}`}g.fillText(v,cx,y+104);
+    // icono grande arriba a la izquierda, montado sobre la barra
+    g.save();g.translate(x+50,y+46);
+    if(i===1){g.lineWidth=6;g.strokeStyle='#fff';g.fillStyle='#0a0d0b';g.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k-Math.PI/2;g.lineTo(Math.cos(a)*40,Math.sin(a)*40)}g.closePath();g.fill();g.stroke();
+      g.fillStyle='#fff';g.font=`700 34px ${F}`;g.textAlign='center';g.fillText('GX',0,2)}
+    else{for(let k=2;k>=0;k--){const yy=k*15-8;g.fillStyle='#fff';g.strokeStyle='#0a0d0b';g.lineWidth=4;g.beginPath();g.ellipse(0,yy,34,14,0,0,7);g.fill();g.stroke();
+        g.beginPath();g.moveTo(-34,yy);g.lineTo(-34,yy+8);g.moveTo(34,yy);g.lineTo(34,yy+8);g.stroke()}
+      g.strokeStyle='#0a0d0b';g.lineWidth=5;g.lineCap='round';g.beginPath();g.moveTo(-8,-14);g.lineTo(8,-2);g.moveTo(8,-14);g.lineTo(-8,-2);g.stroke();g.lineCap='butt'}
+    g.restore()});
   if(m.cumple){g.textAlign='center';g.fillStyle=V;g.font=`700 26px ${F}`;g.fillText('🎂 ¡SEMANA DE CUMPLEAÑOS: GX DOBLES!',W/2,906)}
   // prestigio
   caja(45,920,935,112);icono(70,930,92,s=>{g.fillStyle='#ffd21f';g.beginPath();g.moveTo(-s*.32,s*.15);g.lineTo(-s*.36,-s*.18);g.lineTo(-s*.15,0);g.lineTo(0,-s*.26);g.lineTo(s*.15,0);g.lineTo(s*.36,-s*.18);g.lineTo(s*.32,s*.15);g.closePath();g.fill();g.fillRect(-s*.32,s*.2,s*.64,s*.08);[[-.36,-.2],[0,-.29],[.36,-.2]].forEach(([a,b])=>{g.beginPath();g.arc(a*s,b*s,s*.05,0,7);g.fill()})});
