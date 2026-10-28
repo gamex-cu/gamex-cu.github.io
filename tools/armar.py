@@ -124,7 +124,7 @@ function ev(t,v,n){cola.push(n==null?{t,v}:{t,v,n});clearTimeout(tm);tm=setTimeo
 window.gxEv=ev;
 addEventListener('pagehide',()=>enviar(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
 ev('visita','');
-(function(){try{const m=(navigator.userAgent.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/|\))/)||[])[1];
+(function(){try{const m=(navigator.userAgent.match(/Android[^;)]*;\\s*([^;)]+?)(?:\\s+Build\\/|\\))/)||[])[1];
   const fin=x=>{x=(x||'').trim();if(x&&x!=='K'&&!/^wv$/i.test(x))ev('equipo',x.slice(0,60))};
   if(navigator.userAgentData&&navigator.userAgentData.getHighEntropyValues)navigator.userAgentData.getHighEntropyValues(['model']).then(h=>fin(h.model||m)).catch(()=>fin(m));
   else if(/iphone/i.test(navigator.userAgent))fin('iPhone');else if(/ipad/i.test(navigator.userAgent))fin('iPad');else fin(m)}catch(e){}})();
