@@ -221,6 +221,11 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .cu-como summary{cursor:pointer;font-weight:600}
 .cu-como ul{margin:10px 0 0;padding-left:18px;color:var(--muted);line-height:1.5}
 .cu-como b{color:var(--fg)}
+.cu-rw{margin-top:10px;line-height:1.5}.cu-rw p{margin:4px 0;color:var(--muted)}.cu-rw p b{color:var(--fg)}
+.cu-rw h4{margin:16px 0 4px;font:700 .98rem var(--display);color:var(--fg)}
+.cu-rw ul{margin:4px 0 0;padding-left:20px;color:var(--muted)}
+.cu-rt{font:800 1.1rem var(--display)!important;color:var(--hot)!important;letter-spacing:.04em}
+.cu-rf{margin-top:16px!important;font-weight:700;color:#7fe0a5!important}
 
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
@@ -710,7 +715,16 @@ function cuPintar(){
   $('cu-pres2').textContent=`faltan ${cuN(r.faltaPrestigio)} GX para el siguiente`;
   $('cu-comp').textContent=cuN(r.compras);$('cu-gast').textContent=cuMoney(r.gastado)+' en total';$('cu-hist').textContent=cuN(r.historicos);
   $('cu-lista').innerHTML=CU.historial.length?CU.historial.map(m=>`<div class="cu-mv"><div><b style="font-weight:600">${esc(m.tipo==='Compra'?(m.descr||'Compra'):m.tipo==='Canje'?'Canje'+(m.descr?': '+m.descr:''):m.tipo==='Referido'?'Referido'+(m.descr?': '+m.descr:''):(m.descr||'Ajuste'))}</b><small>${cuF(m.fecha)}${m.importe?' · '+cuMoney(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><b class="${m.ganados?'mas':m.usados?'menos':''}">${m.ganados?'+'+cuN(m.ganados):m.usados?'−'+cuN(m.usados):'0'} GX</b></div>`).join(''):'<p class="cu-help">Todavía no tienes movimientos.</p>';
-  $('cu-reglas').innerHTML=`<ul><li>Cada <b>$1</b> que gastas te da <b>${R.porDolar} GX</b>.</li><li>En tu <b>semana de cumpleaños</b> (3 días antes, el día y 3 días después) ganas <b>el doble</b>.</li><li>Si traes a un amigo nuevo, ganas <b>${R.referido} GX</b> cuando haga su primera compra.</li><li>Niveles: <b>${cuN(R.n1)} GX = ${cuMoney(R.p1)}</b> · <b>${cuN(R.n2)} GX = ${cuMoney(R.p2)}</b> · <b>${cuN(R.n3)} GX = ${cuMoney(R.p3)}</b> (máximo). Canjéalos en tus compras.</li><li><b>Prestigio:</b> +1 ⭐ por cada ${cuN(R.prestigio)} GX ganados en compras. Canjear no te quita prestigio.</li></ul>`;
+  $('cu-reglas').innerHTML=`<div class="cu-rw">
+<p class="cu-rt">🎮 GAMEX REWARDS</p><p><b>💚 ¡Tus compras ahora tienen recompensa!</b></p>
+<h4>💰 ACUMULA PUNTOS</h4><p>Por cada $1 de compra recibes 10 GX.</p>
+<h4>🏆 NIVELES Y RECOMPENSAS</h4><ul><li>🥉 1,500 GX = $9</li><li>🥈 2,500 GX = $17.50</li><li>🥇 3,500 GX = $28</li></ul>
+<h4>🎁 CANJEA CUANDO QUIERAS</h4><p>Utiliza tu recompensa disponible en tus próximas compras. Al canjear, tu saldo GX vuelve a cero y comienzas un nuevo ciclo.</p>
+<h4>👑 PRESTIGIO</h4><p>Por cada 2,000 GX acumulados mediante compras, aumentas tu Prestigio. ¡Nunca se reinicia!</p>
+<h4>🎂 CUMPLEAÑOS ×2</h4><p>Recibe el doble de GX durante los 3 días anteriores y posteriores a tu cumpleaños, incluyendo ese día.</p>
+<h4>🤝 RECOMIENDA Y GANA</h4><p>Recibe +100 GX por cada nuevo cliente referido que realice su primera compra.</p>
+<h4>📌 REGLAS BÁSICAS</h4><ul><li>Registro totalmente GRATIS.</li><li>Tus GX no vencen.</li><li>Las recompensas solo se utilizan en GameX.</li><li>Los GX no se cambian por efectivo ni se transfieren.</li><li>Las compras canceladas no generan GX.</li></ul>
+<p class="cu-rf">💚 COMPRA • ACUMULA • CANJEA • DISFRUTA</p><p class="cu-rt">GAMEX REWARDS 🎮</p></div>`;
 }
 function cuEntro(d){cuLS.set('gx-sesion',d.token);cuLS.set('gx-solicitud',null);cuMsg('','');cuCargar()}
 $('cu-entrar').onsubmit=async e=>{e.preventDefault();const b=e.submitter||e.target.querySelector('button');b.disabled=true;
@@ -864,7 +878,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=162;
+const GXV=163;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

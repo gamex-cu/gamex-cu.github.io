@@ -504,13 +504,13 @@ function movPrev(){
   let h='';
   if(t==='Compra'&&imp>0){const b=Math.round(imp*R.porDolar),cu=enCumple($('m-fecha').value,c.nac);h=`Ganará <b>${N(cu?b*2:b)} GX</b>${cu?' 🎂 (semana de cumpleaños: x2)':''} · suma ${N(cu?b*2:b)} al prestigio`}
   else if(t==='Referido')h=`Ganará <b>${R.referido} GX</b> por referido (no suma prestigio)`;
-  else if(t==='Canje'&&n>0)h=n>FICHA.resumen.saldo?`⚠️ Solo tiene ${N(FICHA.resumen.saldo)} GX`:`Se descuentan <b>${N(n)} GX</b> · le quedan ${N(FICHA.resumen.saldo-n)} GX (puede canjear hasta ${money(FICHA.resumen.valor)} con su saldo actual)`;
+  else if(t==='Canje'&&n>0)h=n>FICHA.resumen.saldo?`⚠️ Solo tiene ${N(FICHA.resumen.saldo)} GX`:n===FICHA.resumen.saldo?`Canjea <b>${money(FICHA.resumen.valor)}</b> (${esc(FICHA.resumen.nivel)}) · su saldo vuelve a <b>0 GX</b> y empieza un nuevo ciclo. El prestigio no cambia.`:`Se descuentan <b>${N(n)} GX</b> · le quedan ${N(FICHA.resumen.saldo-n)} GX. ⚠️ Según las reglas, al canjear el saldo vuelve a cero.`;
   else if(t==='Canje')h=`Tiene ${N(FICHA.resumen.saldo)} GX = ${money(FICHA.resumen.valor)} para canjear (${esc(FICHA.resumen.nivel)})`;
   else if(t==='Ajuste +'&&n>0)h=`Se suman <b>${N(n)} GX</b> (no cuentan para prestigio)`;
   else if(t==='Ajuste -'&&n>0)h=`Se quitan <b>${N(n)} GX</b>`;
   $('m-prev').innerHTML=h;
 }
-['m-imp','m-n','m-fecha'].forEach(i=>$(i).addEventListener('input',movPrev));$('m-tipos').addEventListener('change',movPrev);
+['m-imp','m-n','m-fecha'].forEach(i=>$(i).addEventListener('input',movPrev));$('m-tipos').addEventListener('change',()=>{if(FICHA&&MT()==='Canje')$('m-n').value=FICHA.resumen.saldo||'';else if(MT()!=='Ajuste +'&&MT()!=='Ajuste -')$('m-n').value='';movPrev()});
 $('fmov').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;nomsg('mmov');$('m-btn').disabled=true;
   try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:$('m-desc').value.trim()});
     pintarFicha(d);msg('mmov','ok',`✅ ${esc(t)} guardada: ${d.nuevo.ganados?'+'+N(d.nuevo.ganados):'−'+N(d.nuevo.usados)} GX${d.nuevo.cumple?' 🎂 (x2 cumpleaños)':''}. Saldo: ${N(d.resumen.saldo)} GX · ${esc(d.resumen.nivel)}.`);
