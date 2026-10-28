@@ -182,9 +182,10 @@ async function panel(req,env,u){
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       const hoy=hoyCuba(),aviso={id:`${hoy}-${Math.floor(Date.now()/1000)}`,fecha:hoy,titulo,texto};
       if(url)aviso.url=url;if(vence)aviso.vence=vence;
-      const notificar=q.notificar!==false;if(!notificar)aviso.silenciosa=true;
-      const res={aviso,notificar};
-      try{await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
+      const modo=['ambas','oferta','aviso'].includes(q.modo)?q.modo:(q.notificar===false?'oferta':'ambas');
+      const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
+      const res={aviso,notificar,modo};
+      if(modo==='aviso')res.ofertas='no';else try{await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
       if(notificar){try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}}else res.android='no';
       return j(res);
     }
