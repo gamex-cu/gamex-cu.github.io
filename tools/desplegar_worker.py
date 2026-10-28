@@ -29,7 +29,7 @@ for nombre, archivo, campo in [('PANEL', 'panel.json', 'clave'), ('GITHUB', 'pan
         d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
         if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})
     except (FileNotFoundError, KeyError): print('Aviso: falta', nombre, '(el panel no funcionará completo)')
-codigo = open(T + 'push-worker.js').read().replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read()), 1)
+codigo = open(T + 'push-worker.js').read().replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read()), 1).replace('__MODELOS__', open(T + 'datos/modelos.json').read(), 1)
 def subir(m):
     b = uuid.uuid4().hex
     body = (f'--{b}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n{json.dumps(m)}\r\n'

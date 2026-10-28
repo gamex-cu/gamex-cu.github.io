@@ -124,6 +124,10 @@ function ev(t,v,n){cola.push(n==null?{t,v}:{t,v,n});clearTimeout(tm);tm=setTimeo
 window.gxEv=ev;
 addEventListener('pagehide',()=>enviar(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
 ev('visita','');
+(function(){try{const m=(navigator.userAgent.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/|\))/)||[])[1];
+  const fin=x=>{x=(x||'').trim();if(x&&x!=='K'&&!/^wv$/i.test(x))ev('equipo',x.slice(0,60))};
+  if(navigator.userAgentData&&navigator.userAgentData.getHighEntropyValues)navigator.userAgentData.getHighEntropyValues(['model']).then(h=>fin(h.model||m)).catch(()=>fin(m));
+  else if(/iphone/i.test(navigator.userAgent))fin('iPhone');else if(/ipad/i.test(navigator.userAgent))fin('iPad');else fin(m)}catch(e){}})();
 let t0=document.visibilityState==='visible'?Date.now():0;
 function tiempo(){if(t0){const sg=Math.round((Date.now()-t0)/1000);t0=0;if(sg>=3)ev('tiempo','',Math.min(sg,10800))}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){tiempo();enviar(true)}else t0=Date.now()});

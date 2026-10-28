@@ -652,6 +652,10 @@ function ev(t,v,n){cola.push(n==null?{t,v}:{t,v,n});clearTimeout(tm);tm=setTimeo
 window.gxEv=ev;
 addEventListener('pagehide',()=>enviar(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
 ev('visita','');
+(function(){try{const m=(navigator.userAgent.match(/Android[^;)]*;\s*([^;)]+?)(?:\s+Build\/|\))/)||[])[1];
+  const fin=x=>{x=(x||'').trim();if(x&&x!=='K'&&!/^wv$/i.test(x))ev('equipo',x.slice(0,60))};
+  if(navigator.userAgentData&&navigator.userAgentData.getHighEntropyValues)navigator.userAgentData.getHighEntropyValues(['model']).then(h=>fin(h.model||m)).catch(()=>fin(m));
+  else if(/iphone/i.test(navigator.userAgent))fin('iPhone');else if(/ipad/i.test(navigator.userAgent))fin('iPad');else fin(m)}catch(e){}})();
 let t0=document.visibilityState==='visible'?Date.now():0;
 function tiempo(){if(t0){const sg=Math.round((Date.now()-t0)/1000);t0=0;if(sg>=3)ev('tiempo','',Math.min(sg,10800))}}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){tiempo();enviar(true)}else t0=Date.now()});
@@ -670,7 +674,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=147;
+const GXV=148;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

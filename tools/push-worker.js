@@ -99,7 +99,13 @@ async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({
 
 
 // ---------- estadísticas (Durable Object con SQLite) ----------
-const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta','descarga','tiempo']);
+const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta','descarga','tiempo','equipo']);
+const MODELOS=__MODELOS__;
+/* Nombre comercial del teléfono a partir del código de modelo (ej. SM-A165F -> Samsung Galaxy A16). */
+function nombreModelo(m){if(!m)return '';const k=m.toUpperCase().trim();if(MODELOS[k])return MODELOS[k];
+  let r=k.match(/^SM-S9(\d)(\d)/);if(r)return 'Samsung Galaxy S'+(22+ +r[1])+({6:'+',7:'+',8:' Ultra'}[r[2]]||'');
+  r=k.match(/^SM-([AMFE])(\d)(\d)(\d)/);if(r)return 'Samsung Galaxy '+r[1]+r[2]+r[3]+(r[4]==='7'?'s':'');
+  if(/^SM-/.test(k))return 'Samsung '+m;return m}
 const APK='https://gamex-cu.github.io/app/GAMEX-Catalogo.apk';
 const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};
 export class Stats extends DurableObject{
@@ -120,7 +126,8 @@ export class Stats extends DurableObject{
     return {desde,hasta,dias,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
       dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`),
       tiempo:q(`SELECT COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg FROM ev WHERE ${W}`)[0].seg,
-      equipos:q(`SELECT substr(uid,1,4) v,MAX(disp) disp,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`),
+      modelos:q(`SELECT v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='equipo' AND v!='' GROUP BY v ORDER BY c DESC LIMIT 20`).map(x=>({v:nombreModelo(x.v),c:x.c})),
+      equipos:q(`SELECT substr(uid,1,4) v,MAX(disp) disp,MAX(CASE WHEN tipo='equipo' THEN v END) modelo,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`).map(x=>({...x,modelo:nombreModelo(x.modelo)})),
       app:{descargas:q(`SELECT COUNT(*) c FROM ev WHERE ${W} AND tipo='descarga'`)[0].c||0,
            usuarios:q(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND disp='app'`)[0].c||0,
            descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga'`).one().c||0,
