@@ -29,3 +29,7 @@
 - La web (index.html) y la app (app/catalogo.html) mandan eventos anónimos al Worker (/evento): visita, catálogo abierto, búsquedas (con cantidad de resultados), pedidos por WhatsApp y juegos pedidos. La copia de Claude no manda nada.
 - Se guardan en un Durable Object con SQLite (clase Stats del Worker), se borran solos a los 400 días y se ven en el panel → pestaña Estadísticas.
 - Solo se guarda un número al azar por teléfono (para contar personas), nunca datos personales.
+
+## Repositorio privado
+- Las claves (secretos/), el proyecto de la app Android con su firma (gamex-release.jks) y los APK están en el repositorio PRIVADO gamex-cu/gamex-herramientas (ver su README).
+- En una sesión nueva: copiar gamex-herramientas/secretos/* a /home/claude/secretos/ antes de usar enviar_aviso.py o desplegar_worker.py.
