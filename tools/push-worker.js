@@ -111,7 +111,10 @@ const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:
 export class Stats extends DurableObject{
   constructor(ctx,env){super(ctx,env);this.sql=ctx.storage.sql;
     this.sql.exec('CREATE TABLE IF NOT EXISTS ev(ts INTEGER,dia TEXT,tipo TEXT,v TEXT,n INTEGER,uid TEXT,disp TEXT,org TEXT)');
-    this.sql.exec('CREATE INDEX IF NOT EXISTS ev_dia ON ev(dia,tipo)')}
+    this.sql.exec('CREATE INDEX IF NOT EXISTS ev_dia ON ev(dia,tipo)');
+    this.sql.exec('CREATE TABLE IF NOT EXISTS ign(uid TEXT PRIMARY KEY,nota TEXT,ts INTEGER)')}
+  ignorar(uid,si,nota){if(si)this.sql.exec('INSERT OR REPLACE INTO ign VALUES(?,?,?)',uid,nota||'',Date.now());else this.sql.exec('DELETE FROM ign WHERE uid=?',uid);return true}
+  ignorados(){return this.sql.exec("SELECT i.uid,i.nota,i.ts,(SELECT MAX(CASE WHEN tipo='equipo' THEN v END) FROM ev WHERE ev.uid=i.uid) modelo,(SELECT MAX(disp) FROM ev WHERE ev.uid=i.uid) disp FROM ign i ORDER BY ts DESC").toArray()}
   agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
     for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
     if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-400*864e5);return filas.length}
@@ -120,19 +123,20 @@ export class Stats extends DurableObject{
   resumen(dias){
     const hasta=diaCuba(Date.now()),desde=diaCuba(Date.now()-(dias-1)*864e5);
     const q=(sql,...a)=>this.sql.exec(sql,desde,hasta,...a).toArray();
-    const W='dia>=? AND dia<=?';
+    const W="dia>=? AND dia<=? AND uid NOT IN (SELECT uid FROM ign)";
     const tot=q(`SELECT SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos,SUM(CASE WHEN tipo='envio' THEN n ELSE 0 END) juegos,SUM(tipo='contacto') contactos,SUM(tipo='busca') busquedas FROM ev WHERE ${W}`)[0]||{};
     const porDia=q(`SELECT dia,SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos FROM ev WHERE ${W} GROUP BY dia ORDER BY dia`);
     const top=(tipo,lim,extra='')=>q(`SELECT v,COUNT(*) c FROM ev WHERE ${W} AND tipo=? ${extra} GROUP BY v ORDER BY c DESC,v LIMIT ${lim}`,tipo);
-    return {desde,hasta,dias,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
+    const ignorados=this.ignorados().map(x=>({...x,v:x.uid.slice(0,4),modelo:nombreModelo(x.modelo)}));
+    return {desde,hasta,dias,ignorados,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
       dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`),
       tiempo:q(`SELECT COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg FROM ev WHERE ${W}`)[0].seg,
       modelos:q(`SELECT v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='equipo' AND v!='' GROUP BY v ORDER BY c DESC LIMIT 20`).map(x=>({v:nombreModelo(x.v),c:x.c})),
-      equipos:q(`SELECT substr(uid,1,4) v,MAX(disp) disp,MAX(CASE WHEN tipo='equipo' THEN v END) modelo,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`).map(x=>({...x,modelo:nombreModelo(x.modelo)})),
+      equipos:q(`SELECT substr(uid,1,4) v,uid,MAX(disp) disp,MAX(CASE WHEN tipo='equipo' THEN v END) modelo,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`).map(x=>({...x,modelo:nombreModelo(x.modelo)})),
       app:{descargas:q(`SELECT COUNT(*) c FROM ev WHERE ${W} AND tipo='descarga'`)[0].c||0,
            usuarios:q(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND disp='app'`)[0].c||0,
-           descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga'`).one().c||0,
-           usuariosTotal:this.sql.exec(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE disp='app'`).one().c||0}};
+           descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga' AND uid NOT IN (SELECT uid FROM ign)`).one().c||0,
+           usuariosTotal:this.sql.exec(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE disp='app' AND uid NOT IN (SELECT uid FROM ign)`).one().c||0}};
   }
 }
 const statsDO=env=>env.STATS.get(env.STATS.idFromName('gamex'));
@@ -160,6 +164,7 @@ async function panel(req,env,u){
       const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
       return j(await statsDO(env).resumen(d));
     }
+    if(p==='stats-ignorar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(!q.uid)return j({error:'Falta el equipo'},400);await statsDO(env).ignorar(String(q.uid).slice(0,40),!!q.si,String(q.nota||'').slice(0,40));return j({ok:true})}
     if(p==='stats-reiniciar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(q.confirmar!=='LANZAMOS')return j({error:'Falta confirmar'},400);return j({ok:true,borrados:await statsDO(env).reiniciar()})}
     if(p==='stats-limpiar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(!q.uid)return j({error:'Falta uid'},400);await statsDO(env).borrarUid(String(q.uid));return j({ok:true})}
     if(p==='estado'){

@@ -113,6 +113,11 @@ alone=H+'<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 # ---- estadísticas anónimas (visitas, catálogos, búsquedas, pedidos) -> Worker /evento; solo web y app, no la copia de Claude ----
 _PU=json.load(open(D+'push.json')).get('url','')
 EST=("""<script>(function(){const URL_EV=%s,ORIGEN='app';if(!URL_EV)return;
+try{const h=location.hash;if(h==='#no-contar'||h==='#contar'){h==='#no-contar'?localStorage.setItem('gx-nocontar','1'):localStorage.removeItem('gx-nocontar');
+  const d=document.createElement('div');d.textContent=h==='#no-contar'?'✓ Este equipo ya no cuenta en las estadísticas':'✓ Este equipo vuelve a contar en las estadísticas';
+  d.style.cssText='position:fixed;left:50%;top:16px;transform:translateX(-50%%);background:#1fa855;color:#fff;padding:12px 18px;border-radius:12px;font:600 15px system-ui;z-index:9999';
+  document.body.appendChild(d);setTimeout(()=>d.remove(),5000);history.replaceState(null,'',location.pathname)}
+  if(localStorage.getItem('gx-nocontar')==='1')return}catch(e){}
 let uid='';try{uid=localStorage.getItem('gx-uid')||'';if(!uid){uid=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('gx-uid',uid)}}catch(e){uid='s'+Math.random().toString(36).slice(2)}
 const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),sa=navigator.standalone||matchMedia('(display-mode: standalone)').matches;
 const disp=ORIGEN==='app'&&/android/i.test(ua)?'app':ios?(sa?'iphone-app':'iphone'):/android/i.test(ua)?'android':/windows|macintosh|linux|cros/i.test(ua)?'pc':'otro';
