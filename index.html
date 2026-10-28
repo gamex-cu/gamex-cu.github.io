@@ -166,8 +166,15 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .g-ayuda b{color:var(--fg)}
 .sb-sv{background:linear-gradient(135deg,rgba(217,43,43,.22),rgba(61,123,255,.08))}
 .sb-sv .sbi{background:#d92b2b}
-.slist{display:grid;gap:12px;padding:16px 0 28px}
-@media(min-width:720px){.slist{grid-template-columns:1fr 1fr}}
+.slist{padding:14px 0 28px}
+.snav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.snav a{padding:8px 12px;border-radius:99px;border:1px solid rgba(217,43,43,.6);color:var(--fg);text-decoration:none;font-size:.92rem;background:rgba(217,43,43,.1)}
+.snav a:hover,.snav a:focus-visible{background:rgba(217,43,43,.25);outline:none}
+.ssec{padding-top:18px;scroll-margin-top:90px}
+.ssec h2{display:flex;align-items:center;gap:10px;margin:0 0 4px;font:700 1.35rem var(--display)}
+.ssec .sd{margin:0 0 10px;color:var(--muted)}
+.sgrid{display:grid;gap:12px;margin-top:8px}
+@media(min-width:720px){.sgrid{grid-template-columns:1fr 1fr}}
 .scard{display:flex;flex-direction:column;border:1px solid rgba(217,43,43,.55);border-radius:14px;background:linear-gradient(135deg,rgba(217,43,43,.12),rgba(61,123,255,.06));padding:16px}
 .scard .si{font-size:1.8rem;line-height:1;margin-bottom:8px}
 .scard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
@@ -330,7 +337,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 
 <div id="serv" hidden>
 <div class="bar"><div class="wrap">
-  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Escoge el servicio y pídelo por WhatsApp.</span></span></div>
+  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Suscripciones, gift cards y desbloqueos. Pídelos por WhatsApp.</span></span></div>
 </div></div>
 <div class="wrap"><div class="slist" id="slist"></div></div>
 </div>
@@ -513,9 +520,13 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   const ok=('Notification' in window)&&Notification.permission==='granted';
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
-const SERV=[];
-if(SERV.length){$('b-servicios').hidden=false;
-  $('slist').innerHTML=SERV.map(x=>`<article class="scard">${x.icono?`<span class="si" aria-hidden="true">${esc(x.icono)}</span>`:''}<h3>${esc(x.t)}</h3>${x.d?`<p>${esc(x.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa el servicio: '+x.t)}">Pedir por WhatsApp</a></article>`).join('')}
+const SERV=[{"s": "Suscripciones", "icono": "🔄", "d": "Tipos de suscripciones disponibles.", "items": []}, {"s": "Gift Cards", "icono": "🎁", "d": "Tarjetas de regalo disponibles.", "items": []}, {"s": "Desbloqueos", "icono": "🔓", "d": "", "items": []}];
+if(SERV.length){$('b-servicios').hidden=false;$('b-serv-sub').textContent=SERV.map(x=>x.s).join(', ').replace(/, ([^,]*)$/,' y $1');
+  const sl=x=>'sv-'+slug(x.s);
+  $('slist').innerHTML=(SERV.length>1?`<nav class="snav">${SERV.map(x=>`<a href="#servicios" data-go="${sl(x)}">${x.icono?esc(x.icono)+' ':''}${esc(x.s)}</a>`).join('')}</nav>`:'')+SERV.map(x=>`<section class="ssec" id="${sl(x)}"><h2>${x.icono?`<span aria-hidden="true">${esc(x.icono)}</span>`:''}${esc(x.s)}</h2>${x.d?`<p class="sd">${esc(x.d)}</p>`:''}<div class="sgrid">${
+    (x.items||[]).length?x.items.map(it=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa: '+it.t+' ('+x.s+')')}">Pedir por WhatsApp</a></article>`).join('')
+    :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div></section>`).join('');
+  $('slist').addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(!a)return;e.preventDefault();const t=document.getElementById(a.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
@@ -595,7 +606,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=116;
+const GXV=117;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

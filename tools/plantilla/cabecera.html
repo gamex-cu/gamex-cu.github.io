@@ -152,8 +152,15 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .g-ayuda b{color:var(--fg)}
 .sb-sv{background:linear-gradient(135deg,rgba(217,43,43,.22),rgba(61,123,255,.08))}
 .sb-sv .sbi{background:#d92b2b}
-.slist{display:grid;gap:12px;padding:16px 0 28px}
-@media(min-width:720px){.slist{grid-template-columns:1fr 1fr}}
+.slist{padding:14px 0 28px}
+.snav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.snav a{padding:8px 12px;border-radius:99px;border:1px solid rgba(217,43,43,.6);color:var(--fg);text-decoration:none;font-size:.92rem;background:rgba(217,43,43,.1)}
+.snav a:hover,.snav a:focus-visible{background:rgba(217,43,43,.25);outline:none}
+.ssec{padding-top:18px;scroll-margin-top:90px}
+.ssec h2{display:flex;align-items:center;gap:10px;margin:0 0 4px;font:700 1.35rem var(--display)}
+.ssec .sd{margin:0 0 10px;color:var(--muted)}
+.sgrid{display:grid;gap:12px;margin-top:8px}
+@media(min-width:720px){.sgrid{grid-template-columns:1fr 1fr}}
 .scard{display:flex;flex-direction:column;border:1px solid rgba(217,43,43,.55);border-radius:14px;background:linear-gradient(135deg,rgba(217,43,43,.12),rgba(61,123,255,.06));padding:16px}
 .scard .si{font-size:1.8rem;line-height:1;margin-bottom:8px}
 .scard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
@@ -289,7 +296,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 
 <div id="serv" hidden>
 <div class="bar"><div class="wrap">
-  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Escoge el servicio y pídelo por WhatsApp.</span></span></div>
+  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Suscripciones, gift cards y desbloqueos. Pídelos por WhatsApp.</span></span></div>
 </div></div>
 <div class="wrap"><div class="slist" id="slist"></div></div>
 </div>

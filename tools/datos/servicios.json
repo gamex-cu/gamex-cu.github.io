@@ -1,0 +1,20 @@
+[
+ {
+  "s": "Suscripciones",
+  "icono": "🔄",
+  "d": "Tipos de suscripciones disponibles.",
+  "items": []
+ },
+ {
+  "s": "Gift Cards",
+  "icono": "🎁",
+  "d": "Tarjetas de regalo disponibles.",
+  "items": []
+ },
+ {
+  "s": "Desbloqueos",
+  "icono": "🔓",
+  "d": "",
+  "items": []
+ }
+]

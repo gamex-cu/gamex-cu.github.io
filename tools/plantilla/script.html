@@ -119,8 +119,12 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
 const SERV=__SERV__;
-if(SERV.length){$('b-servicios').hidden=false;
-  $('slist').innerHTML=SERV.map(x=>`<article class="scard">${x.icono?`<span class="si" aria-hidden="true">${esc(x.icono)}</span>`:''}<h3>${esc(x.t)}</h3>${x.d?`<p>${esc(x.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa el servicio: '+x.t)}">Pedir por WhatsApp</a></article>`).join('')}
+if(SERV.length){$('b-servicios').hidden=false;$('b-serv-sub').textContent=SERV.map(x=>x.s).join(', ').replace(/, ([^,]*)$/,' y $1');
+  const sl=x=>'sv-'+slug(x.s);
+  $('slist').innerHTML=(SERV.length>1?`<nav class="snav">${SERV.map(x=>`<a href="#servicios" data-go="${sl(x)}">${x.icono?esc(x.icono)+' ':''}${esc(x.s)}</a>`).join('')}</nav>`:'')+SERV.map(x=>`<section class="ssec" id="${sl(x)}"><h2>${x.icono?`<span aria-hidden="true">${esc(x.icono)}</span>`:''}${esc(x.s)}</h2>${x.d?`<p class="sd">${esc(x.d)}</p>`:''}<div class="sgrid">${
+    (x.items||[]).length?x.items.map(it=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa: '+it.t+' ('+x.s+')')}">Pedir por WhatsApp</a></article>`).join('')
+    :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div></section>`).join('');
+  $('slist').addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(!a)return;e.preventDefault();const t=document.getElementById(a.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
