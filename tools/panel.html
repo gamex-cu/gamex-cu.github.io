@@ -24,6 +24,11 @@ label{display:block;font-weight:600;font-size:.92rem;margin:12px 0 6px}
 label small{font-weight:400;color:var(--muted)}
 .bdg{display:inline-block;min-width:22px;padding:2px 7px;border-radius:99px;background:var(--warn);color:#1a1300;font-size:.8rem;text-align:center;vertical-align:2px}
 .bdg:empty{display:none}
+.comp{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.75);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}
+.comp[hidden]{display:none}
+.comp-in{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;max-width:460px;width:100%}
+#comp-img{display:block;width:100%;border-radius:10px;margin-top:6px;aspect-ratio:2/3;background:#050706}
+.hm button.cmp{border-color:#2fbf4a;color:#7fe0a5}
 .fh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:12px}
 h3{font-size:1rem;margin:20px 0 8px}
 .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0 10px}
@@ -324,6 +329,14 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
   </section>
   </div>
 </div>
+<div class="comp" id="comp" hidden><div class="comp-in">
+  <div class="fh"><h2 style="margin:0">🧾 Comprobante</h2><button type="button" class="chip" id="comp-x">✕ Cerrar</button></div>
+  <img id="comp-img" alt="Comprobante de compra">
+  <p class="nota" id="comp-st"></p>
+  <button type="button" class="btn" id="comp-sh">📤 Compartir imagen (WhatsApp)</button>
+  <div class="row" style="margin-top:8px"><a class="btn sec" id="comp-dl" href="#" style="flex:1;margin:0;text-align:center;text-decoration:none">⬇️ Bajar imagen</a><a class="btn sec" id="comp-wa" target="_blank" rel="noopener" style="flex:1;margin:0;text-align:center;text-decoration:none">💬 Mandar mensaje</a></div>
+  <p class="nota" style="margin-top:8px">"Compartir imagen" abre WhatsApp con la foto lista para escoger al cliente. "Mandar mensaje" le escribe un texto con sus GX.</p>
+</div></div>
 </main>
 <script>
 const $=id=>document.getElementById(id);
@@ -513,7 +526,7 @@ function pintarFicha(f){
   $('f-kpis').innerHTML=`<div class="kpi"><b>${N(r.saldo)}</b><span>GX de saldo</span><small>${N(r.historicos)} ganados en total</small></div><div class="kpi"><b>${nivelCls(r.nivel)} ${esc(r.nivel)}</b><span>Nivel</span><small>puede canjear ${money(r.valor)}</small></div><div class="kpi"><b>${r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5)):'0'}</b><span>Prestigio ${r.prestigio}</span><small>faltan ${N(r.faltaPrestigio)} GX para el siguiente</small></div><div class="kpi"><b>${money(r.gastado)}</b><span>Gastado</span><small>${pl(r.compras,'compra')}${r.referidos?' · '+pl(r.referidos,'referido'):''}</small></div>`;
   const ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;$('f-barra').style.width=(r.siguiente?Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100):100)+'%';
   $('f-barra-t').textContent=r.siguiente?`Le faltan ${N(r.faltan)} GX para el ${r.siguiente===R.n1?'Nivel 1 ($'+R.p1+')':r.siguiente===R.n2?'Nivel 2 ($'+R.p2+')':'Nivel 3 / MAX ($'+R.p3+')'}`:'¡Está en el nivel máximo!';
-  $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${esc(m.descr)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span><button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
+  $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${esc(m.descr)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span>${m.tipo==='Compra'?`<button type="button" class="cmp" data-cp="${m.id}">🧾</button>`:''}<button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
   $('d-nom').value=c.nombre||'';$('d-tel').value=c.tel||'';$('d-nac').value=c.nac||'';$('d-pla').value=c.plataforma||'';
   $('f-cuenta').textContent=c.activada?'🔓 Ya activó su cuenta en la web o la app.':'🔒 Todavía no ha activado su cuenta. Para hacerlo necesita su ID, su fecha de nacimiento y los 4 últimos dígitos de su teléfono.';
   const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
@@ -538,8 +551,10 @@ function movPrev(){
 $('fmov').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;nomsg('mmov');$('m-btn').disabled=true;
   try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:$('m-desc').value.trim()});
     pintarFicha(d);msg('mmov','ok',`✅ ${esc(t)} guardada: ${d.nuevo.ganados?'+'+N(d.nuevo.ganados):'−'+N(d.nuevo.usados)} GX${d.nuevo.cumple?' 🎂 (x2 cumpleaños)':''}. Saldo: ${N(d.resumen.saldo)} GX · ${esc(d.resumen.nivel)}.`);
-    $('m-imp').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes()}
+    $('m-imp').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes();
+    if(t==='Compra'&&d.movs.length){const nm=d.movs.reduce((a,b)=>b.id>a.id?b:a);abrirComp(d.cliente,nm,d.movs)}}
   catch(err){msg('mmov','bad',esc(err.message))}$('m-btn').disabled=false};
+$('f-hist').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b||!FICHA)return;const m=FICHA.movs.find(x=>x.id===+b.dataset.cp);if(m)abrirComp(FICHA.cliente,m,FICHA.movs)});
 $('f-hist').onclick=async e=>{const b=e.target.closest('[data-mb]');if(!b)return;
   if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro?';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Borrar'}},4000);return}
   b.disabled=true;try{pintarFicha(await api('cli-mov-borrar',{id:+b.dataset.mb}));msg('mmov','ok','Movimiento borrado.');clientes()}catch(err){msg('mmov','bad',esc(err.message))}};
@@ -570,6 +585,87 @@ $('c-exp').onclick=async()=>{nomsg('mexp');$('c-exp').disabled=true;
     hoja('Solicitudes',d.solicitudes.map(s=>({'N.º':s.id,'Fecha':s.fecha,'Nombre':s.nombre,'Apellidos':s.apellidos,'Nacimiento':s.nac,'WhatsApp':s.tel,'Plataforma':s.plataforma,'Estado':s.estado,'GX dado':s.gx})));
     XLSX.writeFile(wb,'GameX-Rewards-'+hoyL()+'.xlsx');msg('mexp','ok','✅ Excel bajado.')}
   catch(err){msg('mexp','bad',esc(err.message))}$('c-exp').disabled=false};
+// ---------- Comprobante de compra (imagen para mandar por WhatsApp) ----------
+const LOGO_GX='__LOGO_GAMEX__';
+let COMP_BLOB=null,COMP_INFO=null;
+function cargaImg(src){return new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src})}
+async function fuentesComp(){
+  if(!document.getElementById('f-comp')){const l=document.createElement('link');l.id='f-comp';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Dancing+Script:wght@700&display=swap';document.head.appendChild(l)}
+  try{await Promise.race([Promise.all([document.fonts.load('700 40px Rajdhani'),document.fonts.load('600 30px Rajdhani'),document.fonts.load('700 60px "Dancing Script"')]),new Promise(r=>setTimeout(r,2500))])}catch(e){}
+}
+/* Saldo y prestigio justo después de ese movimiento (en orden de fecha). */
+function estadoEn(movs,id){const asc=[...movs].sort((a,b)=>a.fecha.localeCompare(b.fecha)||a.id-b.id);let s=0,p=0;for(const m of asc){s+=m.ganados-m.usados;p+=m.prest;if(m.id===id)break}return {saldo:s,prest:Math.floor(p/2000)}}
+async function dibujarComp(c,m,est){
+  await fuentesComp();
+  const W=1024,H=1536,cv=document.createElement('canvas');cv.width=W;cv.height=H;const g=cv.getContext('2d');
+  const V='#7CFF3F',V2='#3fd11c',F='Rajdhani, "Arial Narrow", Arial, sans-serif';
+  // fondo
+  g.fillStyle='#060908';g.fillRect(0,0,W,H);const bg=g.createRadialGradient(W/2,260,40,W/2,260,700);bg.addColorStop(0,'rgba(60,140,40,.35)');bg.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=bg;g.fillRect(0,0,W,H);
+  g.globalAlpha=.06;g.strokeStyle='#9cff7a';g.lineWidth=2;for(let i=-H;i<W;i+=46){g.beginPath();g.moveTo(i,0);g.lineTo(i+H*.55,H);g.stroke()}g.globalAlpha=1;
+  const poly=(pts,col,a=1)=>{g.globalAlpha=a;g.fillStyle=col;g.beginPath();pts.forEach(([x,y],k)=>k?g.lineTo(x,y):g.moveTo(x,y));g.closePath();g.fill();g.globalAlpha=1};
+  poly([[0,0],[250,0],[0,460]],V2,.16);poly([[0,0],[120,0],[0,220]],V,.55);poly([[W,0],[W-250,0],[W,460]],V2,.16);poly([[W,0],[W-120,0],[W,220]],V,.55);
+  poly([[0,H],[280,H],[0,H-460]],V2,.18);poly([[0,H],[140,H],[0,H-230]],V,.6);poly([[W,H],[W-280,H],[W,H-460]],V2,.18);poly([[W,H],[W-140,H],[W,H-230]],V,.6);
+  g.strokeStyle=V;g.lineWidth=5;g.globalAlpha=.8;[[40,140,40,330],[W-40,140,W-40,330],[40,H-140,40,H-330],[W-40,H-140,W-40,H-330]].forEach(([a,b,c2,d])=>{g.beginPath();g.moveTo(a,b);g.lineTo(c2,d);g.stroke()});g.globalAlpha=1;
+  // logo
+  try{const lg=await cargaImg(LOGO_GX),lw=480,lh=lg.height*lw/lg.width;g.shadowColor=V;g.shadowBlur=40;g.drawImage(lg,(W-lw)/2,40,lw,lh);g.shadowBlur=0}catch(e){g.fillStyle='#fff';g.font=`700 120px ${F}`;g.textAlign='center';g.fillText('GAMEX',W/2,220)}
+  // título
+  g.textBaseline='middle';let tf=46,t1='C O M P R O B A N T E   D E   ',t2='C O M P R A',w1,w2;
+  do{g.font=`700 ${tf}px ${F}`;w1=g.measureText(t1).width;w2=g.measureText(t2).width;tf-=2}while(w1+w2>720&&tf>24);
+  const x0=W/2-(w1+w2)/2;g.textAlign='left';g.fillStyle='#fff';g.fillText(t1,x0,375);g.fillStyle=V;g.fillText(t2,x0+w1,375);
+  g.fillStyle=V;g.fillRect(Math.max(40,x0-110),373,Math.min(80,x0-60),5);g.fillRect(x0+w1+w2+30,373,Math.min(80,W-(x0+w1+w2+30)-40),5);
+  // cajas
+  const caja=(x,y,w,h)=>{g.fillStyle='rgba(12,16,14,.88)';g.strokeStyle='rgba(180,255,160,.28)';g.lineWidth=2;g.beginPath();g.roundRect(x,y,w,h,14);g.fill();g.stroke()};
+  const icono=(x,y,s,dib)=>{g.fillStyle='#0a0d0b';g.strokeStyle='rgba(255,255,255,.25)';g.lineWidth=2;g.beginPath();g.roundRect(x,y,s,s,12);g.fill();g.stroke();g.save();g.translate(x+s/2,y+s/2);dib(s);g.restore()};
+  const persona=s=>{g.fillStyle='#fff';g.beginPath();g.arc(0,-s*.12,s*.17,0,7);g.fill();g.beginPath();g.ellipse(0,s*.25,s*.28,s*.2,0,Math.PI,0);g.fill()};
+  const calend=s=>{g.strokeStyle='#fff';g.lineWidth=6;g.beginPath();g.roundRect(-s*.28,-s*.22,s*.56,s*.5,6);g.stroke();g.fillStyle='#fff';g.fillRect(-s*.28,-s*.22,s*.56,s*.12);for(let i=0;i<3;i++)for(let k=0;k<2;k++)g.fillRect(-s*.18+i*s*.13,-s*.02+k*s*.12,s*.07,s*.07)};
+  const lbl=(t,x,y)=>{g.textAlign='left';g.fillStyle='#b9c4bc';g.font=`600 30px ${F}`;g.fillText(t,x,y)};
+  const val=(t,x,y,size=48,col='#fff')=>{g.textAlign='left';g.fillStyle=col;g.font=`700 ${size}px ${F}`;g.fillText(t,x,y)};
+  caja(45,410,935,135);icono(65,433,95,calend);lbl('FECHA',192,457);const [yy,mm,dd]=m.fecha.split('-');val(`${dd}/${mm}/${yy}`,192,500);
+  g.strokeStyle='rgba(255,255,255,.2)';g.beginPath();g.moveTo(513,440);g.lineTo(513,520);g.stroke();
+  icono(570,433,95,persona);lbl('ID GAMEX',693,457);val(c.gx,693,500);
+  caja(45,560,935,130);icono(70,575,110,persona);lbl('NOMBRE DEL CLIENTE',217,600);let nom=c.nombre||'';g.font=`700 46px ${F}`;while(g.measureText(nom).width>700&&nom.length>4)nom=nom.slice(0,-2)+'…';val(nom,232,645,46);
+  g.setLineDash([12,10]);g.strokeStyle='rgba(255,255,255,.35)';g.beginPath();g.moveTo(60,708);g.lineTo(965,708);g.stroke();g.setLineDash([]);
+  // tres cajas verdes
+  const tri=[[45,'TOTAL PAGADO','$ '+(+m.importe).toFixed(2)],[377,'GX OBTENIDOS','+ '+m.ganados+' GX'],[692,'SALDO GX ACTUAL',est.saldo+' GX']];
+  tri.forEach(([x,l,v],i)=>{const w=i===1?306:288;caja(x,730,w,158);g.textAlign='left';g.fillStyle='#e8eee9';let lf=26;g.font=`700 ${lf}px ${F}`;while(g.measureText(l).width>w-96&&lf>16){lf--;g.font=`700 ${lf}px ${F}`}g.fillText(l,x+82,764);
+    const gr=g.createLinearGradient(0,792,0,872);gr.addColorStop(0,'#8dff52');gr.addColorStop(1,'#46d11f');g.fillStyle=gr;g.beginPath();g.roundRect(x+22,792,w-44,80,10);g.fill();
+    g.fillStyle='#0b1a06';g.textAlign='center';let fs=50;g.font=`700 ${fs}px ${F}`;while(g.measureText(v).width>w-70&&fs>28){fs-=2;g.font=`700 ${fs}px ${F}`}g.fillText(v,x+w/2,834);
+    // iconito
+    g.save();g.translate(x+44,768);g.scale(.8,.8);if(i===1){g.strokeStyle='#fff';g.lineWidth=5;g.beginPath();for(let k=0;k<6;k++){const a=Math.PI/3*k-Math.PI/2;g.lineTo(Math.cos(a)*30,Math.sin(a)*30)}g.closePath();g.fillStyle='#0a0d0b';g.fill();g.stroke();g.fillStyle='#fff';g.font=`700 24px ${F}`;g.textAlign='center';g.fillText('GX',0,2)}
+    else{for(let k=2;k>=0;k--){g.fillStyle='#fff';g.strokeStyle='#0a0d0b';g.lineWidth=3;g.beginPath();g.ellipse(0,k*11-10,26,11,0,0,7);g.fill();g.stroke()}}g.restore()});
+  if(m.cumple){g.textAlign='center';g.fillStyle=V;g.font=`700 26px ${F}`;g.fillText('🎂 ¡SEMANA DE CUMPLEAÑOS: GX DOBLES!',W/2,906)}
+  // prestigio
+  caja(45,920,935,112);icono(70,930,92,s=>{g.fillStyle='#ffd21f';g.beginPath();g.moveTo(-s*.32,s*.15);g.lineTo(-s*.36,-s*.18);g.lineTo(-s*.15,0);g.lineTo(0,-s*.26);g.lineTo(s*.15,0);g.lineTo(s*.36,-s*.18);g.lineTo(s*.32,s*.15);g.closePath();g.fill();g.fillRect(-s*.32,s*.2,s*.64,s*.08);[[-.36,-.2],[0,-.29],[.36,-.2]].forEach(([a,b])=>{g.beginPath();g.arc(a*s,b*s,s*.05,0,7);g.fill()})});
+  lbl('PRESTIGIO',190,950);val('P'+est.prest,190,995,60);
+  g.strokeStyle='rgba(255,255,255,.2)';g.beginPath();g.moveTo(515,935);g.lineTo(515,1015);g.stroke();
+  lbl('NIVEL',560,950);const niv=est.saldo>=3500?'NIVEL MAX':est.saldo>=2500?'NIVEL 2':est.saldo>=1500?'NIVEL 1':'BASE';val(niv,560,995,52,est.saldo>=1500?V:'#fff');
+  // progreso
+  caja(45,1048,935,218);g.textAlign='left';g.fillStyle='#fff';g.font=`700 36px ${F}`;g.fillText('TU PROGRESO',80,1095);
+  const bx=82,bw=852,by=1138,bh=40,px=gx=>bx+bw*Math.min(gx,3500)/3500;
+  g.fillStyle='#1b211d';g.strokeStyle='rgba(255,255,255,.3)';g.lineWidth=2;g.beginPath();g.roundRect(bx,by,bw,bh,20);g.fill();g.stroke();
+  if(est.saldo>0){const gr=g.createLinearGradient(bx,0,px(est.saldo),0);gr.addColorStop(0,'#46d11f');gr.addColorStop(1,'#8dff52');g.fillStyle=gr;g.beginPath();g.roundRect(bx,by,Math.max(40,px(est.saldo)-bx),bh,20);g.fill()}
+  [[1500,'NIVEL 1'],[2500,'NIVEL 2'],[3500,'NIVEL MAX']].forEach(([n,l])=>{const x=Math.min(px(n),bx+bw-10),on=est.saldo>=n;g.strokeStyle='#fff';g.lineWidth=2;g.beginPath();g.moveTo(x,by-6);g.lineTo(x,by+bh+6);g.stroke();
+    g.fillStyle=on?V:'#9aa39c';g.save();g.translate(x,by-26);g.beginPath();g.moveTo(-18,10);g.lineTo(-20,-8);g.lineTo(-9,2);g.lineTo(0,-12);g.lineTo(9,2);g.lineTo(20,-8);g.lineTo(18,10);g.closePath();g.fill();g.restore();
+    g.textAlign='center';g.fillStyle='#fff';g.font=`700 30px ${F}`;g.fillText(n.toLocaleString('en')+' GX',x-(n===3500?40:0),by+bh+34);g.fillStyle='#b9c4bc';g.font=`600 26px ${F}`;g.fillText(l,x-(n===3500?40:0),by+bh+66)});
+  // gracias
+  g.save();g.translate(W/2,1340);g.rotate(-.06);g.textAlign='center';g.fillStyle='#fff';g.font='700 82px "Dancing Script", cursive';g.fillText('¡Gracias por tu compra!',0,0);g.restore();
+  g.strokeStyle=V;g.lineWidth=6;g.lineCap='round';g.beginPath();g.moveTo(400,1395);g.quadraticCurveTo(560,1370,740,1380);g.stroke();
+  g.fillStyle=V;g.save();g.translate(W/2,1445);g.beginPath();g.roundRect(-40,-22,80,44,22);g.fill();g.fillStyle='#050706';g.fillRect(-26,-4,16,6);g.fillRect(-21,-9,6,16);g.beginPath();g.arc(16,-5,5,0,7);g.arc(24,4,5,0,7);g.fill();g.restore();
+  return await new Promise(r=>cv.toBlob(r,'image/png'));
+}
+async function abrirComp(c,m,movs){
+  const est=estadoEn(movs,m.id);COMP_INFO={c,m,est};
+  $('comp').hidden=false;$('comp-img').removeAttribute('src');$('comp-st').textContent='Preparando el comprobante…';
+  COMP_BLOB=await dibujarComp(c,m,est);$('comp-img').src=URL.createObjectURL(COMP_BLOB);$('comp-st').textContent='';
+  const t=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, gracias por tu compra en GameX 💚\nGanaste *${m.ganados} GX*${m.cumple?' (¡doble por tu cumpleaños! 🎂)':''} y ahora tienes *${est.saldo} GX*.\nMira tu cuenta en https://gamex-cu.github.io/#cuenta`;
+  $('comp-wa').href=c.tel?'https://wa.me/53'+c.tel+'?text='+encodeURIComponent(t):'https://wa.me/?text='+encodeURIComponent(t);
+}
+$('comp-x').onclick=()=>$('comp').hidden=true;$('comp').onclick=e=>{if(e.target===$('comp'))$('comp').hidden=true};
+const nombreComp=()=>`Comprobante-${COMP_INFO.c.gx}-${COMP_INFO.m.fecha}.png`;
+$('comp-sh').onclick=async()=>{if(!COMP_BLOB)return;const f=new File([COMP_BLOB],nombreComp(),{type:'image/png'});
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'Comprobante GameX'});return}catch(e){if(e.name==='AbortError')return}}
+  $('comp-dl').click();$('comp-st').textContent='Tu teléfono no permite compartir directo: se bajó la imagen. Ábrela en WhatsApp y mándala.'};
+$('comp-dl').onclick=e=>{if(!COMP_BLOB)return;const a=document.createElement('a');a.href=URL.createObjectURL(COMP_BLOB);a.download=nombreComp();document.body.appendChild(a);a.click();a.remove();e.preventDefault()};
 prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
 </script>

@@ -3,7 +3,7 @@ Necesita ~/secretos/cloudflare.json (o /home/claude/secretos/cloudflare.json) co
 y acceso a api.cloudflare.com. La clave del Worker se crea sola la primera vez.
 Para el panel (/panel) también lee de la misma carpeta: panel.json {"clave": "contraseña del panel", "github": "github_pat_..."},
 vapid.json y firebase-admin.json. Si falta alguno, el panel no se activa pero los avisos siguen funcionando."""
-import json, os, secrets, ssl, urllib.request, uuid
+import base64, json, os, secrets, ssl, urllib.request, uuid
 T = os.path.dirname(os.path.abspath(__file__)) + '/'
 SEC = next((p for p in [os.path.expanduser('~/secretos'), '/home/claude/secretos'] if os.path.exists(p + '/cloudflare.json')), '/home/claude/secretos')
 CF = json.load(open(SEC + '/cloudflare.json'))
@@ -29,7 +29,7 @@ for nombre, archivo, campo in [('PANEL', 'panel.json', 'clave'), ('GITHUB', 'pan
         d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
         if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})
     except (FileNotFoundError, KeyError): print('Aviso: falta', nombre, '(el panel no funcionará completo)')
-codigo = open(T + 'push-worker.js').read().replace('// __CLIENTES__', open(T + 'clientes-worker.js').read(), 1).replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read()), 1).replace('__MODELOS__', open(T + 'datos/modelos.json').read(), 1)
+codigo = open(T + 'push-worker.js').read().replace('// __CLIENTES__', open(T + 'clientes-worker.js').read(), 1).replace('__PANEL_HTML__', json.dumps(open(T + 'panel.html').read().replace('__LOGO_GAMEX__', 'data:image/png;base64,' + base64.b64encode(open(T + 'datos/logo-gamex.png', 'rb').read()).decode())), 1).replace('__MODELOS__', open(T + 'datos/modelos.json').read(), 1)
 def subir(m):
     b = uuid.uuid4().hex
     body = (f'--{b}\r\nContent-Disposition: form-data; name="metadata"\r\nContent-Type: application/json\r\n\r\n{json.dumps(m)}\r\n'
