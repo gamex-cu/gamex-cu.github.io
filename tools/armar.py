@@ -124,6 +124,11 @@ function ev(t,v,n){cola.push(n==null?{t,v}:{t,v,n});clearTimeout(tm);tm=setTimeo
 window.gxEv=ev;
 addEventListener('pagehide',()=>enviar(true));document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')enviar(true)});
 ev('visita','');
+let t0=document.visibilityState==='visible'?Date.now():0;
+function tiempo(){if(t0){const sg=Math.round((Date.now()-t0)/1000);t0=0;if(sg>=3)ev('tiempo','',Math.min(sg,10800))}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){tiempo();enviar(true)}else t0=Date.now()});
+addEventListener('pagehide',()=>{tiempo();enviar(true)});
+setInterval(()=>{if(t0&&Date.now()-t0>120000){tiempo();t0=Date.now();enviar()}},30000);
 let ultCat=null;function cat(){try{if(current&&current!==ultCat){ultCat=current;ev('cat',current==='todas'?'Todas':current)}if(!current)ultCat=null}catch(e){}}
 addEventListener('hashchange',()=>setTimeout(cat,0));setTimeout(cat,0);
 const vistas=new Set();let bt=null;const q=document.getElementById('q');

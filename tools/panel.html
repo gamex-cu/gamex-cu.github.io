@@ -113,6 +113,8 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
         <div class="kpi"><b id="k-per">–</b><span>Personas distintas</span></div>
         <div class="kpi"><b id="k-ped">–</b><span>Pedidos por WhatsApp</span><small id="k-jue"></small></div>
         <div class="kpi"><b id="k-con">–</b><span>Contactos por WhatsApp</span><small>botón de escoger número</small></div>
+        <div class="kpi"><b id="k-tpo">–</b><span>Tiempo por visita</span><small id="k-tpo2"></small></div>
+        <div class="kpi"><b id="k-eq">–</b><span>Teléfonos / PC distintos</span><small>cada uno con su código</small></div>
         <div class="kpi"><b id="k-des">–</b><span>Descargas de la app</span><small id="k-des2"></small></div>
         <div class="kpi"><b id="k-apu">–</b><span>Personas usando la app</span><small id="k-apu2"></small></div>
       </div>
@@ -125,6 +127,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <section class="card"><h2>Lo más buscado</h2><ul class="rank" id="r-bus"></ul></section>
     <section class="card"><h2>Catálogos más vistos</h2><ul class="rank" id="r-cat"></ul></section>
     <section class="card"><h2>Desde dónde entran</h2><ul class="rank" id="r-dis"></ul></section>
+    <section class="card"><h2>Cada teléfono o PC</h2><p class="nota" style="margin:-6px 0 8px">Cada equipo tiene un código anónimo (no se sabe de quién es). Ordenado por tiempo en la web o la app.</p><ul class="rank" id="r-eq"></ul></section>
   </div>
   <div id="t-of">
   <section class="card">
@@ -249,6 +252,13 @@ async function stats(){
   try{const d=await api('stats?dias='+DIAS);const t=d.tot||{};
     $('k-vis').textContent=N(t.visitas);$('k-per').textContent=N(t.personas);$('k-ped').textContent=N(t.pedidos);$('k-con').textContent=N(t.contactos);
     $('k-jue').textContent=t.juegos?N(t.juegos)+' juegos en total':'';
+    const dur=sg=>{sg=sg||0;if(sg<60)return sg+' s';const m=Math.round(sg/60);return m<60?m+' min':Math.floor(m/60)+' h '+(m%60)+' min'};
+    $('k-tpo').textContent=t.visitas?dur(Math.round((d.tiempo||0)/t.visitas)):'–';$('k-tpo2').textContent='En total: '+dur(d.tiempo);
+    $('k-eq').textContent=N((d.equipos||[]).length>=30?t.personas:(d.equipos||[]).length);
+    const IC={app:'📱',android:'📱','iphone-app':'🍏',iphone:'🍏',pc:'💻',otro:'❔'};
+    const cuando=ms=>{const x=new Date(ms),h=new Date();const hh=x.toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit'});return x.toDateString()===h.toDateString()?'hoy '+hh:x.getDate()+' '+MES[x.getMonth()]+' '+hh};
+    const eq=d.equipos||[],mxs=Math.max(1,...eq.map(e=>e.seg));
+    $('r-eq').innerHTML=eq.length?eq.map(e=>`<li><span class="nm">${IC[e.disp]||'❔'} <b>#${esc(e.v)}</b> <small>· ${esc(DISP[e.disp]||e.disp)} · ${N(e.visitas)} visita${e.visitas==1?'':'s'}${e.pedidos?' · '+N(e.pedidos)+' pedido'+(e.pedidos==1?'':'s'):''} · último: ${cuando(e.ultimo)}</small></span><span class="ct">${dur(e.seg)}</span><span class="br"><i style="width:${Math.max(3,e.seg/mxs*100)}%"></i></span></li>`).join(''):'<li><span class="nm" style="color:var(--muted)">Todavía no hay datos.</span></li>';
     const ap=d.app||{};$('k-des').textContent=N(ap.descargas);$('k-apu').textContent=N(ap.usuarios);
     $('k-des2').textContent='Desde el inicio: '+N(ap.descargasTotal);$('k-apu2').textContent='Desde el inicio: '+N(ap.usuariosTotal);
     const mapa={};(d.porDia||[]).forEach(x=>mapa[x.dia]=x);

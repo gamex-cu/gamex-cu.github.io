@@ -99,7 +99,7 @@ async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({
 
 
 // ---------- estadísticas (Durable Object con SQLite) ----------
-const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta','descarga']);
+const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta','descarga','tiempo']);
 const APK='https://gamex-cu.github.io/app/GAMEX-Catalogo.apk';
 const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};
 export class Stats extends DurableObject{
@@ -119,6 +119,8 @@ export class Stats extends DurableObject{
     const top=(tipo,lim,extra='')=>q(`SELECT v,COUNT(*) c FROM ev WHERE ${W} AND tipo=? ${extra} GROUP BY v ORDER BY c DESC,v LIMIT ${lim}`,tipo);
     return {desde,hasta,dias,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
       dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`),
+      tiempo:q(`SELECT COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg FROM ev WHERE ${W}`)[0].seg,
+      equipos:q(`SELECT substr(uid,1,4) v,MAX(disp) disp,SUM(tipo='visita') visitas,COALESCE(SUM(CASE WHEN tipo='tiempo' THEN n ELSE 0 END),0) seg,SUM(tipo='envio') pedidos,MAX(ts) ultimo FROM ev WHERE ${W} AND uid!='anon' GROUP BY uid HAVING visitas>0 ORDER BY seg DESC,visitas DESC LIMIT 30`),
       app:{descargas:q(`SELECT COUNT(*) c FROM ev WHERE ${W} AND tipo='descarga'`)[0].c||0,
            usuarios:q(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND disp='app'`)[0].c||0,
            descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga'`).one().c||0,
@@ -133,7 +135,7 @@ async function evento(req,env){
   const uid=String(b&&b.u||'').replace(/[^a-z0-9]/gi,'').slice(0,24)||'anon';
   const disp=['app','android','iphone','iphone-app','pc','otro'].includes(b&&b.d)?b.d:'otro';
   const org=b&&b.o==='app'?'app':'web';
-  const filas=lista.filter(x=>x&&TIPOS.has(x.t)).map(x=>({tipo:x.t,v:String(x.v||'').trim().slice(0,120),n:Number.isFinite(+x.n)?Math.max(0,Math.min(9999,Math.round(+x.n))):null,uid,disp,org}))
+  const filas=lista.filter(x=>x&&TIPOS.has(x.t)).map(x=>({tipo:x.t,v:String(x.v||'').trim().slice(0,120),n:Number.isFinite(+x.n)?Math.max(0,Math.min(x.t==='tiempo'?10800:9999,Math.round(+x.n))):null,uid,disp,org}))
     .map(f=>f.tipo==='busca'?{...f,v:f.v.toLowerCase().replace(/\s+/g,' ')}:f).filter(f=>f.tipo==='visita'||f.tipo==='contacto'||f.tipo==='envio'||f.v);
   if(filas.length)await statsDO(env).agregar(filas);
   return r('ok');
