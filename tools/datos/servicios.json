@@ -6,7 +6,30 @@
   "texto": "#ff9a9a",
   "items": [
    {
-    "t": "Xbox Game Pass Ultimate"
+    "t": "Xbox Game Pass Ultimate",
+    "d": "Escoge el tiempo.",
+    "grupos": [
+     {
+      "n": "Tiempo",
+      "o": [
+       {
+        "t": "1 mes"
+       },
+       {
+        "t": "2 meses"
+       },
+       {
+        "t": "3 meses"
+       },
+       {
+        "t": "6 meses"
+       },
+       {
+        "t": "12 meses"
+       }
+      ]
+     }
+    ]
    },
    {
     "t": "PlayStation Plus",
