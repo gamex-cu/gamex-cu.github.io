@@ -1,5 +1,5 @@
 GAMEX1
-V	154
+V	155
 F	28 oct 2026
 M	Octubre 2026
 C	PlayStation 4	PS4	1e47b8	8fb0ff
@@ -11,7 +11,7 @@ J	0	A Way Out
 J	0	Abyss: The Wraiths of Eden
 J	0	ABZU
 J	0	Accel World vs. Sword Art Online: Millennium Twilight
-J	0	Ace Combat 5: The Unsung War
+J	128	Ace Combat 5: The Unsung War
 J	16	Ace Combat 7: Skies Unknown
 J	0	Aces of the Luftwaffe Squadron
 J	0	Achilles: Legends Untold
@@ -73,7 +73,7 @@ J	0	Assault Suit Leynos
 J	0	Assetto Corsa
 J	0	Assetto Corsa Competizione
 J	0	Asterix & Obelix XXL 3: The Crystal Menhir
-J	8	Astro Bot Rescue Mission
+J	136	Astro Bot Rescue Mission
 J	0	Astroneer
 J	0	Atelier Firis: The Alchemist and the Mysterious Journey
 J	0	Atelier Lulua: The Scion of Arland
@@ -137,8 +137,8 @@ J	0	Blaster Master Zero
 J	0	BlazBlue: Central Fiction
 J	0	BlazBlue: Chronophantasma Extend
 J	0	Blizzard Arcade Collection
-J	8	Blood & Truth
-J	0	Bloodborne
+J	136	Blood & Truth
+J	128	Bloodborne
 J	0	Bloodstained: Ritual of the Night
 J	0	Blue Estate
 J	0	Boggle
@@ -146,7 +146,7 @@ J	8	Borderlands 2 VR
 J	0	Borderlands 3
 J	0	Borderlands: Game of the Year Edition
 J	0	Borderlands: The Handsome Collection
-J	0	Bound
+J	128	Bound
 J	0	Bound By Flame
 J	8	BoxVR
 J	0	Bratz: Flaunt Your Fashion
@@ -286,7 +286,7 @@ J	0	Deadpool
 J	0	Death Stranding
 J	0	Death Tales
 J	0	Death's Gambit
-J	0	Deception IV: The Nightmare Princess
+J	128	Deception IV: The Nightmare Princess
 J	0	Deer Hunter Reloaded
 J	0	Deliver Us the Moon
 J	0	Demon Gaze II
@@ -327,7 +327,7 @@ J	0	Divinity: Original Sin Enhanced Edition
 J	0	DmC Devil May Cry Definitive Edition
 J	8	Doctor Who: The Edge of Time
 J	0	Dogchild
-J	0	Doki-Doki Universe
+J	128	Doki-Doki Universe
 J	0	Don't Die, Mr. Robot!
 J	16	Don't Knock Twice
 J	0	Don't Starve Together: Console Edition
@@ -349,14 +349,14 @@ J	0	Dragon Fin Soup
 J	0	Dragon Quest Builders
 J	0	Dragon Quest Builders 2
 J	0	Dragon Quest XI: Echoes of an Elusive Age
-J	0	Dragon's Crown Pro
+J	128	Dragon's Crown Pro
 J	0	Dragon's Dogma: Dark Arisen
 J	0	Draugen
-J	16	Dreams
-J	0	Dreams Universe
+J	144	Dreams
+J	128	Dreams Universe
 J	0	Dredge
 J	0	Drive!Drive!Drive!
-J	0	Driveclub Limited Edition
+J	128	Driveclub Limited Edition
 J	0	Dungeon Punks
 J	0	Dungeons 3
 J	0	Dying Light 2 Stay Human Ultimate Edition
@@ -388,7 +388,7 @@ J	0	End of Eternity 4KHD Edition
 J	0	Ender Lilies: Quietus of the Knights
 J	0	Enigmatis 3: The Shadow of Karkhala
 J	0	Entwined
-J	0	Escape Plan
+J	128	Escape Plan
 J	0	Euro Fishing
 J	16	EVE Valkyrie
 J	0	Everspace
@@ -419,12 +419,12 @@ J	0	FAR: Lone Sails
 J	0	Farming Simulator 15
 J	0	Farming Simulator 19
 J	0	Farming Simulator 22
-J	8	Farpoint
+J	136	Farpoint
 J	0	Fast & Furious Crossroads
-J	0	Fat Princess Adventures
+J	128	Fat Princess Adventures
 J	0	Fatal Fury: City of the Wolves
 J	0	Fate/Extella: The Umbral Star
-J	8	Fate/Grand Order VR feat. Mash Kyrielight
+J	136	Fate/Grand Order VR feat. Mash Kyrielight
 J	0	Fated: The Silent Oath
 J	0	FIA European Truck Racing Championship
 J	0	Fimbul
@@ -438,7 +438,7 @@ J	0	Final Fantasy XV Royal Edition
 J	0	Final Fantasy XV: Episode Duscae
 J	0	Firefighters: Airport Fire Department
 J	0	Firewatch
-J	0	Fist of the North Star: Lost Paradise
+J	128	Fist of the North Star: Lost Paradise
 J	16	Five Nights at Freddy's: Help Wanted
 J	0	Five Nights at Freddy's: Security Breach
 J	0	FlatOut 4: Total Insanity
@@ -482,23 +482,23 @@ J	0	God Eater 2: Rage Burst
 J	0	God Eater 3
 J	0	God Eater Resurrection
 J	0	God of War
-J	0	God of War III Remastered
+J	128	God of War III Remastered
 J	0	God of War Ragnarok
 J	0	God Wars: Future Past
 J	0	Godzilla
 J	8	Golem
 J	0	Golf Club Wasteland
 J	0	Gone Home Console Edition
-J	0	Gran Turismo 7
-J	16	Gran Turismo Sport
+J	128	Gran Turismo 7
+J	144	Gran Turismo Sport
 J	0	Granblue Fantasy: Relink
 J	0	Granblue Fantasy: Versus
 J	0	Grand Ages: Medieval
 J	0	Grand Theft Auto V
 J	0	Grand Theft Auto: The Trilogy
 J	0	Gravel
-J	0	Gravity Rush 2
-J	0	Gravity Rush Remastered
+J	128	Gravity Rush 2
+J	128	Gravity Rush Remastered
 J	0	GreedFall
 J	0	Green Hell
 J	0	GRID
@@ -512,18 +512,18 @@ J	0	Guilty Gear -Strive-
 J	0	Guilty Gear Xrd -Revelator-
 J	0	Guilty Gear Xrd -Sign-
 J	8	Gun Club VR
-J	0	Gundam Versus
+J	128	Gundam Versus
 J	8	Gungrave VR
 J	8	Gunjack
 J	0	Guns, Gore & Cannoli
 J	0	Guns, Gore & Cannoli 2
 J	0	Hades
 J	0	Hardcore Mecha
-J	0	Hardware Rivals
+J	128	Hardware Rivals
 J	0	Harvest Moon: Mad Dash
 J	0	Hasbro Family Fun Pack
-J	8	Hatsune Miku VR Future Live
-J	0	Hatsune Miku: Project DIVA X
+J	136	Hatsune Miku VR Future Live
+J	128	Hatsune Miku: Project DIVA X
 J	0	Heart&Slash
 J	0	Heavy Rain
 J	0	Hell Warders
@@ -533,7 +533,7 @@ J	0	Helldivers: Super-Earth Ultimate Edition
 J	0	HellMut
 J	0	Hellpoint
 J	0	Heroland
-J	0	Hidden Agenda
+J	128	Hidden Agenda
 J	0	High on Life
 J	0	Hitman
 J	0	Hitman 2
@@ -554,22 +554,22 @@ J	0	How to Survive: Storm Warning Edition
 J	0	Human Fall Flat
 J	0	Hungry Shark World
 J	0	Huntdown
-J	16	Hustle Kings
+J	144	Hustle Kings
 J	0	I am Setsuna
 J	0	Ice Age: Scrat's Nutty Adventure
 J	0	Immortal Legacy
 J	0	Immortal Unchained
 J	0	Industry Giant 2
-J	0	inFAMOUS First Light
-J	0	inFAMOUS Second Son
+J	128	inFAMOUS First Light
+J	128	inFAMOUS Second Son
 J	0	Infinity Runner
 J	0	Injustice 2
 J	0	INSIDE
 J	0	Insurgency: Sandstorm
 J	0	Ion Fury
 J	0	It Takes Two
-J	0	J-STARS Victory VS+
-J	0	Jak and Daxter: The Precursor Legacy
+J	128	J-STARS Victory VS+
+J	128	Jak and Daxter: The Precursor Legacy
 J	0	John Wick Hex
 J	0	JoJo's Bizarre Adventure: All-Star Battle R
 J	0	JoJo's Bizarre Adventure: Eyes of Heaven
@@ -591,7 +591,7 @@ J	0	Kaze and the Wild Masks
 J	0	Kena: Bridge of Spirits
 J	0	Kill la Kill -IF-
 J	0	Killing Floor 2
-J	0	Killzone Shadow Fall
+J	128	Killzone Shadow Fall
 J	0	Kingdom Come: Deliverance Royal Edition
 J	0	Kingdom Hearts HD 1.5 + 2.5 ReMIX
 J	0	Kingdom Hearts HD 2.8 Final Chapter Prologue
@@ -599,8 +599,8 @@ J	0	Kingdom Hearts III
 J	0	Kingdom Hearts: Melody of Memory
 J	0	Kingdom Two Crowns
 J	0	Kingdoms of Amalur: Re-Reckoning
-J	0	Knack
-J	0	Knack 2
+J	128	Knack
+J	128	Knack 2
 J	0	Kung Fu Panda: Showdown of Legendary Legends
 J	0	L.A. Noire
 J	0	La Voz
@@ -646,7 +646,7 @@ J	0	Little Nightmares
 J	0	Little Nightmares II
 J	0	Little Nightmares III
 J	0	Little Town Hero
-J	0	LittleBigPlanet 3
+J	128	LittleBigPlanet 3
 J	0	Lode Runner Legacy
 J	0	Lollipop Chainsaw RePOP
 J	0	Lords of the Fallen
@@ -673,12 +673,12 @@ J	0	Marvel's Spider-Man
 J	0	Marvel's Spider-Man: Miles Morales
 J	0	Mass Effect Legendary Edition
 J	0	Mass Effect: Andromeda
-J	0	Matterfall
+J	128	Matterfall
 J	0	Max: The Curse of Brotherhood
 J	0	Mayhem Brawler
 J	0	MechWarrior 5: Mercenaries
 J	0	Media Player
-J	0	MediEvil
+J	128	MediEvil
 J	0	Mega Man 11
 J	0	Mega Man Legacy Collection
 J	0	Mega Man Legacy Collection 2
@@ -737,7 +737,7 @@ J	0	Naruto to Boruto: Shinobi Striker
 J	0	Naruto x Boruto Ultimate Ninja Storm Connections
 J	0	NASCAR Heat 2
 J	0	NASCAR Heat 5
-J	0	Natural Doctrine
+J	128	Natural Doctrine
 J	0	NBA 2K Playgrounds 2
 J	0	NBA 2K24
 J	0	NBA 2K26
@@ -774,7 +774,7 @@ J	0	Octopath Traveler 2
 J	0	Odallus
 J	0	Oddworld: New 'n' Tasty
 J	0	Oddworld: Soulstorm
-J	0	Odin Sphere Leifthrasir
+J	128	Odin Sphere Leifthrasir
 J	0	Olympic Games Tokyo 2020
 J	0	One Piece Burning Blood
 J	0	One Piece Odyssey
@@ -796,7 +796,7 @@ J	0	Override: Mech City Brawl
 J	0	Owlboy
 J	0	Pac-Man Championship Edition 2 + Arcade Game Series
 J	0	Panzer Dragoon Remake
-J	0	PaRappa the Rapper Remastered
+J	128	PaRappa the Rapper Remastered
 J	0	Past Cure
 J	0	Pathfinder: Kingmaker
 J	0	Pathfinder: Wrath of the Righteous
@@ -838,7 +838,7 @@ J	0	Raiders of the Broken Planet
 J	0	Rain World
 J	0	Rainbow Moon
 J	0	Raji: An Ancient Epic
-J	0	Ratchet & Clank
+J	128	Ratchet & Clank
 J	0	Rayman Legends
 J	0	Real Heroes Firefighter
 J	0	Red Dead Redemption
@@ -879,7 +879,7 @@ J	0	Sackboy: A Big Adventure
 J	0	Saints Row
 J	0	Saints Row IV: Re-Elected & Gat Out of Hell
 J	0	Saints Row: The Third Remastered
-J	0	Sakura Wars
+J	128	Sakura Wars
 J	0	Salt and Sanctuary
 J	0	Samurai Jack: Battle Through Time
 J	0	Samurai Shodown
@@ -899,8 +899,8 @@ J	0	Senran Kagura Peach Beach Splash
 J	0	Serious Sam Collection
 J	0	Session: Skate Sim Year One Complete Edition
 J	0	Seven: Enhanced Edition
-J	0	Shadow of the Beast
-J	0	Shadow of the Colossus
+J	128	Shadow of the Beast
+J	128	Shadow of the Colossus
 J	0	Shadow of the Tomb Raider
 J	0	Shadow Tactics
 J	0	Shadow Warrior
@@ -925,9 +925,9 @@ J	0	Slaps And Beans
 J	0	Slay the Spire
 J	0	Sleeping Dogs: Definitive Edition
 J	0	Slime Rancher
-J	0	Sly 2: Band of Thieves
-J	0	Sly 3: Honor Among Thieves
-J	0	Sly Cooper and the Thievius Raccoonus
+J	128	Sly 2: Band of Thieves
+J	128	Sly 3: Honor Among Thieves
+J	128	Sly Cooper and the Thievius Raccoonus
 J	0	Smurfs Kart
 J	0	SNES Station
 J	0	Sniper Elite 3
@@ -999,7 +999,7 @@ J	0	Sword Art Online: Fatal Bullet
 J	0	Sword Art Online: Hollow Realization
 J	0	Sword Art Online: Lost Song
 J	0	Syberia 3
-J	0	Syphon Filter
+J	128	Syphon Filter
 J	8	Table of Tales: The Crooked Crown
 J	0	Taito Legends 2
 J	0	Tales from the Borderlands
@@ -1010,7 +1010,7 @@ J	0	Tales of Zestiria
 J	0	Tamarin
 J	0	Taxi Chaos
 J	0	Team Sonic Racing
-J	0	Tearaway Unfolded
+J	128	Tearaway Unfolded
 J	0	Teenage Mutant Ninja Turtles: Shredder's Revenge
 J	0	Teenage Mutant Ninja Turtles: Splintered Fate
 J	0	Tekken 7
@@ -1040,11 +1040,11 @@ J	0	The Grand Tour Game
 J	0	The Hong Kong Massacre
 J	0	The House in Fata Morgana
 J	0	The Incredible Adventures of Van Helsing III
-J	8	The Inpatient
+J	136	The Inpatient
 J	8	The Invisible Hours
 J	0	The King of Fighters 2002 Unlimited Match
 J	0	The Last Faith
-J	0	The Last Guardian
+J	128	The Last Guardian
 J	0	The Last of Us Part II
 J	0	The Last of Us Remastered
 J	0	The Last Remnant Remastered
@@ -1060,9 +1060,9 @@ J	0	The Long Journey Home
 J	0	The Lord of the Rings: Gollum
 J	0	The Messenger
 J	0	The Mummy Demastered
-J	0	The Order 1886
+J	128	The Order 1886
 J	0	The Outer Worlds
-J	0	The Playroom
+J	128	The Playroom
 J	0	The Quarry
 J	0	The Quiet Man
 J	0	The Secret Order: Shadow Breach
@@ -1080,7 +1080,7 @@ J	0	The Walking Dead Onslaught
 J	0	The Walking Dead: Destinies
 J	8	The Walking Dead: Saints & Sinners
 J	0	The Walking Dead: The Telltale Definitive Series
-J	0	The Witch and the Hundred Knight: Revival Edition
+J	128	The Witch and the Hundred Knight: Revival Edition
 J	0	The Witcher 3: Wild Hunt – Complete Edition
 J	0	The Witness
 J	0	The Wizards
@@ -1150,7 +1150,7 @@ J	0	Umbrella Corps
 J	0	Unbox Newbie's Adventure
 J	0	Uncharted 4: A Thief's End
 J	0	Uncharted: The Lost Legacy
-J	0	Uncharted: The Nathan Drake Collection
+J	128	Uncharted: The Nathan Drake Collection
 J	0	Underworld Ascendant
 J	8	Unearthing Mars
 J	0	Unepic
@@ -1265,9 +1265,9 @@ J	0	Alone in the Dark
 J	0	Among Us
 J	0	Anger Foot
 J	0	Anno 1800 Console Edition
-J	0	Ape Academy 2
-J	0	Ape Escape
-J	0	Ape Escape: On the Loose
+J	128	Ape Academy 2
+J	128	Ape Escape
+J	128	Ape Escape: On the Loose
 J	0	Apsulov: End of Gods
 J	0	Aragami 2
 J	0	Arcade Game Zone
@@ -1286,8 +1286,8 @@ J	0	Assetto Corsa Competizione
 J	0	Asterigos: Curse of the Stars
 J	0	Asterix & Obelix XXXL: The Ram from Hibernia
 J	0	Astria Ascending
-J	0	Astro Bot
-J	0	Astro's Playroom
+J	128	Astro Bot
+J	128	Astro's Playroom
 J	0	ASTRONEER
 J	0	Atelier Yumia: The Alchemist of Memories & the Envisioned Land
 J	0	Atlas Fallen
@@ -1402,9 +1402,9 @@ J	0	Deliver At All Costs
 J	0	Demon Slayer: Kimetsu no Yaiba – Sweep the Board!
 J	0	Demon Slayer: Kimetsu no Yaiba – The Hinokami Chronicles
 J	0	Demon Slayer: Kimetsu no Yaiba – The Hinokami Chronicles 2
-J	0	Demon's Souls
+J	128	Demon's Souls
 J	0	Destroy All Humans! 2 – Reprobed
-J	0	Destruction AllStars
+J	128	Destruction AllStars
 J	0	Devil May Cry 5 Special Edition
 J	0	Diablo II: Resurrected Infernal Edition
 J	0	Digimon Story Time Stranger
@@ -1507,7 +1507,7 @@ J	0	Gears of War: Reloaded
 J	0	Gex Trilogy
 J	0	Ghost Master Resurrection
 J	0	Ghost of Tsushima Director's Cut
-J	0	Ghost of Yōtei Complete Edition
+J	128	Ghost of Yōtei Complete Edition
 J	0	Ghostbusters: Spirits Unleashed
 J	0	Ghostrunner
 J	0	Ghostrunner 2
@@ -1515,11 +1515,11 @@ J	0	Ghostwire: Tokyo
 J	0	Goat Simulator 3
 J	0	God of Rock
 J	0	God of War Ragnarök
-J	0	God of War: Sons of Sparta
+J	128	God of War: Sons of Sparta
 J	0	Gotham Knights
 J	0	Gothic 1 Remake
 J	0	Gothic Classic
-J	16	Gran Turismo 7
+J	144	Gran Turismo 7
 J	0	Granblue Fantasy Versus: Rising
 J	0	Granblue Fantasy: Relink
 J	0	Grand Theft Auto III – The Definitive Edition
@@ -1555,7 +1555,7 @@ J	16	Hitman World of Assassination
 J	0	Hogwarts Legacy
 J	0	Hollow Knight: Silksong
 J	0	Hollow Knight: Voidheart Edition
-J	8	Horizon Call of the Mountain
+J	136	Horizon Call of the Mountain
 J	0	Horizon Forbidden West Complete Edition
 J	0	Horizon Zero Dawn Remastered
 J	0	Horror Tales: The Wine
@@ -1585,12 +1585,12 @@ J	0	It Takes Two
 J	0	Jack Holmes: Master of Puppets
 J	0	Jagged Alliance 3
 J	0	Jay and Silent Bob Chronic Blunt Punch
-J	0	Jeanne d'Arc
+J	128	Jeanne d'Arc
 J	0	Jet Kave Adventure
 J	0	Jitsu Squad
 J	0	Judgment
 J	0	Jumanji: The Video Game
-J	0	Jumping Flash!
+J	128	Jumping Flash!
 J	0	Jurassic Park: Classic Games Collection
 J	0	Jurassic World Evolution 3
 J	0	Jusant
@@ -1649,7 +1649,7 @@ J	0	Marvel's Midnight Suns Enhanced Edition
 J	0	Marvel's Spider-Man 2 Deluxe Edition
 J	0	Marvel's Spider-Man Remastered
 J	0	Marvel's Spider-Man: Miles Morales
-J	0	Marvel's Wolverine
+J	128	Marvel's Wolverine
 J	0	Matchbox Driving Adventures
 J	0	Mayhem Brawler
 J	0	MechWarrior 5: Mercenaries
@@ -1806,7 +1806,7 @@ J	0	Sackboy: A Big Adventure
 J	0	Saints Row The Third Remastered
 J	0	Samson: A Tyndalston Story
 J	0	Sand Land
-J	0	Saros
+J	128	Saros
 J	0	Scarlet Nexus
 J	0	Scars Above
 J	0	Scorn
@@ -1884,7 +1884,7 @@ J	0	Sword of the Sea
 J	0	Syberia Remastered
 J	0	Syberia: The World Before
 J	8	Synapse
-J	0	Syphon Filter
+J	128	Syphon Filter
 J	0	System of Souls
 J	0	System Shock
 J	0	Tactics Ogre Reborn
@@ -6381,7 +6381,7 @@ J	0	Baldur's Gate and Baldur's Gate II: Enhanced Editions
 J	2	BALL x PIT
 J	2	Banishers: Ghosts of New Eden
 J	4	Banjo-Kazooie
-J	4	Banjo-Kazooie: Nuts & Bolts
+J	132	Banjo-Kazooie: Nuts & Bolts
 J	4	Banjo-Tooie
 J	0	Barbie Horse Trails
 J	0	Batman: Arkham Knight
@@ -6403,7 +6403,7 @@ J	0	BLACK
 J	2	Black Jacket
 J	2	BlazBlue Entropy Effect X
 J	1	Bleeding Edge
-J	0	BLiNX: The Time Sweeper
+J	128	BLiNX: The Time Sweeper
 J	0	Blizzard Arcade Collection
 J	2	Blood Dungeon
 J	2	Blue Prince
@@ -6435,7 +6435,7 @@ J	1	Chivalry 2
 J	0	Cities: Skylines
 J	0	Clone Drone in the Danger Zone
 J	0	CloverPit
-J	0	Conker: Live and Reloaded
+J	128	Conker: Live and Reloaded
 J	0	Construction Simulator
 J	0	Contrast
 J	0	Control
@@ -6448,7 +6448,7 @@ J	0	Crash Bandicoot N. Sane Trilogy
 J	0	Crash Team Racing Nitro-Fueled
 J	2	Crashout Crew
 J	0	Cricket 26 - The Official Game of the Ashes
-J	0	Crimson Skies: High Road to Revenge
+J	128	Crimson Skies: High Road to Revenge
 J	4	Crysis
 J	4	Crysis 2
 J	4	Crysis 3
@@ -6520,7 +6520,7 @@ J	2	Eternal Strands
 J	0	F1 24
 J	2	F1 25
 J	4	Fable Anniversary
-J	4	Fable II
+J	132	Fable II
 J	4	Fable III
 J	4	Fallout 3
 J	0	Fallout 4
@@ -6558,15 +6558,15 @@ J	3	Forza Motorsport
 J	3	FragPunk
 J	2	Frog Sqwad
 J	0	Full Throttle Remastered
-J	0	Fuzion Frenzy
+J	128	Fuzion Frenzy
 J	0	Gang Beasts
 J	0	Gears 5 Game of the Year Edition
 J	4	Gears of War
-J	4	Gears of War 2
-J	4	Gears of War 3
+J	132	Gears of War 2
+J	132	Gears of War 3
 J	0	Gears of War 4
 J	2	Gears of War: E-Day
-J	4	Gears of War: Judgment
+J	132	Gears of War: Judgment
 J	2	Gears of War: Reloaded
 J	0	Gears Tactics
 J	0	Generation Zero
@@ -6584,7 +6584,7 @@ J	2	Grounded 2 (Game Preview)
 J	0	Hades
 J	2	Hades II
 J	2	Halls of Torment
-J	0	Halo 5: Guardians
+J	128	Halo 5: Guardians
 J	0	Halo Infinite
 J	0	Halo Wars 2
 J	0	Halo Wars: Definitive Edition
@@ -6615,12 +6615,12 @@ J	0	Inscryption
 J	0	INSIDE
 J	4	Iron Brigade
 J	0	It Takes Two - Digital Version
-J	4	Jetpac Refuelled
+J	132	Jetpac Refuelled
 J	4	Joy Ride Turbo
 J	2	Junkster
 J	2	Jurassic World Evolution 3
 J	0	Kabuto Park
-J	4	Kameo
+J	132	Kameo
 J	2	Keeper
 J	2	Kernel Hearts
 J	2	KILL IT WITH FIRE! 2
@@ -6715,7 +6715,7 @@ J	4	Peggle
 J	0	Peggle 2
 J	0	Pentiment
 J	4	Perfect Dark
-J	4	Perfect Dark Zero
+J	132	Perfect Dark Zero
 J	0	Persona 5 Royal
 J	0	Phoenix Point
 J	2	Pigeon Simulator
@@ -6742,7 +6742,7 @@ J	0	Rabbids Invasion : The Interactive TV Show
 J	0	Rabbids: Party of Legends
 J	4	RAGE
 J	0	RAGE 2
-J	0	Rare Replay
+J	128	Rare Replay
 J	0	Rayman Legends
 J	0	ReCore
 J	2	Redfall
@@ -6770,7 +6770,7 @@ J	0	Rush: A DisneyPixar Adventure
 J	2	RV There Yet?
 J	0	Ryse: Legendary Edition
 J	2	Scramble Knights Online (Game Preview)
-J	0	ScreamRide
+J	128	ScreamRide
 J	0	Sea of Solitude
 J	1	Sea of Thieves: 2026 Edition
 J	0	Shadowrun Returns
@@ -6899,7 +6899,7 @@ J	0	Vapor World: Over The Mind (Game Preview)
 J	2	Virtua Fighter 5 R.E.V.O. World Stage
 J	2	Visions of Mana
 J	4	Viva Piñata
-J	4	Viva Piñata: Trouble in Paradise
+J	132	Viva Piñata: Trouble in Paradise
 J	2	Voidtrain
 J	1	War Thunder
 J	3	Warhammer 40,000: Darktide
@@ -7187,13 +7187,13 @@ J	0	Arcade Paradise VR
 J	0	Arizona Sunshine
 J	0	Arizona Sunshine 2
 J	0	Arizona Sunshine Remake
-J	0	Asgard's Wrath 2
-J	0	Assassin's Creed Nexus VR
+J	128	Asgard's Wrath 2
+J	128	Assassin's Creed Nexus VR
 J	0	Attack on Titan VR: Unbreakable
 J	0	AVICII Invector: Encore Edition
 J	0	BARTENDER
 J	0	Basket VR
-J	0	Batman: Arkham Shadow
+J	128	Batman: Arkham Shadow
 J	0	Battle Talent
 J	0	BattleGlide
 J	0	Be Fit & Mindful
@@ -7275,7 +7275,7 @@ J	0	HALLO EINSTEIN
 J	0	Hello Neighbor: Search and Rescue
 J	0	Hellsweeper VR
 J	0	Heroes of Flatlandia VR
-J	0	HITMAN 3 VR: Reloaded
+J	128	HITMAN 3 VR: Reloaded
 J	0	Home Invasion
 J	0	Homeworld: Vast Reaches
 J	0	Horror Hospital: The Escape Game
@@ -7311,7 +7311,7 @@ J	0	LIMINAL
 J	0	Lucky Fish Bread
 J	0	Lucky's Tale
 J	0	MADiSON
-J	0	Marvel's Deadpool VR
+J	128	Marvel's Deadpool VR
 J	0	Marvel's Iron Man VR
 J	0	Maskmaker
 J	0	Medal of Honor: Above and Beyond
@@ -7354,14 +7354,14 @@ J	0	Reach
 J	0	Real VR Fishing
 J	0	Red Matter
 J	0	Red Matter 2
-J	0	Resident Evil 4
+J	128	Resident Evil 4
 J	0	Return To Kurgansk
 J	0	Richie's Plank Experience
 J	0	Rick and Morty Virtual Rick-ality
 J	0	ROLLERCOASTERS
 J	0	Room Escape
 J	0	RUSH
-J	0	Samba de Amigo: Virtual Party
+J	128	Samba de Amigo: Virtual Party
 J	0	Shadow
 J	0	Shardfall
 J	0	Sherlock Holmes VR
@@ -7448,20 +7448,20 @@ J	0	Zero Caliber: Reloaded
 J	0	Zombie Army VR
 J	0	ZOMBIE ELEVATOR
 C	Nintendo Switch	Switch	d92b2b	ff9a9a
-J	0	1-2-Switch
+J	128	1-2-Switch
 J	0	A Boy and His Blob
 J	0	A Memoir Blue
 J	0	A Place for the Unwilling
 J	0	Ace Combat 7: Skies Unknown Deluxe Edition
 J	0	Actraiser Renaissance
-J	0	Advance Wars 1 plus 2 Re-Boot Camp
+J	128	Advance Wars 1 plus 2 Re-Boot Camp
 J	0	Aeon Must Die
 J	0	Agony Deluxe Edition
 J	0	Alien Isolation
 J	0	American Fugitive
 J	0	Amnesia Collection
 J	0	Ancestors Legacy
-J	0	Animal Crossing: New Horizons
+J	128	Animal Crossing: New Horizons
 J	0	Another Eden Begins
 J	0	Another World
 J	0	AO Tennis 2
@@ -7471,7 +7471,7 @@ J	0	Arcade Archives GUNNAIL
 J	0	ARK Survival Evolved
 J	0	Armed to the Gears
 J	0	Armello
-J	0	ARMS
+J	128	ARMS
 J	0	Ashen
 J	0	Aspire Inas Tale
 J	0	Assassins Creed III Remastered
@@ -7479,7 +7479,7 @@ J	0	Assassins Creed The Ezio Collection
 J	0	Assassins Creed The Rebel Collection
 J	0	Asterix and Obelix Slap Them All
 J	0	Asteroids Recharged
-J	0	Astral Chain
+J	128	Astral Chain
 J	0	ASTRONEER
 J	0	Atelier Ryza 2: Lost Legends & the Secret Fairy
 J	0	Atelier Ryza 3 Alchemist of the End & the Secret Key Ultimate Edition
@@ -7530,8 +7530,8 @@ J	0	Battlestar Galactica Deadlock
 J	0	Battlezone Gold Edition
 J	0	Battlloon
 J	0	Bayonetta
-J	0	Bayonetta 2
-J	0	Bayonetta 3
+J	128	Bayonetta 2
+J	128	Bayonetta 3
 J	0	Be-A Walker
 J	0	Beach Buggy Racing
 J	0	Beach Volleyball Challenge
@@ -7545,7 +7545,7 @@ J	0	Best Sniper
 J	0	Beyond a Steel Sky
 J	0	Beyond Blue
 J	0	Beyond Enemy Lines Covert Operations
-J	0	Big Brain Academy Brain vs Brain
+J	128	Big Brain Academy Brain vs Brain
 J	0	Big Pharma
 J	0	Big Rumble Boxing Creed Champions
 J	0	Binaries
@@ -7606,7 +7606,7 @@ J	0	Bouncy Bob
 J	0	Bouncy Bullets
 J	0	Bounty Battle
 J	0	Bow to blood
-J	0	BOXBOY
+J	128	BOXBOY
 J	0	Boyfriend Dungeon
 J	0	Brave Dungeon Dark Witch's Story
 J	0	Brave Dungeon plus Dark Witch Story COMBAT
@@ -7644,7 +7644,7 @@ J	0	Bustafellows
 J	0	Butcher
 J	0	ButtonButtonUp!
 J	0	C14 Dating
-J	0	Cadence of Hyrule
+J	128	Cadence of Hyrule
 J	0	Caged Garden Cock Robin
 J	0	Call of Cthulhu
 J	0	Call of Juarez Gunslinger
@@ -7654,7 +7654,7 @@ J	0	Candy Match Kiddies
 J	0	Capcom Arcade Stadium
 J	0	Capcom Beat Em Up Bundle
 J	0	Captain StarONE
-J	0	Captain Toad Treasure Tracker
+J	128	Captain Toad Treasure Tracker
 J	0	Captain Tsubasa 2 World Fighters
 J	0	Captain Tsubasa Rise Of New Champions
 J	0	Car Demolition Clicker
@@ -7722,7 +7722,7 @@ J	0	Classic Games Collection Vol 1
 J	0	Clea
 J	0	Clocker
 J	0	Cloudpunk
-J	0	Clubhouse Games 51 Worldwide Classics
+J	128	Clubhouse Games 51 Worldwide Classics
 J	0	Clue
 J	0	Clue The Classic Mystery Game
 J	0	ClusterPuck 99
@@ -7733,7 +7733,7 @@ J	0	Code of Princess EX
 J	0	Coffee Talk
 J	0	Coffin Dodgers
 J	0	Collar×Malice for Nintendo Switch
-J	0	Collection of Mana
+J	128	Collection of Mana
 J	0	COLLECTION of SaGa FINAL FANTASY LEGEND
 J	0	Collidalot
 J	0	Collide-a-Ball 2
@@ -7917,8 +7917,8 @@ J	0	Disgaea 4 Complete Plus
 J	0	Disgaea 5 Alliance of Vengeance
 J	0	Disgaea 6 Defiance of Destiny
 J	0	Disney Classic Games Aladdin and The Lion King
-J	0	Disney Magical World 2 Enchanted Edition
-J	0	Disney Tsum Tsum Festival
+J	128	Disney Magical World 2 Enchanted Edition
+J	128	Disney Tsum Tsum Festival
 J	0	Disney/Pixar Toy Story 3 Complete Edition
 J	0	Disney/Pixar Toy Story: Retro Roundup!
 J	0	Dispatch
@@ -7938,8 +7938,8 @@ J	0	Don't Be Afraid
 J	0	Don't Die Mr. Robot DX
 J	0	Don't Knock Twice
 J	0	Don't Starve Nintendo Switch Edition
-J	0	Donkey Kong Country Returns HD
-J	0	Donkey Kong Country Tropical Freeze
+J	128	Donkey Kong Country Returns HD
+J	128	Donkey Kong Country Tropical Freeze
 J	0	Dont sink
 J	0	Doodle God Crime City
 J	0	Doodle God Evolution
@@ -7958,7 +7958,7 @@ J	0	Doraemon Story of Seasons
 J	0	Double Dragon IV
 J	0	Double Dragon Kunio-kun Retro Brawler Bundle
 J	0	Double Dragon Revive
-J	0	Dr Kawashima's Brain Training for Nintendo Switch
+J	128	Dr Kawashima's Brain Training for Nintendo Switch
 J	0	Drag Racing Rivals
 J	0	DragoDino
 J	0	Dragon Audit
@@ -8093,8 +8093,8 @@ J	0	Fall of Light Darkest Edition
 J	0	Fallen Legion Revenants
 J	0	Fallen Legion Rise to Glory
 J	0	Fallout Shelter
-J	0	Famicom Detective Club 1 - The Missing Heir
-J	0	Famicom Detective Club 2 - The Girl Who Stands Behind
+J	128	Famicom Detective Club 1 - The Missing Heir
+J	128	Famicom Detective Club 2 - The Girl Who Stands Behind
 J	0	Family Feud 2021
 J	0	Family Vacation California
 J	0	Fantasy Friends - Under The Sea
@@ -8145,16 +8145,16 @@ J	0	Final Fantasy X X-2 HD Remaster
 J	0	Final Fantasy XII - The Zodiac Age
 J	0	Final Fantasy XV - Pocket Edition HD
 J	0	FiNC HOME FiT
-J	0	Fire Emblem Shadow Dragon and the Blade of Light
-J	0	Fire Emblem Three Houses
-J	0	Fire Emblem Warriors
+J	128	Fire Emblem Shadow Dragon and the Blade of Light
+J	128	Fire Emblem Three Houses
+J	128	Fire Emblem Warriors
 J	0	Fire Unghs Quest
 J	0	Firewatch
 J	0	Fishing Barents Sea
 J	0	Fishing Fighters
 J	0	Fishing Universe Simulator
-J	0	Fitness Boxing
-J	0	Fitness Boxing 2 Rhythm and Exercise
+J	128	Fitness Boxing
+J	128	Fitness Boxing 2 Rhythm and Exercise
 J	0	Five Nights at Freddys
 J	0	Five Nights at Freddys Help Wanted
 J	0	Five Nights at Freddys Sister Location
@@ -8222,7 +8222,7 @@ J	0	GALAK-Z
 J	0	Galaxy Champions TV
 J	0	Galaxy of pen and paper
 J	0	Galaxy Squad
-J	0	Game Builder Garage
+J	128	Game Builder Garage
 J	0	Game Dev Story
 J	0	Game Party 15 in 1
 J	0	Ganbare! Super Strikers
@@ -8264,7 +8264,7 @@ J	0	Glass Masquerade 2 Illusions
 J	0	Gleylancer
 J	0	Gnomes Garden Lost King
 J	0	Gnosia
-J	0	GO Vacation
+J	128	GO Vacation
 J	0	Goat Simulator The Goaty
 J	0	GoatPunks
 J	0	God Eater 3
@@ -8434,8 +8434,8 @@ J	0	Hyperdrive Massacre
 J	0	Hyperforma
 J	0	Hyperspace Delivery Service
 J	0	Hypnospace Outlaw
-J	0	Hyrule Warriors Age of Calamity
-J	0	Hyrule Warriors Definitive Edition
+J	128	Hyrule Warriors Age of Calamity
+J	128	Hyrule Warriors Definitive Edition
 J	0	I Am Dead
 J	0	I am Setsuna
 J	0	I and Me
@@ -8535,7 +8535,7 @@ J	0	Jydge
 J	0	Kadobat Wars
 J	0	Kaiju Khaos
 J	0	Kairobotica
-J	0	Kamen Rider Climax Scramble
+J	128	Kamen Rider Climax Scramble
 J	0	Kamiko
 J	0	Kangokuto Mary Skelter Finale
 J	0	Karaoke JOYSOUND for Nintendo Switch
@@ -8570,9 +8570,9 @@ J	0	Kings Bounty II
 J	0	Kings of Paradise
 J	0	Kirakira stars idol project Memories
 J	0	Kirakira stars idol project Nagisa
-J	0	Kirby and the Forgotten Land
-J	0	Kirby Fighters 2
-J	0	Kirby Star Allies
+J	128	Kirby and the Forgotten Land
+J	128	Kirby Fighters 2
+J	128	Kirby Star Allies
 J	0	Kitaria Fables
 J	0	Kitten Squad
 J	0	Knight Club
@@ -8684,8 +8684,8 @@ J	0	Lovekami -Useless Goddess
 J	0	Lovers in a Dangerous Spacetime
 J	0	Lucah Born of a Dream
 J	0	Lucid Cycle
-J	0	Luigi's Mansion 2
-J	0	Luigi's Mansion 3
+J	128	Luigi's Mansion 2
+J	128	Luigi's Mansion 3
 J	0	Luke & Rebecca
 J	0	Lumines Remastered
 J	0	Luminos
@@ -8719,15 +8719,15 @@ J	0	March to a Million
 J	0	Marchen Forest
 J	0	Marenian Tavern Story Patty and The Hungry God
 J	0	Maria The Witch
-J	0	Mario + Rabbids Kingdom Battle
-J	0	Mario + Rabbids Sparks of Hope
-J	0	Mario and Sonic at the Olympic Games Tokyo 2020
-J	0	Mario Golf Super Rush
-J	0	Mario Kart 8 Deluxe
-J	0	Mario Party Superstars
-J	0	Mario Strikers Battle League
-J	0	Mario Tennis Aces
-J	0	Mario vs. Donkey Kong
+J	128	Mario + Rabbids Kingdom Battle
+J	128	Mario + Rabbids Sparks of Hope
+J	128	Mario and Sonic at the Olympic Games Tokyo 2020
+J	128	Mario Golf Super Rush
+J	128	Mario Kart 8 Deluxe
+J	128	Mario Party Superstars
+J	128	Mario Strikers Battle League
+J	128	Mario Tennis Aces
+J	128	Mario vs. Donkey Kong
 J	0	Mark of the Ninja Remastered
 J	0	Mars or Die!
 J	0	Marsupilami - HOOBADVENTURE
@@ -8773,14 +8773,14 @@ J	0	Metaloid Origin
 J	0	Metaverse Keeper
 J	0	Metro 2033 Redux
 J	0	Metro Last Light Redux
-J	0	Metroid Dread
-J	0	Metroid Prime 4 Beyond
+J	128	Metroid Dread
+J	128	Metroid Prime 4 Beyond
 J	0	Micetopia
 J	0	Mickey Storm and the Cursed Mask
 J	0	Midnight Deluxe
 J	0	Mighty Goose
 J	0	Mighty Gunvolt Burst
-J	0	Miitopia
+J	128	Miitopia
 J	0	Milkmaid of the Milky Way
 J	0	Millie
 J	0	Mimic Hunter
@@ -8825,7 +8825,7 @@ J	0	Monster Boy and the Cursed Kingdom
 J	0	Monster Crown
 J	0	Monster Dynamite
 J	0	Monster Harvest
-J	0	Monster Hunter Generations Ultimate
+J	128	Monster Hunter Generations Ultimate
 J	0	Monster Hunter RISE
 J	0	Monster Hunter Stories
 J	0	Monster Hunter Stories 2 - Wings of Ruin
@@ -8943,9 +8943,9 @@ J	0	Neverlast
 J	0	Neverout
 J	0	Neverwinter Nights Enhanced Edition
 J	0	New Frontier Days ~Founding Pioneers~
-J	0	New Pokemon Snap
+J	128	New Pokemon Snap
 J	0	New Super Lucky's Tale
-J	0	New Super Mario Bros U Deluxe
+J	128	New Super Mario Bros U Deluxe
 J	0	New York Mysteries High Voltage
 J	0	New York Mysteries The Lantern of Souls
 J	0	New York Mysteries The Outbreak
@@ -8975,13 +8975,13 @@ J	0	Ninja Gaiden Sigma 2
 J	0	Ninja Shodown
 J	0	Ninja Striker
 J	0	Ninja Village
-J	0	Ninjala
+J	128	Ninjala
 J	0	Ninjin Clash of Carrots
 J	0	Nintendo 64 – Nintendo Switch Online
 J	0	Nintendo Entertainment System Online
-J	0	Nintendo Labo Toy-Con 01 - Variety Kit
-J	0	Nintendo Labo Toy-Con 02 - Robot Kit
-J	0	Nintendo Labo Toy-Con Kits
+J	128	Nintendo Labo Toy-Con 01 - Variety Kit
+J	128	Nintendo Labo Toy-Con 02 - Robot Kit
+J	128	Nintendo Labo Toy-Con Kits
 J	0	Nippon Marathon
 J	0	No Man's Sky
 J	0	No More Heroes
@@ -9083,7 +9083,7 @@ J	0	Overwhelm
 J	0	Owlboy
 J	0	Oxenfree
 J	0	Oxyjet
-J	0	PAC-MAN 99
+J	128	PAC-MAN 99
 J	0	PAC-MAN Championship Edition 2 PLUS
 J	0	PAC-MAN VS. Free Multiplayer-only Ver
 J	0	Pacific Wings
@@ -9097,8 +9097,8 @@ J	0	Panty Party
 J	0	Panzer Dragoon Remake
 J	0	Panzer Paladin
 J	0	Paper Dolls Original
-J	0	Paper Mario The Origami King
-J	0	Paper Mario The Thousand-Year Door
+J	128	Paper Mario The Origami King
+J	128	Paper Mario The Thousand-Year Door
 J	0	Paper Train
 J	0	Paperbound Brawlers
 J	0	Paradox Soul
@@ -9147,12 +9147,12 @@ J	0	Physical Contact SPEED
 J	0	Pianista
 J	0	Pic-A-Pix Deluxe
 J	0	Picross Lord of the Nazarick
-J	0	Picross S
-J	0	Picross S2
-J	0	Picross S3
+J	128	Picross S
+J	128	Picross S2
+J	128	Picross S3
 J	0	Piczle Lines DX
 J	0	Piczle Lines DX 500 More Puzzles
-J	0	Pikmin 3 Deluxe
+J	128	Pikmin 3 Deluxe
 J	0	Pikuniku
 J	0	Pile Up Box by Box
 J	0	Pillar
@@ -9189,21 +9189,21 @@ J	0	Pode
 J	0	Poi Explorer Edition
 J	0	POISOFT's Thud
 J	0	Poison Control
-J	0	Pokemon Brilliant Diamond
+J	128	Pokemon Brilliant Diamond
 J	0	Pokemon Cafe Mix
 J	0	Pokemon HOME
-J	0	Pokemon Legends Arceus
-J	0	Pokemon Lets Go Eevee
-J	0	Pokemon Lets Go Pikachu
-J	0	Pokemon Mystery Dungeon Rescue Team DX
+J	128	Pokemon Legends Arceus
+J	128	Pokemon Lets Go Eevee
+J	128	Pokemon Lets Go Pikachu
+J	128	Pokemon Mystery Dungeon Rescue Team DX
 J	0	Pokemon Quest
-J	0	Pokemon Scarlet
-J	0	Pokemon Shield
-J	0	Pokemon Shining Pearl
-J	0	Pokemon Sword
-J	0	Pokemon VioletI
-J	0	Pokken Tournament DX
-J	0	Pokémon Legends Z-A
+J	128	Pokemon Scarlet
+J	128	Pokemon Shield
+J	128	Pokemon Shining Pearl
+J	128	Pokemon Sword
+J	128	Pokemon VioletI
+J	128	Pokken Tournament DX
+J	128	Pokémon Legends Z-A
 J	0	Police Simulator: Patrol Officers
 J	0	Police Stories
 J	0	Poly Bridge
@@ -9226,7 +9226,7 @@ J	0	Pretty Girls Klondike Solitaire
 J	0	Prime World Defenders
 J	32	Prince of Persia (1989)
 J	0	Prince of Persia The Lost Crown
-J	0	Princess Peach Showtime!
+J	128	Princess Peach Showtime!
 J	0	Prinny
 J	0	Prinny 2
 J	0	Prinny Presents NIS Classics Volume 1
@@ -9348,7 +9348,7 @@ J	0	Rift Keeper
 J	0	RiME
 J	0	Rimelands
 J	0	RiMS Racing
-J	0	Ring Fit Adventure
+J	128	Ring Fit Adventure
 J	0	RIOT - Civil Unrest
 J	0	Riptide GP Renegade
 J	0	Rise and Shine
@@ -9509,12 +9509,12 @@ J	0	Smashroom
 J	0	Smoke and Sacrifice
 J	0	Smoots Summer Games
 J	0	Smuggle Craft
-J	0	Snack World The Dungeon Crawl Gold
+J	128	Snack World The Dungeon Crawl Gold
 J	0	Snake Pass
 J	0	Sniper Elite 3 Ultimate Edition
 J	0	Sniper Elite 4 Complete Editions
 J	0	Sniper Elite V2 Remastered
-J	0	Snipperclips Plus - Cut it Out, Together
+J	128	Snipperclips Plus - Cut it Out, Together
 J	0	SNK 40th Anniversary Collection
 J	0	SNK Heroines Tag Team Frenzy
 J	0	SNK vs CAPCOM Match of the Millenium
@@ -9585,7 +9585,7 @@ J	0	Spirit of the North
 J	0	Spiritfarer
 J	0	SpiritSphere DX
 J	0	Splasher
-J	0	Splatoon 2
+J	128	Splatoon 2
 J	0	SpongeBob Krusty Cook-Off
 J	0	SpongeBob SquarePants Battle for Bikini Bottom - Rehydrated
 J	0	SpongeBob SquarePants: Titans of the Tide
@@ -9690,19 +9690,19 @@ J	0	Super Dragonball Heroes World Mission
 J	0	Super Hydorah
 J	0	Super Inefficient Golf
 J	0	Super Kickers League
-J	0	Super Kirby Clash
+J	128	Super Kirby Clash
 J	0	Super Loop Drive
-J	0	Super Mario 3D All-Stars
-J	0	Super Mario 3D World - Bowser Fury
-J	32	Super Mario 64
-J	0	Super Mario Bros Wonder
-J	0	Super Mario Galaxy
-J	0	Super Mario Galaxy + Super Mario Galaxy 2
-J	0	Super Mario Galaxy 2
-J	0	Super Mario Maker 2
-J	0	Super Mario Odyssey
-J	0	Super Mario Party
-J	0	Super Mario Party Jamboree
+J	128	Super Mario 3D All-Stars
+J	128	Super Mario 3D World - Bowser Fury
+J	160	Super Mario 64
+J	128	Super Mario Bros Wonder
+J	128	Super Mario Galaxy
+J	128	Super Mario Galaxy + Super Mario Galaxy 2
+J	128	Super Mario Galaxy 2
+J	128	Super Mario Maker 2
+J	128	Super Mario Odyssey
+J	128	Super Mario Party
+J	128	Super Mario Party Jamboree
 J	0	Super Meat Boy
 J	0	Super Meat Boy Forever
 J	0	Super Mega Baseball 2 Ultimate Edition
@@ -9723,7 +9723,7 @@ J	0	Super Robot Wars X
 J	0	Super Sami Roll
 J	0	Super Saurio Fly
 J	0	Super Seducer
-J	0	Super Smash Bros Ultimate
+J	128	Super Smash Bros Ultimate
 J	0	Super Soccer Blast
 J	0	Super Sportmatchen
 J	0	Super Street Racer
@@ -9742,7 +9742,7 @@ J	0	Survival Z
 J	0	Survivalists
 J	0	Surviving the Aftermath
 J	0	Susanoh Nihon Shinwa RPG
-J	0	Sushi Striker The Way of Sushido
+J	128	Sushi Striker The Way of Sushido
 J	0	Swallow Up
 J	0	Swaps and Traps
 J	0	Sweet Witches
@@ -9757,8 +9757,8 @@ J	0	Syberia Trilogy
 J	0	Sydney Hunter and the Curse of the Mayan
 J	0	Table Top Racing World Tour Nitro Edition
 J	0	Tactical Mind
-J	0	Taiko no Tatsujin Drum 'n' Fun!
-J	0	Taiko no Tatsujin Drum Rhythmic Adventure PAck
+J	128	Taiko no Tatsujin Drum 'n' Fun!
+J	128	Taiko no Tatsujin Drum Rhythmic Adventure PAck
 J	0	Tails Of Iron
 J	0	Taimumari Complete Edition
 J	0	Takeshi and Hiroshi
@@ -9795,7 +9795,7 @@ J	0	Terraria
 J	0	TerraTech
 J	0	Teslagrad
 J	0	Tetragon
-J	0	TETRIS 99
+J	128	TETRIS 99
 J	0	Tetris Effect Connected
 J	0	Tetsumo Party
 J	0	Tharsis
@@ -9863,11 +9863,11 @@ J	0	The Legend of Heroes Trails of Cold Steel III
 J	0	The Legend of Heroes Trails of Cold Steel IV
 J	0	The Legend of Heroes Zero no Kiseki Kai
 J	0	The Legend of Tianding
-J	0	The Legend of Zelda Breath of the Wild
-J	0	The Legend of Zelda Link's Awakening
-J	0	The Legend of Zelda Skyward Sword HD
-J	0	The Legend of Zelda Tears of the Kingdom
-J	0	The Legend of Zelda: Echoes of Wisdom
+J	128	The Legend of Zelda Breath of the Wild
+J	128	The Legend of Zelda Link's Awakening
+J	128	The Legend of Zelda Skyward Sword HD
+J	128	The Legend of Zelda Tears of the Kingdom
+J	128	The Legend of Zelda: Echoes of Wisdom
 J	0	The LEGO NINJAGO Movie Videogame
 J	0	The Liar Princess and the Blind Prince
 J	0	The Lightbringer
@@ -9968,12 +9968,12 @@ J	0	Toki Remake
 J	0	Toki Tori
 J	0	Toki Tori 2 Nintendo Switch Edition
 J	0	Tokyo 2020 Olympics The Official Video Game
-J	0	Tokyo Mirage Sessions FE Encore
+J	128	Tokyo Mirage Sessions FE Encore
 J	0	Tokyo School Life
 J	0	Tomb Raider Definitive Edition
 J	0	Tomb Raider I-III Remastered
 J	0	Tomb Raider IV-VI Remastered
-J	0	Tomodachi Life: Living the Dream
+J	128	Tomodachi Life: Living the Dream
 J	0	Tonight We Riot
 J	0	Tony Hawks Pro Skater 1-2
 J	0	Tools Up
@@ -10116,7 +10116,7 @@ J	0	Wargroove
 J	0	Warhammer Age of Sigmar Storm Ground
 J	0	Warhammer Quest
 J	0	Warhammer Quest 2 The End Times
-J	0	WarioWare: Get It Together!
+J	128	WarioWare: Get It Together!
 J	0	Warlock's Tower
 J	0	Warlocks 2 God Slayers
 J	0	Warp Frontier
@@ -10195,11 +10195,11 @@ J	0	WWE 2K Battlegrounds
 J	0	WWE 2K18
 J	0	XCOM 2 Collection
 J	0	Xeno Crisis
-J	0	Xenoblade Chronicles 2
-J	0	Xenoblade Chronicles 2 - Torna The Golden Country
-J	0	Xenoblade Chronicles 3
-J	0	Xenoblade Chronicles X Definitive Edition
-J	0	Xenoblade Chronicles: Definitive Edition
+J	128	Xenoblade Chronicles 2
+J	128	Xenoblade Chronicles 2 - Torna The Golden Country
+J	128	Xenoblade Chronicles 3
+J	128	Xenoblade Chronicles X Definitive Edition
+J	128	Xenoblade Chronicles: Definitive Edition
 J	0	Xenon Racer
 J	0	Xenon Valkyrie Plus
 J	0	Xenoraid
@@ -10219,7 +10219,7 @@ J	0	Yonder The Cloud Catcher Chronicles
 J	0	Yono and the Celestial Elephants
 J	0	Yooka Lylee And the Impossible Lair
 J	0	Yooka-Laylee
-J	0	Yoshi's Crafted World
+J	128	Yoshi's Crafted World
 J	0	Youtubers Life 2
 J	0	Ys IX Monstrum Nox
 J	0	Ys Origin

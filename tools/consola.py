@@ -14,7 +14,7 @@ import datetime, json, os, re, sys
 T = os.path.dirname(os.path.abspath(__file__)) + '/'
 R = os.path.dirname(T.rstrip('/')) + '/'
 NOM = {'Switch': 'Nintendo Switch', 'PS4': 'PlayStation 4', 'PS5': 'PlayStation 5'}
-FLAGS = [('ONLINE', 1), ('SERIES', 2), ('X360', 4), ('VR', 8), ('VRO', 16), ('PORT', 32), ('EMU', 64)]
+FLAGS = [('ONLINE', 1), ('SERIES', 2), ('X360', 4), ('VR', 8), ('VRO', 16), ('PORT', 32), ('EMU', 64), ('EXCL', 128)]
 MESES = 'ene feb mar abr may jun jul ago sep oct nov dic'.split()
 
 
