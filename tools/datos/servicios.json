@@ -46,7 +46,35 @@
     ]
    },
    {
-    "t": "Nintendo Switch Online"
+    "t": "Nintendo Switch Online",
+    "grupos": [
+     {
+      "n": "Plan",
+      "o": [
+       {
+        "t": "Individual – 1 mes"
+       },
+       {
+        "t": "Individual – 3 meses"
+       },
+       {
+        "t": "Individual – 12 meses"
+       },
+       {
+        "t": "Individual + Paquete de expansión – 12 meses",
+        "d": "Incluye juegos de N64, Game Boy Advance, Sega Genesis y más"
+       },
+       {
+        "t": "Familiar – 12 meses",
+        "d": "Hasta 8 cuentas de Nintendo"
+       },
+       {
+        "t": "Familiar + Paquete de expansión – 12 meses",
+        "d": "Hasta 8 cuentas, con el Paquete de expansión"
+       }
+      ]
+     }
+    ]
    },
    {
     "t": "Fortnite Crew"
