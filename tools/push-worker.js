@@ -231,6 +231,11 @@ export default{async fetch(req,env){
       await statsDO(env).agregar(filas)}catch(e){}}
     return Response.redirect('https://wa.me/'+num+'?text='+encodeURIComponent(t),302);
   }
+  if(u.pathname==='/c'){ /* catálogo en texto para las apps de consola (también por http simple) */
+    const g=await fetch('https://raw.githubusercontent.com/gamex-cu/gamex-cu.github.io/main/app/consola.txt',{cf:{cacheTtl:300}});
+    if(!g.ok)return new Response('error',{status:502});
+    return new Response(g.body,{headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'max-age=300'}});
+  }
   if(u.pathname==='/descargar'){ /* cuenta la descarga de la app y manda al APK */
     if(env.STATS){const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
       const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
