@@ -233,4 +233,5 @@ const PUSH=__PUSH__;
 '''.replace('__VER__',str(VER)).replace('__PUSH__',json.dumps(json.load(open(D+'push.json'))))
 k=w.rindex('</script>'); w=w[:k]+pj+w[k:]
 open(R+'index.html','w').write(w)
+import consola; consola.generar(R+'index.html', VER)  # catálogo para las apps de consola
 print('ok',{k:len(v) for k,v in data.items()})
