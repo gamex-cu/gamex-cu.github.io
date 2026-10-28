@@ -99,7 +99,8 @@ async function claves(env){const out=[];let cur;do{const l=await env.SUBS.list({
 
 
 // ---------- estadísticas (Durable Object con SQLite) ----------
-const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta']);
+const TIPOS=new Set(['visita','cat','busca','envio','juego','contacto','oferta','descarga']);
+const APK='https://gamex-cu.github.io/app/GAMEX-Catalogo.apk';
 const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};
 export class Stats extends DurableObject{
   constructor(ctx,env){super(ctx,env);this.sql=ctx.storage.sql;
@@ -108,7 +109,7 @@ export class Stats extends DurableObject{
   agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
     for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
     if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-400*864e5);return filas.length}
-  borrarUid(uid){this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
+  borrarUid(uid){if(uid.startsWith('prueba:'))this.sql.exec("DELETE FROM ev WHERE v=?",uid.slice(7));else this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
   resumen(dias){
     const hasta=diaCuba(Date.now()),desde=diaCuba(Date.now()-(dias-1)*864e5);
     const q=(sql,...a)=>this.sql.exec(sql,desde,hasta,...a).toArray();
@@ -117,7 +118,11 @@ export class Stats extends DurableObject{
     const porDia=q(`SELECT dia,SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos FROM ev WHERE ${W} GROUP BY dia ORDER BY dia`);
     const top=(tipo,lim,extra='')=>q(`SELECT v,COUNT(*) c FROM ev WHERE ${W} AND tipo=? ${extra} GROUP BY v ORDER BY c DESC,v LIMIT ${lim}`,tipo);
     return {desde,hasta,dias,tot,porDia,catalogos:top('cat',12),juegos:top('juego',15),busquedas:top('busca',15),sinResultado:top('busca',15,'AND n=0'),
-      dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`)};
+      dispositivos:q(`SELECT disp v,COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND tipo='visita' GROUP BY disp ORDER BY c DESC`),
+      app:{descargas:q(`SELECT COUNT(*) c FROM ev WHERE ${W} AND tipo='descarga'`)[0].c||0,
+           usuarios:q(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE ${W} AND disp='app'`)[0].c||0,
+           descargasTotal:this.sql.exec(`SELECT COUNT(*) c FROM ev WHERE tipo='descarga'`).one().c||0,
+           usuariosTotal:this.sql.exec(`SELECT COUNT(DISTINCT uid) c FROM ev WHERE disp='app'`).one().c||0}};
   }
 }
 const statsDO=env=>env.STATS.get(env.STATS.idFromName('gamex'));
@@ -190,6 +195,13 @@ export default{async fetch(req,env){
   if(u.pathname==='/panel'||u.pathname.startsWith('/panel/'))return panel(req,env,u);
   if(req.method==='OPTIONS')return new Response(null,{headers:CORS});
   if(u.pathname==='/evento'&&req.method==='POST')return evento(req,env);
+  if(u.pathname==='/descargar'){ /* cuenta la descarga de la app y manda al APK */
+    if(env.STATS){const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
+      const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
+      const disp=/android/i.test(ua)?'android':/iphone|ipad/i.test(ua)?'iphone':/windows|macintosh|linux/i.test(ua)?'pc':'otro';
+      try{await statsDO(env).agregar([{tipo:'descarga',v:u.searchParams.get('de')||'web',n:null,uid,disp,org:'web'}])}catch(e){}}
+    return Response.redirect(APK,302);
+  }
   if(u.pathname==='/suscribir'&&req.method==='POST'){
     let s;try{s=await req.json()}catch(e){return r('mal',400)}
     if(!s||typeof s.endpoint!=='string'||!s.endpoint.startsWith('https://')||s.endpoint.length>1000||!s.keys||typeof s.keys.p256dh!=='string'||typeof s.keys.auth!=='string')return r('mal',400);

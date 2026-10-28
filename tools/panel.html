@@ -113,6 +113,8 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
         <div class="kpi"><b id="k-per">–</b><span>Personas distintas</span></div>
         <div class="kpi"><b id="k-ped">–</b><span>Pedidos por WhatsApp</span><small id="k-jue"></small></div>
         <div class="kpi"><b id="k-con">–</b><span>Contactos por WhatsApp</span><small>botón de escoger número</small></div>
+        <div class="kpi"><b id="k-des">–</b><span>Descargas de la app</span><small id="k-des2"></small></div>
+        <div class="kpi"><b id="k-apu">–</b><span>Personas usando la app</span><small id="k-apu2"></small></div>
       </div>
       <div id="chw"><h2 style="margin:18px 0 6px">Visitas por día</h2><div class="chart" id="chart" role="img"></div><div class="cax"><span id="ca1"></span><span id="ca2"></span></div></div>
       <p class="nota" id="es-nota"></p>
@@ -247,6 +249,8 @@ async function stats(){
   try{const d=await api('stats?dias='+DIAS);const t=d.tot||{};
     $('k-vis').textContent=N(t.visitas);$('k-per').textContent=N(t.personas);$('k-ped').textContent=N(t.pedidos);$('k-con').textContent=N(t.contactos);
     $('k-jue').textContent=t.juegos?N(t.juegos)+' juegos en total':'';
+    const ap=d.app||{};$('k-des').textContent=N(ap.descargas);$('k-apu').textContent=N(ap.usuarios);
+    $('k-des2').textContent='Desde el inicio: '+N(ap.descargasTotal);$('k-apu2').textContent='Desde el inicio: '+N(ap.usuariosTotal);
     const mapa={};(d.porDia||[]).forEach(x=>mapa[x.dia]=x);
     const dias=[];const [y,m,dd]=d.hasta.split('-').map(Number);for(let i=d.dias-1;i>=0;i--){const f=new Date(Date.UTC(y,m-1,dd-i)).toISOString().slice(0,10);dias.push(mapa[f]||{dia:f,visitas:0,personas:0,pedidos:0})}
     $('chw').hidden=d.dias===1;
