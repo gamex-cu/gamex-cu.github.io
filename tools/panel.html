@@ -22,6 +22,9 @@ h2{font-size:1.05rem;margin:0 0 12px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
 label{display:block;font-weight:600;font-size:.92rem;margin:12px 0 6px}
 label small{font-weight:400;color:var(--muted)}
+label.sw{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;padding:12px;border:1px solid var(--line,#2a3360);border-radius:12px;cursor:pointer;font-weight:400}
+label.sw input{width:22px;height:22px;flex:none;margin:1px 0 0;accent-color:#2fbf4a}
+label.sw small{display:block}
 input,textarea{width:100%;font:inherit;color:var(--fg);background:#0b0f20;border:1px solid var(--line);border-radius:8px;padding:11px 12px}
 textarea{min-height:96px;resize:vertical}
 input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;border-color:transparent}
@@ -169,11 +172,12 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
         <button type="button" class="chip" data-d="30">1 mes</button>
         <button type="button" class="chip" data-d="0">Sin fecha</button>
       </div>
-      <label>Así se verá la notificación</label>
+      <label class="sw"><input type="checkbox" id="notif" checked> <span><b>Mandar notificación</b> a los teléfonos <small id="notifx">(Android e iPhone con avisos activados)</small></span></label>
+      <label id="lprev">Así se verá la notificación</label>
       <div class="prev"><img src="https://gamex-cu.github.io/icon-192.png" alt=""><div><b id="ptit">🥷 Título</b><span id="ptxt">Texto del aviso</span></div></div>
       <button class="btn" id="benv">Enviar</button>
       <div class="conf" id="conf">
-        <b>¿Seguro?</b> Les llegará a todos los clientes y no se puede deshacer la notificación.
+        <b>¿Seguro?</b> <span id="conft">Les llegará a todos los clientes y no se puede deshacer la notificación.</span>
         <div class="row" style="margin-top:10px"><button type="button" class="btn sec" id="bno" style="margin:0">Cancelar</button><button type="button" class="btn" id="bsi" style="margin:0">Sí, enviar</button></div>
       </div>
     </form>
@@ -205,7 +209,7 @@ async function api(p,body){
 }
 function pintar(avisos){
   $('nof').textContent=avisos.length;
-  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>Enviada el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.url?' · con enlace':''}</small></div><button data-id="${esc(a.id)}">Quitar</button></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
+  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.url?' · con enlace':''}</small></div><button data-id="${esc(a.id)}">Quitar</button></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
 }
 async function cargar(){const d=await api('estado');$('niph').textContent=d.iphones;pintar(d.avisos);return d}
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
@@ -220,6 +224,11 @@ $('salir').onclick=salir;
 const tit=()=>{let t=$('tit').value.trim().replace(/🎮/g,'🥷');return t?(t.startsWith('🥷')?t:'🥷 '+t):''};
 function prev(){$('ptit').textContent=tit()||'🥷 Título';$('ptxt').textContent=$('txt').value.trim()||'Texto del aviso';$('ntxt').textContent=$('txt').value.length}
 ['tit','txt'].forEach(i=>$(i).addEventListener('input',prev));
+function modo(){const n=$('notif').checked;$('lprev').textContent=n?'Así se verá la notificación':'Así se verá la oferta (sin notificación)';
+  $('notifx').textContent=n?'(Android e iPhone con avisos activados)':'— apagado: solo sale en la sección Ofertas, sin avisar a nadie';
+  $('benv').textContent=n?'Enviar':'Publicar sin notificar';$('bsi').textContent=n?'Sí, enviar':'Sí, publicar';
+  $('conft').textContent=n?'Les llegará a todos los clientes y no se puede deshacer la notificación.':'Se publicará en Ofertas (web y app) sin mandar notificación.'}
+$('notif').onchange=modo;
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{const n=+b.dataset.d;if(!n){$('vence').value='';return}const d=new Date();d.setDate(d.getDate()+n);$('vence').value=d.toLocaleDateString('en-CA')});
 $('fenv').onsubmit=e=>{e.preventDefault();nomsg('menv');
   const u=$('url').value.trim();if(u&&!/^https:\/\//.test(u)){msg('menv','bad','El enlace tiene que empezar con <b>https://</b>');return}
@@ -229,15 +238,17 @@ $('bsi').onclick=async()=>{
   $('bsi').disabled=$('bno').disabled=true;msg('menv','inf','Enviando… no cierres esta página.');
   const L=[];
   try{
-    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:$('vence').value});
+    const notificar=$('notif').checked;
+    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:$('vence').value,notificar});
     L.push(r.ofertas==='ok'?'✅ Publicada en <b>Ofertas</b> (web y app; tarda 1–2 minutos en verse)':'❌ Ofertas: '+esc(r.ofertas));
-    L.push(r.android==='ok'?'✅ Enviada a los <b>Android</b>':'❌ Android: '+esc(r.android));
-    let ok=0,total=0,viejos=0,fallos=0,despues=null,fin=false,vueltas=0;
+    if(notificar)L.push(r.android==='ok'?'✅ Enviada a los <b>Android</b>':'❌ Android: '+esc(r.android));
+    else L.push('🔕 Sin notificación: nadie recibe aviso, solo sale en Ofertas');
+    let ok=0,total=0,viejos=0,fallos=0,despues=null,fin=!notificar,vueltas=0;
     while(!fin&&vueltas++<50){const w=await api('web',{aviso:r.aviso,despues});ok+=w.ok;viejos+=w.viejos;fallos+=w.fallos;total=w.total;despues=w.despues;fin=w.fin||!w.despues;msg('menv','inf','Enviando a los iPhone… '+ok+' de '+total)}
-    L.push(total?(ok?'✅':'⚠️')+` Enviada a <b>${ok} de ${total} iPhone</b>`+(viejos?` (${viejos} ya no tenían la web y se borraron)`:'')+(fallos?` · ${fallos} con error`:''):'ℹ️ Todavía no hay iPhone con avisos activados');
-    const malo=r.ofertas!=='ok'||r.android!=='ok';
+    if(notificar)L.push(total?(ok?'✅':'⚠️')+` Enviada a <b>${ok} de ${total} iPhone</b>`+(viejos?` (${viejos} ya no tenían la web y se borraron)`:'')+(fallos?` · ${fallos} con error`:''):'ℹ️ Todavía no hay iPhone con avisos activados');
+    const malo=r.ofertas!=='ok'||(notificar&&r.android!=='ok');
     msg('menv',malo?'bad':'ok','<b>'+(malo?'Se envió con problemas':'¡Listo!')+'</b><ul><li>'+L.join('</li><li>')+'</li></ul>');
-    if(!malo){$('fenv').reset();prev()}
+    if(!malo){$('fenv').reset();prev();modo()}
     cargar().catch(()=>{});
   }catch(e){msg('menv','bad','<b>No se pudo enviar.</b> '+esc(e.message)+(L.length?'<ul><li>'+L.join('</li><li>')+'</li></ul>':''))}
   $('bsi').disabled=$('bno').disabled=false;$('conf').classList.remove('on');$('benv').hidden=false;

@@ -4,7 +4,7 @@
 // POST /borrar           (X-Clave)   -> borra una suscripción {endpoint}
 // GET  /panel                        -> página del panel (pide contraseña)
 // GET  /panel/api/estado (X-Panel)   -> iPhones suscritos + ofertas activas
-// POST /panel/api/enviar (X-Panel)   -> agrega la oferta a app/avisos.json (GitHub) y la manda por Firebase (Android)
+// POST /panel/api/enviar (X-Panel)   -> agrega la oferta a app/avisos.json (GitHub) y, si notificar no es false, la manda por Firebase (Android)
 // POST /panel/api/web    (X-Panel)   -> manda la oferta a los iPhone, de 40 en 40
 // POST /panel/api/borrar (X-Panel)   -> quita una oferta de app/avisos.json
 // POST /evento          (público)   -> estadísticas anónimas de la web/app (visitas, catálogos, búsquedas, pedidos)
@@ -182,9 +182,10 @@ async function panel(req,env,u){
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       const hoy=hoyCuba(),aviso={id:`${hoy}-${Math.floor(Date.now()/1000)}`,fecha:hoy,titulo,texto};
       if(url)aviso.url=url;if(vence)aviso.vence=vence;
-      const res={aviso};
+      const notificar=q.notificar!==false;if(!notificar)aviso.silenciosa=true;
+      const res={aviso,notificar};
       try{await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
-      try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}
+      if(notificar){try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}}else res.android='no';
       return j(res);
     }
     if(p==='web'){
