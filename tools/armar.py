@@ -114,6 +114,7 @@ alone=H+'<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 _PU=json.load(open(D+'push.json')).get('url','')
 EST=("""<script>(function(){const URL_EV=%s,ORIGEN='app';if(!URL_EV)return;
 try{const h=location.hash;if(h==='#no-contar'||h==='#contar'){h==='#no-contar'?localStorage.setItem('gx-nocontar','1'):localStorage.removeItem('gx-nocontar');
+  try{const yo=localStorage.getItem('gx-uid');if(yo)fetch(URL_EV+'/no-contar',{method:'POST',body:JSON.stringify({u:yo,si:h==='#no-contar'}),headers:{'Content-Type':'text/plain'},keepalive:true}).catch(()=>{})}catch(e){}
   const d=document.createElement('div');d.textContent=h==='#no-contar'?'✓ Este equipo ya no cuenta en las estadísticas':'✓ Este equipo vuelve a contar en las estadísticas';
   d.style.cssText='position:fixed;left:50%%;top:16px;transform:translateX(-50%%);background:#1fa855;color:#fff;padding:12px 18px;border-radius:12px;font:600 15px system-ui;z-index:9999';
   document.body.appendChild(d);setTimeout(()=>d.remove(),5000);history.replaceState(null,'',location.pathname)}

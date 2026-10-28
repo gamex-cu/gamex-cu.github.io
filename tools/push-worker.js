@@ -212,6 +212,12 @@ export default{async fetch(req,env){
   if(u.pathname==='/panel'||u.pathname.startsWith('/panel/'))return panel(req,env,u);
   if(req.method==='OPTIONS')return new Response(null,{headers:CORS});
   if(u.pathname==='/evento'&&req.method==='POST')return evento(req,env);
+  if(u.pathname==='/no-contar'&&req.method==='POST'){ /* un equipo se saca a sí mismo de las estadísticas */
+    let b={};try{b=JSON.parse(await req.text())}catch(e){}
+    const uid=String(b.u||'').replace(/[^a-z0-9]/gi,'').slice(0,24);
+    if(uid&&env.STATS)await statsDO(env).ignorar(uid,b.si!==false,'enlace #no-contar');
+    return r('ok');
+  }
   if(u.pathname==='/p'){ /* pedido hecho desde la app de consola (QR): se cuenta y se abre WhatsApp */
     const NUMS=['5353441089','5353827989','5352933943'],num=NUMS[+u.searchParams.get('n')]||NUMS[0];
     const app=['ps4','ps5','switch'].includes(u.searchParams.get('a'))?u.searchParams.get('a'):'otro',t=(u.searchParams.get('t')||'').slice(0,3000);

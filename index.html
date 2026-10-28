@@ -642,6 +642,7 @@ route();
 
 <script>(function(){const URL_EV="https://gamex-avisos.gamex-cu.workers.dev",ORIGEN='web';if(!URL_EV)return;
 try{const h=location.hash;if(h==='#no-contar'||h==='#contar'){h==='#no-contar'?localStorage.setItem('gx-nocontar','1'):localStorage.removeItem('gx-nocontar');
+  try{const yo=localStorage.getItem('gx-uid');if(yo)fetch(URL_EV+'/no-contar',{method:'POST',body:JSON.stringify({u:yo,si:h==='#no-contar'}),headers:{'Content-Type':'text/plain'},keepalive:true}).catch(()=>{})}catch(e){}
   const d=document.createElement('div');d.textContent=h==='#no-contar'?'✓ Este equipo ya no cuenta en las estadísticas':'✓ Este equipo vuelve a contar en las estadísticas';
   d.style.cssText='position:fixed;left:50%;top:16px;transform:translateX(-50%);background:#1fa855;color:#fff;padding:12px 18px;border-radius:12px;font:600 15px system-ui;z-index:9999';
   document.body.appendChild(d);setTimeout(()=>d.remove(),5000);history.replaceState(null,'',location.pathname)}
@@ -679,7 +680,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=153;
+const GXV=154;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
