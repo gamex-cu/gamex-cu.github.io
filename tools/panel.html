@@ -80,6 +80,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .rank li:first-child{border-top:0}
 .rank .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rank .nm small{color:var(--muted)}
+.rank.eq .nm{white-space:normal}
 .rank .ct{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
 .rank .br{grid-column:1/-1;height:4px;border-radius:4px;background:#0b0f20;overflow:hidden}
 .rank .br i{display:block;height:100%;background:var(--accent);border-radius:4px}
@@ -127,7 +128,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <section class="card"><h2>Lo más buscado</h2><ul class="rank" id="r-bus"></ul></section>
     <section class="card"><h2>Catálogos más vistos</h2><ul class="rank" id="r-cat"></ul></section>
     <section class="card"><h2>Desde dónde entran</h2><ul class="rank" id="r-dis"></ul></section>
-    <section class="card"><h2>Cada teléfono o PC</h2><p class="nota" style="margin:-6px 0 8px">Cada equipo tiene un código anónimo (no se sabe de quién es). Ordenado por tiempo en la web o la app.</p><ul class="rank" id="r-eq"></ul></section>
+    <section class="card"><h2>Cada teléfono o PC</h2><p class="nota" style="margin:-6px 0 8px">Cada equipo tiene un código anónimo (no se sabe de quién es). Ordenado por tiempo en la web o la app.</p><ul class="rank eq" id="r-eq"></ul></section>
   </div>
   <div id="t-of">
   <section class="card">
