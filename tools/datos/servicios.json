@@ -4,7 +4,11 @@
   "icono": "🔄",
   "color": "#d92b2b",
   "texto": "#ff9a9a",
-  "items": []
+  "items": [
+   {
+    "t": "Xbox Game Pass Ultimate"
+   }
+  ]
  },
  {
   "s": "Gift Cards",
