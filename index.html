@@ -523,7 +523,7 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   const ok=('Notification' in window)&&Notification.permission==='granted';
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
-const SERV=[{"s": "Suscripciones", "icono": "🔄", "color": "#d92b2b", "texto": "#ff9a9a", "items": [{"t": "Xbox Game Pass Ultimate"}]}, {"s": "Gift Cards", "icono": "🎁", "color": "#f2a900", "texto": "#ffd27a", "items": []}, {"s": "Desbloqueos", "icono": "🔓", "color": "#7a3fe0", "texto": "#cdb0ff", "items": []}];
+const SERV=[{"s": "Suscripciones", "icono": "🔄", "color": "#d92b2b", "texto": "#ff9a9a", "items": [{"t": "Xbox Game Pass Ultimate"}, {"t": "PlayStation Plus"}]}, {"s": "Gift Cards", "icono": "🎁", "color": "#f2a900", "texto": "#ffd27a", "items": []}, {"s": "Desbloqueos", "icono": "🔓", "color": "#7a3fe0", "texto": "#cdb0ff", "items": []}];
 const svSlug=x=>'sv-'+slug(x.s);
 if(SERV.length){$('b-servicios').hidden=false;$('b-serv-sub').textContent=SERV.map(x=>x.s).join(', ').replace(/, ([^,]*)$/,' y $1');
   $('stiles').innerHTML=SERV.map(x=>{const n=(x.items||[]).length;return `<a class="ccard stl" href="#${svSlug(x)}" style="--cc:${x.color||'#d92b2b'};--ct:${x.texto||'var(--fg)'}">${x.icono?`<span class="si2" aria-hidden="true">${esc(x.icono)}</span>`:''}<span class="cn">${esc(x.s)}</span><span class="cq">${n?n+' opci'+(n===1?'ón':'ones'):'Pregunta por WhatsApp'}<span class="go">→</span></span></a>`}).join('')}
@@ -613,7 +613,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=121;
+const GXV=122;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
