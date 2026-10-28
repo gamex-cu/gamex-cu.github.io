@@ -11,7 +11,20 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GameX">
 <meta name="theme-color" content="#0d1124">
-<meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
+<meta name="description" content="Tienda de videojuegos GameX en La Habana (Vedado): juegos para PS4, PS5, PC, Xbox, Nintendo Switch y Meta Quest, Game Pass, PS Plus, gift cards, desbloqueos y mantenimiento. Pide por WhatsApp.">
+<link rel="canonical" href="https://gamex-cu.github.io/">
+<meta name="robots" content="index,follow">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GameX">
+<meta property="og:title" content="GameX – Tienda de Videojuegos en La Habana">
+<meta property="og:description" content="Tienda de videojuegos GameX en La Habana (Vedado): juegos para PS4, PS5, PC, Xbox, Nintendo Switch y Meta Quest, Game Pass, PS Plus, gift cards, desbloqueos y mantenimiento. Pide por WhatsApp.">
+<meta property="og:url" content="https://gamex-cu.github.io/">
+<meta property="og:image" content="https://gamex-cu.github.io/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@GameX_CU">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Store", "name": "GameX – Tienda de Videojuegos", "url": "https://gamex-cu.github.io/", "logo": "https://gamex-cu.github.io/icon-512.png", "image": "https://gamex-cu.github.io/og.jpg", "description": "Tienda de videojuegos en La Habana: juegos para PlayStation 4, PlayStation 5, PC, Xbox, Nintendo Switch y Meta Quest; suscripciones, gift cards, desbloqueos y mantenimiento de consolas.", "telephone": ["+5353441089", "+5353827989", "+5352933943"], "address": {"@type": "PostalAddress", "streetAddress": "Calle 10 #211 apto 2 e/ 11 y Línea, Vedado", "addressLocality": "La Habana", "addressCountry": "CU"}, "openingHoursSpecification": [{"@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"], "opens": "10:00", "closes": "18:00"}], "hasMap": "https://maps.app.goo.gl/hfsEAhNcSgx5iHi9A", "sameAs": ["https://www.instagram.com/gamex.cu/", "https://www.facebook.com/share/1CKYgeuN1w/", "https://x.com/GameX_CU", "https://whatsapp.com/channel/0029Va8LPJrAe5ViFejeDG3O"]}</script>
 <title>Tienda de Videojuegos GameX</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -651,7 +664,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=140;
+const GXV=143;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

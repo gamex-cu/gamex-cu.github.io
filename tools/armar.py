@@ -135,7 +135,7 @@ document.addEventListener('click',e=>{const a=e.target.closest('#wapick [data-n]
 })();</script>
 """ % json.dumps(_PU))
 _k=alone.rindex('</body>');alone=alone[:_k]+EST+alone[_k:]
-open(R+'app/catalogo.html','w').write(alone)
+open(R+'app/catalogo.html','w').write(alone.replace('<title>','<meta name="robots" content="noindex">\n<title>',1))
 pwa='''<link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -145,7 +145,12 @@ pwa='''<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0d1124">
 <meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
 '''
-w=alone.replace('<title>',pwa+'<title>',1).replace("ORIGEN='app'","ORIGEN='web'",1)
+import sys as _sys; _sys.path.insert(0, T); import seo as _seo
+_gv = ''
+try: _gv = open(D+'google_verificacion.txt').read().strip()
+except FileNotFoundError: pass
+w=alone.replace('<title>',pwa+_seo.etiquetas(_gv)+'<title>',1)
+w=w.replace('<meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">','<meta name="description" content="'+_seo.DESC+'">',1).replace("ORIGEN='app'","ORIGEN='web'",1)
 css='''.ios-tip{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:15;background:var(--panel);border:1px solid var(--hot);border-radius:12px;padding:14px 44px 14px 14px;color:var(--fg);font-size:.95rem;line-height:1.45;max-width:520px;margin:0 auto}
 .ios-tip b{color:var(--hot)}
 .ios-tip button{position:absolute;top:6px;right:8px;background:none;border:0;color:var(--muted);font-size:1.5rem;cursor:pointer;padding:4px}
