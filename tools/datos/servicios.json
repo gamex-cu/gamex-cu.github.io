@@ -2,19 +2,22 @@
  {
   "s": "Suscripciones",
   "icono": "🔄",
-  "d": "Tipos de suscripciones disponibles.",
+  "color": "#d92b2b",
+  "texto": "#ff9a9a",
   "items": []
  },
  {
   "s": "Gift Cards",
   "icono": "🎁",
-  "d": "Tarjetas de regalo disponibles.",
+  "color": "#f2a900",
+  "texto": "#ffd27a",
   "items": []
  },
  {
   "s": "Desbloqueos",
   "icono": "🔓",
-  "d": "",
+  "color": "#7a3fe0",
+  "texto": "#cdb0ff",
   "items": []
  }
 ]

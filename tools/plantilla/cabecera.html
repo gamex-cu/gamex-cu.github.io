@@ -113,6 +113,8 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .ccard{min-height:100px!important}
 .ccard{position:relative;display:flex;flex-direction:column;justify-content:space-between;gap:18px;min-height:120px;padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--panel);color:var(--fg);text-decoration:none;font:inherit;text-align:left;cursor:pointer;overflow:hidden}
 .ccard::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--cc)}
+.ccard.stl .cn{font-size:clamp(1rem,4.2vw,1.35rem);overflow-wrap:break-word}
+.ccard .si2{font-size:1.6rem;line-height:1}
 .ccard .cn{font:700 1.45rem/1.1 var(--display);letter-spacing:.02em;color:var(--ct)}
 .ccard .cq{font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .ccard .go{font:600 1.2rem var(--display);color:var(--ct)}
@@ -296,9 +298,9 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 
 <div id="serv" hidden>
 <div class="bar"><div class="wrap">
-  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">Servicios</span><span class="vc">Suscripciones, gift cards y desbloqueos. Pídelos por WhatsApp.</span></span></div>
+  <div class="vtitle"><a class="back" href="#" id="back-serv">← Inicio</a><span class="vtx"><span class="vn" id="sv-n" style="--ct:var(--fg)">Servicios</span><span class="vc" id="sv-c">Escoge un servicio y pídelo por WhatsApp.</span></span></div>
 </div></div>
-<div class="wrap"><div class="slist" id="slist"></div></div>
+<div class="wrap"><div class="consoles" id="stiles"></div><div class="slist" id="slist" hidden></div></div>
 </div>
 
 <div id="iphone" hidden>

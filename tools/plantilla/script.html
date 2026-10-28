@@ -81,7 +81,8 @@ function render(){
 }
 function route(){
   const h=location.hash.slice(1);
-  if(!h.startsWith('l-'))$('serv').hidden=h!=='servicios'||!SERV.length;
+  const esServ=SERV.length&&(h==='servicios'||SERV.some(y=>svSlug(y)===h));
+  if(!h.startsWith('l-'))$('serv').hidden=!esServ;
   if(h.startsWith('l-'))return;
   const c=BYSLUG[h];
   if(c&&countOf(c[0])||h==='todas'){
@@ -97,8 +98,8 @@ function route(){
     current=null;$('view').hidden=true;$('home').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('cats').hidden=false;window.scrollTo(0,0);sync();
   }else if(h==='iphone'){
     current=null;['view','home','cats','ofer'].forEach(x=>$(x).hidden=true);$('iphone').hidden=false;const it=document.getElementById('ios-tip');if(it)it.hidden=true;window.scrollTo(0,0);sync();
-  }else if(h==='servicios'&&SERV.length){
-    current=null;['view','home','cats','ofer','iphone'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);sync();
+  }else if(esServ){
+    current=null;['view','home','cats','ofer','iphone'].forEach(x=>$(x).hidden=true);pintarServ(h);window.scrollTo(0,0);sync();
   }else if(h==='ofertas'){
     current=null;$('view').hidden=true;$('home').hidden=true;$('cats').hidden=true;$('iphone').hidden=true;$('ofer').hidden=false;window.scrollTo(0,0);cargarOfertas();sync();
   }else{
@@ -119,13 +120,17 @@ $('back-iphone').addEventListener('click',e=>{e.preventDefault();history.replace
   if(ios&&!(sa&&ok))$('b-iphone').hidden=false;
   if(sa)$('g-ya').hidden=false;})();
 const SERV=__SERV__;
+const svSlug=x=>'sv-'+slug(x.s);
 if(SERV.length){$('b-servicios').hidden=false;$('b-serv-sub').textContent=SERV.map(x=>x.s).join(', ').replace(/, ([^,]*)$/,' y $1');
-  const sl=x=>'sv-'+slug(x.s);
-  $('slist').innerHTML=(SERV.length>1?`<nav class="snav">${SERV.map(x=>`<a href="#servicios" data-go="${sl(x)}">${x.icono?esc(x.icono)+' ':''}${esc(x.s)}</a>`).join('')}</nav>`:'')+SERV.map(x=>`<section class="ssec" id="${sl(x)}"><h2>${x.icono?`<span aria-hidden="true">${esc(x.icono)}</span>`:''}${esc(x.s)}</h2>${x.d?`<p class="sd">${esc(x.d)}</p>`:''}<div class="sgrid">${
-    (x.items||[]).length?x.items.map(it=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa: '+it.t+' ('+x.s+')')}">Pedir por WhatsApp</a></article>`).join('')
-    :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div></section>`).join('');
-  $('slist').addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(!a)return;e.preventDefault();const t=document.getElementById(a.dataset.go);if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})}
-$('back-serv').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+  $('stiles').innerHTML=SERV.map(x=>{const n=(x.items||[]).length;return `<a class="ccard stl" href="#${svSlug(x)}" style="--cc:${x.color||'#d92b2b'};--ct:${x.texto||'var(--fg)'}">${x.icono?`<span class="si2" aria-hidden="true">${esc(x.icono)}</span>`:''}<span class="cn">${esc(x.s)}</span><span class="cq">${n?n+' opci'+(n===1?'ón':'ones'):'Pregunta por WhatsApp'}<span class="go">→</span></span></a>`}).join('')}
+function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
+  $('stiles').hidden=!!x;$('slist').hidden=!x;$('back-serv').textContent=x?'← Servicios':'← Inicio';
+  $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
+  $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
+  if(!x)return;
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map(it=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa: '+it.t+' ('+x.s+')')}">Pedir por WhatsApp</a></article>`).join('')
+    :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
+$('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
