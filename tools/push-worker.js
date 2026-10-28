@@ -68,9 +68,10 @@ async function tokenGoogle(key){
   const res=await fetch(key.token_uri,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion='+h+'.'+b+'.'+b64u(sig)});
   const d=await res.json();if(!d.access_token)throw new Error('Google: '+JSON.stringify(d).slice(0,200));return d.access_token;
 }
+function corto(t){t=String(t||'');if(t.length<=230)return t;const c=t.slice(0,220),i=c.lastIndexOf(' ');return (i>150?c.slice(0,i):c).trim()+'… Toca para ver la oferta completa.'}
 async function pushAndroid(env,aviso){
   const key=JSON.parse(env.FIREBASE),tok=await tokenGoogle(key);
-  const data={};for(const k of ['id','titulo','texto','url'])if(aviso[k])data[k]=String(aviso[k]);
+  const data={};for(const k of ['id','titulo','texto','url'])if(aviso[k])data[k]=k==='texto'?corto(aviso[k]):String(aviso[k]);
   const res=await fetch(`https://fcm.googleapis.com/v1/projects/${key.project_id}/messages:send`,{method:'POST',headers:{'Authorization':'Bearer '+tok,'Content-Type':'application/json'},
     body:JSON.stringify({message:{topic:'ofertas',data,android:{priority:'high',ttl:'604800s'}}})});
   if(!res.ok)throw new Error('Firebase '+res.status+': '+(await res.text()).slice(0,200));
@@ -175,22 +176,23 @@ async function panel(req,env,u){
     if(req.method!=='POST')return j({error:'Usa POST'},405);
     const q=await req.json().catch(()=>({}));
     if(p==='enviar'){
-      let titulo=String(q.titulo||'').trim().replace(/🎮/g,'🥷').slice(0,80),texto=String(q.texto||'').trim().slice(0,400);
+      let titulo=String(q.titulo||'').trim().replace(/🎮/g,'🥷').slice(0,80),texto=String(q.texto||'').trim().slice(0,1500);
       const url=String(q.url||'').trim().slice(0,500),vence=/^\d{4}-\d{2}-\d{2}$/.test(q.vence||'')?q.vence:'';
-      if(!titulo||!texto)return j({error:'Falta el título o el texto'},400);
+      if(!titulo)return j({error:'Falta el título'},400);
+      if(!texto&&q.modo!=='aviso')return j({error:'Falta el texto'},400);
       if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       const hoy=hoyCuba(),aviso={id:`${hoy}-${Math.floor(Date.now()/1000)}`,fecha:hoy,titulo,texto};
       if(url)aviso.url=url;if(vence)aviso.vence=vence;
       const modo=['ambas','oferta','aviso'].includes(q.modo)?q.modo:(q.notificar===false?'oferta':'ambas');
       const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
-      const res={aviso,notificar,modo};
+      const res={aviso:modo==='aviso'?{...aviso,solo:true}:aviso,notificar,modo};
       if(modo==='aviso')res.ofertas='no';else try{await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
       if(notificar){try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}}else res.android='no';
       return j(res);
     }
     if(p==='web'){
-      const a=q.aviso||{},datos={};for(const k of ['id','titulo','texto','url'])if(a[k])datos[k]=String(a[k]).slice(0,500);
+      const a=q.aviso||{},datos={};for(const k of ['id','titulo','texto','url'])if(a[k])datos[k]=k==='texto'?corto(a[k]):String(a[k]).slice(0,500);if(!a.solo&&!a.url)datos.dest='ofertas';
       if(!datos.id||!datos.titulo)return j({error:'Falta la oferta'},400);
       const ks=await claves(env),resto=ks.filter(k=>!q.despues||k>q.despues),lote=resto.slice(0,LOTE);
       let ok=0,viejos=0,fallos=0;

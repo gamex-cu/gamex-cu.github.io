@@ -163,9 +163,9 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <form id="fenv">
       <label for="tit">Título <small>(el 🥷 se pone solo)</small></label>
       <input id="tit" maxlength="70" required placeholder="Ej: Oferta de la semana">
-      <label for="txt">Texto</label>
-      <textarea id="txt" maxlength="400" required placeholder="Ej: FC 26 para PS5 a precio especial hasta el sábado. Escríbenos por WhatsApp."></textarea>
-      <div class="cnt"><span id="ntxt">0</span>/400</div>
+      <label for="txt" id="ltxt">Texto</label>
+      <textarea id="txt" maxlength="1500" rows="8" required placeholder="Ej: FC 26 para PS5 a precio especial hasta el sábado. Escríbenos por WhatsApp."></textarea>
+      <div class="cnt"><span id="ntxt">0</span>/1500</div>
       <label for="url">Enlace <small>(opcional; si lo dejas vacío, el botón de la oferta abre el WhatsApp de GameX)</small></label>
       <input id="url" type="url" inputmode="url" placeholder="https://…">
       <div id="bvence"><label for="vence">Se quita de Ofertas el <small>(opcional)</small></label>
@@ -238,6 +238,7 @@ function prev(){$('ptit').textContent=tit()||'🥷 Título';$('ptxt').textConten
 const MODO=()=>(document.querySelector('input[name=modo]:checked')||{}).value||'ambas';
 function modo(){const m=MODO(),n=m!=='oferta';$('lprev').textContent=n?'Así se verá la notificación':'Así se verá la oferta (sin notificación)';
   $('bvence').hidden=m==='aviso';
+  $('txt').required=m!=='aviso';$('ltxt').innerHTML=m==='aviso'?'Texto <small>(opcional)</small>':'Texto';
   $('benv').textContent=m==='ambas'?'Publicar y notificar':m==='oferta'?'Publicar sin notificar':'Mandar notificación';$('bsi').textContent=m==='oferta'?'Sí, publicar':'Sí, enviar';
   $('conft').textContent=m==='oferta'?'Se publicará en Ofertas (web y app) sin mandar notificación.':m==='aviso'?'Les llegará la notificación a todos los clientes (no se pone en Ofertas) y no se puede deshacer.':'Les llegará a todos los clientes y no se puede deshacer la notificación.'}
 document.querySelectorAll('input[name=modo]').forEach(r=>r.onchange=modo);modo();

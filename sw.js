@@ -20,6 +20,6 @@ self.addEventListener('fetch',e=>{
 
 // Avisos y ofertas (iPhone con GameX en la pantalla de inicio y navegadores compatibles)
 self.addEventListener('push',e=>{let d={};try{d=e.data?e.data.json():{}}catch(x){d={titulo:'GameX',texto:e.data?e.data.text():''}}
-  e.waitUntil(self.registration.showNotification(d.titulo||'GameX',{body:d.texto||'',icon:'icon-192.png',badge:'icon-192.png',tag:d.id||'gamex',data:{url:d.url||''}}))});
-self.addEventListener('notificationclick',e=>{e.notification.close();const u=(e.notification.data&&e.notification.data.url)||'./';
-  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(!e.notification.data.url&&cs.length)return cs[0].focus();return self.clients.openWindow(u)}))});
+  e.waitUntil(self.registration.showNotification(d.titulo||'GameX',{body:d.texto||'',icon:'icon-192.png',badge:'icon-192.png',tag:d.id||'gamex',data:{url:d.url||'',dest:d.dest||''}}))});
+self.addEventListener('notificationclick',e=>{e.notification.close();const dd=e.notification.data||{},u=dd.url||(dd.dest==='ofertas'?'./#ofertas':'./');
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(cs=>{if(!dd.url&&cs.length){const c=cs[0];if(dd.dest==='ofertas'&&c.navigate)c.navigate(u).catch(()=>{});return c.focus()}return self.clients.openWindow(u)}))});

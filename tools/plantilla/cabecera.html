@@ -145,7 +145,11 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sb-of .sbi{background:var(--hot);color:#0d1124}
 .olist{display:grid;gap:12px;padding:16px 0 28px}
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
-.ocard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
+.ocard h3{margin:0;font:700 1.2rem var(--display)}
+.ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.ocard .ox{font-size:.88rem;font-weight:600;color:var(--hot)}.ocard .ox::after{content:' ▾'}
+.ocard.abierta .ox{display:none}
+.ocard .ob{display:none;margin-top:10px}.ocard.abierta .ob{display:block}
 .ocard p{margin:0;color:var(--fg);line-height:1.45;white-space:pre-line}
 .ocard .ov{display:block;margin-top:8px;color:var(--muted);font-size:.85rem}
 .ocard a.op{display:inline-block;margin-top:12px;background:#1fa855;color:#fff;font:600 .95rem var(--display);padding:10px 14px;border-radius:9px;text-decoration:none}

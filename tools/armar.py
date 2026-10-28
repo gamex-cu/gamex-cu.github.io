@@ -214,10 +214,10 @@ gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)
  const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
  fetch('app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
   const a=(j.avisos||[]).filter(x=>x.id&&!x.silenciosa&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a)return;
-  const el=document.getElementById('aviso');document.getElementById('aviso-t').textContent=a.titulo||'';document.getElementById('aviso-x').textContent=a.texto||'';el.hidden=false;
+  const el=document.getElementById('aviso');document.getElementById('aviso-t').textContent=a.titulo||'';document.getElementById('aviso-x').textContent='Toca para ver la oferta completa';el.hidden=false;
   const cerrar=()=>{el.hidden=true;c.push(a.id);try{localStorage.setItem(K,JSON.stringify(c.slice(-50)))}catch(e){}};
   document.getElementById('aviso-c').onclick=ev=>{ev.stopPropagation();cerrar()};
-  el.onclick=()=>{if(a.url)window.open(a.url,'_blank','noopener')};
+  el.onclick=()=>{window.gxAbrir=a.id;if(location.hash==='#ofertas')cargarOfertas();else location.hash='ofertas'};
  }).catch(()=>{})})();
 const PUSH=__PUSH__;
 (function(){const bs=[...document.querySelectorAll('.pushb')];if(!PUSH.url||!('serviceWorker' in navigator)||!('PushManager' in window)||!('Notification' in window))return;

@@ -152,7 +152,11 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sb-of .sbi{background:var(--hot);color:#0d1124}
 .olist{display:grid;gap:12px;padding:16px 0 28px}
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
-.ocard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
+.ocard h3{margin:0;font:700 1.2rem var(--display)}
+.ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
+.ocard .ox{font-size:.88rem;font-weight:600;color:var(--hot)}.ocard .ox::after{content:' ▾'}
+.ocard.abierta .ox{display:none}
+.ocard .ob{display:none;margin-top:10px}.ocard.abierta .ob{display:block}
 .ocard p{margin:0;color:var(--fg);line-height:1.45;white-space:pre-line}
 .ocard .ov{display:block;margin-top:8px;color:var(--muted);font-size:.85rem}
 .ocard a.op{display:inline-block;margin-top:12px;background:#1fa855;color:#fff;font:600 .95rem var(--display);padding:10px 14px;border-radius:9px;text-decoration:none}
@@ -527,12 +531,14 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('olist').addEventListener('click',e=>{const b=e.target.closest('.oh');if(!b)return;const c=b.closest('.ocard'),on=!c.classList.contains('abierta');c.classList.toggle('abierta',on);b.setAttribute('aria-expanded',on)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
   fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
     const a=(j.avisos||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).reverse();
-    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url);return `<article class="ocard"><h3>${esc(x.titulo||'')}</h3><p>${esc(x.texto||'')}</p>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
+    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}"><button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p></div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
       :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
+    const ab=el.querySelector('.ocard.abierta');if(ab){window.gxAbrir=null;setTimeout(()=>ab.scrollIntoView({block:'start',behavior:'smooth'}),50)}
   }).catch(()=>{el.innerHTML='<p class="empty">No se pudieron cargar las ofertas. Revisa tu conexión a internet.</p>'})}
 lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)return;e.preventDefault();document.querySelector(a.getAttribute('href'))?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})});
 $('q').addEventListener('input',e=>{query=e.target.value;render()});
