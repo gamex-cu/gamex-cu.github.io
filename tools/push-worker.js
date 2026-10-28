@@ -115,6 +115,7 @@ export class Stats extends DurableObject{
   agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
     for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
     if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-400*864e5);return filas.length}
+  reiniciar(){const n=this.sql.exec('SELECT COUNT(*) c FROM ev').one().c;this.sql.exec('DELETE FROM ev');return n}
   borrarUid(uid){if(uid.startsWith('prueba:'))this.sql.exec("DELETE FROM ev WHERE v=?",uid.slice(7));else this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
   resumen(dias){
     const hasta=diaCuba(Date.now()),desde=diaCuba(Date.now()-(dias-1)*864e5);
@@ -159,6 +160,7 @@ async function panel(req,env,u){
       const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
       return j(await statsDO(env).resumen(d));
     }
+    if(p==='stats-reiniciar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(q.confirmar!=='LANZAMOS')return j({error:'Falta confirmar'},400);return j({ok:true,borrados:await statsDO(env).reiniciar()})}
     if(p==='stats-limpiar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(!q.uid)return j({error:'Falta uid'},400);await statsDO(env).borrarUid(String(q.uid));return j({ok:true})}
     if(p==='estado'){
       const [ks,{d}]=await Promise.all([claves(env),leerAvisos(env)]);

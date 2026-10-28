@@ -33,3 +33,4 @@
 ## Repositorio privado
 - Las claves (secretos/), el proyecto de la app Android con su firma (gamex-release.jks) y los APK están en el repositorio PRIVADO gamex-cu/gamex-herramientas (ver su README).
 - En una sesión nueva: copiar gamex-herramientas/secretos/* a /home/claude/secretos/ antes de usar enviar_aviso.py o desplegar_worker.py.
+- Para borrar todas las estadísticas (p. ej. el día del lanzamiento): POST /panel/api/stats-reiniciar con X-Panel y {"confirmar":"LANZAMOS"}.
