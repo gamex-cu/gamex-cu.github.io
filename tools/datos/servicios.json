@@ -206,19 +206,19 @@
   "items": [
    {
     "t": "PlayStation 4",
-    "pedido": "Mantenimiento de PlayStation 4"
+    "msg": "Hola GameX, me interesa darle mantenimiento a mi PlayStation 4"
    },
    {
     "t": "PlayStation 5",
-    "pedido": "Mantenimiento de PlayStation 5"
+    "msg": "Hola GameX, me interesa darle mantenimiento a mi PlayStation 5"
    },
    {
     "t": "Xbox One",
-    "pedido": "Mantenimiento de Xbox One"
+    "msg": "Hola GameX, me interesa darle mantenimiento a mi Xbox One"
    },
    {
     "t": "Xbox Series X|S",
-    "pedido": "Mantenimiento de Xbox Series X|S"
+    "msg": "Hola GameX, me interesa darle mantenimiento a mi Xbox Series X|S"
    }
   ]
  }
