@@ -282,7 +282,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <div class="wrap">
   <a class="sbtn" href="#catalogos" id="b-catalogos">
     <span class="sbi" aria-hidden="true"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 8h11a4.5 4.5 0 0 1 4.3 5.8l-1 3.4a2.4 2.4 0 0 1-4 1L14.6 16H9.4l-2.2 2.2a2.4 2.4 0 0 1-4-1l-1-3.4A4.5 4.5 0 0 1 6.5 8z"/><path d="M7.5 11v3M6 12.5h3"/><circle cx="16" cy="11.5" r=".6" fill="currentColor"/><circle cx="17.6" cy="13.3" r=".6" fill="currentColor"/></svg></span>
-    <span class="sbt"><b>Catálogos</b><small>Juegos para PS4, PS5, PC, Xbox Game Pass, Xbox de pago, Meta Quest, Switch y los juegos del mes de PlayStation Plus</small></span>
+    <span class="sbt"><b>Catálogos</b><small>Juegos para PS4, PS5, PC, Xbox Game Pass, Xbox de pago, Meta Quest, Nintendo Switch y los juegos del mes de PlayStation Plus</small></span>
     <span class="sgo" aria-hidden="true">→</span>
   </a>
   <a class="sbtn sb-of" href="#ofertas" id="b-ofertas">
@@ -388,6 +388,7 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <script>
 const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a'],['PlayStation Plus','playstation-plus','#f5c400','#0d1124','#ffd84d']];
 const PSPMES="Octubre 2026";
+const NOM={'Switch':'Nintendo Switch'},nom=c=>NOM[c]||c;
 const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
 const ICO={pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12a4 4 0 0 1 3.9 4.9l-.8 3.4a2.2 2.2 0 0 1-3.9.8L15.5 16h-7l-1.7 2.1a2.2 2.2 0 0 1-3.9-.8l-.8-3.4A4 4 0 0 1 6 9z"/><path d="M8 11.5v3M6.5 13h3"/><circle cx="15.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="14" r=".6" fill="currentColor"/></svg>',
 pc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
@@ -417,7 +418,7 @@ const ORDER=['#',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fold=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 const alias={fifa:'fc',cod:'call of duty',gta:'grand theft auto'};
-const tagHTML=c=>{const x=CONS[CI[c]];return `<span class="ctag" style="background:${x[2]};color:${x[3]}">${c}</span>`};
+const tagHTML=c=>{const x=CONS[CI[c]];return `<span class="ctag" style="background:${x[2]};color:${x[3]}">${nom(c)}</span>`};
 const $=id=>document.getElementById(id);
 const list=$('list'),lettersEl=$('letters'),countEl=$('count');
 let current=null,query='',active=new Set();
@@ -449,8 +450,8 @@ function drawFilters(){
 }
 
 $('consoles').innerHTML=CONS.map(([n,s,col,,txt])=>{const q=countOf(n);return q
-  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${n}</span><span class="cq">${n==='PlayStation Plus'?'Juegos del mes · '+PSPMES.split(' ')[0]:q.toLocaleString('es')+' juegos'}<span class="go">→</span></span></a>`
-  :`<div class="ccard soon" style="--cc:${col};--ct:${txt}" aria-disabled="true"><span class="cn">${n}</span><span class="cq">Próximamente</span></div>`}).join('');
+  ?`<a class="ccard" href="#${s}" style="--cc:${col};--ct:${txt}"><span class="cn">${nom(n)}</span><span class="cq">${n==='PlayStation Plus'?'Juegos del mes · '+PSPMES.split(' ')[0]:q.toLocaleString('es')+' juegos'}<span class="go">→</span></span></a>`
+  :`<div class="ccard soon" style="--cc:${col};--ct:${txt}" aria-disabled="true"><span class="cn">${nom(n)}</span><span class="cq">Próximamente</span></div>`}).join('');
 
 function render(){
   const all=current==='todas';
@@ -475,7 +476,7 @@ function route(){
   if(c&&countOf(c[0])||h==='todas'){
     const was=current;current=c?c[0]:'todas';
     $('home').hidden=true;$('cats').hidden=true;$('ofer').hidden=true;$('iphone').hidden=true;$('view').hidden=false;
-    const vn=$('vn');vn.textContent=c?c[0]:'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
+    const vn=$('vn');vn.textContent=c?nom(c[0]):'Todas las consolas';vn.style.setProperty('--ct',c?c[4]:'var(--fg)');
     const vic=$('vic');vic.innerHTML=ICO[c?(ICON_OF[c[0]]||'pad'):'all'];vic.style.setProperty('--ct',c?c[4]:'var(--fg)');
     $('vc').textContent=c&&c[0]==='PlayStation Plus'?`Juegos del mes · ${PSPMES}`:`${(c?countOf(c[0]):GAMES.length).toLocaleString('es')} juegos`;
     const nt=c&&NOTES[c[0]];$('vnote').hidden=!nt;$('vnote').innerHTML=nt||'';$('vnote').classList.toggle('ask',!!c&&c[0]==='Xbox pago');pintarMarq(c&&c[0]);
@@ -538,7 +539,7 @@ const save=()=>{try{localStorage.setItem('gamex-cart-v2',JSON.stringify(cart))}c
 const split=k=>{const i=k.indexOf('|');return [k.slice(0,i),k.slice(i+1)]};
 const sorted=()=>[...cart].sort((a,b)=>CI[split(a)[0]]-CI[split(b)[0]]);
 function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]).push(n)});
-  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${c}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`}
+  return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`}
 function sync(){
   $('cn').textContent=cart.length;
   $('clear').hidden=!cart.length;
