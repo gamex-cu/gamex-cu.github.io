@@ -37,6 +37,23 @@ try: XP=json.load(open(D+'etiquetas_xbox_pago.json'))
 except FileNotFoundError: XP={}
 series+=['Xbox pago|'+n for n in XP.get('series',[])]
 online+=['Xbox pago|'+n for n in XP.get('online',[])]
+# ---- juegos agregados o quitados a mano desde el panel (tools/datos/panel_juegos.json) ----
+try: PJ=json.load(open(D+'panel_juegos.json'))
+except FileNotFoundError: PJ={'agregar':[],'quitar':[]}
+for _q in PJ.get('quitar',[]):
+    if _q.get('c') in data: data[_q['c']]=[n for n in data[_q['c']] if n!=_q.get('n')]
+for _a in PJ.get('agregar',[]):
+    _c,_n=_a.get('c'),(_a.get('n') or '').strip()
+    if _c not in data or not _n: continue
+    if _n.lower() not in {x.lower() for x in data[_c]}: data[_c].append(_n)
+    _k=_c+'|'+_n;_et=set(_a.get('et') or [])
+    if 'online' in _et: online.append(_k)
+    if 'series' in _et: series.append(_k)
+    if 'vr' in _et: ET['vr'].append(_k)
+    if 'vro' in _et: ET['vr_opcional'].append(_k)
+    if 'port' in _et: {'Switch':SWE,'PC':PCE,'Meta Quest':MQE}.get(_c,{}).setdefault('port',[]).append(_n)
+    if 'emu' in _et and _c=='Switch': SWE.setdefault('emulador',[]).append(_n)
+    if 'excl' in _et: EXC.setdefault(_c,[]).append(_n)
 CARD='''<a class="dlapp" id="dlapp" href="https://gamex-avisos.gamex-cu.workers.dev/descargar" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
 '''
 DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
@@ -70,17 +87,32 @@ for _f,_c in [('enlaces_pc.json','PC')]:
 try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
+for _a in PJ.get('agregar',[]):  # enlaces de los juegos del panel
+    _l=(_a.get('link') or '').strip()
+    if not _l or _a.get('c') not in data: continue
+    if not _l.startswith('http'):
+        if _a['c'] in ('PS4','PS5') and '-' in _l and '_' in _l: _l='https://store.playstation.com/es-mx/product/'+_l
+        elif _a['c']!='Xbox pago': continue
+    LINKS[_a['c']+'|'+_a['n'].strip()]=_l
 import subprocess as _sp
 def _fecha(*fs):
     r=''
     for f in fs:
         try: o=_sp.run(['git','log','-1','--date=format-local:%Y-%m-%d','--format=%ad','--',f],cwd=R,capture_output=True,text=True,env=dict(os.environ,TZ='America/Havana')).stdout.strip()
         except Exception: o=''
+        try:  # cambios todavía sin subir: cuentan como de hoy
+            if _sp.run(['git','status','--porcelain','--',f],cwd=R,capture_output=True,text=True).stdout.strip():
+                import datetime as _d0
+                try:
+                    from zoneinfo import ZoneInfo as _Z0; o=_d0.datetime.now(_Z0('America/Havana')).date().isoformat()
+                except Exception: o=_d0.date.today().isoformat()
+        except Exception: pass
         r=max(r,o)
     return r
 for _c,_b in [('PS4','ps4'),('PS5','ps5'),('PC','pc'),('Meta Quest','meta_quest'),('Switch','switch')]:
     if _c in NOTES or _c not in data: continue
     _f=_fecha(*['tools/datos/'+x+_b+'.json' for x in ('','enlaces_','etiquetas_')])
+    _f=max([_f]+[x.get('f','') for x in PJ.get('agregar',[])+PJ.get('quitar',[]) if x.get('c')==_c])
     if _f:
         _y,_m,_d=_f.split('-');NOTES[_c]=f'Catálogo actualizado el <b>{int(_d)} de {MESES[int(_m)-1]} de {_y}</b>'
 try: SERV=json.load(open(D+'servicios.json'))
