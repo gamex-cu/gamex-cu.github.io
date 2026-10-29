@@ -38,6 +38,10 @@ def leer(web):
         ce = [x for x in json.load(open(T + 'datos/catalogos_extra.json')) if x.get('n')]
         for x in ce: cons.insert(len(cons) - 1, [x['n'], x['n'], x.get('color', '#3d7bff'), '', x.get('texto', '#fff')])
     except FileNotFoundError: pass
+    try:  # orden escogido en el panel
+        orden = (json.load(open(T + 'datos/tienda.json')).get('orden') or {}).get('catalogos') or []
+        if orden: cons.sort(key=lambda x: orden.index(x[0]) if x[0] in orden else 999)
+    except FileNotFoundError: pass
     return raw, cons, flags, mes
 
 

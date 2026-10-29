@@ -56,6 +56,11 @@ def _tienda(head,js):
     _sec=[x for x in _oc.get('secciones',[]) if x in ('catalogos','ofertas','servicios','cuenta')]
     if CE_JS:
         js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(CONS.length-1,0,..."+json.dumps(CE_JS,ensure_ascii=False)+");"+''.join("CAND.add("+json.dumps(c['n'],ensure_ascii=False)+");" for c in CE if c.get('desbloqueo'))+"\nconst CI=Object.fromEntries(CONS",1)
+    _or=TI.get('orden') or {}
+    if _or.get('catalogos'):
+        js=js.replace("const CI=Object.fromEntries(CONS","{const _O="+json.dumps(_or['catalogos'],ensure_ascii=False)+",_i=n=>{const k=_O.indexOf(n);return k<0?999:k};const _b=CONS.map((c,i)=>[c,i]);_b.sort((x,y)=>_i(x[0][0])-_i(y[0][0])||x[1]-y[1]);CONS.splice(0,CONS.length,..._b.map(x=>x[0]))}\nconst CI=Object.fromEntries(CONS",1)
+    if _or.get('secciones'):
+        js=js.replace("function route(){","{const _t="+json.dumps([x for x in _or['secciones'] if x in ('catalogos','ofertas','servicios','cuenta')])+".map(s=>document.getElementById('b-'+s)).filter(Boolean),_f=document.querySelector('.sbtn');if(_f&&_t.length){const m=document.createComment('');_f.before(m);_t.forEach(t=>m.before(t));m.remove()}}\nfunction route(){",1)
     _cat=[x for x in _oc.get('catalogos',[])]
     if _cat: js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(0,CONS.length,...CONS.filter(c=>!"+json.dumps(_cat,ensure_ascii=False)+".includes(c[0])));\nconst CI=Object.fromEntries(CONS",1)
     js=js.replace("function route(){","const SECOFF="+json.dumps(_sec)+";\nfunction gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}\nSECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});\nfunction route(){\n  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);",1)

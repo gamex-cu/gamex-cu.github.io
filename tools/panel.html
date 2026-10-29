@@ -158,6 +158,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .mini{font:inherit;font-size:.8rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
 .mini.bad{border-color:var(--bad);color:var(--bad)}
 .gpl{margin:6px 0 0;padding-left:20px}.gpl li{margin:2px 0}
+.vrow{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding:6px 0}.vrow:first-child{border-top:0}.vrow label{flex:1;margin:0;font-weight:500;display:flex;gap:8px;align-items:center}.vrow input{width:auto;margin:0;accent-color:var(--accent)}.vrow .mini{padding:6px 11px}.vrow:has(input:not(:checked)) label{opacity:.5}
 .psj{display:grid;grid-template-columns:1fr;gap:6px;border-top:1px solid var(--line);padding:10px 0}
 .psj .row{align-items:center}
 textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;min-height:260px}
@@ -297,10 +298,10 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   <div id="t-ti" hidden>
   <section class="card">
     <h2>👁️ Qué se ve en la web y la app</h2>
-    <p class="nota" style="margin:-6px 0 6px">Desmarca lo que quieras esconder. No se borra nada: lo vuelves a marcar y aparece igual que antes.</p>
-    <label>Secciones de la página principal</label><div class="tipos" id="vi-sec"></div>
-    <label>Catálogos</label><div class="tipos" id="vi-cat"></div>
-    <label>Tipos de servicio</label><div class="tipos" id="vi-sv"></div>
+    <p class="nota" style="margin:-6px 0 6px">Desmarca lo que quieras esconder (no se borra nada) y usa ↑ ↓ para cambiar el orden en que salen.</p>
+    <label>Secciones de la página principal</label><div id="vi-sec"></div>
+    <label>Catálogos</label><div id="vi-cat"></div>
+    <label>Tipos de servicio</label><div id="vi-sv"></div>
     <p class="nota">Para esconder un solo servicio (por ejemplo EA Play), ábrelo abajo en 🧾 Servicios y marca "Oculto".</p>
     <button class="btn" id="vi-guardar" type="button">Guardar</button>
     <div class="msg" id="mvi"></div>
@@ -1047,14 +1048,22 @@ $('fpw').onsubmit=async e=>{e.preventDefault();nomsg('mpw');const n=$('pw-n1').v
 const VSEC=[['catalogos','🎮 Catálogos'],['ofertas','🏷️ Ofertas'],['servicios','💲 Servicios'],['cuenta','🏆 Mi cuenta GameX']];
 const VCAT=['PS4','PS5','PC','Xbox Game Pass','Xbox pago','Meta Quest','Switch','PlayStation Plus'];
 const VCATN={'Xbox pago':'Xbox (pago)','Switch':'Nintendo Switch','Xbox Game Pass':'Game Pass','PlayStation Plus':'PS Plus'};
-function viPintar(){const o=TI.ocultar||{};const ck=(l,v)=>(l||[]).includes(v)?'':'checked';
-  $('vi-sec').innerHTML=VSEC.map(([k,l])=>`<label><input type="checkbox" value="${k}" ${ck(o.secciones,k)}>${l}</label>`).join('');
-  $('vi-cat').innerHTML=VCAT.concat(CE.map(x=>x.n)).map(c=>`<label><input type="checkbox" value="${esc(c)}" ${ck(o.catalogos,c)}>${esc(VCATN[c]||c)}</label>`).join('');
-  $('vi-sv').innerHTML=SV.map(x=>`<label><input type="checkbox" value="${esc(x.s)}" ${ck(o.servicios,x.s)}>${esc((x.icono||'')+' '+x.s)}</label>`).join('')}
+let VORD=null;
+function viPintar(){const o=TI.ocultar||{},or=TI.orden||{};const ck=(l,v)=>(l||[]).includes(v)?'':'checked';
+  const ord=(lista,pref)=>{pref=pref||[];return lista.slice().sort((a,b)=>{const x=pref.indexOf(a),y=pref.indexOf(b);return (x<0?999:x)-(y<0?999:y)||lista.indexOf(a)-lista.indexOf(b)})};
+  const sec=ord(VSEC.map(x=>x[0]),or.secciones),cat=ord(VCAT.concat(CE.map(x=>x.n)),or.catalogos),sv=SV.map(x=>x.s);
+  VORD={sec,cat,sv};const fila=(v,l,off)=>`<div class="vrow" data-v="${esc(v)}"><label><input type="checkbox" value="${esc(v)}" ${ck(off,v)}>${l}</label><button type="button" class="mini" data-m="-1" aria-label="Subir">↑</button><button type="button" class="mini" data-m="1" aria-label="Bajar">↓</button></div>`;
+  $('vi-sec').innerHTML=sec.map(k=>fila(k,(VSEC.find(x=>x[0]===k)||[k,k])[1],o.secciones)).join('');
+  $('vi-cat').innerHTML=cat.map(c=>fila(c,esc(VCATN[c]||c),o.catalogos)).join('');
+  $('vi-sv').innerHTML=sv.map(s=>{const x=SV.find(y=>y.s===s)||{};return fila(s,esc((x.icono||'')+' '+s),o.servicios)}).join('')}
+['vi-sec','vi-cat','vi-sv'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const r=b.closest('.vrow'),m=+b.dataset.m;
+  if(m<0&&r.previousElementSibling)r.previousElementSibling.before(r);if(m>0&&r.nextElementSibling)r.nextElementSibling.after(r)}));
 $('vi-guardar').onclick=async()=>{const b=$('vi-guardar');b.disabled=true;nomsg('mvi');
   const off=id=>[...document.querySelectorAll('#'+id+' input:not(:checked)')].map(i=>i.value);
-  try{const r=await api('archivo-guardar',{f:'tienda',d:{...TI,ocultar:{secciones:off('vi-sec'),catalogos:off('vi-cat'),servicios:off('vi-sv')}},sha:TISHA});TI=r.d;TISHA=r.sha;
-    const n=off('vi-sec').length+off('vi-cat').length+off('vi-sv').length;msg('mvi','ok','✅ Guardado. '+(n?'Lo desmarcado se esconde':'Todo se ve')+' en la web y la app en 1 o 2 minutos.')}catch(e){msg('mvi','bad',esc(e.message))}b.disabled=false};
+  const lst=id=>[...document.querySelectorAll('#'+id+' .vrow')].map(r=>r.dataset.v);
+  try{const svOrd=lst('vi-sv');if(svOrd.join('|')!==SV.map(x=>x.s).join('|')){svLeer();SV.sort((a,b)=>svOrd.indexOf(a.s)-svOrd.indexOf(b.s));SVI=0;const s2=await api('archivo-guardar',{f:'servicios',d:SV,sha:SVSHA});SV=s2.d;SVSHA=s2.sha;svPintar()}
+    const r=await api('archivo-guardar',{f:'tienda',d:{...TI,ocultar:{secciones:off('vi-sec'),catalogos:off('vi-cat'),servicios:off('vi-sv')},orden:{secciones:lst('vi-sec'),catalogos:lst('vi-cat')}},sha:TISHA});TI=r.d;TISHA=r.sha;
+    const n=off('vi-sec').length+off('vi-cat').length+off('vi-sv').length;msg('mvi','ok','✅ Guardado. El orden'+(n?' y lo escondido salen':' sale')+' en la web y la app en 1 o 2 minutos.')}catch(e){msg('mvi','bad',esc(e.message))}b.disabled=false};
 
 // ---------- catálogos nuevos ----------
 let CE=[],CESHA=null;
