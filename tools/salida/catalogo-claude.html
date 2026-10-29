@@ -88,6 +88,8 @@ li.sel::before{border-color:var(--accent);background:var(--accent)}
 .chan span{color:var(--muted);font-size:.9rem;flex:1 1 200px;min-width:0}
 .chan i{font-style:normal;font-family:var(--display);font-weight:600;background:#1f9d55;color:#fff;border-radius:6px;padding:6px 12px}
 footer{border-top:1px solid var(--line);background:var(--panel);padding-block:28px calc(110px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:.95rem}
+.cartbar[hidden]{display:none}
+body.sincart footer{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px}
 .fcol{min-width:0}
 .flogo{width:150px;height:auto;display:block}
@@ -760,6 +762,7 @@ function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]
   return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`+gxFirma('')}
 function sync(){
   $('cn').textContent=cart.length;
+  {const enCat=!$('view').hidden||!$('cats').hidden;$('cartbar').hidden=!enCat;document.body.classList.toggle('sincart',!enCat)}
   $('clear').hidden=!cart.length;
   document.querySelectorAll('#list li').forEach(li=>{const on=cart.includes(li.dataset.k);li.classList.toggle('sel',on);const b=li.querySelector('.add');b.textContent=on?'✓':'+';b.setAttribute('aria-label',(on?'Quitar ':'Añadir ')+split(li.dataset.k).reverse().join(' – '))});
   $('cl').innerHTML=sorted().map(k=>{const[c,n]=split(k);return `<li data-k="${esc(k)}">${tagHTML(c)}<span class="gn">${esc(n)}${badges(k)}</span><button class="add" type="button" aria-label="Quitar ${esc(n)}">×</button></li>`}).join('');

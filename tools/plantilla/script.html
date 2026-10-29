@@ -235,6 +235,7 @@ function text(){const by={};sorted().forEach(k=>{const[c,n]=split(k);(by[c]??=[]
   return 'Hola GameX, quiero estos juegos:\n'+Object.entries(by).map(([c,l])=>`\n*${nom(c)}*\n`+l.map((n,i)=>{const k=c+'|'+n,f=[ONLINE.has(k)?'online':'',SERIES.has(k)?'Series X|S':''].filter(Boolean);return `${i+1}. ${n}${f.length?' ('+f.join(', ')+')':''}`}).join('\n')).join('\n')+`\n\nTotal: ${cart.length} juego${cart.length===1?'':'s'}`+gxFirma('')}
 function sync(){
   $('cn').textContent=cart.length;
+  {const enCat=!$('view').hidden||!$('cats').hidden;$('cartbar').hidden=!enCat;document.body.classList.toggle('sincart',!enCat)}
   $('clear').hidden=!cart.length;
   document.querySelectorAll('#list li').forEach(li=>{const on=cart.includes(li.dataset.k);li.classList.toggle('sel',on);const b=li.querySelector('.add');b.textContent=on?'✓':'+';b.setAttribute('aria-label',(on?'Quitar ':'Añadir ')+split(li.dataset.k).reverse().join(' – '))});
   $('cl').innerHTML=sorted().map(k=>{const[c,n]=split(k);return `<li data-k="${esc(k)}">${tagHTML(c)}<span class="gn">${esc(n)}${badges(k)}</span><button class="add" type="button" aria-label="Quitar ${esc(n)}">×</button></li>`}).join('');

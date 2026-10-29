@@ -88,6 +88,8 @@ li.sel::before{border-color:var(--accent);background:var(--accent)}
 .chan span{color:var(--muted);font-size:.9rem;flex:1 1 200px;min-width:0}
 .chan i{font-style:normal;font-family:var(--display);font-weight:600;background:#1f9d55;color:#fff;border-radius:6px;padding:6px 12px}
 footer{border-top:1px solid var(--line);background:var(--panel);padding-block:28px calc(110px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:.95rem}
+.cartbar[hidden]{display:none}
+body.sincart footer{padding-bottom:calc(28px + env(safe-area-inset-bottom,0px))}
 .fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px}
 .fcol{min-width:0}
 .flogo{width:150px;height:auto;display:block}
