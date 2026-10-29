@@ -524,6 +524,7 @@ const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d
 const PSPMES="Octubre 2026";
 const CAND=new Set(['PS4','PS5','Switch','Meta Quest']),lk=c=>CAND.has(c)?' <span class="lk" title="Consola desbloqueada" role="img" aria-label="desbloqueada"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="14" height="10" rx="2.2" fill="currentColor" fill-opacity=".22"/><path d="M8 11V7.5a4.5 4.5 0 0 1 8.7-1.6"/><circle cx="11" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg></span>':'';
 const NOM={'Switch':'Nintendo Switch','PS4':'PlayStation 4','PS5':'PlayStation 5'},nom=c=>NOM[c]||c;
+{const _O=["PC", "PS4", "PS5", "PlayStation Plus", "Xbox Game Pass", "Xbox pago", "Switch", "Meta Quest"],_i=n=>{const k=_O.indexOf(n);return k<0?999:k};const _b=CONS.map((c,i)=>[c,i]);_b.sort((x,y)=>_i(x[0][0])-_i(y[0][0])||x[1]-y[1]);CONS.splice(0,CONS.length,..._b.map(x=>x[0]))}
 const CI=Object.fromEntries(CONS.map((c,i)=>[c[0],i])),BYSLUG=Object.fromEntries(CONS.map(c=>[c[1],c]));
 const ICO={pad:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9h12a4 4 0 0 1 3.9 4.9l-.8 3.4a2.2 2.2 0 0 1-3.9.8L15.5 16h-7l-1.7 2.1a2.2 2.2 0 0 1-3.9-.8l-.8-3.4A4 4 0 0 1 6 9z"/><path d="M8 11.5v3M6.5 13h3"/><circle cx="15.5" cy="12.5" r=".6" fill="currentColor"/><circle cx="17.5" cy="14" r=".6" fill="currentColor"/></svg>',
 pc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>',
@@ -604,6 +605,7 @@ function render(){
   drawFilters();
   sync();
 }
+{const _t=["catalogos", "ofertas", "servicios", "cuenta"].map(s=>document.getElementById('b-'+s)).filter(Boolean),_f=document.querySelector('.sbtn');if(_f&&_t.length){const m=document.createComment('');_f.before(m);_t.forEach(t=>m.before(t));m.remove()}}
 const SECOFF=[];
 function gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}
 SECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});
