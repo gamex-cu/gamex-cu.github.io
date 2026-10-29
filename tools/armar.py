@@ -132,6 +132,7 @@ def _tienda(head,js):
         if not k: print('aviso: no encontré las reglas')
     return head,js
 head,js=_tienda(head,js)
+VV['mantenimiento']=bool((TI.get('mantenimiento') or {}).get('activo'));json.dump(VV,open(VJ,'w'),ensure_ascii=False,indent=2)
 data={'PS4':json.load(open(D+'ps4.json'))}
 for extra in ['PS5','PC','Meta Quest','Switch','Xbox pago']:
     try: data[extra]=json.load(open(D+extra.lower().replace(' ','_')+'.json'))
@@ -417,7 +418,8 @@ async function gxRefresh(){const b=document.getElementById('refresh');
   }catch(e){if(b)b.textContent='Necesitas internet para actualizar';setTimeout(()=>{if(b)b.textContent='Actualizar catálogo'},3000)}}
 navigator.serviceWorker?.ready.then(rg=>{rg.active&&rg.active.postMessage('guardar')}).catch(()=>{});
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
-function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV)document.getElementById('upd').hidden=false}).catch(()=>{})}
+function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.catalogo>GXV){let byp=false,n=0;try{byp=localStorage.getItem('gx-ver-igual')==='1';n=+(sessionStorage.getItem('gx-mrf')||0)}catch(e){}
+  if(!byp&&!!j.mantenimiento!==document.body.classList.contains('mant-on')&&n<2){try{sessionStorage.setItem('gx-mrf',n+1)}catch(e){}gxRefresh()}else document.getElementById('upd').hidden=false}}).catch(()=>{})}
 fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
 gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)gxCheck()});
 (function(){const K='gamex-avisos-cerrados';let c=[];try{c=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}

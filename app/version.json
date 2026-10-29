@@ -1,7 +1,8 @@
 {
-  "catalogo": 197,
+  "catalogo": 198,
   "apk": 8,
   "apkNombre": "1.7",
   "apkUrl": "https://gamex-cu.github.io/app/GameX-1.7.apk",
-  "notas": "Mejoras y catálogo al día."
+  "notas": "Mejoras y catálogo al día.",
+  "mantenimiento": true
 }
