@@ -288,9 +288,11 @@ async function evento(req,env){
 }
 
 async function panel(req,env,u){
-  if(u.pathname==='/panel'||u.pathname==='/panel/')return new Response(PANEL_HTML,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer'}});
+  if(u.pathname==='/panel'||u.pathname==='/panel/')return new Response(PANEL_HTML,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Strict-Transport-Security':'max-age=31536000','Permissions-Policy':'camera=(), microphone=(), geolocation=()','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://gamex-cu.github.io; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}});
   if(!u.pathname.startsWith('/panel/api/'))return j({error:'No existe'},404);
-  if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
+  const ipP=req.headers.get('CF-Connecting-IP')||'?',DOp=env.STATS?statsDO(env):null;
+  if(DOp&&await DOp.fallo('p:'+ipP,false)>=10)return j({error:'Demasiados intentos con contraseña equivocada. Espera 15 minutos.'},429);
+  if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){if(DOp)await DOp.fallo('p:'+ipP,true);await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
     if(p==='juegos'||p.startsWith('juegos-'))return await panelJuegos(p,req,env,u);

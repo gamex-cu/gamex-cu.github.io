@@ -755,7 +755,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
   $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
   if(!x)return;
-  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?esc(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-cuenta').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
@@ -872,7 +872,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=174;
+const GXV=175;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
