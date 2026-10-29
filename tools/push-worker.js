@@ -110,17 +110,22 @@ async function pjCambiar(env,fn,msg){
     const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${PJ}`,{method:'PUT',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify(body)});
     if(res.ok)return {d,r};const t=(await res.text()).slice(0,200);if(i===2||!(res.status===409||res.status===422))throw new Error('GitHub '+res.status+': '+t)}
 }
+let EXTRA_CACHE=null;
+async function plataformas(env){ // las de siempre + los catálogos nuevos creados en el panel
+  if(!EXTRA_CACHE||Date.now()-EXTRA_CACHE.t>60000){let l=[];try{const {d}=await ghJson(env,'tools/datos/catalogos_extra.json');l=(d||[]).map(x=>x.n).filter(Boolean)}catch(e){}EXTRA_CACHE={t:Date.now(),l}}
+  return PJ_PLAT.concat(EXTRA_CACHE.l);
+}
 let CONS_CACHE=null;
-async function consolaTxt(){ // catálogo publicado (para buscar juegos que ya están)
+async function consolaTxt(env){ // catálogo publicado (para buscar juegos que ya están)
   if(CONS_CACHE&&Date.now()-CONS_CACHE.t<60000)return CONS_CACHE.l;
   const res=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/consola.txt',{cf:{cacheTtl:0}});
   if(!res.ok)throw new Error('No se pudo leer el catálogo ('+res.status+')');
-  const l=[];let c='';for(const ln of (await res.text()).split('\n')){const f=ln.split('\t');if(f[0]==='C')c=f[2];else if(f[0]==='J'&&PJ_PLAT.includes(c))l.push({c,n:f[2],f:+f[1]||0})}
+  const PL=await plataformas(env),l=[];let c='';for(const ln of (await res.text()).split('\n')){const f=ln.split('\t');if(f[0]==='C')c=f[2];else if(f[0]==='J'&&PL.includes(c))l.push({c,n:f[2],f:+f[1]||0})}
   CONS_CACHE={t:Date.now(),l};return l;
 }
 const normJ=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 // ---------- archivos de datos que edita el panel (tienda, servicios, PS Plus) y Game Pass ----------
-const ARCHS={tienda:'tools/datos/tienda.json',servicios:'tools/datos/servicios.json',ps_plus:'tools/datos/ps_plus.json'};
+const ARCHS={tienda:'tools/datos/tienda.json',servicios:'tools/datos/servicios.json',ps_plus:'tools/datos/ps_plus.json',catalogos:'tools/datos/catalogos_extra.json'};
 async function ghJson(env,path,ref='main'){
   const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${ref}`,{headers:GH(env)});
   if(res.status===404)return {d:null,sha:null};if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));
@@ -143,8 +148,11 @@ function validar(f,d){
       ocultar:{secciones:(d.ocultar?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)),catalogos:(d.ocultar?.catalogos||[]).map(x=>txt(x,40)).slice(0,20),servicios:(d.ocultar?.servicios||[]).map(x=>txt(x,60)).slice(0,20)}};
   }
   if(f==='servicios'){
-    if(!Array.isArray(d)||!d.length||d.some(s=>!s||!s.s||!Array.isArray(s.items)))return 'Los servicios no están bien';
+    if(!Array.isArray(d)||d.some(s=>!s||!Array.isArray(s.items)))return 'Los servicios no están bien';
     if(JSON.stringify(d).length>150000)return 'Demasiado texto en servicios';
+    for(const s of d){s.s=txt(s.s,40).replace(/[<>"]/g,'').trim();if(!s.s)return 'Hay un tipo de servicio sin nombre';s.icono=txt(s.icono,8).replace(/[<>"&]/g,'');
+      if(!/^#[0-9a-f]{6}$/i.test(s.color||''))s.color='#3d7bff';if(!/^#[0-9a-f]{6}$/i.test(s.texto||''))s.texto='#b8ccff'}
+    if(new Set(d.map(s=>s.s.toLowerCase())).size!==d.length)return 'Hay dos tipos de servicio con el mismo nombre';
     for(const s of d)for(const it of s.items){if(!it||!String(it.t||'').trim())return 'Hay un servicio sin nombre en '+s.s;
       if(it.grupos)for(const g of it.grupos)if(!Array.isArray(g.o)||!g.o.length||g.o.some(o=>!String(o.t||'').trim()))return 'El servicio "'+it.t+'" tiene una lista de opciones vacía';
       if(it.montos&&(!Array.isArray(it.montos)||it.montos.some(m=>!(+m>0))))return 'Montos no válidos en "'+it.t+'"'}
@@ -156,15 +164,23 @@ function validar(f,d){
     if(js.some(g=>g.id&&!/^(PPSA|CUSA)\d{5}$/.test(g.id)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(g.id)))return 'El código de un juego no está bien (ej. PPSA28002)';
     return {mes:txt(d.mes,40).trim(),hasta:d.hasta,fuente:'Juegos mensuales de PlayStation Plus Essential',juegos:js};
   }
+  if(f==='catalogos'){
+    if(!Array.isArray(d)||d.length>20)return 'Lista de catálogos no válida';const vistos=new Set(),BASE=['PS4','PS5','PC','Switch','Meta Quest','Xbox pago','Xbox Game Pass','PlayStation Plus','Nintendo Switch','PlayStation 4','PlayStation 5'].map(x=>x.toLowerCase());
+    const out=[];for(const x of d){const n=txt(x&&x.n,30).replace(/[|\t\n]/g,' ').trim();if(!n)return 'Hay un catálogo sin nombre';const k=n.toLowerCase();
+      if(BASE.includes(k))return '"'+n+'" ya existe';if(vistos.has(k))return '"'+n+'" está repetido';vistos.add(k);
+      const col=/^#[0-9a-f]{6}$/i.test(x.color||'')?x.color:'#3d7bff',tx=/^#[0-9a-f]{6}$/i.test(x.texto||'')?x.texto:'#ffffff';
+      out.push({n,color:col,texto:tx,...(x.desbloqueo?{desbloqueo:true}:{})})}
+    return out;
+  }
   return 'Archivo desconocido';
 }
 async function ultimaCorrida(env,wf){try{const r=await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${wf}/runs?per_page=1`,{headers:GH(env)});if(!r.ok)return null;const x=(await r.json()).workflow_runs?.[0];return x?{estado:x.status,res:x.conclusion,fecha:x.created_at}:null}catch(e){return null}}
 async function panelDatos(p,req,env,u){
   const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);
   if(p==='archivo'){const f=q.f;if(!ARCHS[f])return j({error:'Archivo desconocido'},400);const {d,sha}=await ghJson(env,ARCHS[f]);return j({d,sha,run:await ultimaCorrida(env,'panel-juegos.yml')})}
-  if(p==='archivo-guardar'){const f=q.f;if(!ARCHS[f])return j({error:'Archivo desconocido'},400);const v=validar(f,q.d||{});if(typeof v==='string')return j({error:v},400);
+  if(p==='archivo-guardar'){const f=q.f;if(!ARCHS[f])return j({error:'Archivo desconocido'},400);const v=validar(f,q.d==null?{}:q.d);if(f==='catalogos')EXTRA_CACHE=null;if(typeof v==='string')return j({error:v},400);
     const {sha}=await ghJson(env,ARCHS[f]);if(q.sha&&sha&&q.sha!==sha)return j({error:'Alguien cambió esto mientras editabas. Recarga y vuelve a intentarlo.'},409);
-    const r=await ghPut(env,ARCHS[f],JSON.stringify(v,null,1)+'\n',sha,'Panel: '+{tienda:'datos de la tienda',servicios:'servicios',ps_plus:'juegos de PS Plus'}[f]);return j({ok:true,sha:r.content&&r.content.sha,d:v})}
+    const r=await ghPut(env,ARCHS[f],JSON.stringify(v,null,1)+'\n',sha,'Panel: '+{tienda:'datos de la tienda',servicios:'servicios',ps_plus:'juegos de PS Plus',catalogos:'catálogos nuevos'}[f]);return j({ok:true,sha:r.content&&r.content.sha,d:v})}
   if(p==='gp-estado'){const {d}=await ghJson(env,'tools/salida/gamepass_cambios.json','gamepass-pendiente').catch(()=>({d:null}));return j({cambios:d,run:await ultimaCorrida(env,'gamepass.yml')})}
   if(p==='gp-revisar'||p==='gp-publicar'){
     const online=(Array.isArray(q.online)?q.online:[]).map(x=>txt(x,120)).slice(0,50);
@@ -186,12 +202,12 @@ async function panelJuegos(p,req,env,u){
   const hoy=hoyCuba();
   if(p==='juegos'){const {d}=await pjLeer(env);let run=null;
     try{const r=await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/panel-juegos.yml/runs?per_page=1`,{headers:GH(env)});if(r.ok){const x=(await r.json()).workflow_runs?.[0];if(x)run={estado:x.status,res:x.conclusion,fecha:x.created_at}}}catch(e){}
-    return j({...d,run,plataformas:PJ_PLAT})}
+    return j({...d,run,plataformas:await plataformas(env)})}
   if(p==='juegos-buscar'){const t=normJ(q.q);if(t.length<2)return j({hits:[]});const ws=t.split(' ');
-    const hits=(await consolaTxt()).filter(g=>(!q.c||g.c===q.c)&&ws.every(w=>normJ(g.n).includes(w))).slice(0,40);return j({hits})}
+    const hits=(await consolaTxt(env)).filter(g=>(!q.c||g.c===q.c)&&ws.every(w=>normJ(g.n).includes(w))).slice(0,40);return j({hits})}
   if(req.method!=='POST')return j({error:'Usa POST'},405);
   const c=String(q.c||''),n=String(q.n||'').replace(/\s+/g,' ').trim().slice(0,120);
-  if(!PJ_PLAT.includes(c))return j({error:'Escoge la consola'},400);
+  if(!(await plataformas(env)).includes(c))return j({error:'Escoge la consola'},400);
   if(!n)return j({error:'Falta el nombre del juego'},400);
   if(p==='juegos-agregar'){
     const link=String(q.link||'').trim().slice(0,300);

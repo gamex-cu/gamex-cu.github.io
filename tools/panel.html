@@ -326,9 +326,20 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <div class="msg" id="mps"></div>
   </section>
   <section class="card">
+    <h2>➕ Catálogos nuevos</h2>
+    <p class="nota" style="margin:-6px 0 6px">Crea un catálogo, por ejemplo Xbox 360 o PS3, y después le agregas los juegos en 🎮 Juegos. Mientras no tenga juegos sale como "Próximamente".</p>
+    <div id="ce-lista"></div>
+    <div class="g2"><div><label for="ce-n">Nombre</label><input id="ce-n" maxlength="30" placeholder="Xbox 360"></div><div><label for="ce-c">Color</label><input id="ce-c" type="color" value="#5c8a1e" style="height:46px;padding:4px"></div></div>
+    <label class="sw"><input type="checkbox" id="ce-d"><span>Consola desbloqueada <small>(sale el candado abierto junto al nombre, como en PS4)</small></span></label>
+    <button class="btn" id="ce-add" type="button">Crear catálogo</button>
+    <div class="msg" id="mce"></div>
+  </section>
+  <section class="card">
     <h2>🧾 Servicios</h2>
     <p class="nota" style="margin:-6px 0 10px">Suscripciones, Gift Cards, Desbloqueos y Mantenimientos. Toca un servicio para cambiarlo.</p>
     <div class="row" id="sv-secs"></div>
+    <button class="mini" type="button" id="sv-newt" style="margin-top:8px">+ Nuevo tipo de servicio</button>
+    <div class="svg" id="sv-tipo"></div>
     <div id="sv-items"></div>
     <button class="mini" type="button" id="sv-add" style="margin-top:10px">+ Agregar servicio</button>
     <button class="btn" id="sv-guardar" type="button">Guardar servicios</button>
@@ -877,8 +888,9 @@ $('jres').addEventListener('click',e=>{if(e.target.closest('[data-x]'))e.target.
 $('jres').addEventListener('submit',async e=>{e.preventDefault();const f=e.target,h=JHITS[+f.dataset.i],b=f.querySelector('button.btn');b.disabled=true;
   try{await api('juegos-editar',{c:h.c,n:h.n,nuevo:f.nuevo.value.trim(),link:f.link.value.trim(),et:[...f.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value)});
     f.remove();msg('mjq','ok','✅ Cambios guardados en <b>'+esc(f.nuevo.value.trim())+'</b>. Salen en la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));b.disabled=false}});
+let JPL_EXTRA_OK=false;
 async function juegos(){jCons();
-  try{const d=await api('juegos');const r=d.run;
+  try{const d=await api('juegos');if(!JPL_EXTRA_OK){(d.plataformas||[]).forEach(c=>{if(!JPL[c]){JPL[c]=c;JETP[c]=['online','excl']}});JPL_EXTRA_OK=true;jCons()}const r=d.run;
     const enc=r&&r.estado!=='completed';
     $('jest').innerHTML=!r?'':enc?'⏳ Publicando los últimos cambios…':r.res==='success'?'✅ Todo publicado':'⚠️ La última publicación falló. Avísale a Claude.';
     clearTimeout(JPOLL);if(enc&&!$('t-ju').hidden)JPOLL=setTimeout(juegos,15000);
@@ -914,7 +926,7 @@ let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GP
 async function tienda(){
   try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
     TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
-    tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
+    ceCargar();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
   gpEstado()}
 // --- datos de la tienda ---
 const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -934,8 +946,8 @@ $('rw-guardar').onclick=async()=>{const b=$('rw-guardar');b.disabled=true;nomsg(
     if(($('rw-txt').value||'')!==(TI.reglas||'')){const t=await api('archivo-guardar',{f:'tienda',d:{...TI,reglas:$('rw-txt').value},sha:TISHA});TI=t.d;TISHA=t.sha}
     msg('mrw','ok','✅ Reglas guardadas. El texto sale en la web y la app en 1 o 2 minutos.')}catch(e){msg('mrw','bad',esc(e.message))}b.disabled=false};
 // --- servicios ---
-function svPintar(){$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" class="chip" data-s="${i}" aria-pressed="${i===SVI}">${esc((x.icono||'')+' '+x.s)}</button>`).join('');
-  const sec=SV[SVI];if(!sec){$('sv-items').innerHTML='';return}
+function svPintar(){svTipoNext();$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" class="chip" data-s="${i}" aria-pressed="${i===SVI}">${esc((x.icono||'')+' '+x.s)}</button>`).join('');
+  const sec=SV[SVI];if(!sec){$('sv-items').innerHTML='';svTipo();return}
   $('sv-items').innerHTML=sec.items.map((it,i)=>`<details class="svi" data-i="${i}"><summary>${it.oculto?'🙈 ':''}${esc(it.t||'(sin nombre)')}</summary><div class="in">
     <label class="sw" style="margin:4px 0 0"><input type="checkbox" data-k="oculto" ${it.oculto?'checked':''}><span>Oculto <small>(no sale en la web ni en la app)</small></span></label>
     <label>Nombre</label><input data-k="t" value="${esc(it.t||'')}" required>
@@ -944,7 +956,7 @@ function svPintar(){$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" 
     <label>Montos en $ <small>(solo gift cards; separados por coma)</small></label><input data-k="montos" value="${esc((it.montos||[]).join(', '))}" placeholder="10, 20, 30, 50">
     <div class="grs">${(it.grupos||[]).map(g=>`<div class="svg"><label>Nombre de la lista</label><input data-g="n" value="${esc(g.n||'')}" placeholder="Plan, Tiempo, Tipo…"><label>Opciones <small>(una por línea; para una explicación: Opción | explicación)</small></label><textarea data-g="o" rows="4">${esc(g.o.map(o=>o.t+(o.d?' | '+o.d:'')).join('\n'))}</textarea><button type="button" class="mini bad" data-qg="1" style="margin-top:6px">Quitar lista</button></div>`).join('')}</div>
     <div class="row" style="margin-top:10px"><button type="button" class="mini" data-ag="1">+ Lista de opciones</button><button type="button" class="mini" data-up="1">↑ Subir</button><button type="button" class="mini" data-dn="1">↓ Bajar</button><button type="button" class="mini bad" data-del="1">Borrar servicio</button></div></div></details>`).join('')}
-function svLeer(){const sec=SV[SVI];if(!sec)return;const ab=new Set();
+function svLeer(){svTipoLeer();const sec=SV[SVI];if(!sec)return;const ab=new Set();
   sec.items=[...document.querySelectorAll('#sv-items .svi')].map(el=>{const it={...sec.items[+el.dataset.i]};if(el.open)ab.add(el);
     const v=k=>el.querySelector(`[data-k="${k}"]`).value.trim();
     it.t=v('t');if(el.querySelector('[data-k="oculto"]').checked)it.oculto=true;else delete it.oculto;for(const k of ['d','pedido','boton']){const x=k==='d'?el.querySelector('[data-k="d"]').value.trim():v(k);if(x)it[k]=x;else delete it[k]}
@@ -1037,12 +1049,36 @@ const VCAT=['PS4','PS5','PC','Xbox Game Pass','Xbox pago','Meta Quest','Switch',
 const VCATN={'Xbox pago':'Xbox (pago)','Switch':'Nintendo Switch','Xbox Game Pass':'Game Pass','PlayStation Plus':'PS Plus'};
 function viPintar(){const o=TI.ocultar||{};const ck=(l,v)=>(l||[]).includes(v)?'':'checked';
   $('vi-sec').innerHTML=VSEC.map(([k,l])=>`<label><input type="checkbox" value="${k}" ${ck(o.secciones,k)}>${l}</label>`).join('');
-  $('vi-cat').innerHTML=VCAT.map(c=>`<label><input type="checkbox" value="${esc(c)}" ${ck(o.catalogos,c)}>${esc(VCATN[c]||c)}</label>`).join('');
+  $('vi-cat').innerHTML=VCAT.concat(CE.map(x=>x.n)).map(c=>`<label><input type="checkbox" value="${esc(c)}" ${ck(o.catalogos,c)}>${esc(VCATN[c]||c)}</label>`).join('');
   $('vi-sv').innerHTML=SV.map(x=>`<label><input type="checkbox" value="${esc(x.s)}" ${ck(o.servicios,x.s)}>${esc((x.icono||'')+' '+x.s)}</label>`).join('')}
 $('vi-guardar').onclick=async()=>{const b=$('vi-guardar');b.disabled=true;nomsg('mvi');
   const off=id=>[...document.querySelectorAll('#'+id+' input:not(:checked)')].map(i=>i.value);
   try{const r=await api('archivo-guardar',{f:'tienda',d:{...TI,ocultar:{secciones:off('vi-sec'),catalogos:off('vi-cat'),servicios:off('vi-sv')}},sha:TISHA});TI=r.d;TISHA=r.sha;
     const n=off('vi-sec').length+off('vi-cat').length+off('vi-sv').length;msg('mvi','ok','✅ Guardado. '+(n?'Lo desmarcado se esconde':'Todo se ve')+' en la web y la app en 1 o 2 minutos.')}catch(e){msg('mvi','bad',esc(e.message))}b.disabled=false};
+
+// ---------- catálogos nuevos ----------
+let CE=[],CESHA=null;
+function svTipoNext(){setTimeout(svTipo,0)}
+const txtSobre=h=>{const r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16);return (r*299+g*587+b*114)/1000>150?'#0d1124':'#ffffff'};
+async function ceCargar(){try{const r=await api('archivo?f=catalogos');CE=r.d||[];CESHA=r.sha;cePintar()}catch(e){msg('mce','bad',esc(e.message))}}
+function cePintar(){$('ce-lista').innerHTML=CE.length?CE.map((c,i)=>`<div class="jhit"><div><span style="display:inline-block;width:14px;height:14px;border-radius:4px;background:${esc(c.color)};vertical-align:-2px;margin-right:6px"></span>${esc(c.n)}${c.desbloqueo?' 🔓':''}</div><button class="q" data-ce="${i}">Borrar</button></div>`).join(''):'<p class="vacio">Todavía no has creado catálogos.</p>';
+  if(typeof viPintar==='function'&&$('vi-cat').innerHTML)viPintar()}
+async function ceGuardar(nuevo,ok){const r=await api('archivo-guardar',{f:'catalogos',d:nuevo,sha:CESHA});CE=r.d;CESHA=r.sha;cePintar();msg('mce','ok',ok)}
+$('ce-add').onclick=async()=>{const n=$('ce-n').value.trim();if(!n){msg('mce','bad','Ponle nombre');return}$('ce-add').disabled=true;nomsg('mce');
+  try{const col=$('ce-c').value;await ceGuardar(CE.concat([{n,color:col,texto:txtSobre(col),desbloqueo:$('ce-d').checked}]),'✅ Catálogo <b>'+esc(n)+'</b> creado. Sale en la web y la app en 1 o 2 minutos. Ya le puedes agregar juegos en 🎮 Juegos.');$('ce-n').value='';$('ce-d').checked=false;JPL_EXTRA_OK=false}catch(e){msg('mce','bad',esc(e.message))}$('ce-add').disabled=false};
+$('ce-lista').onclick=async e=>{const b=e.target.closest('[data-ce]');if(!b)return;const c=CE[+b.dataset.ce];
+  if(!confirm('¿Borrar el catálogo "'+c.n+'"? Sus juegos dejan de salir (si lo vuelves a crear con el mismo nombre, vuelven).'))return;b.disabled=true;
+  try{await ceGuardar(CE.filter(x=>x!==c),'✅ Catálogo borrado.')}catch(err){msg('mce','bad',esc(err.message));b.disabled=false}};
+// ---------- tipos de servicio ----------
+const SVCOL=['#d92b2b','#f2a900','#7a3fe0','#0f9d9a','#3d7bff','#e0457b','#5c8a1e','#e07a10'];
+function svTipo(){const s=SV[SVI];if(!s){$('sv-tipo').innerHTML='';$('sv-tipo').hidden=true;return}$('sv-tipo').hidden=false;
+  $('sv-tipo').innerHTML=`<div class="g2"><div><label>Nombre del tipo</label><input id="st-n" maxlength="40" value="${esc(s.s)}"></div><div class="row" style="gap:8px"><div style="flex:1"><label>Ícono</label><input id="st-i" maxlength="4" value="${esc(s.icono||'')}" placeholder="🎧"></div><div style="flex:1"><label>Color</label><input id="st-c" type="color" value="${esc(s.color||'#3d7bff')}" style="height:46px;padding:4px"></div></div></div><button type="button" class="mini bad" id="st-del" style="margin-top:8px">Borrar este tipo de servicio</button>`}
+function svTipoLeer(){const s=SV[SVI];if(!s||!$('st-n'))return;s.s=$('st-n').value.trim()||s.s;s.icono=$('st-i').value.trim();const c=$('st-c').value;if(c!==s.color){s.color=c;const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);s.texto='#'+[r,g,b].map(x=>Math.round(x+(255-x)*.55).toString(16).padStart(2,'0')).join('')}}
+$('sv-tipo').addEventListener('click',e=>{if(!e.target.closest('#st-del'))return;const s=SV[SVI];if(!confirm('¿Borrar "'+s.s+'" con todos sus servicios? (se borra al tocar Guardar servicios)'))return;SV.splice(SVI,1);SVI=0;svPintar()});
+$('sv-newt').onclick=()=>{svLeer();svTipoLeer();const n=prompt('Nombre del nuevo tipo de servicio (ej. Accesorios, Reparaciones)');if(!n||!n.trim())return;
+  SV.push({s:n.trim(),icono:'🛒',color:SVCOL[SV.length%SVCOL.length],texto:'#ffffff',items:[{t:'Servicio nuevo'}]});SVI=SV.length-1;svPintar();
+  const t=SV[SVI];const c=t.color;const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);t.texto='#'+[r,g,b].map(x=>Math.round(x+(255-x)*.55).toString(16).padStart(2,'0')).join('');
+  msg('msv','inf','Tipo <b>'+esc(n.trim())+'</b> creado. Ponle sus servicios y toca <b>Guardar servicios</b>.')};
 
 </script>
 </body>

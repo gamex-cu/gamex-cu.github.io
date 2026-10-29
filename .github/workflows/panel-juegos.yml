@@ -3,7 +3,7 @@ name: Cambios del panel
 on:
   push:
     branches: [main]
-    paths: ['tools/datos/panel_juegos.json', 'tools/datos/tienda.json', 'tools/datos/servicios.json', 'tools/datos/ps_plus.json']
+    paths: ['tools/datos/panel_juegos.json', 'tools/datos/tienda.json', 'tools/datos/servicios.json', 'tools/datos/ps_plus.json', 'tools/datos/catalogos_extra.json']
   workflow_dispatch:
 permissions:
   contents: write

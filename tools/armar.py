@@ -11,6 +11,12 @@ head=open(T+'plantilla/cabecera.html').read(); js=open(T+'plantilla/script.html'
 import html as _h, re as _re
 try: TI=json.load(open(D+'tienda.json'))
 except FileNotFoundError: TI={}
+try: CE=json.load(open(D+'catalogos_extra.json'))
+except FileNotFoundError: CE=[]
+def _slug(t): return _re.sub(r'[^a-z0-9]+','-',__import__('unicodedata').normalize('NFKD',t).encode('ascii','ignore').decode().lower()).strip('-')
+def _luz(h):
+    h=h.lstrip('#');r,g,b=(int(h[i:i+2],16) for i in (0,2,4));return '#%02x%02x%02x'%tuple(int(x+(255-x)*.55) for x in (r,g,b))
+CE_JS=[[c['n'],'x-'+_slug(c['n']),c.get('color','#3d7bff'),c.get('texto','#fff'),_luz(c.get('color','#3d7bff'))] for c in CE if c.get('n')]
 def _tienda(head,js):
     nums=[n for n in TI.get('numeros') or [] if _re.sub(r'\D','',n)]
     if not nums: return head,js
@@ -48,6 +54,8 @@ def _tienda(head,js):
     js=js.replace("let dest='5353441089';",f"let dest='{w(nums[0])}';")
     _oc=TI.get('ocultar') or {}
     _sec=[x for x in _oc.get('secciones',[]) if x in ('catalogos','ofertas','servicios','cuenta')]
+    if CE_JS:
+        js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(CONS.length-1,0,..."+json.dumps(CE_JS,ensure_ascii=False)+");"+''.join("CAND.add("+json.dumps(c['n'],ensure_ascii=False)+");" for c in CE if c.get('desbloqueo'))+"\nconst CI=Object.fromEntries(CONS",1)
     _cat=[x for x in _oc.get('catalogos',[])]
     if _cat: js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(0,CONS.length,...CONS.filter(c=>!"+json.dumps(_cat,ensure_ascii=False)+".includes(c[0])));\nconst CI=Object.fromEntries(CONS",1)
     js=js.replace("function route(){","const SECOFF="+json.dumps(_sec)+";\nfunction gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}\nSECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});\nfunction route(){\n  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);",1)
@@ -99,6 +107,7 @@ try: XP=json.load(open(D+'etiquetas_xbox_pago.json'))
 except FileNotFoundError: XP={}
 series+=['Xbox pago|'+n for n in XP.get('series',[])]
 online+=['Xbox pago|'+n for n in XP.get('online',[])]
+for _x in CE_JS: data.setdefault(_x[0],[])
 # ---- juegos agregados, quitados o editados a mano desde el panel (tools/datos/panel_juegos.json) ----
 try: PJ=json.load(open(D+'panel_juegos.json'))
 except FileNotFoundError: PJ={}

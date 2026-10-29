@@ -34,6 +34,10 @@ def leer(web):
     for nombre, bit in FLAGS:
         for k in tomar(nombre): flags[k] = flags.get(k, 0) | bit
     mes = dec.raw_decode(s, s.index('const PSPMES=') + len('const PSPMES='))[0]
+    try:  # catálogos nuevos creados desde el panel (van antes de PlayStation Plus)
+        ce = [x for x in json.load(open(T + 'datos/catalogos_extra.json')) if x.get('n')]
+        for x in ce: cons.insert(len(cons) - 1, [x['n'], x['n'], x.get('color', '#3d7bff'), '', x.get('texto', '#fff')])
+    except FileNotFoundError: pass
     return raw, cons, flags, mes
 
 
