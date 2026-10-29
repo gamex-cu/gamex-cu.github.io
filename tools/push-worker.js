@@ -257,7 +257,9 @@ function nombreModelo(m){if(!m)return '';const k=m.toUpperCase().trim();if(MODEL
   let r=k.match(/^SM-S9(\d)(\d)/);if(r)return 'Samsung Galaxy S'+(22+ +r[1])+({6:'+',7:'+',8:' Ultra'}[r[2]]||'');
   r=k.match(/^SM-([AMFE])(\d)(\d)(\d)/);if(r)return 'Samsung Galaxy '+r[1]+r[2]+r[3]+(r[4]==='7'?'s':'');
   if(/^SM-/.test(k))return 'Samsung '+m;return m}
-const APK='https://gamex-cu.github.io/app/GAMEX-Catalogo.apk';
+const APK='https://gamex-cu.github.io/app/GameX-1.7.apk'; // respaldo: la dirección buena se lee de app/version.json (apkUrl)
+let APK_CACHE=null;
+async function apkUrl(){if(APK_CACHE&&Date.now()-APK_CACHE.t<300000)return APK_CACHE.u;try{const r=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/version.json',{cf:{cacheTtl:0}});const j=await r.json();if(/^https:\/\/gamex-cu\.github\.io\/app\/[\w.-]+\.apk$/.test(j.apkUrl||'')){APK_CACHE={t:Date.now(),u:j.apkUrl};return j.apkUrl}}catch(e){}return APK}
 const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};
 export class Stats extends DurableObject{
   constructor(ctx,env){super(ctx,env);this.sql=ctx.storage.sql;
@@ -432,7 +434,7 @@ export default{async fetch(req,env){
       const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
       const disp=/android/i.test(ua)?'android':/iphone|ipad/i.test(ua)?'iphone':/windows|macintosh|linux/i.test(ua)?'pc':'otro';
       try{await statsDO(env).agregar([{tipo:'descarga',v:u.searchParams.get('de')||'web',n:null,uid,disp,org:'web'}])}catch(e){}}
-    return Response.redirect(APK,302);
+    return Response.redirect(await apkUrl(),302);
   }
   if(u.pathname==='/suscribir'&&req.method==='POST'){
     let s;try{s=await req.json()}catch(e){return r('mal',400)}
