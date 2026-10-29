@@ -1,6 +1,6 @@
 GAMEX1
-V	164
-F	28 oct 2026
+V	165
+F	29 oct 2026
 M	Octubre 2026
 C	PlayStation 4	PS4	1e47b8	8fb0ff
 J	0	1971 Project Helios
@@ -6545,6 +6545,7 @@ J	2	Final Fantasy III
 J	2	Final Fantasy IV
 J	2	Final Fantasy V
 J	2	Final Fantasy VI
+J	2	Final Fantasy VII Remake Intergrade
 J	0	Firefighting Simulator - The Squad
 J	2	FixForce
 J	0	Football Manager 26 Console
@@ -6678,6 +6679,7 @@ J	0	Moonlighter
 J	2	Moonlighter 2: The Endless Vault
 J	2	Mortal Kombat 1
 J	2	Motorslice
+J	0	Mouthwashing
 J	0	Moving Out 2
 J	0	My Friend Peppa Pig
 J	1	Naraka: Bladepoint
