@@ -71,7 +71,8 @@ def _tienda(head,js):
         tit=_h.escape(b.get('titulo',''));sub=_h.escape(b.get('sub',''));ico=_h.escape(b.get('icono','') or '⭐')
         st=f'style="background:linear-gradient(135deg,{_rgba(col,.22)},{_rgba(col,.06)})"'
         tipo=b.get('tipo','pagina')
-        if tipo=='enlace' and str(b.get('enlace','')).startswith('https://'): at=f'href="{_h.escape(b["enlace"])}" target="_blank" rel="noopener"'
+        if tipo=='seccion' and _re.fullmatch(r'[a-z0-9=-]{1,60}',str(b.get('destino',''))): at=f'href="#{b["destino"]}"'
+        elif tipo=='enlace' and str(b.get('enlace','')).startswith('https://'): at=f'href="{_h.escape(b["enlace"])}" target="_blank" rel="noopener"'
         elif tipo=='whatsapp': at=f'href="#" class="sbtn wa-pick" data-t="{_h.escape(b.get("wa") or ("Hola GameX, quiero información sobre: "+b.get("titulo","")))}"'
         else:
             at=f'href="#p-{bid}"'

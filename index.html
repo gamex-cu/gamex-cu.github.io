@@ -890,7 +890,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=189;
+const GXV=190;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

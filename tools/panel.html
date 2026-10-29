@@ -335,9 +335,10 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <div class="g2"><div><label for="bt-t">Título</label><input id="bt-t" maxlength="40" required placeholder="Garantía"></div><div class="row" style="gap:8px"><div style="flex:1"><label for="bt-i">Ícono</label><input id="bt-i" maxlength="4" placeholder="🛡️"></div><div style="flex:1"><label for="bt-c">Color</label><input id="bt-c" type="color" value="#0f9d9a" style="height:46px;padding:4px"></div></div></div>
       <label for="bt-s">Texto pequeño debajo del título</label><input id="bt-s" maxlength="120" placeholder="Cómo funciona nuestra garantía">
       <label>Al tocarlo…</label>
-      <div class="tipos" id="bt-tipo"><label><input type="radio" name="bt-tipo" value="pagina" checked>Abre una página con texto</label><label><input type="radio" name="bt-tipo" value="enlace">Abre un enlace</label><label><input type="radio" name="bt-tipo" value="whatsapp">Escribe por WhatsApp</label></div>
+      <div class="tipos" id="bt-tipo"><label><input type="radio" name="bt-tipo" value="pagina" checked>Abre una página con texto</label><label><input type="radio" name="bt-tipo" value="seccion">Va a una parte de la tienda</label><label><input type="radio" name="bt-tipo" value="enlace">Abre un enlace</label><label><input type="radio" name="bt-tipo" value="whatsapp">Escribe por WhatsApp</label></div>
       <div id="bt-pag"><label for="bt-x">Texto de la página <small>(# título · - punto de lista · **negrita**)</small></label><textarea id="bt-x" rows="7"></textarea>
         <label class="sw"><input type="checkbox" id="bt-cw" checked><span>Poner botón "Escribir por WhatsApp" al final</span></label></div>
+      <div id="bt-sec" hidden><label for="bt-d">¿A dónde lleva?</label><select id="bt-d" style="width:100%;font:inherit;color:var(--fg);background:#0b0f20;border:1px solid var(--line);border-radius:8px;padding:11px 12px"></select></div>
       <div id="bt-enl" hidden><label for="bt-e">Enlace</label><input id="bt-e" type="url" placeholder="https://…"></div>
       <div id="bt-wa"><label for="bt-w">Mensaje de WhatsApp <small>(opcional)</small></label><input id="bt-w" maxlength="300" placeholder="Hola GameX, quiero información sobre…"></div>
       <div class="row" style="margin-top:12px"><button class="btn" id="bt-g" style="margin:0;flex:1">Agregar botón</button><button type="button" class="btn sec" id="bt-x2" style="margin:0;flex:1" hidden>Cancelar</button></div>
@@ -1111,21 +1112,27 @@ $('sv-newt').onclick=()=>{svLeer();svTipoLeer();const n=prompt('Nombre del nuevo
 // ---------- botones propios del menú principal ----------
 let BTED=null;
 const btTipo=()=>(document.querySelector('input[name="bt-tipo"]:checked')||{}).value||'pagina';
-function btModo(){const t=btTipo();$('bt-pag').hidden=t!=='pagina';$('bt-enl').hidden=t!=='enlace';$('bt-wa').hidden=t==='enlace'}
+const slugW=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const BASECAT=[['ps4','PS4'],['ps5','PS5'],['pc','PC'],['xbox-game-pass','Game Pass'],['xbox-pago','Xbox (pago)'],['meta-quest','Meta Quest'],['switch','Nintendo Switch'],['playstation-plus','PS Plus']];
+function btDestinos(){const v=$('bt-d').value;const g=(t,l)=>`<optgroup label="${esc(t)}">${l.map(([k,n])=>`<option value="${esc(k)}">${esc(n)}</option>`).join('')}</optgroup>`;
+  $('bt-d').innerHTML=g('Secciones',[['catalogos','🎮 Catálogos (todas las consolas)'],['ofertas','🏷️ Ofertas'],['servicios','💲 Servicios'],['cuenta','🏆 Mi cuenta GameX'],['todas','🔎 Buscar en todas las consolas']])
+    +g('Un catálogo',BASECAT.concat(CE.map(c=>['x-'+slugW(c.n),c.n])))+g('Un tipo de servicio',SV.map(x=>['sv-'+slugW(x.s),(x.icono||'')+' '+x.s]))
+    +((TI.botones||[]).some(b=>b.tipo==='pagina')?g('Otra página tuya',(TI.botones||[]).filter(b=>b.tipo==='pagina').map(b=>['p-'+b.id,b.titulo])):'');if(v)$('bt-d').value=v}
+function btModo(){const t=btTipo();$('bt-pag').hidden=t!=='pagina';$('bt-enl').hidden=t!=='enlace';$('bt-sec').hidden=t!=='seccion';$('bt-wa').hidden=t==='enlace'||t==='seccion';if(t==='seccion')btDestinos()}
 $('bt-tipo').onchange=btModo;
-function btPintar(){const l=TI.botones||[];$('bt-lista').innerHTML=l.length?l.map((b,i)=>`<div class="jhit"><div><span style="display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:${esc(b.color)};margin-right:6px">${esc(b.icono||'⭐')}</span>${esc(b.titulo)}<small>${{pagina:'Página con texto',enlace:'Enlace',whatsapp:'WhatsApp'}[b.tipo]||''}</small></div><button data-be="${i}">Editar</button><button class="q" data-bd="${i}">Borrar</button></div>`).join(''):'<p class="vacio">Todavía no tienes botones propios.</p>'}
+function btPintar(){const l=TI.botones||[];$('bt-lista').innerHTML=l.length?l.map((b,i)=>`<div class="jhit"><div><span style="display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:${esc(b.color)};margin-right:6px">${esc(b.icono||'⭐')}</span>${esc(b.titulo)}<small>${{pagina:'Página con texto',enlace:'Enlace',whatsapp:'WhatsApp',seccion:'Lleva a una parte de la tienda'}[b.tipo]||''}</small></div><button data-be="${i}">Editar</button><button class="q" data-bd="${i}">Borrar</button></div>`).join(''):'<p class="vacio">Todavía no tienes botones propios.</p>'}
 function btLimpiar(){BTED=null;$('fbt').reset();$('bt-c').value='#0f9d9a';$('bt-cw').checked=true;$('bt-tt').textContent='Botón nuevo';$('bt-g').textContent='Agregar botón';$('bt-x2').hidden=true;btModo()}
 $('bt-x2').onclick=btLimpiar;
 $('bt-lista').onclick=async e=>{const be=e.target.closest('[data-be]'),bd=e.target.closest('[data-bd]');const l=TI.botones||[];
   if(be){const b=l[+be.dataset.be];BTED=b.id;$('bt-t').value=b.titulo;$('bt-i').value=b.icono||'';$('bt-c').value=b.color;$('bt-s').value=b.sub||'';document.querySelector(`input[name="bt-tipo"][value="${b.tipo}"]`).checked=true;
-    $('bt-x').value=b.texto||'';$('bt-cw').checked=!!b.conwa;$('bt-e').value=b.enlace||'';$('bt-w').value=b.wa||'';$('bt-tt').textContent='Editar "'+b.titulo+'"';$('bt-g').textContent='Guardar cambios';$('bt-x2').hidden=false;btModo();$('fbt').scrollIntoView({block:'start',behavior:'smooth'});return}
+    $('bt-x').value=b.texto||'';$('bt-cw').checked=!!b.conwa;$('bt-e').value=b.enlace||'';$('bt-w').value=b.wa||'';if(b.tipo==='seccion'){btDestinos();$('bt-d').value=b.destino||''}$('bt-tt').textContent='Editar "'+b.titulo+'"';$('bt-g').textContent='Guardar cambios';$('bt-x2').hidden=false;btModo();$('fbt').scrollIntoView({block:'start',behavior:'smooth'});return}
   if(bd){const b=l[+bd.dataset.bd];if(!confirm('¿Borrar el botón "'+b.titulo+'"?'))return;bd.disabled=true;
     try{await btGuardar(l.filter(x=>x!==b),'✅ Botón borrado.')}catch(err){msg('mbt','bad',esc(err.message));bd.disabled=false}}};
 async function btGuardar(lista,ok){const r=await api('archivo-guardar',{f:'tienda',d:{...TI,botones:lista},sha:TISHA});TI=r.d;TISHA=r.sha;btPintar();viPintar();msg('mbt','ok',ok)}
 $('fbt').onsubmit=async e=>{e.preventDefault();nomsg('mbt');const t=btTipo();if(t==='enlace'&&!/^https:\/\//.test($('bt-e').value.trim())){msg('mbt','bad','El enlace tiene que empezar con https://');return}
   const slug=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30)||'boton';
   const l=(TI.botones||[]).slice();let id=BTED;if(!id){id=slug($('bt-t').value);let k=2;while(l.some(x=>x.id===id))id=slug($('bt-t').value)+'-'+k++}
-  const b={id,titulo:$('bt-t').value.trim(),icono:$('bt-i').value.trim(),color:$('bt-c').value,sub:$('bt-s').value.trim(),tipo:t,texto:$('bt-x').value,conwa:$('bt-cw').checked,enlace:$('bt-e').value.trim(),wa:$('bt-w').value.trim()};
+  const b={id,titulo:$('bt-t').value.trim(),icono:$('bt-i').value.trim(),color:$('bt-c').value,sub:$('bt-s').value.trim(),tipo:t,texto:$('bt-x').value,conwa:$('bt-cw').checked,enlace:$('bt-e').value.trim(),wa:$('bt-w').value.trim(),destino:t==='seccion'?$('bt-d').value:''};
   const i=l.findIndex(x=>x.id===id);if(i>=0)l[i]=b;else l.push(b);$('bt-g').disabled=true;
   try{await btGuardar(l,'✅ '+(i>=0?'Cambios guardados':'Botón agregado')+'. Sale en la página principal en 1 o 2 minutos.');btLimpiar()}catch(err){msg('mbt','bad',esc(err.message))}$('bt-g').disabled=false};
 
