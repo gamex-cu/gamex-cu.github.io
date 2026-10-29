@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="favicon.ico" sizes="any"><link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png"><link rel="icon" type="image/png" sizes="192x192" href="icon-192.png"><link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -899,7 +899,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=199;
+const GXV=200;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
