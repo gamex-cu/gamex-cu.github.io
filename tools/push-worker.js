@@ -258,6 +258,16 @@ function nombreModelo(m){if(!m)return '';const k=m.toUpperCase().trim();if(MODEL
   let r=k.match(/^SM-S9(\d)(\d)/);if(r)return 'Samsung Galaxy S'+(22+ +r[1])+({6:'+',7:'+',8:' Ultra'}[r[2]]||'');
   r=k.match(/^SM-([AMFE])(\d)(\d)(\d)/);if(r)return 'Samsung Galaxy '+r[1]+r[2]+r[3]+(r[4]==='7'?'s':'');
   if(/^SM-/.test(k))return 'Samsung '+m;return m}
+// Nombres de modelos que no están en la lista de dentro: se buscan en tools/datos/modelos/<2 letras>.json (lista de Google, la actualiza una acción semanal)
+const MOD_PARTES=new Map();const esCodigo=s=>typeof s==='string'&&/^[A-Z0-9][A-Z0-9_-]{3,}$/i.test(s.trim())&&!/\s/.test(s.trim());
+async function nombresGoogle(lista){
+  const pedir=[...new Set(lista.filter(esCodigo).map(s=>s.trim().toUpperCase()))];if(!pedir.length)return {};
+  const out={};
+  await Promise.all([...new Set(pedir.map(k=>{const a=k.replace(/[^A-Z0-9]/g,'').slice(0,2);return a.length===2?a:'__'}))].map(async p=>{
+    let d=MOD_PARTES.get(p);if(d===undefined){try{const r=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/tools/datos/modelos/'+p+'.json',{cf:{cacheTtl:86400,cacheEverything:true}});d=r.ok?await r.json():null}catch(e){d=null}MOD_PARTES.set(p,d)}
+    if(d)for(const k of pedir)if(d[k])out[k]=d[k]}));
+  return out;
+}
 const APK='https://gamex-cu.github.io/app/GameX-1.7.apk'; // respaldo: la dirección buena se lee de app/version.json (apkUrl)
 let APK_CACHE=null;
 async function apkUrl(){if(APK_CACHE&&Date.now()-APK_CACHE.t<300000)return APK_CACHE.u;try{const r=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/version.json',{cf:{cacheTtl:0}});const j=await r.json();if(/^https:\/\/gamex-cu\.github\.io\/app\/[\w.-]+\.apk$/.test(j.apkUrl||'')){APK_CACHE={t:Date.now(),u:j.apkUrl};return j.apkUrl}}catch(e){}return APK}
@@ -340,7 +350,10 @@ async function panel(req,env,u){
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
       const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
-      return j(await statsDO(env).resumen(d));
+      const R=await statsDO(env).resumen(d);
+      try{const raws=[...(R.modelos||[]).map(x=>x.v),...(R.equipos||[]).map(x=>x.modelo),...(R.ignorados||[]).map(x=>x.modelo)];const N=await nombresGoogle(raws);
+        const nm=v=>esCodigo(v)&&N[v.trim().toUpperCase()]||v;(R.modelos||[]).forEach(x=>x.v=nm(x.v));(R.equipos||[]).forEach(x=>{if(x.modelo)x.modelo=nm(x.modelo)});(R.ignorados||[]).forEach(x=>{if(x.modelo)x.modelo=nm(x.modelo)})}catch(e){}
+      return j(R);
     }
     if(p==='stats-ignorar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(!q.uid)return j({error:'Falta el equipo'},400);await statsDO(env).ignorar(String(q.uid).slice(0,40),!!q.si,String(q.nota||'').slice(0,40));return j({ok:true})}
     if(p==='stats-reiniciar'&&req.method==='POST'){const q=await req.json().catch(()=>({}));if(q.confirmar!=='LANZAMOS')return j({error:'Falta confirmar'},400);return j({ok:true,borrados:await statsDO(env).reiniciar()})}

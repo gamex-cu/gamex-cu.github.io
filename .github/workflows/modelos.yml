@@ -1,0 +1,26 @@
+# Una vez por semana: baja la lista oficial de teléfonos Android de Google para que el panel le ponga nombre a los modelos.
+name: Modelos de teléfono
+on:
+  schedule:
+    - cron: '17 9 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: armar-catalogo
+  cancel-in-progress: false
+jobs:
+  modelos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bajar la lista de Google
+        run: python3 tools/modelos_google.py
+      - name: Subir
+        run: |
+          git config user.name "GameX panel"; git config user.email "gamex-panel@users.noreply.github.com"
+          git add tools/datos/modelos
+          git diff --cached --quiet && exit 0
+          git commit -m "Modelos de teléfono: lista de Google actualizada"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep 5; done
+          exit 1
