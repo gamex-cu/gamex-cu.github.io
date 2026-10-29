@@ -539,6 +539,16 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   </div>
   <div id="t-aj" class="pest" hidden>
   <section class="card">
+    <h2>🚧 Modo mantenimiento</h2>
+    <p class="nota" style="margin:-6px 0 6px">Tapa la web y la app con un cartel de "Estamos en mantenimiento" y los números de WhatsApp. No se borra nada: lo apagas y todo vuelve igual.</p>
+    <label class="sw"><input type="checkbox" id="mt-on"><span><b>Activar mantenimiento</b><small id="mt-est">Ahora la tienda se ve normal</small></span></label>
+    <label for="mt-msg">Mensaje <small>(opcional)</small></label>
+    <textarea id="mt-msg" rows="3" maxlength="500" placeholder="Estamos haciendo unos arreglos para mejorar la tienda. Vuelve en un rato."></textarea>
+    <p class="nota">Tarda 1 o 2 minutos en aplicarse. Para ver la tienda tú mientras está en mantenimiento, abre <b>gamex-cu.github.io/#ver-igual</b> en tu teléfono (y <b>#ver-mant</b> para volver a ver el cartel).</p>
+    <button class="btn" id="mt-g" type="button">Guardar</button>
+    <div class="msg" id="mmt"></div>
+  </section>
+  <section class="card">
     <h2>🔑 Contraseña del panel</h2>
     <form id="fpw">
       <label for="pw-act">Contraseña actual</label><input id="pw-act" type="password" autocomplete="current-password" required>
@@ -1009,7 +1019,7 @@ let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GP
 async function tienda(){
   try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
     TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
-    ceCargar();btPintar();btModo();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
+    ceCargar();btPintar();btModo();mtPintar();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
   gpEstado()}
 // --- datos de la tienda ---
 const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -1211,6 +1221,12 @@ $('fbt').onsubmit=async e=>{e.preventDefault();nomsg('mbt');const t=btTipo();if(
   const b={id,titulo:$('bt-t').value.trim(),icono:$('bt-i').value.trim(),color:$('bt-c').value,sub:$('bt-s').value.trim(),tipo:t,texto:$('bt-x').value,conwa:$('bt-cw').checked,enlace:$('bt-e').value.trim(),wa:$('bt-w').value.trim(),destino:t==='seccion'?$('bt-d').value:'',padre:$('bt-p').value,oculto:$('bt-oc').checked};
   const i=l.findIndex(x=>x.id===id);if(i>=0)l[i]=b;else l.push(b);$('bt-g').disabled=true;
   try{await btGuardar(l,'✅ '+(i>=0?'Cambios guardados':'Botón agregado')+'. Sale en la web y la app en 1 o 2 minutos.');btLimpiar()}catch(err){msg('mbt','bad',esc(err.message))}$('bt-g').disabled=false};
+
+// ---------- modo mantenimiento ----------
+function mtPintar(){const m=TI.mantenimiento||{};$('mt-on').checked=!!m.activo;$('mt-msg').value=m.mensaje||'';$('mt-est').textContent=m.activo?'⚠️ Ahora mismo la tienda está EN MANTENIMIENTO':'Ahora la tienda se ve normal'}
+$('mt-g').onclick=async()=>{const on=$('mt-on').checked;if(on&&!confirm('¿Poner la web y la app en mantenimiento? Los clientes solo verán el cartel.'))return;$('mt-g').disabled=true;nomsg('mmt');
+  try{const r=await api('archivo-guardar',{f:'tienda',d:{...TI,mantenimiento:{activo:on,mensaje:$('mt-msg').value.trim()}},sha:TISHA});TI=r.d;TISHA=r.sha;mtPintar();
+    msg('mmt','ok',on?'🚧 Mantenimiento activado. En 1 o 2 minutos los clientes verán el cartel.':'✅ Mantenimiento apagado. En 1 o 2 minutos la tienda vuelve a verse normal.')}catch(e){msg('mmt','bad',esc(e.message))}$('mt-g').disabled=false};
 
 </script>
 </body>

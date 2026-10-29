@@ -90,6 +90,12 @@ def _tienda(head,js):
         head,k=_re.subn(r'(<a class="sbtn sb-gx" href="#cuenta" id="b-cuenta">.*?</a>)',lambda m:m.group(1)+tiles,head,count=1,flags=_re.S)
         if not k: print('aviso: no encontré dónde poner los botones')
     if pags: head=head.replace('<div id="serv" hidden>',pags+'<div id="serv" hidden>',1)
+    _mt=TI.get('mantenimiento') or {}
+    if _mt.get('activo'):
+        _wa=''.join(f'<a class="mtw" href="https://wa.me/{w(n)}" target="_blank" rel="noopener">{_h.escape(n)}</a>' for n in nums)
+        _msg=_h.escape(_mt.get('mensaje') or 'Estamos haciendo unos arreglos para mejorar la tienda. Vuelve en un rato.').replace('\n','<br>')
+        _mh=open(T+'plantilla/mantenimiento.html').read().replace('__MSG__',_msg).replace('__WA__',_wa)
+        head=head.replace('<div class="cartbar" id="cartbar">',_mh+'<div class="cartbar" id="cartbar">',1)
     js=js.replace("  const h=location.hash.slice(1);\n","  const h=location.hash.slice(1);\n  document.querySelectorAll('.pgx').forEach(p=>p.hidden=true);{const pg=h.startsWith('p-')&&document.getElementById('pg-'+h.slice(2));if(pg){current=null;['view','home','cats','ofer','iphone','serv','cuenta'].forEach(x=>$(x).hidden=true);pg.hidden=false;window.scrollTo(0,0);sync();return}}\n",1)
     a1,c1=[int(x.split(':')[0])+int(x.split(':')[1])/60 for x in (abre,cierra)]
     WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
