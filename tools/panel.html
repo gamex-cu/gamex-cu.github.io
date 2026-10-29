@@ -735,13 +735,13 @@ $('comp-dl').onclick=e=>{if(!COMP_BLOB)return;const a=document.createElement('a'
 prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
 // ---------- juegos a mano ----------
-const JPL={'PS4':'PS4','PS5':'PS5','PC':'PC','Switch':'Switch','Meta Quest':'Meta Quest','Xbox pago':'Xbox (pago)'};
+const JPL={'PS4':'PS4','PS5':'PS5','PC':'PC','Switch':'Switch','Meta Quest':'Meta Quest','Xbox pago':'Xbox (pago)','Xbox Game Pass':'Game Pass'};
 const JET={online:'Solo online',vr:'VR',vro:'VR opcional',port:'Port',emu:'Emulador',series:'Series X|S',excl:'Exclusivo'};
-const JETP={'PS4':['online','vr','vro','excl'],'PS5':['online','vr','vro','excl'],'PC':['online','port','excl'],'Switch':['online','port','emu','excl'],'Meta Quest':['online','port','excl'],'Xbox pago':['online','series','excl']};
+const JETP={'PS4':['online','vr','vro','excl'],'PS5':['online','vr','vro','excl'],'PC':['online','port','excl'],'Switch':['online','port','emu','excl'],'Meta Quest':['online','port','excl'],'Xbox pago':['online','series','excl'],'Xbox Game Pass':['online','series','excl']};
 let JC='PS5',JT=null,JQ=null,JPOLL=null;
 function jCons(){ $('jcons').innerHTML=Object.entries(JPL).map(([k,v])=>`<button type="button" class="chip" data-c="${esc(k)}" aria-pressed="${k===JC}">${esc(v)}</button>`).join('');
   const ps=JC==='PS4'||JC==='PS5';
-  $('ljlink').innerHTML=ps?'Código o enlace de la PlayStation Store <small>(opcional: PPSA12345 / CUSA12345; si lo dejas vacío lo busco por el nombre)</small>':'Enlace de la tienda <small>(opcional; ej. Steam, Nintendo, Meta, Xbox)</small>';
+  $('ljlink').innerHTML=ps?'Código o enlace de la PlayStation Store <small>(opcional: PPSA12345 / CUSA12345; si lo dejas vacío lo busco por el nombre)</small>':(JC.startsWith('Xbox')?'Enlace de la tienda de Xbox <small>(opcional; o el código de 12 letras, ej. 9NPF9F0DCVKS)</small>':'Enlace de la tienda <small>(opcional; ej. Steam, Nintendo, Meta)</small>');
   $('jlink').placeholder=ps?'PPSA28002':'https://…';
   const sel=new Set([...document.querySelectorAll('#jet input:checked')].map(i=>i.value));
   $('jet').innerHTML=JETP[JC].map(k=>`<label><input type="checkbox" value="${k}" ${sel.has(k)?'checked':''}>${JET[k]}</label>`).join('');jYa()}

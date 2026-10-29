@@ -96,7 +96,7 @@ async function cambiarAvisos(env,fn,msg){ // reintenta si alguien más cambió e
   for(let i=0;i<3;i++){const {d,sha}=await leerAvisos(env);fn(d);try{await guardarAvisos(env,d,sha,msg);return d}catch(e){if(i===2||!/ 409| 422/.test(e.message))throw e}}
 }
 // ---------- juegos agregados/quitados a mano (tools/datos/panel_juegos.json; una acción de GitHub rearma el catálogo) ----------
-const PJ='tools/datos/panel_juegos.json',PJ_PLAT=['PS4','PS5','PC','Switch','Meta Quest','Xbox pago'];
+const PJ='tools/datos/panel_juegos.json',PJ_PLAT=['PS4','PS5','PC','Switch','Meta Quest','Xbox pago','Xbox Game Pass'];
 async function pjLeer(env){
   const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${PJ}?ref=main`,{headers:GH(env)});
   if(res.status===404)return {d:{agregar:[],quitar:[]},sha:null};
@@ -133,7 +133,7 @@ async function panelJuegos(p,req,env,u){
   if(!n)return j({error:'Falta el nombre del juego'},400);
   if(p==='juegos-agregar'){
     const link=String(q.link||'').trim().slice(0,300);
-    if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!(c==='Xbox pago'&&/^[0-9A-Z]{12}$/.test(link)))
+    if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!((c==='Xbox pago'||c==='Xbox Game Pass')&&/^[0-9A-Z]{12}$/.test(link)))
       return j({error:'El enlace tiene que empezar con https:// (o ser un código como PPSA28002)'},400);
     const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl'].includes(x));
     const {d}=await pjCambiar(env,d=>{d.agregar=d.agregar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));d.quitar=d.quitar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));

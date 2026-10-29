@@ -92,7 +92,7 @@ for _a in PJ.get('agregar',[]):  # enlaces de los juegos del panel
     if not _l or _a.get('c') not in data: continue
     if not _l.startswith('http'):
         if _a['c'] in ('PS4','PS5') and '-' in _l and '_' in _l: _l='https://store.playstation.com/es-mx/product/'+_l
-        elif _a['c']!='Xbox pago': continue
+        elif _a['c'] not in ('Xbox pago','Xbox Game Pass'): continue
     LINKS[_a['c']+'|'+_a['n'].strip()]=_l
 import subprocess as _sp
 def _fecha(*fs):
