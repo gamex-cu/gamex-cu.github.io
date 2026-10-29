@@ -1,5 +1,5 @@
 GAMEX1
-V	165
+V	167
 F	29 oct 2026
 M	Octubre 2026
 C	PlayStation 4	PS4	1e47b8	8fb0ff
@@ -1714,6 +1714,7 @@ J	0	Nickelodeon All-Star Brawl 2
 J	0	Nickelodeon Kart Racers 3: Slime Speedway
 J	0	Ninja Gaiden 2 Black
 J	0	Ninja Gaiden 4
+J	0	Ninja Gaiden: Ragebound
 J	0	Nioh 2 Remastered The Complete Edition
 J	0	Nioh 3
 J	0	Nioh Remastered The Complete Edition
