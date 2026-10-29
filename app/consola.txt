@@ -1,5 +1,5 @@
 GAMEX1
-V	187
+V	188
 F	29 oct 2026
 M	Octubre 2026
 C	PC	PC	e07a10	ffc27d

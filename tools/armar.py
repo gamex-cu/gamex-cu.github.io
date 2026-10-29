@@ -17,6 +17,22 @@ def _slug(t): return _re.sub(r'[^a-z0-9]+','-',__import__('unicodedata').normali
 def _luz(h):
     h=h.lstrip('#');r,g,b=(int(h[i:i+2],16) for i in (0,2,4));return '#%02x%02x%02x'%tuple(int(x+(255-x)*.55) for x in (r,g,b))
 CE_JS=[[c['n'],'x-'+_slug(c['n']),c.get('color','#3d7bff'),c.get('texto','#fff'),_luz(c.get('color','#3d7bff'))] for c in CE if c.get('n')]
+def _md(t):
+    out=[];lis=[]
+    def inl(x): return _re.sub(r'\*\*(.+?)\*\*',r'<b>\1</b>',_h.escape(x))
+    for ln in (t or '').split('\n'):
+        ln=ln.strip()
+        if ln.startswith('- '): lis.append('<li>'+inl(ln[2:])+'</li>');continue
+        if lis: out.append('<ul>'+''.join(lis)+'</ul>');lis=[]
+        if not ln: continue
+        if ln.startswith('## '): out.append('<p class="cu-rt">'+inl(ln[3:])+'</p>')
+        elif ln.startswith('# '): out.append('<h4>'+inl(ln[2:])+'</h4>')
+        elif ln.startswith('!! '): out.append('<p class="cu-rf">'+inl(ln[3:])+'</p>')
+        else: out.append('<p>'+inl(ln)+'</p>')
+    if lis: out.append('<ul>'+''.join(lis)+'</ul>')
+    return ''.join(out)
+def _rgba(h,a):
+    h=h.lstrip('#');return 'rgba(%d,%d,%d,%s)'%(int(h[0:2],16),int(h[2:4],16),int(h[4:6],16),a)
 def _tienda(head,js):
     nums=[n for n in TI.get('numeros') or [] if _re.sub(r'\D','',n)]
     if not nums: return head,js
@@ -47,20 +63,41 @@ def _tienda(head,js):
     for pat,new in rep:
         head,k=_re.subn(pat,lambda m:new,head,count=1,flags=_re.S)
         if not k: print('aviso: no encontré',pat[:30])
+    _botoff=set((TI.get('ocultar') or {}).get('secciones',[]))
+    tiles='';pags=''
+    for b in TI.get('botones') or []:
+        bid=b.get('id','');col=b.get('color','#3d7bff')
+        if not _re.fullmatch(r'[a-z0-9-]{1,30}',bid) or not _re.fullmatch(r'#[0-9a-fA-F]{6}',col) or 'x-'+bid in _botoff: continue
+        tit=_h.escape(b.get('titulo',''));sub=_h.escape(b.get('sub',''));ico=_h.escape(b.get('icono','') or '⭐')
+        st=f'style="background:linear-gradient(135deg,{_rgba(col,.22)},{_rgba(col,.06)})"'
+        tipo=b.get('tipo','pagina')
+        if tipo=='enlace' and str(b.get('enlace','')).startswith('https://'): at=f'href="{_h.escape(b["enlace"])}" target="_blank" rel="noopener"'
+        elif tipo=='whatsapp': at=f'href="#" class="sbtn wa-pick" data-t="{_h.escape(b.get("wa") or ("Hola GameX, quiero información sobre: "+b.get("titulo","")))}"'
+        else:
+            at=f'href="#p-{bid}"'
+            wa=f'<a class="op wa-pick" href="#" data-t="{_h.escape(b.get("wa") or ("Hola GameX, quiero información sobre: "+b.get("titulo","")))}">Escribir por WhatsApp</a>' if b.get('conwa') else ''
+            pags+=f'<div id="pg-{bid}" class="pgx" hidden>\n<div class="bar"><div class="wrap"><div class="vtitle"><a class="back" href="#">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">{tit}</span><span class="vc">{sub}</span></span></div></div></div>\n<div class="wrap"><article class="scard cu-rw" style="margin-top:16px;border-color:var(--line)">{_md(b.get("texto",""))}{wa}</article></div>\n</div>\n'
+        cls='class="sbtn"' if 'class=' not in at else ''
+        tiles+=f'\n  <a {cls} {at} id="b-x-{bid}" {st}>\n    <span class="sbi" aria-hidden="true" style="background:{col};font-size:1.7rem">{ico}</span>\n    <span class="sbt"><b>{tit}</b><small>{sub}</small></span>\n    <span class="sgo" aria-hidden="true">→</span>\n  </a>'
+    if tiles:
+        head,k=_re.subn(r'(<a class="sbtn sb-gx" href="#cuenta" id="b-cuenta">.*?</a>)',lambda m:m.group(1)+tiles,head,count=1,flags=_re.S)
+        if not k: print('aviso: no encontré dónde poner los botones')
+    if pags: head=head.replace('<div id="serv" hidden>',pags+'<div id="serv" hidden>',1)
+    js=js.replace("  const h=location.hash.slice(1);\n","  const h=location.hash.slice(1);\n  document.querySelectorAll('.pgx').forEach(p=>p.hidden=true);{const pg=h.startsWith('p-')&&document.getElementById('pg-'+h.slice(2));if(pg){current=null;['view','home','cats','ofer','iphone','serv','cuenta'].forEach(x=>$(x).hidden=true);pg.hidden=false;window.scrollTo(0,0);sync();return}}\n",1)
     a1,c1=[int(x.split(':')[0])+int(x.split(':')[1])/60 for x in (abre,cierra)]
     WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
     js=js.replace("const on=p.weekday!=='Sun'&&h>=10&&h<18;",f"const on={json.dumps([WD[d] for d in dias])}.includes(p.weekday)&&h+(+p.minute||0)/60>={a1}&&h+(+p.minute||0)/60<{c1};")
     js=js.replace("{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}","{timeZone:'America/Havana',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}")
     js=js.replace("let dest='5353441089';",f"let dest='{w(nums[0])}';")
     _oc=TI.get('ocultar') or {}
-    _sec=[x for x in _oc.get('secciones',[]) if x in ('catalogos','ofertas','servicios','cuenta')]
+    _sec=[x for x in _oc.get('secciones',[]) if x in ('catalogos','ofertas','servicios','cuenta')]  # los botones propios ocultos ni se ponen
     if CE_JS:
         js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(CONS.length-1,0,..."+json.dumps(CE_JS,ensure_ascii=False)+");"+''.join("CAND.add("+json.dumps(c['n'],ensure_ascii=False)+");" for c in CE if c.get('desbloqueo'))+"\nconst CI=Object.fromEntries(CONS",1)
     _or=TI.get('orden') or {}
     if _or.get('catalogos'):
         js=js.replace("const CI=Object.fromEntries(CONS","{const _O="+json.dumps(_or['catalogos'],ensure_ascii=False)+",_i=n=>{const k=_O.indexOf(n);return k<0?999:k};const _b=CONS.map((c,i)=>[c,i]);_b.sort((x,y)=>_i(x[0][0])-_i(y[0][0])||x[1]-y[1]);CONS.splice(0,CONS.length,..._b.map(x=>x[0]))}\nconst CI=Object.fromEntries(CONS",1)
     if _or.get('secciones'):
-        js=js.replace("function route(){","{const _t="+json.dumps([x for x in _or['secciones'] if x in ('catalogos','ofertas','servicios','cuenta')])+".map(s=>document.getElementById('b-'+s)).filter(Boolean),_f=document.querySelector('.sbtn');if(_f&&_t.length){const m=document.createComment('');_f.before(m);_t.forEach(t=>m.before(t));m.remove()}}\nfunction route(){",1)
+        js=js.replace("function route(){","{const _t="+json.dumps([x for x in _or['secciones'] if x in ('catalogos','ofertas','servicios','cuenta') or _re.fullmatch(r'x-[a-z0-9-]{1,30}',x)])+".map(s=>document.getElementById('b-'+s)).filter(Boolean),_f=document.querySelector('.sbtn');if(_f&&_t.length){const m=document.createComment('');_f.before(m);_t.forEach(t=>m.before(t));m.remove()}}\nfunction route(){",1)
     _cat=[x for x in _oc.get('catalogos',[])]
     if _cat: js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(0,CONS.length,...CONS.filter(c=>!"+json.dumps(_cat,ensure_ascii=False)+".includes(c[0])));\nconst CI=Object.fromEntries(CONS",1)
     js=js.replace("function route(){","const SECOFF="+json.dumps(_sec)+";\nfunction gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}\nSECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});\nfunction route(){\n  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);",1)

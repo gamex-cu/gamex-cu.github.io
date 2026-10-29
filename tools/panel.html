@@ -327,6 +327,24 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <div class="msg" id="mps"></div>
   </section>
   <section class="card">
+    <h2>🧩 Botones del menú principal</h2>
+    <p class="nota" style="margin:-6px 0 6px">Agrega botones propios a la página principal, como "Garantía", "Cómo pagar" o "Nuestro canal". El orden y si se ven lo cambias arriba en 👁️.</p>
+    <div id="bt-lista"></div>
+    <form id="fbt" class="svg">
+      <h3 style="margin-top:0" id="bt-tt">Botón nuevo</h3>
+      <div class="g2"><div><label for="bt-t">Título</label><input id="bt-t" maxlength="40" required placeholder="Garantía"></div><div class="row" style="gap:8px"><div style="flex:1"><label for="bt-i">Ícono</label><input id="bt-i" maxlength="4" placeholder="🛡️"></div><div style="flex:1"><label for="bt-c">Color</label><input id="bt-c" type="color" value="#0f9d9a" style="height:46px;padding:4px"></div></div></div>
+      <label for="bt-s">Texto pequeño debajo del título</label><input id="bt-s" maxlength="120" placeholder="Cómo funciona nuestra garantía">
+      <label>Al tocarlo…</label>
+      <div class="tipos" id="bt-tipo"><label><input type="radio" name="bt-tipo" value="pagina" checked>Abre una página con texto</label><label><input type="radio" name="bt-tipo" value="enlace">Abre un enlace</label><label><input type="radio" name="bt-tipo" value="whatsapp">Escribe por WhatsApp</label></div>
+      <div id="bt-pag"><label for="bt-x">Texto de la página <small>(# título · - punto de lista · **negrita**)</small></label><textarea id="bt-x" rows="7"></textarea>
+        <label class="sw"><input type="checkbox" id="bt-cw" checked><span>Poner botón "Escribir por WhatsApp" al final</span></label></div>
+      <div id="bt-enl" hidden><label for="bt-e">Enlace</label><input id="bt-e" type="url" placeholder="https://…"></div>
+      <div id="bt-wa"><label for="bt-w">Mensaje de WhatsApp <small>(opcional)</small></label><input id="bt-w" maxlength="300" placeholder="Hola GameX, quiero información sobre…"></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="bt-g" style="margin:0;flex:1">Agregar botón</button><button type="button" class="btn sec" id="bt-x2" style="margin:0;flex:1" hidden>Cancelar</button></div>
+    </form>
+    <div class="msg" id="mbt"></div>
+  </section>
+  <section class="card">
     <h2>➕ Catálogos nuevos</h2>
     <p class="nota" style="margin:-6px 0 6px">Crea un catálogo, por ejemplo Xbox 360 o PS3, y después le agregas los juegos en 🎮 Juegos. Mientras no tenga juegos sale como "Próximamente".</p>
     <div id="ce-lista"></div>
@@ -927,7 +945,7 @@ let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GP
 async function tienda(){
   try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
     TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
-    ceCargar();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
+    ceCargar();btPintar();btModo();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
   gpEstado()}
 // --- datos de la tienda ---
 const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -1051,9 +1069,10 @@ const VCATN={'Xbox pago':'Xbox (pago)','Switch':'Nintendo Switch','Xbox Game Pas
 let VORD=null;
 function viPintar(){const o=TI.ocultar||{},or=TI.orden||{};const ck=(l,v)=>(l||[]).includes(v)?'':'checked';
   const ord=(lista,pref)=>{pref=pref||[];return lista.slice().sort((a,b)=>{const x=pref.indexOf(a),y=pref.indexOf(b);return (x<0?999:x)-(y<0?999:y)||lista.indexOf(a)-lista.indexOf(b)})};
-  const sec=ord(VSEC.map(x=>x[0]),or.secciones),cat=ord(VCAT.concat(CE.map(x=>x.n)),or.catalogos),sv=SV.map(x=>x.s);
+  const VS=VSEC.concat((TI.botones||[]).map(b=>['x-'+b.id,(b.icono||'⭐')+' '+b.titulo]));
+  const sec=ord(VS.map(x=>x[0]),or.secciones),cat=ord(VCAT.concat(CE.map(x=>x.n)),or.catalogos),sv=SV.map(x=>x.s);
   VORD={sec,cat,sv};const fila=(v,l,off)=>`<div class="vrow" data-v="${esc(v)}"><label><input type="checkbox" value="${esc(v)}" ${ck(off,v)}>${l}</label><button type="button" class="mini" data-m="-1" aria-label="Subir">↑</button><button type="button" class="mini" data-m="1" aria-label="Bajar">↓</button></div>`;
-  $('vi-sec').innerHTML=sec.map(k=>fila(k,(VSEC.find(x=>x[0]===k)||[k,k])[1],o.secciones)).join('');
+  $('vi-sec').innerHTML=sec.map(k=>fila(k,esc((VS.find(x=>x[0]===k)||[k,k])[1]),o.secciones)).join('');
   $('vi-cat').innerHTML=cat.map(c=>fila(c,esc(VCATN[c]||c),o.catalogos)).join('');
   $('vi-sv').innerHTML=sv.map(s=>{const x=SV.find(y=>y.s===s)||{};return fila(s,esc((x.icono||'')+' '+s),o.servicios)}).join('')}
 ['vi-sec','vi-cat','vi-sv'].forEach(id=>$(id).addEventListener('click',e=>{const b=e.target.closest('[data-m]');if(!b)return;const r=b.closest('.vrow'),m=+b.dataset.m;
@@ -1088,6 +1107,27 @@ $('sv-newt').onclick=()=>{svLeer();svTipoLeer();const n=prompt('Nombre del nuevo
   SV.push({s:n.trim(),icono:'🛒',color:SVCOL[SV.length%SVCOL.length],texto:'#ffffff',items:[{t:'Servicio nuevo'}]});SVI=SV.length-1;svPintar();
   const t=SV[SVI];const c=t.color;const r=parseInt(c.slice(1,3),16),g=parseInt(c.slice(3,5),16),b=parseInt(c.slice(5,7),16);t.texto='#'+[r,g,b].map(x=>Math.round(x+(255-x)*.55).toString(16).padStart(2,'0')).join('');
   msg('msv','inf','Tipo <b>'+esc(n.trim())+'</b> creado. Ponle sus servicios y toca <b>Guardar servicios</b>.')};
+
+// ---------- botones propios del menú principal ----------
+let BTED=null;
+const btTipo=()=>(document.querySelector('input[name="bt-tipo"]:checked')||{}).value||'pagina';
+function btModo(){const t=btTipo();$('bt-pag').hidden=t!=='pagina';$('bt-enl').hidden=t!=='enlace';$('bt-wa').hidden=t==='enlace'}
+$('bt-tipo').onchange=btModo;
+function btPintar(){const l=TI.botones||[];$('bt-lista').innerHTML=l.length?l.map((b,i)=>`<div class="jhit"><div><span style="display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:${esc(b.color)};margin-right:6px">${esc(b.icono||'⭐')}</span>${esc(b.titulo)}<small>${{pagina:'Página con texto',enlace:'Enlace',whatsapp:'WhatsApp'}[b.tipo]||''}</small></div><button data-be="${i}">Editar</button><button class="q" data-bd="${i}">Borrar</button></div>`).join(''):'<p class="vacio">Todavía no tienes botones propios.</p>'}
+function btLimpiar(){BTED=null;$('fbt').reset();$('bt-c').value='#0f9d9a';$('bt-cw').checked=true;$('bt-tt').textContent='Botón nuevo';$('bt-g').textContent='Agregar botón';$('bt-x2').hidden=true;btModo()}
+$('bt-x2').onclick=btLimpiar;
+$('bt-lista').onclick=async e=>{const be=e.target.closest('[data-be]'),bd=e.target.closest('[data-bd]');const l=TI.botones||[];
+  if(be){const b=l[+be.dataset.be];BTED=b.id;$('bt-t').value=b.titulo;$('bt-i').value=b.icono||'';$('bt-c').value=b.color;$('bt-s').value=b.sub||'';document.querySelector(`input[name="bt-tipo"][value="${b.tipo}"]`).checked=true;
+    $('bt-x').value=b.texto||'';$('bt-cw').checked=!!b.conwa;$('bt-e').value=b.enlace||'';$('bt-w').value=b.wa||'';$('bt-tt').textContent='Editar "'+b.titulo+'"';$('bt-g').textContent='Guardar cambios';$('bt-x2').hidden=false;btModo();$('fbt').scrollIntoView({block:'start',behavior:'smooth'});return}
+  if(bd){const b=l[+bd.dataset.bd];if(!confirm('¿Borrar el botón "'+b.titulo+'"?'))return;bd.disabled=true;
+    try{await btGuardar(l.filter(x=>x!==b),'✅ Botón borrado.')}catch(err){msg('mbt','bad',esc(err.message));bd.disabled=false}}};
+async function btGuardar(lista,ok){const r=await api('archivo-guardar',{f:'tienda',d:{...TI,botones:lista},sha:TISHA});TI=r.d;TISHA=r.sha;btPintar();viPintar();msg('mbt','ok',ok)}
+$('fbt').onsubmit=async e=>{e.preventDefault();nomsg('mbt');const t=btTipo();if(t==='enlace'&&!/^https:\/\//.test($('bt-e').value.trim())){msg('mbt','bad','El enlace tiene que empezar con https://');return}
+  const slug=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30)||'boton';
+  const l=(TI.botones||[]).slice();let id=BTED;if(!id){id=slug($('bt-t').value);let k=2;while(l.some(x=>x.id===id))id=slug($('bt-t').value)+'-'+k++}
+  const b={id,titulo:$('bt-t').value.trim(),icono:$('bt-i').value.trim(),color:$('bt-c').value,sub:$('bt-s').value.trim(),tipo:t,texto:$('bt-x').value,conwa:$('bt-cw').checked,enlace:$('bt-e').value.trim(),wa:$('bt-w').value.trim()};
+  const i=l.findIndex(x=>x.id===id);if(i>=0)l[i]=b;else l.push(b);$('bt-g').disabled=true;
+  try{await btGuardar(l,'✅ '+(i>=0?'Cambios guardados':'Botón agregado')+'. Sale en la página principal en 1 o 2 minutos.');btLimpiar()}catch(err){msg('mbt','bad',esc(err.message))}$('bt-g').disabled=false};
 
 </script>
 </body>

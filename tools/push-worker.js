@@ -145,8 +145,9 @@ function validar(f,d){
     if(!HHMM.test(d.abre||'')||!HHMM.test(d.cierra||'')||d.abre>=d.cierra)return 'Revisa la hora de abrir y de cerrar';
     if(d.mapa&&!/^https:\/\//.test(d.mapa))return 'El enlace del mapa tiene que empezar con https://';
     return {inicio:txt(d.inicio,300).trim(),numeros:nums.slice(0,5),dias,abre:d.abre,cierra:d.cierra,direccion:txt(d.direccion,200).trim(),mapa:txt(d.mapa,300).trim(),reglas:txt(d.reglas,6000).replace(/\r/g,''),
-      ocultar:{secciones:(d.ocultar?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)),catalogos:(d.ocultar?.catalogos||[]).map(x=>txt(x,40)).slice(0,20),servicios:(d.ocultar?.servicios||[]).map(x=>txt(x,60)).slice(0,20)},
-      orden:{secciones:(d.orden?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)),catalogos:(d.orden?.catalogos||[]).map(x=>txt(x,40)).slice(0,40)}};
+      ocultar:{secciones:(d.ocultar?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)||/^x-[a-z0-9-]{1,30}$/.test(x)),catalogos:(d.ocultar?.catalogos||[]).map(x=>txt(x,40)).slice(0,20),servicios:(d.ocultar?.servicios||[]).map(x=>txt(x,60)).slice(0,20)},
+      botones:(Array.isArray(d.botones)?d.botones:[]).slice(0,12).map(b=>({id:txt(b.id,30).toLowerCase().replace(/[^a-z0-9-]/g,'')||('b'+Math.random().toString(36).slice(2,8)),titulo:txt(b.titulo,40).trim(),sub:txt(b.sub,120).trim(),icono:txt(b.icono,8).trim(),color:/^#[0-9a-f]{6}$/i.test(b.color||'')?b.color:'#3d7bff',tipo:['pagina','enlace','whatsapp'].includes(b.tipo)?b.tipo:'pagina',enlace:/^https:\/\//.test(b.enlace||'')?txt(b.enlace,300):'',texto:txt(b.texto,4000).replace(/\r/g,''),wa:txt(b.wa,300),conwa:!!b.conwa})).filter(b=>b.titulo),
+      orden:{secciones:(d.orden?.secciones||[]).filter(x=>(['catalogos','ofertas','servicios','cuenta'].includes(x)||/^x-[a-z0-9-]{1,30}$/.test(x))),catalogos:(d.orden?.catalogos||[]).map(x=>txt(x,40)).slice(0,40)}};
   }
   if(f==='servicios'){
     if(!Array.isArray(d)||d.some(s=>!s||!Array.isArray(s.items)))return 'Los servicios no están bien';

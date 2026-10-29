@@ -614,6 +614,7 @@ function route(){
   if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
+  document.querySelectorAll('.pgx').forEach(p=>p.hidden=true);{const pg=h.startsWith('p-')&&document.getElementById('pg-'+h.slice(2));if(pg){current=null;['view','home','cats','ofer','iphone','serv','cuenta'].forEach(x=>$(x).hidden=true);pg.hidden=false;window.scrollTo(0,0);sync();return}}
   $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}
   const esServ=SERV.length&&(h==='servicios'||SERV.some(y=>svSlug(y)===h));
   if(!h.startsWith('l-'))$('serv').hidden=!esServ;
