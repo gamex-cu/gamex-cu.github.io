@@ -1,9 +1,9 @@
-# Cuando el panel agrega o quita juegos (tools/datos/panel_juegos.json), rearma la web, la app y el catálogo de consolas.
-name: Juegos del panel
+# Cuando el panel cambia juegos, servicios, datos de la tienda o PS Plus, rearma la web, la app y el catálogo de consolas.
+name: Cambios del panel
 on:
   push:
     branches: [main]
-    paths: ['tools/datos/panel_juegos.json']
+    paths: ['tools/datos/panel_juegos.json', 'tools/datos/tienda.json', 'tools/datos/servicios.json', 'tools/datos/ps_plus.json']
   workflow_dispatch:
 permissions:
   contents: write

@@ -112,8 +112,8 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .conf .row button{flex:1}
 .vacio{color:var(--muted);font-size:.92rem}
 .salir{background:none;border:0;color:var(--muted);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;margin-left:auto}
-.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:16px}
-.tabs button{flex:1;font:inherit;font-weight:600;font-size:.82rem;padding:9px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:16px}
+.tabs button{flex:1;font:inherit;font-weight:600;font-size:.74rem;padding:9px 1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
 .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .kpi{background:#0b0f20;border:1px solid var(--line);border-radius:10px;padding:12px}
@@ -148,6 +148,19 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .ya{margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--warn);background:rgba(255,176,32,.1);font-size:.88rem}
 .ya:empty{display:none}
 .jest{font-size:.88rem;color:var(--muted);margin:0 0 6px}
+.svi{border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#0b0f20}
+.svi>summary{padding:11px 12px;cursor:pointer;font-weight:600;list-style:none;display:flex;gap:8px;align-items:center}
+.svi>summary::-webkit-details-marker{display:none}
+.svi>summary::after{content:'▾';margin-left:auto;color:var(--muted)}
+.svi[open]>summary::after{content:'▴'}
+.svi .in{padding:0 12px 12px}
+.svg{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.mini{font:inherit;font-size:.8rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.mini.bad{border-color:var(--bad);color:var(--bad)}
+.gpl{margin:6px 0 0;padding-left:20px}.gpl li{margin:2px 0}
+.psj{display:grid;grid-template-columns:1fr;gap:6px;border-top:1px solid var(--line);padding:10px 0}
+.psj .row{align-items:center}
+textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;min-height:260px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -167,7 +180,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 </section>
 
 <div id="app" hidden>
-  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Números</button><button role="tab" id="tb-cl" aria-selected="false">👥 Clientes <span class="bdg" id="nsol2"></span></button><button role="tab" id="tb-ju" aria-selected="false">🎮 Juegos</button></div>
+  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Números</button><button role="tab" id="tb-cl" aria-selected="false">👥 Clientes <span class="bdg" id="nsol2"></span></button><button role="tab" id="tb-ju" aria-selected="false">🎮 Juegos</button><button role="tab" id="tb-ti" aria-selected="false">⚙️ Tienda</button></div>
   <div id="t-cl" hidden>
     <section class="card" id="s-sol">
       <h2>Solicitudes de cuenta <span class="bdg" id="nsol"></span></h2>
@@ -268,7 +281,8 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <div class="msg" id="mju"></div>
   </section>
   <section class="card">
-    <h2>Quitar un juego</h2>
+    <h2>Editar o quitar un juego</h2>
+    <p class="nota" style="margin:-6px 0 10px">Busca un juego que ya está para cambiarle el nombre, el enlace o las etiquetas, o para quitarlo.</p>
     <label for="jbus">Busca el juego</label>
     <input id="jbus" autocomplete="off" placeholder="Escribe parte del nombre">
     <div id="jres"></div>
@@ -278,6 +292,66 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     <h2>Cambios hechos desde el panel</h2>
     <p class="jest" id="jest"></p>
     <div id="jlista"><p class="vacio">Cargando…</p></div>
+  </section>
+  </div>
+  <div id="t-ti" hidden>
+  <section class="card">
+    <h2>🎮 Game Pass</h2>
+    <p class="jest" id="gp-est">Cargando…</p>
+    <div id="gp-cambios"></div>
+    <button class="btn sec" id="gp-rev" type="button">🔄 Revisar Game Pass ahora</button>
+    <div id="gp-pub" hidden>
+      <label class="sw"><input type="checkbox" id="gp-not" checked><span>Mandar notificación a los clientes<small id="gp-nott"></small></span></label>
+      <button class="btn" id="gp-bpub" type="button">Publicar estos cambios</button>
+    </div>
+    <div class="msg" id="mgp"></div>
+  </section>
+  <section class="card">
+    <h2>🎁 Juegos del mes de PS Plus</h2>
+    <div class="g2"><div><label for="ps-mes">Mes</label><input id="ps-mes" placeholder="Noviembre 2026"></div><div><label for="ps-hasta">Se pueden reclamar hasta</label><input id="ps-hasta" type="date" class="fecha"></div></div>
+    <div id="ps-js"></div>
+    <button class="mini" type="button" id="ps-add" style="margin-top:8px">+ Agregar juego</button>
+    <label class="sw"><input type="checkbox" id="ps-not"><span>Mandar notificación a los clientes<small>"Juegos de PS Plus de …: Ya están: …"</small></span></label>
+    <button class="btn" id="ps-guardar" type="button">Guardar PS Plus</button>
+    <div class="msg" id="mps"></div>
+  </section>
+  <section class="card">
+    <h2>🧾 Servicios</h2>
+    <p class="nota" style="margin:-6px 0 10px">Suscripciones, Gift Cards, Desbloqueos y Mantenimientos. Toca un servicio para cambiarlo.</p>
+    <div class="row" id="sv-secs"></div>
+    <div id="sv-items"></div>
+    <button class="mini" type="button" id="sv-add" style="margin-top:10px">+ Agregar servicio</button>
+    <button class="btn" id="sv-guardar" type="button">Guardar servicios</button>
+    <div class="msg" id="msv"></div>
+  </section>
+  <section class="card">
+    <h2>🏪 Datos de la tienda</h2>
+    <label for="ti-ini">Texto de la página de inicio</label><input id="ti-ini" maxlength="300">
+    <label>Números de WhatsApp <small>(el primero es el que sale marcado al pedir)</small></label>
+    <div id="ti-nums"></div><button class="mini" type="button" id="ti-addn" style="margin-top:6px">+ Agregar número</button>
+    <label>Días que abre</label><div class="tipos" id="ti-dias"></div>
+    <div class="g2"><div><label for="ti-abre">Abre</label><input id="ti-abre" type="time"></div><div><label for="ti-cierra">Cierra</label><input id="ti-cierra" type="time"></div></div>
+    <label for="ti-dir">Dirección</label><input id="ti-dir" maxlength="200">
+    <label for="ti-mapa">Enlace del mapa <small>(Google Maps)</small></label><input id="ti-mapa" type="url" maxlength="300">
+    <p class="nota">Las apps de PS4, PS5 y Switch traen estos datos por dentro: si cambias un número o el horario, avísale a Claude para sacar versión nueva.</p>
+    <button class="btn" id="ti-guardar" type="button">Guardar datos de la tienda</button>
+    <div class="msg" id="mti"></div>
+  </section>
+  <section class="card">
+    <h2>🏆 Reglas de GameX Rewards</h2>
+    <p class="nota" style="margin:-6px 0 6px">Los cambios cuentan para las compras nuevas. Las que ya están anotadas no cambian.</p>
+    <div class="g2" id="rw-nums"></div>
+    <label for="rw-txt">Texto de "¿Cómo funciona GameX Rewards?" <small>(# título · - punto de lista · **negrita** · ## título grande · !! frase final)</small></label>
+    <textarea id="rw-txt" class="mono"></textarea>
+    <p class="nota">Si cambias los números, cambia también el texto para que digan lo mismo.</p>
+    <button class="btn" id="rw-guardar" type="button">Guardar reglas</button>
+    <div class="msg" id="mrw"></div>
+  </section>
+  <section class="card">
+    <h2>💾 Copia de seguridad</h2>
+    <p class="nota" style="margin:-6px 0 6px">Baja todo junto: clientes, compras y canjes, solicitudes, ofertas, juegos agregados a mano, servicios, datos de la tienda y reglas.</p>
+    <div class="row"><button class="btn" id="bk-xls" type="button" style="flex:1">Bajar en Excel</button><button class="btn sec" id="bk-json" type="button" style="flex:1">Bajar completo (.json)</button></div>
+    <div class="msg" id="mbk"></div>
   </section>
   </div>
   <div id="t-es" hidden>
@@ -333,6 +407,9 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
       <div class="cnt"><span id="ntxt">0</span>/1500</div>
       <label for="url">Enlace <small>(opcional; si lo dejas vacío, el botón de la oferta abre el WhatsApp de GameX)</small></label>
       <input id="url" type="url" inputmode="url" placeholder="https://…">
+      <label for="foto">Foto <small>(opcional; sale arriba de la oferta en la web y la app)</small></label>
+      <input id="foto" type="file" accept="image/*">
+      <div id="fprev" hidden style="margin-top:8px"><img id="fimg" alt="" style="width:100%;border-radius:10px;max-height:260px;object-fit:cover"><button type="button" class="chip" id="fquitar" style="margin-top:6px">Quitar foto</button> <small id="fest" class="nota"></small></div>
       <div id="bvence"><label for="vence">Se quita de Ofertas el <small>(opcional)</small></label>
       <input id="vence" type="date" class="fecha">
       <div class="vtxt" id="vtxt">Sin fecha de fin: se queda hasta que la quites</div>
@@ -394,7 +471,7 @@ async function api(p,body){
 let AVS={};
 function pintar(avisos){AVS={};avisos.forEach(a=>AVS[a.id]=a);
   $('nof').textContent=avisos.length;
-  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
+  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.img?' · 📷 con foto':''}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
 }
 async function cargar(){const d=await api('estado');$('niph').textContent=d.iphones;pintar(d.avisos);return d}
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
@@ -431,7 +508,7 @@ $('bsi').onclick=async()=>{
   const L=[];
   try{
     const m=MODO(),notificar=m!=='oferta';
-    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:m==='aviso'?'':$('vence').value,modo:m,notificar});
+    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:m==='aviso'?'':$('vence').value,modo:m,notificar,img:m==='aviso'?'':FOTO});
     if(m!=='aviso')L.push(r.ofertas==='ok'?'✅ Publicada en <b>Ofertas</b> (web y app; tarda 1–2 minutos en verse)':'❌ Ofertas: '+esc(r.ofertas));
     if(notificar)L.push(r.android==='ok'?'✅ Enviada a los <b>Android</b>':'❌ Android: '+esc(r.android));
     else L.push('🔕 Sin notificación: nadie recibe aviso, solo sale en Ofertas');
@@ -440,7 +517,7 @@ $('bsi').onclick=async()=>{
     if(notificar)L.push(total?(ok?'✅':'⚠️')+` Enviada a <b>${ok} de ${total} iPhone</b>`+(viejos?` (${viejos} ya no tenían la web y se borraron)`:'')+(fallos?` · ${fallos} con error`:''):'ℹ️ Todavía no hay iPhone con avisos activados');
     const malo=(m!=='aviso'&&r.ofertas!=='ok')||(notificar&&r.android!=='ok');
     msg('menv',malo?'bad':'ok','<b>'+(malo?'Se envió con problemas':'¡Listo!')+'</b><ul><li>'+L.join('</li><li>')+'</li></ul>');
-    if(!malo){$('fenv').reset();prev();modo();vtxt()}
+    if(!malo){$('fenv').reset();FOTO='';$('fprev').hidden=true;prev();modo();vtxt()}
     cargar().catch(()=>{});
   }catch(e){msg('menv','bad','<b>No se pudo enviar.</b> '+esc(e.message)+(L.length?'<ul><li>'+L.join('</li><li>')+'</li></ul>':''))}
   $('bsi').disabled=$('bno').disabled=false;$('conf').classList.remove('on');$('benv').hidden=false;
@@ -449,13 +526,15 @@ $('lista').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if
   document.querySelectorAll('.edf').forEach(x=>x.remove());const row=b.closest('.of');const f=document.createElement('form');f.className='edf';f.dataset.id=a.id;
   f.innerHTML=`<label>Título</label><input name="titulo" maxlength="80" required value="${esc(a.titulo.replace(/^🥷\s*/,''))}"><label>Texto</label><textarea name="texto" maxlength="1500" rows="8" required>${esc(a.texto)}</textarea>
   <label>Enlace <small>(opcional)</small></label><input name="url" type="url" value="${esc(a.url||'')}" placeholder="https://…"><label>Se quita de Ofertas el <small>(vacío = sin fecha)</small></label><input name="vence" type="date" value="${esc(a.vence||'')}">
+  <label>Foto</label>${a.img?`<img src="${esc(a.img)}" alt="" style="width:100%;border-radius:10px;max-height:200px;object-fit:cover"><label class="sw" style="margin:6px 0"><input type="checkbox" name="sinfoto"><span>Quitar la foto</span></label>`:''}<input name="foto" type="file" accept="image/*">
   <p class="nota">Los cambios se ven en Ofertas (web y app) en 1–2 minutos. No se vuelve a mandar la notificación.</p>
   <div class="row"><button class="btn" style="flex:1;margin-top:8px">Guardar cambios</button><button type="button" class="btn sec ec" style="flex:1;margin-top:8px">Cancelar</button></div>`;
   row.after(f);f.querySelector('input').focus()});
 $('lista').addEventListener('click',e=>{if(e.target.closest('.ec'))e.target.closest('.edf').remove()});
 $('lista').addEventListener('submit',async e=>{const f=e.target.closest('.edf');if(!f)return;e.preventDefault();const bt=f.querySelector('.btn');bt.disabled=true;nomsg('mlista');
   const v=n=>f.elements[n].value;
-  try{const d=await api('editar',{id:f.dataset.id,titulo:v('titulo'),texto:v('texto'),url:v('url').trim(),vence:v('vence')});pintar(d.avisos);msg('mlista','ok','✅ Oferta actualizada. Se ve en la web y la app en 1–2 minutos.')}
+  try{const b={id:f.dataset.id,titulo:v('titulo'),texto:v('texto'),url:v('url').trim(),vence:v('vence')};const fl=f.elements.foto.files[0];if(fl){msg('mlista','inf','Subiendo la foto…');b.img=await fotoSubir(fl)}else if(f.elements.sinfoto&&f.elements.sinfoto.checked)b.img='';
+    const d=await api('editar',b);pintar(d.avisos);msg('mlista','ok','✅ Oferta actualizada. Se ve en la web y la app en 1–2 minutos.')}
   catch(err){msg('mlista','bad',esc(err.message));bt.disabled=false}});
 $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)return;
   if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Quitar?';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Quitar'}},4000);return}
@@ -466,8 +545,8 @@ $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)r
 
 // ---------- pestañas y estadísticas ----------
 let DIAS=7,cargadas=false;
-function tab(t){['of','es','cl','ju'].forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});
-  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes();if(t==='ju')juegos()}
+function tab(t){['of','es','cl','ju','ti'].forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});
+  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes();if(t==='ju')juegos();if(t==='ti')tienda()}
 $('tb-cl').onclick=()=>tab('cl');
 $('tb-of').onclick=()=>tab('of');
 const copiar=t=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t);
@@ -756,23 +835,169 @@ $('fju').onsubmit=async e=>{e.preventDefault();const b=$('bju');b.disabled=true;
   try{const n=$('jnom').value.trim();await api('juegos-agregar',{c:JC,n,link:$('jlink').value.trim(),et:[...document.querySelectorAll('#jet input:checked')].map(i=>i.value)});
     msg('mju','ok','✅ <b>'+esc(n)+'</b> agregado a '+esc(JPL[JC])+'. Sale en la web y la app en 1 o 2 minutos.');$('jnom').value='';$('jlink').value='';$('jya').innerHTML='';
     document.querySelectorAll('#jet input').forEach(i=>i.checked=false);juegos()}catch(err){msg('mju','bad',esc(err.message))}b.disabled=false};
-$('jbus').addEventListener('input',()=>{clearTimeout(JQ);JQ=setTimeout(async()=>{const t=$('jbus').value.trim();if(t.length<2){$('jres').innerHTML='';return}
-  try{const d=await api('juegos-buscar?q='+encodeURIComponent(t));$('jres').innerHTML=d.hits.length?d.hits.map(h=>`<div class="jhit"><div>${esc(h.n)}<small>${esc(JPL[h.c]||h.c)}</small></div><button class="q" data-c="${esc(h.c)}" data-n="${esc(h.n)}">Quitar</button></div>`).join(''):'<p class="vacio">No encontré ese juego.</p>'}catch(e){msg('mjq','bad',esc(e.message))}},350)});
-$('jres').onclick=async e=>{const b=e.target.closest('button[data-n]');if(!b)return;
-  if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Quitar'}},4000);return}
-  b.disabled=true;try{await api('juegos-quitar',{c:b.dataset.c,n:b.dataset.n});b.closest('.jhit').remove();msg('mjq','ok','✅ <b>'+esc(b.dataset.n)+'</b> quitado de '+esc(JPL[b.dataset.c])+'. Se va de la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));b.disabled=false}};
+const JFL={online:1,series:2,vr:8,vro:16,port:32,emu:64,excl:128};
+const etDe=f=>Object.keys(JFL).filter(k=>f&JFL[k]);
+let JHITS=[];
+$('jbus').addEventListener('input',()=>{clearTimeout(JQ);JQ=setTimeout(jBuscar,350)});
+async function jBuscar(){const t=$('jbus').value.trim();if(t.length<2){$('jres').innerHTML='';return}
+  try{const d=await api('juegos-buscar?q='+encodeURIComponent(t));JHITS=d.hits;$('jres').innerHTML=d.hits.length?d.hits.map((h,i)=>{const et=etDe(h.f).filter(k=>(JETP[h.c]||[]).includes(k));return `<div class="jhit" data-i="${i}"><div>${esc(h.n)}<small>${esc(JPL[h.c]||h.c)}${et.length?' · '+et.map(k=>JET[k]).join(', '):''}</small></div><button data-e="${i}">Editar</button><button class="q" data-q="${i}">Quitar</button></div>`}).join(''):'<p class="vacio">No encontré ese juego.</p>'}catch(e){msg('mjq','bad',esc(e.message))}}
+$('jres').onclick=async e=>{const bq=e.target.closest('button[data-q]'),be=e.target.closest('button[data-e]');
+  if(be){const h=JHITS[+be.dataset.e],row=be.closest('.jhit');document.querySelectorAll('#jres .edf').forEach(x=>x.remove());
+    const ps=h.c==='PS4'||h.c==='PS5',et=etDe(h.f);
+    row.insertAdjacentHTML('afterend',`<form class="edf" data-i="${be.dataset.e}"><label>Nombre</label><input name="nuevo" maxlength="120" value="${esc(h.n)}" required>
+      <label>Enlace nuevo <small>(déjalo vacío para no cambiarlo${ps?'; puedes poner PPSA12345 / CUSA12345':''})</small></label><input name="link" maxlength="300" autocomplete="off" placeholder="${ps?'PPSA12345 o https://…':'https://…'}">
+      <label>Etiquetas</label><div class="tipos">${(JETP[h.c]||[]).map(k=>`<label><input type="checkbox" value="${k}" ${et.includes(k)?'checked':''}>${JET[k]}</label>`).join('')}</div>
+      <div class="row" style="margin-top:12px"><button class="btn" style="margin:0;flex:1">Guardar cambios</button><button type="button" class="btn sec" style="margin:0;flex:1" data-x="1">Cancelar</button></div></form>`);return}
+  if(!bq)return;const h=JHITS[+bq.dataset.q];
+  if(bq.dataset.ok!=='1'){bq.dataset.ok='1';bq.textContent='¿Seguro?';setTimeout(()=>{if(bq.isConnected){bq.dataset.ok='';bq.textContent='Quitar'}},4000);return}
+  bq.disabled=true;try{await api('juegos-quitar',{c:h.c,n:h.n});bq.closest('.jhit').remove();msg('mjq','ok','✅ <b>'+esc(h.n)+'</b> quitado de '+esc(JPL[h.c])+'. Se va de la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));bq.disabled=false}};
+$('jres').addEventListener('click',e=>{if(e.target.closest('[data-x]'))e.target.closest('.edf').remove()});
+$('jres').addEventListener('submit',async e=>{e.preventDefault();const f=e.target,h=JHITS[+f.dataset.i],b=f.querySelector('button.btn');b.disabled=true;
+  try{await api('juegos-editar',{c:h.c,n:h.n,nuevo:f.nuevo.value.trim(),link:f.link.value.trim(),et:[...f.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value)});
+    f.remove();msg('mjq','ok','✅ Cambios guardados en <b>'+esc(f.nuevo.value.trim())+'</b>. Salen en la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));b.disabled=false}});
 async function juegos(){jCons();
   try{const d=await api('juegos');const r=d.run;
     const enc=r&&r.estado!=='completed';
     $('jest').innerHTML=!r?'':enc?'⏳ Publicando los últimos cambios…':r.res==='success'?'✅ Todo publicado':'⚠️ La última publicación falló. Avísale a Claude.';
     clearTimeout(JPOLL);if(enc&&!$('t-ju').hidden)JPOLL=setTimeout(juegos,15000);
     const ag=d.agregar.slice().reverse(),qu=d.quitar.slice().reverse();
-    $('jlista').innerHTML=(ag.length||qu.length)?ag.map(x=>`<div class="jhit"><div>➕ ${esc(x.n)}<small>${esc(JPL[x.c]||x.c)} · ${fecha(x.f)}${x.et&&x.et.length?' · '+x.et.map(k=>JET[k]).join(', '):''}${x.link?' · con enlace':(x.buscado?' · sin enlace':'')}</small></div><button data-a="q" data-c="${esc(x.c)}" data-n="${esc(x.n)}">Deshacer</button></div>`).join('')
+    $('jlista').innerHTML=(ag.length||qu.length||(d.editar||[]).length)?ag.map(x=>`<div class="jhit"><div>➕ ${esc(x.n)}<small>${esc(JPL[x.c]||x.c)} · ${fecha(x.f)}${x.et&&x.et.length?' · '+x.et.map(k=>JET[k]).join(', '):''}${x.link?' · con enlace':(x.buscado?' · sin enlace':'')}</small></div><button data-a="q" data-c="${esc(x.c)}" data-n="${esc(x.n)}">Deshacer</button></div>`).join('')
+      +(d.editar||[]).slice().reverse().map(x=>`<div class="jhit"><div>✏️ ${esc(x.nuevo||x.n)}<small>${esc(JPL[x.c]||x.c)} · ${fecha(x.f)}${x.nuevo?' · antes: '+esc(x.n):''}${x.et&&x.et.length?' · '+x.et.map(k=>JET[k]).join(', '):' · sin etiquetas'}${x.link?' · enlace nuevo':''}</small></div><button data-a="r" data-c="${esc(x.c)}" data-n="${esc(x.nuevo||x.n)}">Deshacer</button></div>`).join('')
       +qu.map(x=>`<div class="jhit"><div>➖ ${esc(x.n)}<small>${esc(JPL[x.c]||x.c)} · quitado el ${fecha(x.f)}</small></div><button data-a="d" data-c="${esc(x.c)}" data-n="${esc(x.n)}">Devolver</button></div>`).join('')
-      :'<p class="vacio">Todavía no has agregado ni quitado juegos desde aquí.</p>'}catch(e){$('jlista').innerHTML='<p class="vacio">'+esc(e.message)+'</p>'}}
+      :'<p class="vacio">Todavía no has cambiado juegos desde aquí.</p>'}catch(e){$('jlista').innerHTML='<p class="vacio">'+esc(e.message)+'</p>'}}
 $('jlista').onclick=async e=>{const b=e.target.closest('button[data-a]');if(!b)return;b.disabled=true;
-  try{await api(b.dataset.a==='q'?'juegos-quitar':'juegos-devolver',{c:b.dataset.c,n:b.dataset.n});juegos()}catch(err){alert(err.message);b.disabled=false}};
+  try{await api({q:'juegos-quitar',d:'juegos-devolver',r:'juegos-revertir'}[b.dataset.a],{c:b.dataset.c,n:b.dataset.n});juegos()}catch(err){alert(err.message);b.disabled=false}};
 $('tb-ju').onclick=()=>tab('ju');
+
+// ---------- fotos de ofertas ----------
+async function fotoSubir(file){
+  const img=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error('No pude abrir esa foto'));i.src=URL.createObjectURL(file)});
+  const k=Math.min(1,1080/img.naturalWidth),c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*k);c.height=Math.round(img.naturalHeight*k);
+  c.getContext('2d').drawImage(img,0,0,c.width,c.height);let q=.85,u=c.toDataURL('image/jpeg',q);while(u.length>1100000&&q>.4){q-=.1;u=c.toDataURL('image/jpeg',q)}
+  return (await api('foto',{img:u})).url;
+}
+let FOTO='';
+$('foto').onchange=async()=>{const f=$('foto').files[0];if(!f)return;$('fprev').hidden=false;$('fimg').src=URL.createObjectURL(f);$('fest').textContent='Subiendo…';FOTO='';$('benv').disabled=true;
+  try{FOTO=await fotoSubir(f);$('fest').textContent='✅ Lista'}catch(e){$('fest').textContent='❌ '+e.message}$('benv').disabled=false};
+$('fquitar').onclick=()=>{FOTO='';$('foto').value='';$('fprev').hidden=true};
+
+// ---------- pestaña Tienda ----------
+const MESL=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const enPal=f=>{const[y,m,d]=f.split('-');return +d+' de '+MESL[+m-1]};
+const listaY=a=>a.length<2?a.join(''):a.slice(0,-1).join(', ')+' y '+a[a.length-1];
+async function notificar(titulo,texto){const r=await api('enviar',{titulo,texto,modo:'aviso'});let ok=0,total=0,despues=null,fin=false,v=0;
+  while(!fin&&v++<50){const w=await api('web',{aviso:r.aviso,despues});ok+=w.ok;total=w.total;despues=w.despues;fin=w.fin||!w.despues}
+  return (r.android==='ok'?'Android ✅':'Android ❌ '+esc(r.android))+' · iPhone '+ok+' de '+total}
+let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GPT=null;
+async function tienda(){
+  try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
+    TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
+    tiPintar();svPintar();psPintar();rwPintar()}catch(e){msg('mti','bad',esc(e.message))}
+  gpEstado()}
+// --- datos de la tienda ---
+const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+function tiPintar(){$('ti-ini').value=TI.inicio||'';$('ti-dir').value=TI.direccion||'';$('ti-mapa').value=TI.mapa||'';$('ti-abre').value=TI.abre||'10:00';$('ti-cierra').value=TI.cierra||'18:00';
+  $('ti-nums').innerHTML=(TI.numeros||[]).map(n=>`<div class="row" style="margin-top:6px"><input class="tin" value="${esc(n)}" inputmode="tel" style="flex:1"><button type="button" class="mini bad" data-qn="1">Quitar</button></div>`).join('');
+  $('ti-dias').innerHTML=[1,2,3,4,5,6,0].map(d=>`<label><input type="checkbox" value="${d}" ${(TI.dias||[]).includes(d)?'checked':''}>${DSEM[d]}</label>`).join('')}
+$('ti-nums').onclick=e=>{if(e.target.closest('[data-qn]'))e.target.closest('.row').remove()};
+$('ti-addn').onclick=()=>$('ti-nums').insertAdjacentHTML('beforeend',`<div class="row" style="margin-top:6px"><input class="tin" inputmode="tel" placeholder="5xxx xxxx" style="flex:1"><button type="button" class="mini bad" data-qn="1">Quitar</button></div>`);
+$('ti-guardar').onclick=async()=>{const b=$('ti-guardar');b.disabled=true;nomsg('mti');
+  try{const d={...TI,inicio:$('ti-ini').value,numeros:[...document.querySelectorAll('#ti-nums .tin')].map(i=>i.value.trim()).filter(Boolean),dias:[...document.querySelectorAll('#ti-dias input:checked')].map(i=>+i.value),abre:$('ti-abre').value,cierra:$('ti-cierra').value,direccion:$('ti-dir').value,mapa:$('ti-mapa').value.trim()};
+    const r=await api('archivo-guardar',{f:'tienda',d,sha:TISHA});TI=r.d;TISHA=r.sha;msg('mti','ok','✅ Guardado. Sale en la web y la app en 1 o 2 minutos.')}catch(e){msg('mti','bad',esc(e.message))}b.disabled=false};
+// --- reglas de Rewards ---
+const RWC=[['porDolar','GX por cada $1'],['cumple','Multiplicador de cumpleaños'],['referido','GX por referido'],['prestigio','GX para subir de prestigio'],['n1','Nivel 1: GX'],['p1','Nivel 1: vale $'],['n2','Nivel 2: GX'],['p2','Nivel 2: vale $'],['n3','Nivel 3: GX'],['p3','Nivel 3: vale $'],['valorGX','$ por cada GX entre niveles']];
+function rwPintar(){$('rw-nums').innerHTML=RWC.map(([k,l])=>`<div><label for="rw-${k}">${l}</label><input id="rw-${k}" type="number" step="any" min="0" value="${esc(RW[k])}"></div>`).join('');$('rw-txt').value=TI.reglas||''}
+$('rw-guardar').onclick=async()=>{const b=$('rw-guardar');b.disabled=true;nomsg('mrw');
+  try{const r={};RWC.forEach(([k])=>r[k]=+$('rw-'+k).value);const x=await api('cli-reglas',{reglas:r});RW=x.reglas;
+    if(($('rw-txt').value||'')!==(TI.reglas||'')){const t=await api('archivo-guardar',{f:'tienda',d:{...TI,reglas:$('rw-txt').value},sha:TISHA});TI=t.d;TISHA=t.sha}
+    msg('mrw','ok','✅ Reglas guardadas. El texto sale en la web y la app en 1 o 2 minutos.')}catch(e){msg('mrw','bad',esc(e.message))}b.disabled=false};
+// --- servicios ---
+function svPintar(){$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" class="chip" data-s="${i}" aria-pressed="${i===SVI}">${esc((x.icono||'')+' '+x.s)}</button>`).join('');
+  const sec=SV[SVI];if(!sec){$('sv-items').innerHTML='';return}
+  $('sv-items').innerHTML=sec.items.map((it,i)=>`<details class="svi" data-i="${i}"><summary>${esc(it.t||'(sin nombre)')}</summary><div class="in">
+    <label>Nombre</label><input data-k="t" value="${esc(it.t||'')}" required>
+    <label>Descripción <small>(opcional)</small></label><textarea data-k="d" rows="3">${esc(it.d||'')}</textarea>
+    <div class="g2"><div><label>Texto del pedido <small>(opcional)</small></label><input data-k="pedido" value="${esc(it.pedido||'')}" placeholder="${esc(it.t||'')}"></div><div><label>Texto del botón <small>(opcional)</small></label><input data-k="boton" value="${esc(it.boton||'')}" placeholder="Pedir"></div></div>
+    <label>Montos en $ <small>(solo gift cards; separados por coma)</small></label><input data-k="montos" value="${esc((it.montos||[]).join(', '))}" placeholder="10, 20, 30, 50">
+    <div class="grs">${(it.grupos||[]).map(g=>`<div class="svg"><label>Nombre de la lista</label><input data-g="n" value="${esc(g.n||'')}" placeholder="Plan, Tiempo, Tipo…"><label>Opciones <small>(una por línea; para una explicación: Opción | explicación)</small></label><textarea data-g="o" rows="4">${esc(g.o.map(o=>o.t+(o.d?' | '+o.d:'')).join('\n'))}</textarea><button type="button" class="mini bad" data-qg="1" style="margin-top:6px">Quitar lista</button></div>`).join('')}</div>
+    <div class="row" style="margin-top:10px"><button type="button" class="mini" data-ag="1">+ Lista de opciones</button><button type="button" class="mini" data-up="1">↑ Subir</button><button type="button" class="mini" data-dn="1">↓ Bajar</button><button type="button" class="mini bad" data-del="1">Borrar servicio</button></div></div></details>`).join('')}
+function svLeer(){const sec=SV[SVI];if(!sec)return;const ab=new Set();
+  sec.items=[...document.querySelectorAll('#sv-items .svi')].map(el=>{const it={...sec.items[+el.dataset.i]};if(el.open)ab.add(el);
+    const v=k=>el.querySelector(`[data-k="${k}"]`).value.trim();
+    it.t=v('t');for(const k of ['d','pedido','boton']){const x=k==='d'?el.querySelector('[data-k="d"]').value.trim():v(k);if(x)it[k]=x;else delete it[k]}
+    const m=v('montos').split(/[,\s]+/).map(Number).filter(x=>x>0);if(m.length)it.montos=m;else delete it.montos;
+    const gs=[...el.querySelectorAll('.svg')].map(g=>({n:g.querySelector('[data-g="n"]').value.trim(),o:g.querySelector('[data-g="o"]').value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const[t,...d]=l.split('|');const o={t:t.trim()};if(d.join('|').trim())o.d=d.join('|').trim();return o})})).filter(g=>g.o.length);
+    if(gs.length)it.grupos=gs;else delete it.grupos;return it})}
+$('sv-secs').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;svLeer();SVI=+b.dataset.s;svPintar()};
+$('sv-items').onclick=e=>{const el=e.target.closest('.svi');if(!el)return;const i=+el.dataset.i;
+  const act=['ag','qg','up','dn','del'].find(k=>e.target.closest(`[data-${k}]`));if(!act)return;
+  if(act==='del'&&!confirm('¿Borrar este servicio?'))return;
+  svLeer();const it=SV[SVI].items;
+  if(act==='ag'){(it[i].grupos=it[i].grupos||[]).push({n:'',o:[{t:'Opción 1'}]})}
+  if(act==='qg'){const gi=[...el.querySelectorAll('.svg')].indexOf(e.target.closest('.svg'));it[i].grupos.splice(gi,1)}
+  if(act==='up'&&i>0)[it[i-1],it[i]]=[it[i],it[i-1]];
+  if(act==='dn'&&i<it.length-1)[it[i+1],it[i]]=[it[i],it[i+1]];
+  if(act==='del')it.splice(i,1);
+  svPintar();const k=act==='up'?i-1:act==='dn'?i+1:i;const n=document.querySelector(`#sv-items .svi[data-i="${Math.max(0,Math.min(k,it.length-1))}"]`);if(n&&act!=='del')n.open=true};
+$('sv-add').onclick=()=>{svLeer();SV[SVI].items.push({t:'Servicio nuevo'});svPintar();const l=document.querySelectorAll('#sv-items .svi');l[l.length-1].open=true;l[l.length-1].querySelector('input').select()};
+$('sv-guardar').onclick=async()=>{const b=$('sv-guardar');b.disabled=true;nomsg('msv');svLeer();
+  try{const r=await api('archivo-guardar',{f:'servicios',d:SV,sha:SVSHA});SV=r.d;SVSHA=r.sha;svPintar();msg('msv','ok','✅ Servicios guardados. Salen en la web y la app en 1 o 2 minutos.')}catch(e){msg('msv','bad',esc(e.message))}b.disabled=false};
+// --- PS Plus ---
+const PSPL=['PS5','PS4 y PS5','PS4'];
+function psFila(g){const m=/^(.*?)\s*\((PS5|PS4 y PS5|PS4)\)$/.exec(g.n||'')||[0,g.n||'','PS5'];
+  return `<div class="psj"><input class="psn" value="${esc(m[1])}" placeholder="Nombre del juego"><div class="row"><select class="psp" style="flex:1;font:inherit;color:var(--fg);background:#0b0f20;border:1px solid var(--line);border-radius:8px;padding:10px">${PSPL.map(p=>`<option ${p===m[2]?'selected':''}>${p}</option>`).join('')}</select><input class="psi" value="${esc(g.id||'')}" placeholder="PPSA12345 (opcional)" style="flex:1.4"></div>
+  <div class="row"><label style="margin:0;font-weight:400;display:flex;gap:6px;align-items:center"><input type="checkbox" class="pso" style="width:auto" ${g.online?'checked':''}>Solo online</label><button type="button" class="mini bad" data-qp="1" style="margin-left:auto">Quitar</button></div></div>`}
+function psPintar(){$('ps-mes').value=PS.mes||'';$('ps-hasta').value=PS.hasta||'';$('ps-js').innerHTML=(PS.juegos||[]).map(psFila).join('')}
+$('ps-js').onclick=e=>{if(e.target.closest('[data-qp]'))e.target.closest('.psj').remove()};
+$('ps-add').onclick=()=>$('ps-js').insertAdjacentHTML('beforeend',psFila({n:''}));
+$('ps-guardar').onclick=async()=>{const b=$('ps-guardar');b.disabled=true;nomsg('mps');
+  try{const js=[...document.querySelectorAll('#ps-js .psj')].map(r=>({n:r.querySelector('.psn').value.trim(),p:r.querySelector('.psp').value,id:r.querySelector('.psi').value.trim(),online:r.querySelector('.pso').checked})).filter(g=>g.n);
+    const d={mes:$('ps-mes').value.trim(),hasta:$('ps-hasta').value,juegos:js.map(g=>({n:g.n+' ('+g.p+')',id:g.id,online:g.online}))};
+    const r=await api('archivo-guardar',{f:'ps_plus',d,sha:PSSHA});PS=r.d;PSSHA=r.sha;let t='✅ PS Plus guardado. Sale en la web y la app en 1 o 2 minutos (los enlaces que faltan los busco solo).';
+    if($('ps-not').checked){msg('mps','inf','Mandando la notificación…');const mes=(d.mes.split(' ')[0]||'').toLowerCase();
+      t+='<br>🔔 Notificación: '+await notificar('Juegos de PS Plus de '+mes,'Ya están: '+listaY(js.map(g=>g.n))+'. Disponibles hasta el '+enPal(d.hasta)+'.');$('ps-not').checked=false}
+    msg('mps','ok',t)}catch(e){msg('mps','bad',esc(e.message))}b.disabled=false};
+// --- Game Pass ---
+async function gpEstado(){clearTimeout(GPT);
+  try{const d=await api('gp-estado');const r=d.run,c=d.cambios;GPC=c;const corriendo=r&&r.estado!=='completed';
+    $('gp-est').innerHTML=corriendo?'⏳ Trabajando… (tarda 1 o 2 minutos)':!c?'Toca "Revisar" para ver si Microsoft cambió algo.':'Revisado el '+fecha(c.fecha)+' · '+c.total+' juegos (antes '+c.antes+')';
+    const hay=c&&(c.entraron.length||c.salieron.length||c.saliendo_cambio);
+    $('gp-cambios').innerHTML=!c||corriendo?'':!hay?'<p class="vacio">✅ Sin cambios: todo está al día.</p>':
+      (c.entraron.length?`<h3>Entraron (${c.entraron.length})</h3><ul class="gpl">${c.entraron.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:'')
+      +(c.salieron.length?`<h3>Salieron (${c.salieron.length})</h3><ul class="gpl">${c.salieron.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:'')
+      +(c.saliendo.length?`<h3>Se van pronto (${c.saliendo.length})</h3><ul class="gpl">${c.saliendo.map(n=>`<li>${esc(n)}</li>`).join('')}</ul>`:'')
+      +(c.revisar.length?`<h3>¿Son solo online?</h3><p class="nota">Marca los que no tienen modo de un jugador.</p><div class="tipos" id="gp-on">${c.revisar.map(n=>`<label><input type="checkbox" value="${esc(n)}">${esc(n)}</label>`).join('')}</div>`:'');
+    $('gp-pub').hidden=!hay||corriendo;$('gp-rev').disabled=corriendo;
+    if(hay){const t=gpTexto(c);$('gp-nott').textContent=t?'"'+t[0]+'": '+t[1]:'No hay juegos que entren o salgan, no se manda nada';$('gp-not').disabled=!t}
+    if(corriendo&&!$('t-ti').hidden)GPT=setTimeout(gpEstado,15000)}catch(e){$('gp-est').textContent=e.message}}
+function gpTexto(c){const f=a=>a.length>5?a.slice(0,4).join(', ')+' y '+(a.length-4)+' más':listaY(a);
+  if(c.entraron.length&&c.salieron.length)return ['Cambios en Game Pass','Entraron: '+f(c.entraron)+'. Salieron: '+f(c.salieron)+'.'];
+  if(c.entraron.length)return ['Nuevo en Game Pass','Ya están en el catálogo: '+f(c.entraron)+'.'];
+  if(c.salieron.length)return ['Salieron de Game Pass','Ya no están en el catálogo: '+f(c.salieron)+'.'];return null}
+$('gp-rev').onclick=async()=>{nomsg('mgp');$('gp-rev').disabled=true;try{await api('gp-revisar',{});$('gp-est').textContent='⏳ Trabajando… (tarda 1 o 2 minutos)';$('gp-cambios').innerHTML='';$('gp-pub').hidden=true;setTimeout(gpEstado,8000)}catch(e){msg('mgp','bad',esc(e.message));$('gp-rev').disabled=false}};
+$('gp-bpub').onclick=async()=>{const b=$('gp-bpub');b.disabled=true;nomsg('mgp');
+  try{const online=[...document.querySelectorAll('#gp-on input:checked')].map(i=>i.value);await api('gp-publicar',{online});let t='✅ Publicando: sale en la web y la app en 1 o 2 minutos.';
+    const tx=GPC&&gpTexto(GPC);if(tx&&$('gp-not').checked){msg('mgp','inf','Mandando la notificación…');t+='<br>🔔 Notificación: '+await notificar(tx[0],tx[1])}
+    msg('mgp','ok',t);$('gp-pub').hidden=true;setTimeout(gpEstado,8000)}catch(e){msg('mgp','bad',esc(e.message))}b.disabled=false};
+// --- respaldo ---
+async function respaldo(){return api('respaldo')}
+$('bk-json').onclick=async()=>{nomsg('mbk');try{const d=await respaldo();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,1)],{type:'application/json'}));a.download='GameX-respaldo-'+d.fecha+'.json';a.click();msg('mbk','ok','✅ Respaldo bajado.')}catch(e){msg('mbk','bad',esc(e.message))}};
+$('bk-xls').onclick=async()=>{nomsg('mbk');$('bk-xls').disabled=true;
+  try{const d=await respaldo(),x=d.rewards;
+    if(!window.XLSX)await new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';s.onload=ok;s.onerror=()=>no(new Error('No se pudo cargar el generador de Excel'));document.head.appendChild(s)});
+    const wb=XLSX.utils.book_new(),hoja=(n,f)=>XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(f.length?f:[{'(vacío)':''}]),n);
+    hoja('Clientes',x.clientes.map(c=>({'ID GX':c.gx,'Nombre':c.nombre,'WhatsApp':c.tel,'Nacimiento':c.nac,'Registro':c.registro,'Plataforma':c.plataforma,'Estado':c.estado,'Cuenta activada':c.activada?'Sí':'No','GX saldo':c.saldo,'Nivel':c.nivel,'Valor disponible $':c.valor,'GX históricos':c.historicos,'Prestigio':c.prestigio,'Total gastado $':c.gastado,'# Compras':c.compras,'# Referidos':c.referidos})));
+    hoja('Movimientos',x.movs.map(m=>({'Fecha':m.fecha,'ID GX':m.gx,'Tipo':m.tipo,'Descripción':m.descr,'Importe $':m.importe||'','Cumpleaños x2':m.tipo==='Compra'?(m.cumple?'Sí':'No'):'','GX ganados':m.ganados,'GX usados':m.usados,'GX prestigio':m.prest})));
+    hoja('Solicitudes',x.solicitudes.map(s=>({'N.º':s.id,'Fecha':s.fecha,'Nombre':s.nombre,'Apellidos':s.apellidos,'Nacimiento':s.nac,'WhatsApp':s.tel,'Plataforma':s.plataforma,'Estado':s.estado,'GX dado':s.gx})));
+    const of=d.ofertas?d.ofertas.avisos.concat(d.ofertas.silenciosas||[]):[];
+    hoja('Ofertas',of.map(a=>({'Fecha':a.fecha,'Título':a.titulo,'Texto':a.texto,'Enlace':a.url||'','Foto':a.img||'','Se quita':a.vence||'','Notificada':a.silenciosa?'No':'Sí'})));
+    const pj=d.juegos_panel||{agregar:[],quitar:[],editar:[]};
+    hoja('Juegos a mano',[...pj.agregar.map(a=>({'Qué':'Agregado','Consola':a.c,'Juego':a.n,'Enlace':a.link||'','Etiquetas':(a.et||[]).join(', '),'Fecha':a.f})),...pj.quitar.map(a=>({'Qué':'Quitado','Consola':a.c,'Juego':a.n,'Fecha':a.f})),...(pj.editar||[]).map(a=>({'Qué':'Editado','Consola':a.c,'Juego':a.nuevo||a.n,'Antes':a.n,'Enlace':a.link||'','Etiquetas':(a.et||[]).join(', '),'Fecha':a.f}))]);
+    hoja('Servicios',(d.servicios||[]).flatMap(s=>s.items.map(it=>({'Sección':s.s,'Servicio':it.t,'Descripción':it.d||'','Opciones':(it.grupos||[]).map(g=>g.n+': '+g.o.map(o=>o.t).join(' / ')).join(' · '),'Montos':(it.montos||[]).join(', ')}))));
+    const ti=d.tienda||{};hoja('Tienda',[{'Inicio':ti.inicio,'Números':(ti.numeros||[]).join(', '),'Días':(ti.dias||[]).map(x=>DSEM[x]).join(', '),'Abre':ti.abre,'Cierra':ti.cierra,'Dirección':ti.direccion,'Mapa':ti.mapa}]);
+    hoja('Reglas',Object.entries(d.reglas.reglas).map(([k,v])=>({'Regla':(RWC.find(r=>r[0]===k)||[k,k])[1],'Valor':v})));
+    XLSX.writeFile(wb,'GameX-respaldo-'+d.fecha+'.xlsx');msg('mbk','ok','✅ Respaldo bajado en Excel.')}catch(e){msg('mbk','bad',esc(e.message))}$('bk-xls').disabled=false};
+$('tb-ti').onclick=()=>tab('ti');
 
 </script>
 </body>

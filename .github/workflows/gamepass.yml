@@ -1,0 +1,48 @@
+# Game Pass desde el panel: "revisar" deja la vista previa en la rama gamepass-pendiente; "publicar" actualiza de verdad y rearma el catálogo.
+name: Game Pass (panel)
+on:
+  repository_dispatch:
+    types: [gp-revisar, gp-publicar]
+  workflow_dispatch:
+    inputs:
+      accion: {description: 'revisar o publicar', default: 'revisar'}
+      online: {description: 'JSON con los nombres a marcar solo online', default: '[]'}
+permissions:
+  contents: write
+concurrency:
+  group: armar-catalogo
+  cancel-in-progress: false
+jobs:
+  gamepass:
+    runs-on: ubuntu-latest
+    env:
+      ACCION: ${{ github.event.action == 'gp-publicar' && 'publicar' || github.event.action == 'gp-revisar' && 'revisar' || inputs.accion }}
+      ONLINE: ${{ toJSON(github.event.client_payload.online) != 'null' && toJSON(github.event.client_payload.online) || inputs.online || '[]' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bajar Game Pass
+        run: python3 tools/actualizar_gamepass.py
+      - name: Vista previa
+        if: env.ACCION == 'revisar'
+        run: |
+          git config user.name "GameX panel"; git config user.email "gamex-panel@users.noreply.github.com"
+          git checkout -B gamepass-pendiente
+          git add -f tools/datos/gamepass.json tools/datos/reglas_gamepass.json tools/salida/gamepass_cambios.json
+          git commit -m "Game Pass: vista previa" || true
+          git push -f origin gamepass-pendiente
+      - name: Publicar
+        if: env.ACCION == 'publicar'
+        run: |
+          python3 tools/gamepass_marcar.py "$ONLINE"
+          python3 tools/armar.py
+          git config user.name "GameX panel"; git config user.email "gamex-panel@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Game Pass: publicado desde el panel"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && break; sleep 5; done
+          git push origin --delete gamepass-pendiente || true

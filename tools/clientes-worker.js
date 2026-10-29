@@ -2,7 +2,8 @@
 // Se inserta en push-worker.js al desplegar (marcador // __CLIENTES__). Los datos viven en el mismo
 // Durable Object de estadísticas (SQLite), en tablas aparte: cli, mov, sol, ses, fallos.
 // Reglas copiadas del Excel "GameX Rewards v2" (hoja GX_Config).
-const GXR={porDolar:10,valorGX:0.005,n1:1500,p1:9,n2:2500,p2:17.5,n3:3500,p3:28,referido:100,prestigio:2000,cumple:2};
+const GXR_DEF={porDolar:10,valorGX:0.005,n1:1500,p1:9,n2:2500,p2:17.5,n3:3500,p3:28,referido:100,prestigio:2000,cumple:2};
+const GXR={...GXR_DEF}; // se pueden cambiar desde el panel (tabla cfg)
 const nivelDe=s=>s>=GXR.n3?'Nivel 3 / MAX':s>=GXR.n2?'Nivel 2':s>=GXR.n1?'Nivel 1':'Base';
 const valorDe=s=>s>=GXR.n3?GXR.p3:s>=GXR.n2?GXR.p2+(s-GXR.n2)*GXR.valorGX:s>=GXR.n1?GXR.p1+(s-GXR.n1)*GXR.valorGX:s*GXR.valorGX;
 const r2=x=>Math.round(x*100)/100;
@@ -36,6 +37,8 @@ const TIPOS_MOV=['Compra','Canje','Referido','Ajuste +','Ajuste -'];
 
 const CLI={
   cliInit(){if(this._cli)return;this._cli=1;const s=this.sql;
+    s.exec('CREATE TABLE IF NOT EXISTS cfg(k TEXT PRIMARY KEY,v TEXT)');
+    try{const r=s.exec("SELECT v FROM cfg WHERE k='reglas'").toArray()[0];if(r)Object.assign(GXR,GXR_DEF,JSON.parse(r.v))}catch(e){}
     s.exec('CREATE TABLE IF NOT EXISTS cli(gx TEXT PRIMARY KEY,nombre TEXT,tel TEXT,nac TEXT,registro TEXT,plataforma TEXT,estado TEXT,ph TEXT,sal TEXT,creado INTEGER,nota TEXT)');
     s.exec('CREATE TABLE IF NOT EXISTS mov(id INTEGER PRIMARY KEY AUTOINCREMENT,fecha TEXT,gx TEXT,tipo TEXT,descr TEXT,importe REAL,cumple INTEGER,base INTEGER,bono INTEGER,ganados INTEGER,usados INTEGER,prest INTEGER,obs TEXT,creado INTEGER)');
     s.exec('CREATE INDEX IF NOT EXISTS mov_gx ON mov(gx)');
@@ -79,6 +82,11 @@ const CLI={
     let n=0;for(const m of d.movs||[]){const c=this._cli1(m.gx);const o=calcularMov(m.tipo,+m.importe||0,+m.n||0,m.fecha,c&&c.nac);
       this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',m.fecha,m.gx,m.tipo,m.descr||'',+m.importe||0,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,m.obs||'',Date.now());n++}
     return {ok:true,clientes:(d.clientes||[]).length,movs:n}},
+  cfgReglas(){this.cliInit();return {reglas:{...GXR},def:GXR_DEF}},
+  cfgGuardarReglas(r){this.cliInit();const n={};
+    for(const k of Object.keys(GXR_DEF)){const v=Number(r&&r[k]);if(!Number.isFinite(v)||v<0||v>1e6)return {error:'Valor no válido en '+k};n[k]=v}
+    if(!(n.n1<n.n2&&n.n2<n.n3))return {error:'Los niveles tienen que ir de menor a mayor'};if(n.prestigio<1||n.porDolar<=0||n.cumple<1)return {error:'Revisa los valores'};
+    this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('reglas',?)",JSON.stringify(n));Object.assign(GXR,n);return {ok:true,reglas:{...GXR}}},
   cliExportar(){this.cliInit();return {clientes:this.cliLista().clientes,movs:this.sql.exec('SELECT * FROM mov ORDER BY fecha,id').toArray(),solicitudes:this.sql.exec('SELECT id,fecha,nombre,apellidos,nac,tel,plataforma,estado,gx,nota FROM sol ORDER BY id').toArray(),reglas:GXR}},
   // --- solicitudes ---
   solCrear(d){this.cliInit();const hoy=diaCuba(Date.now());
@@ -173,6 +181,7 @@ async function panelClientes(p,req,env,q){
   if(p==='cli-sol-borrar')return jx(await D.solBorrar(q.id));
   if(p==='cli-importar')return jx(await D.cliImportar(q));
   if(p==='cli-exportar')return j(await D.cliExportar());
+  if(p==='cli-reglas')return q&&q.reglas?jx(await D.cfgGuardarReglas(q.reglas)):j(await D.cfgReglas());
   return null;
 }
 const jx=o=>j(o,o&&o.error?400:200);

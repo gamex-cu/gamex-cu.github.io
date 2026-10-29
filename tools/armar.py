@@ -7,6 +7,63 @@ D=T+'datos/'
 os.makedirs(T+'salida',exist_ok=True)
 VJ=R+'app/version.json';VV=json.load(open(VJ));VER=VV['catalogo']+1;VV['catalogo']=VER;json.dump(VV,open(VJ,'w'),ensure_ascii=False,indent=2)
 head=open(T+'plantilla/cabecera.html').read(); js=open(T+'plantilla/script.html').read()
+# ---- datos de la tienda (los cambia el panel: tools/datos/tienda.json) ----
+import html as _h, re as _re
+try: TI=json.load(open(D+'tienda.json'))
+except FileNotFoundError: TI={}
+def _tienda(head,js):
+    nums=[n for n in TI.get('numeros') or [] if _re.sub(r'\D','',n)]
+    if not nums: return head,js
+    w=lambda n:'53'+_re.sub(r'\D','',n)[-8:]
+    D_N=['domingo','lunes','martes','miércoles','jueves','viernes','sábado']
+    def h12(t):
+        hh,mm=map(int,t.split(':'));s='a. m.' if hh<12 else 'p. m.';return f'{(hh%12) or 12}:{mm:02d} {s}'
+    dias=sorted(set(TI.get('dias',[1,2,3,4,5,6])));abre,cierra=TI.get('abre','10:00'),TI.get('cierra','18:00')
+    def rangos(ds):
+        ds=[d if d else 7 for d in ds];ds.sort();out=[];i=0
+        while i<len(ds):
+            j=i
+            while j+1<len(ds) and ds[j+1]==ds[j]+1: j+=1
+            a,b=D_N[ds[i]%7],D_N[ds[j]%7];out.append(a.capitalize() if i==j else (f'{a.capitalize()} y {b}' if j==i+1 else f'{a.capitalize()} a {b}'));i=j+1
+        return out
+    hrs=''.join(f'<p class="hrs"><span>{_h.escape(r)}</span><b>{h12(abre)} – {h12(cierra)}</b></p>' for r in rangos(dias))
+    cer=[d for d in range(7) if d not in dias]
+    hrs+=''.join(f'<p class="hrs"><span>{_h.escape(r)}</span><b>Cerrado</b></p>' for r in rangos(cer))
+    dirc=_h.escape(TI.get('direccion',''));mapa=_h.escape(TI.get('mapa',''))
+    R1=lambda f:''.join(f(n) for n in nums)
+    rep=[(r'<div class="wa">.*?</div>','<div class="wa">'+R1(lambda n:f'<a href="https://wa.me/{w(n)}" target="_blank" rel="noopener">{_h.escape(n)} <small>WhatsApp</small></a>')+'</div>'),
+         (r'<h4>Horario</h4>.*?<p class="open" id="open-now"></p>','<h4>Horario</h4>'+hrs+'<p class="open" id="open-now"></p>'),
+         (r'<p class="addr"><span class="addr-t">Dirección</span>.*?</p>','<p class="addr"><span class="addr-t">Dirección</span>'+(f'<a href="{mapa}" target="_blank" rel="noopener">{dirc}</a>' if mapa else dirc)+'</p>'),
+         (r'<p class="nums">.*?</p>','<p class="nums">'+R1(lambda n:f'<a href="https://wa.me/{w(n)}" target="_blank" rel="noopener">{_h.escape(n)}</a>')+'</p>'),
+         (r'<div class="wpl">.*?</div>','<div class="wpl">'+R1(lambda n:f'<a class="btn wa2" data-n="{w(n)}" target="_blank" rel="noopener" href="#">{_h.escape(n)}</a>')+'</div>'),
+         (r'<div class="row choose">.*?</div>','<div class="row choose">'+''.join(f'<button class="btn" type="button" data-n="{w(n)}" aria-pressed="{"true" if i==0 else "false"}">{_h.escape(n)}</button>' for i,n in enumerate(nums))+'</div>'),
+         (r'<p class="lede">.*?</p>','<p class="lede">'+_h.escape(TI.get('inicio',''))+'</p>')]
+    for pat,new in rep:
+        head,k=_re.subn(pat,lambda m:new,head,count=1,flags=_re.S)
+        if not k: print('aviso: no encontré',pat[:30])
+    a1,c1=[int(x.split(':')[0])+int(x.split(':')[1])/60 for x in (abre,cierra)]
+    WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+    js=js.replace("const on=p.weekday!=='Sun'&&h>=10&&h<18;",f"const on={json.dumps([WD[d] for d in dias])}.includes(p.weekday)&&h+(+p.minute||0)/60>={a1}&&h+(+p.minute||0)/60<{c1};")
+    js=js.replace("{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}","{timeZone:'America/Havana',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}")
+    js=js.replace("let dest='5353441089';",f"let dest='{w(nums[0])}';")
+    if TI.get('reglas'):
+        out=[];lis=[]
+        def inl(t): return _re.sub(r'\*\*(.+?)\*\*',r'<b>\1</b>',_h.escape(t))
+        for ln in TI['reglas'].split('\n'):
+            ln=ln.strip()
+            if ln.startswith('- '): lis.append('<li>'+inl(ln[2:])+'</li>');continue
+            if lis: out.append('<ul>'+''.join(lis)+'</ul>');lis=[]
+            if not ln: continue
+            if ln.startswith('## '): out.append('<p class="cu-rt">'+inl(ln[3:])+'</p>')
+            elif ln.startswith('# '): out.append('<h4>'+inl(ln[2:])+'</h4>')
+            elif ln.startswith('!! '): out.append('<p class="cu-rf">'+inl(ln[3:])+'</p>')
+            else: out.append('<p>'+inl(ln)+'</p>')
+        if lis: out.append('<ul>'+''.join(lis)+'</ul>')
+        body=''.join(out).replace('`','&#96;').replace('${','$&#123;')
+        js,k=_re.subn(r"\$\('cu-reglas'\)\.innerHTML=`<div class=\"cu-rw\">.*?</div>`;",lambda m:"$('cu-reglas').innerHTML=`<div class=\"cu-rw\">"+body+"</div>`;",js,count=1,flags=_re.S)
+        if not k: print('aviso: no encontré las reglas')
+    return head,js
+head,js=_tienda(head,js)
 data={'PS4':json.load(open(D+'ps4.json'))}
 for extra in ['PS5','PC','Meta Quest','Switch','Xbox pago']:
     try: data[extra]=json.load(open(D+extra.lower().replace(' ','_')+'.json'))
@@ -37,23 +94,53 @@ try: XP=json.load(open(D+'etiquetas_xbox_pago.json'))
 except FileNotFoundError: XP={}
 series+=['Xbox pago|'+n for n in XP.get('series',[])]
 online+=['Xbox pago|'+n for n in XP.get('online',[])]
-# ---- juegos agregados o quitados a mano desde el panel (tools/datos/panel_juegos.json) ----
+# ---- juegos agregados, quitados o editados a mano desde el panel (tools/datos/panel_juegos.json) ----
 try: PJ=json.load(open(D+'panel_juegos.json'))
-except FileNotFoundError: PJ={'agregar':[],'quitar':[]}
-for _q in PJ.get('quitar',[]):
-    if _q.get('c') in data: data[_q['c']]=[n for n in data[_q['c']] if n!=_q.get('n')]
-for _a in PJ.get('agregar',[]):
-    _c,_n=_a.get('c'),(_a.get('n') or '').strip()
-    if _c not in data or not _n: continue
-    if _n.lower() not in {x.lower() for x in data[_c]}: data[_c].append(_n)
-    _k=_c+'|'+_n;_et=set(_a.get('et') or [])
+except FileNotFoundError: PJ={}
+for _x in ('agregar','quitar','editar'): PJ.setdefault(_x,[])
+_PORTS={'Switch':SWE,'PC':PCE,'Meta Quest':MQE}
+def _pj_et(_c,_n,_et):  # pone exactamente estas etiquetas al juego
+    global online,series
+    _k=_c+'|'+_n
+    online=[x for x in online if x!=_k];series=[x for x in series if x!=_k]
+    for _l in ('vr','vr_opcional'): ET[_l]=[x for x in ET[_l] if x!=_k]
+    for _d,_l in [(_PORTS.get(_c,{}),'port'),(SWE if _c=='Switch' else {},'emulador')]:
+        if _l in _d: _d[_l]=[x for x in _d[_l] if x!=_n]
+    if _c in EXC: EXC[_c]=[x for x in EXC[_c] if x!=_n]
     if 'online' in _et: online.append(_k)
     if 'series' in _et: series.append(_k)
     if 'vr' in _et: ET['vr'].append(_k)
     if 'vro' in _et: ET['vr_opcional'].append(_k)
-    if 'port' in _et: {'Switch':SWE,'PC':PCE,'Meta Quest':MQE}.get(_c,{}).setdefault('port',[]).append(_n)
+    if 'port' in _et and _c in _PORTS: _PORTS[_c].setdefault('port',[]).append(_n)
     if 'emu' in _et and _c=='Switch': SWE.setdefault('emulador',[]).append(_n)
     if 'excl' in _et: EXC.setdefault(_c,[]).append(_n)
+for _q in PJ['quitar']:
+    if _q.get('c') in data: data[_q['c']]=[n for n in data[_q['c']] if n!=_q.get('n')]
+for _a in PJ['agregar']:
+    _c,_n=_a.get('c'),(_a.get('n') or '').strip()
+    if _c not in data or not _n: continue
+    if _n.lower() not in {x.lower() for x in data[_c]}: data[_c].append(_n)
+    _pj_et(_c,_n,set(_a.get('et') or []))
+RENOMBRA={}
+for _e in PJ['editar']:
+    _c,_n=_e.get('c'),_e.get('n')
+    if _c not in data or _n not in data[_c]: continue
+    _nn=(_e.get('nuevo') or _n).strip()
+    if _nn!=_n:
+        data[_c]=[_nn if x==_n else x for x in data[_c]];RENOMBRA[_c+'|'+_n]=_c+'|'+_nn
+        _o,_k=_c+'|'+_n,_c+'|'+_nn
+        online=[_k if x==_o else x for x in online];series=[_k if x==_o else x for x in series]
+        for _l in ('vr','vr_opcional'): ET[_l]=[_k if x==_o else x for x in ET[_l]]
+        for _d in [_PORTS.get(_c,{}),SWE if _c=='Switch' else {}]+([{'x':EXC[_c]}] if _c in EXC else []):
+            for _l in list(_d): _d[_l]=[_nn if x==_n else x for x in _d[_l]] if isinstance(_d[_l],list) else _d[_l]
+        if _c in EXC: EXC[_c]=[_nn if x==_n else x for x in EXC[_c]]
+        if _c=='Xbox Game Pass':
+            for _l in ('x360','xog','saliendo'):
+                if _l in GP: GP[_l]=[_nn if x==_n else x for x in GP[_l]]
+        if _c=='Xbox pago':
+            for _l in ('x360','xog'):
+                if _l in XP: XP[_l]=[_nn if x==_n else x for x in XP[_l]]
+    if 'et' in _e: _pj_et(_c,_nn,set(_e['et'] or []))
 CARD='''<a class="dlapp" id="dlapp" href="https://gamex-avisos.gamex-cu.workers.dev/descargar" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
 '''
 DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
@@ -87,7 +174,9 @@ for _f,_c in [('enlaces_pc.json','PC')]:
 try:
     for n,u in json.load(open(D+'enlaces_meta_quest.json')).items(): LINKS['Meta Quest|'+n]=u
 except FileNotFoundError: pass
-for _a in PJ.get('agregar',[]):  # enlaces de los juegos del panel
+for _o,_k in RENOMBRA.items():
+    if _o in LINKS: LINKS[_k]=LINKS.pop(_o)
+for _a in PJ['agregar']+[dict(_e,n=(_e.get('nuevo') or _e['n'])) for _e in PJ['editar'] if _e.get('link')]:  # enlaces de los juegos del panel
     _l=(_a.get('link') or '').strip()
     if not _l or _a.get('c') not in data: continue
     if not _l.startswith('http'):
@@ -131,6 +220,8 @@ try: AGR=json.load(open(_AF))
 except FileNotFoundError: AGR=None
 _todas={c+'|'+n for c,l in data.items() for n in l}
 if AGR is None: AGR={k:'2000-01-01' for k in _todas}   # primera vez: nada es nuevo
+for _o,_k in RENOMBRA.items():
+    if _o in AGR and _k not in AGR: AGR[_k]=AGR[_o]
 for k in _todas: AGR.setdefault(k,HOY.isoformat())
 AGR={k:v for k,v in sorted(AGR.items()) if k in _todas}
 json.dump(AGR,open(_AF,'w'),ensure_ascii=False,indent=0)
@@ -195,6 +286,11 @@ pwa='''<link rel="manifest" href="manifest.webmanifest">
 <meta name="description" content="Tienda de Videojuegos GameX. Escoge tus juegos y pídelos por WhatsApp.">
 '''
 import sys as _sys; _sys.path.insert(0, T); import seo as _seo
+if TI.get('numeros'):
+    _seo.LD['telephone']=['+53'+_re.sub(r'\D','',n)[-8:] for n in TI['numeros']]
+    _seo.LD['address']['streetAddress']=TI.get('direccion','').replace(', La Habana','')
+    _seo.LD['openingHoursSpecification'][0].update(dayOfWeek=[['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][d] for d in sorted(TI.get('dias',[]))],opens=TI.get('abre','10:00'),closes=TI.get('cierra','18:00'))
+    if TI.get('mapa'): _seo.LD['hasMap']=TI['mapa']
 _gv = ''
 try: _gv = open(D+'google_verificacion.txt').read().strip()
 except FileNotFoundError: pass

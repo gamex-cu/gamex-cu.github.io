@@ -231,6 +231,7 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
+.ocard .ofoto{display:block;width:calc(100% + 32px);margin:-16px -16px 12px;border-radius:13px 13px 0 0;max-height:320px;object-fit:cover;background:#0b0f20}
 .ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
 .ocard .ox{font-size:.88rem;font-weight:600;color:var(--hot)}.ocard .ox::after{content:' ▾'}
 .ocard.abierta .ox{display:none}
@@ -717,16 +718,7 @@ function cuPintar(){
   $('cu-pres2').textContent=`faltan ${cuN(r.faltaPrestigio)} GX para el siguiente`;
   $('cu-comp').textContent=cuN(r.compras);$('cu-gast').textContent=cuMoney(r.gastado)+' en total';$('cu-hist').textContent=cuN(r.historicos);
   $('cu-lista').innerHTML=CU.historial.length?CU.historial.map(m=>`<div class="cu-mv"><div><b style="font-weight:600">${esc(m.tipo==='Compra'?(m.descr||'Compra'):m.tipo==='Canje'?'Canje'+(m.descr?': '+m.descr:''):m.tipo==='Referido'?'Referido'+(m.descr?': '+m.descr:''):(m.descr||'Ajuste'))}</b><small>${cuF(m.fecha)}${m.importe?' · '+cuMoney(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><b class="${m.ganados?'mas':m.usados?'menos':''}">${m.ganados?'+'+cuN(m.ganados):m.usados?'−'+cuN(m.usados):'0'} GX</b></div>`).join(''):'<p class="cu-help">Todavía no tienes movimientos.</p>';
-  $('cu-reglas').innerHTML=`<div class="cu-rw">
-<p class="cu-rt">🎮 GAMEX REWARDS</p><p><b>💚 ¡Tus compras ahora tienen recompensa!</b></p>
-<h4>💰 ACUMULA PUNTOS</h4><p>Por cada $1 de compra recibes 10 GX.</p>
-<h4>🏆 NIVELES Y RECOMPENSAS</h4><ul><li>🥉 1,500 GX = $9</li><li>🥈 2,500 GX = $17.50</li><li>🥇 3,500 GX = $28</li></ul>
-<h4>🎁 CANJEA CUANDO QUIERAS</h4><p>Utiliza tu recompensa disponible en tus próximas compras. Al canjear, tu saldo GX vuelve a cero y comienzas un nuevo ciclo.</p>
-<h4>👑 PRESTIGIO</h4><p>Por cada 2,000 GX acumulados mediante compras, aumentas tu Prestigio. ¡Nunca se reinicia!</p>
-<h4>🎂 CUMPLEAÑOS ×2</h4><p>Recibe el doble de GX durante los 3 días anteriores y posteriores a tu cumpleaños, incluyendo ese día.</p>
-<h4>🤝 RECOMIENDA Y GANA</h4><p>Recibe +100 GX por cada nuevo cliente referido que realice su primera compra.</p>
-<h4>📌 REGLAS BÁSICAS</h4><ul><li>Registro totalmente GRATIS.</li><li>Tus GX no vencen.</li><li>Las recompensas solo se utilizan en GameX.</li><li>Los GX no se cambian por efectivo ni se transfieren.</li><li>Las compras canceladas no generan GX.</li></ul>
-<p class="cu-rf">💚 COMPRA • ACUMULA • CANJEA • DISFRUTA</p><p class="cu-rt">GAMEX REWARDS 🎮</p></div>`;
+  $('cu-reglas').innerHTML=`<div class="cu-rw"><p class="cu-rt">🎮 GAMEX REWARDS</p><p><b>💚 ¡Tus compras ahora tienen recompensa!</b></p><h4>💰 ACUMULA PUNTOS</h4><p>Por cada $1 de compra recibes 10 GX.</p><h4>🏆 NIVELES Y RECOMPENSAS</h4><ul><li>🥉 1,500 GX = $9</li><li>🥈 2,500 GX = $17.50</li><li>🥇 3,500 GX = $28</li></ul><h4>🎁 CANJEA CUANDO QUIERAS</h4><p>Utiliza tu recompensa disponible en tus próximas compras. Al canjear, tu saldo GX vuelve a cero y comienzas un nuevo ciclo.</p><h4>👑 PRESTIGIO</h4><p>Por cada 2,000 GX acumulados mediante compras, aumentas tu Prestigio. ¡Nunca se reinicia!</p><h4>🎂 CUMPLEAÑOS ×2</h4><p>Recibe el doble de GX durante los 3 días anteriores y posteriores a tu cumpleaños, incluyendo ese día.</p><h4>🤝 RECOMIENDA Y GANA</h4><p>Recibe +100 GX por cada nuevo cliente referido que realice su primera compra.</p><h4>📌 REGLAS BÁSICAS</h4><ul><li>Registro totalmente GRATIS.</li><li>Tus GX no vencen.</li><li>Las recompensas solo se utilizan en GameX.</li><li>Los GX no se cambian por efectivo ni se transfieren.</li><li>Las compras canceladas no generan GX.</li></ul><p class="cu-rf">💚 COMPRA • ACUMULA • CANJEA • DISFRUTA</p><p class="cu-rt">GAMEX REWARDS 🎮</p></div>`;
 }
 function cuEntro(d){cuLS.set('gx-sesion',d.token);cuLS.set('gx-solicitud',null);cuMsg('','');cuCargar()}
 $('cu-entrar').onsubmit=async e=>{e.preventDefault();const b=e.submitter||e.target.querySelector('button');b.disabled=true;
@@ -773,7 +765,7 @@ function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
   fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
     const a=(j.avisos||[]).concat(j.silenciosas||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).sort((p,q)=>p.id<q.id?1:-1);
-    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}"><button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p></div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
+    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}">${/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(x.img||'')?`<img class="ofoto" src="${esc(x.img)}" alt="" loading="lazy">`:''}<button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p></div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
       :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
     const ab=el.querySelector('.ocard.abierta');if(ab){window.gxAbrir=null;setTimeout(()=>ab.scrollIntoView({block:'start',behavior:'smooth'}),50)}
   }).catch(()=>{el.innerHTML='<p class="empty">No se pudieron cargar las ofertas. Revisa tu conexión a internet.</p>'})}
@@ -781,7 +773,7 @@ lettersEl.addEventListener('click',e=>{const a=e.target.closest('a');if(!a)retur
 $('q').addEventListener('input',e=>{query=e.target.value;render()});
 $('hq').addEventListener('input',e=>{const v=e.target.value;if(!v.trim())return;query=v;$('q').value=v;e.target.value='';location.hash='todas';setTimeout(()=>$('q').focus(),0)});
 $('flogo').src=document.querySelector('h1 .logo').src;
-(function(){const el=$('open-now');try{const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));const h=+p.hour%24;const on=p.weekday!=='Sun'&&h>=10&&h<18;el.textContent=on?'Abierto ahora':'Cerrado ahora';el.className='open '+(on?'on':'off')}catch(e){el.hidden=true}})();
+(function(){const el=$('open-now');try{const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Havana',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));const h=+p.hour%24;const on=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].includes(p.weekday)&&h+(+p.minute||0)/60>=10.0&&h+(+p.minute||0)/60<18.0;el.textContent=on?'Abierto ahora':'Cerrado ahora';el.className='open '+(on?'on':'off')}catch(e){el.hidden=true}})();
 
 let cart=[];try{const old=JSON.parse(localStorage.getItem('gamex-cart')||'[]');cart=JSON.parse(localStorage.getItem('gamex-cart-v2')||'null')||old.map(n=>'PS4|'+n);cart=cart.filter(k=>KEYS.has(k))}catch(e){}
 let dest='5353441089';
@@ -880,7 +872,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=171;
+const GXV=173;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

@@ -99,10 +99,10 @@ async function cambiarAvisos(env,fn,msg){ // reintenta si alguien más cambió e
 const PJ='tools/datos/panel_juegos.json',PJ_PLAT=['PS4','PS5','PC','Switch','Meta Quest','Xbox pago','Xbox Game Pass'];
 async function pjLeer(env){
   const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${PJ}?ref=main`,{headers:GH(env)});
-  if(res.status===404)return {d:{agregar:[],quitar:[]},sha:null};
+  if(res.status===404)return {d:{agregar:[],quitar:[],editar:[]},sha:null};
   if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));
   const f=await res.json();let d;try{d=JSON.parse(TD.decode(unb64(f.content)))}catch(e){d={}}
-  if(!Array.isArray(d.agregar))d.agregar=[];if(!Array.isArray(d.quitar))d.quitar=[];return {d,sha:f.sha};
+  if(!Array.isArray(d.agregar))d.agregar=[];if(!Array.isArray(d.quitar))d.quitar=[];if(!Array.isArray(d.editar))d.editar=[];return {d,sha:f.sha};
 }
 async function pjCambiar(env,fn,msg){
   for(let i=0;i<3;i++){const {d,sha}=await pjLeer(env);const r=fn(d);
@@ -115,10 +115,71 @@ async function consolaTxt(){ // catálogo publicado (para buscar juegos que ya e
   if(CONS_CACHE&&Date.now()-CONS_CACHE.t<60000)return CONS_CACHE.l;
   const res=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/consola.txt',{cf:{cacheTtl:0}});
   if(!res.ok)throw new Error('No se pudo leer el catálogo ('+res.status+')');
-  const l=[];let c='';for(const ln of (await res.text()).split('\n')){const f=ln.split('\t');if(f[0]==='C')c=f[2];else if(f[0]==='J'&&PJ_PLAT.includes(c))l.push({c,n:f[2]})}
+  const l=[];let c='';for(const ln of (await res.text()).split('\n')){const f=ln.split('\t');if(f[0]==='C')c=f[2];else if(f[0]==='J'&&PJ_PLAT.includes(c))l.push({c,n:f[2],f:+f[1]||0})}
   CONS_CACHE={t:Date.now(),l};return l;
 }
 const normJ=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+// ---------- archivos de datos que edita el panel (tienda, servicios, PS Plus) y Game Pass ----------
+const ARCHS={tienda:'tools/datos/tienda.json',servicios:'tools/datos/servicios.json',ps_plus:'tools/datos/ps_plus.json'};
+async function ghJson(env,path,ref='main'){
+  const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${path}?ref=${ref}`,{headers:GH(env)});
+  if(res.status===404)return {d:null,sha:null};if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));
+  const f=await res.json();return {d:JSON.parse(TD.decode(unb64(f.content))),sha:f.sha};
+}
+async function ghPut(env,path,content,sha,msg){
+  const body={message:msg,content:b64(typeof content==='string'?TE.encode(content):content),branch:'main'};if(sha)body.sha=sha;
+  const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${path}`,{method:'PUT',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));return res.json();
+}
+const HHMM=/^([01]\d|2[0-3]):[0-5]\d$/,txt=(v,n)=>String(v==null?'':v).slice(0,n);
+function validar(f,d){
+  if(f==='tienda'){
+    const nums=(Array.isArray(d.numeros)?d.numeros:[]).map(x=>txt(x,20).trim()).filter(Boolean);
+    if(!nums.length||nums.some(n=>n.replace(/\D/g,'').length<8))return 'Los números de WhatsApp tienen que tener 8 cifras';
+    const dias=[...new Set((Array.isArray(d.dias)?d.dias:[]).map(Number).filter(x=>x>=0&&x<=6))].sort();
+    if(!HHMM.test(d.abre||'')||!HHMM.test(d.cierra||'')||d.abre>=d.cierra)return 'Revisa la hora de abrir y de cerrar';
+    if(d.mapa&&!/^https:\/\//.test(d.mapa))return 'El enlace del mapa tiene que empezar con https://';
+    return {inicio:txt(d.inicio,300).trim(),numeros:nums.slice(0,5),dias,abre:d.abre,cierra:d.cierra,direccion:txt(d.direccion,200).trim(),mapa:txt(d.mapa,300).trim(),reglas:txt(d.reglas,6000).replace(/\r/g,'')};
+  }
+  if(f==='servicios'){
+    if(!Array.isArray(d)||!d.length||d.some(s=>!s||!s.s||!Array.isArray(s.items)))return 'Los servicios no están bien';
+    if(JSON.stringify(d).length>150000)return 'Demasiado texto en servicios';
+    for(const s of d)for(const it of s.items){if(!it||!String(it.t||'').trim())return 'Hay un servicio sin nombre en '+s.s;
+      if(it.grupos)for(const g of it.grupos)if(!Array.isArray(g.o)||!g.o.length||g.o.some(o=>!String(o.t||'').trim()))return 'El servicio "'+it.t+'" tiene una lista de opciones vacía';
+      if(it.montos&&(!Array.isArray(it.montos)||it.montos.some(m=>!(+m>0))))return 'Montos no válidos en "'+it.t+'"'}
+    return d;
+  }
+  if(f==='ps_plus'){
+    const js=(Array.isArray(d.juegos)?d.juegos:[]).map(g=>{const o={n:txt(g.n,120).trim()};const id=txt(g.id,80).trim();if(id)o.id=/^(PPSA|CUSA)\d{5}$/i.test(id)?id.toUpperCase():id;if(g.online)o.online=true;return o}).filter(g=>g.n);
+    if(!js.length)return 'Pon al menos un juego';if(!/^\d{4}-\d{2}-\d{2}$/.test(d.hasta||''))return 'Pon hasta qué día se pueden reclamar';
+    if(js.some(g=>g.id&&!/^(PPSA|CUSA)\d{5}$/.test(g.id)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(g.id)))return 'El código de un juego no está bien (ej. PPSA28002)';
+    return {mes:txt(d.mes,40).trim(),hasta:d.hasta,fuente:'Juegos mensuales de PlayStation Plus Essential',juegos:js};
+  }
+  return 'Archivo desconocido';
+}
+async function ultimaCorrida(env,wf){try{const r=await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/${wf}/runs?per_page=1`,{headers:GH(env)});if(!r.ok)return null;const x=(await r.json()).workflow_runs?.[0];return x?{estado:x.status,res:x.conclusion,fecha:x.created_at}:null}catch(e){return null}}
+async function panelDatos(p,req,env,u){
+  const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);
+  if(p==='archivo'){const f=q.f;if(!ARCHS[f])return j({error:'Archivo desconocido'},400);const {d,sha}=await ghJson(env,ARCHS[f]);return j({d,sha,run:await ultimaCorrida(env,'panel-juegos.yml')})}
+  if(p==='archivo-guardar'){const f=q.f;if(!ARCHS[f])return j({error:'Archivo desconocido'},400);const v=validar(f,q.d||{});if(typeof v==='string')return j({error:v},400);
+    const {sha}=await ghJson(env,ARCHS[f]);if(q.sha&&sha&&q.sha!==sha)return j({error:'Alguien cambió esto mientras editabas. Recarga y vuelve a intentarlo.'},409);
+    const r=await ghPut(env,ARCHS[f],JSON.stringify(v,null,1)+'\n',sha,'Panel: '+{tienda:'datos de la tienda',servicios:'servicios',ps_plus:'juegos de PS Plus'}[f]);return j({ok:true,sha:r.content&&r.content.sha,d:v})}
+  if(p==='gp-estado'){const {d}=await ghJson(env,'tools/salida/gamepass_cambios.json','gamepass-pendiente').catch(()=>({d:null}));return j({cambios:d,run:await ultimaCorrida(env,'gamepass.yml')})}
+  if(p==='gp-revisar'||p==='gp-publicar'){
+    const online=(Array.isArray(q.online)?q.online:[]).map(x=>txt(x,120)).slice(0,50);
+    const res=await fetch(`https://api.github.com/repos/${REPO}/dispatches`,{method:'POST',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify({event_type:p,client_payload:{online}})});
+    if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));return j({ok:true})}
+  if(p==='foto'){ // foto de una oferta: llega ya achicada (JPEG) desde el panel
+    const m=/^data:image\/jpeg;base64,([A-Za-z0-9+/=]+)$/.exec(String(q.img||''));if(!m)return j({error:'La foto no está bien'},400);
+    const bytes=unb64(m[1]);if(bytes.length>900000)return j({error:'La foto es muy grande'},400);
+    const nombre='app/fotos/'+hoyCuba()+'-'+(await id(m[1])).slice(0,12)+'.jpg';
+    try{await ghPut(env,nombre,bytes,null,'Panel: foto de oferta')}catch(e){if(!/ 422/.test(e.message))throw e}
+    return j({ok:true,url:'https://gamex-cu.github.io/'+nombre,raw:'https://raw.githubusercontent.com/'+REPO+'/main/'+nombre})}
+  if(p==='respaldo'){
+    const [av,pj,ti,sv,ps]=await Promise.all([leerAvisos(env).then(x=>x.d).catch(()=>null),pjLeer(env).then(x=>x.d).catch(()=>null),...['tienda','servicios','ps_plus'].map(f=>ghJson(env,ARCHS[f]).then(x=>x.d).catch(()=>null))]);
+    return j({fecha:hoyCuba(),rewards:await statsDO(env).cliExportar(),reglas:await statsDO(env).cfgReglas(),ofertas:av,juegos_panel:pj,tienda:ti,servicios:sv,ps_plus:ps})}
+  return j({error:'No existe'},404);
+}
 async function panelJuegos(p,req,env,u){
   const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);
   const hoy=hoyCuba();
@@ -141,8 +202,22 @@ async function panelJuegos(p,req,env,u){
     return j({ok:true,agregar:d.agregar,quitar:d.quitar})}
   if(p==='juegos-quitar'){
     const {d,r}=await pjCambiar(env,d=>{const antes=d.agregar.length;d.agregar=d.agregar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));
-      if(d.agregar.length<antes)return 'deshecho';if(!d.quitar.some(x=>x.c===c&&x.n===n))d.quitar.push({c,n,f:hoy});return 'quitado'},'Panel: quitar "'+n.slice(0,60)+'" ('+c+')');
+      if(d.agregar.length<antes)return 'deshecho';let orig=n;const ed=d.editar.find(x=>x.c===c&&(x.nuevo||x.n)===n);if(ed){orig=ed.n;d.editar=d.editar.filter(x=>x!==ed)}if(!d.quitar.some(x=>x.c===c&&x.n===orig))d.quitar.push({c,n:orig,f:hoy});return 'quitado'},'Panel: quitar "'+n.slice(0,60)+'" ('+c+')');
     return j({ok:true,r,agregar:d.agregar,quitar:d.quitar})}
+  if(p==='juegos-editar'){ // cambia nombre, enlace o etiquetas de un juego que ya está
+    const nuevo=String(q.nuevo||'').replace(/\s+/g,' ').trim().slice(0,120)||n,link=String(q.link||'').trim().slice(0,300);
+    if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!((c==='Xbox pago'||c==='Xbox Game Pass')&&/^[0-9A-Z]{12}$/.test(link)))
+      return j({error:'El enlace tiene que empezar con https:// (o ser un código como PPSA28002)'},400);
+    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl'].includes(x));
+    const {d}=await pjCambiar(env,d=>{
+      const ag=d.agregar.find(x=>x.c===c&&normJ(x.n)===normJ(n));
+      if(ag){ag.n=nuevo;if(link){ag.link=/^(PPSA|CUSA)/i.test(link)?link.toUpperCase():link;delete ag.buscado}ag.et=et;return}
+      let e=d.editar.find(x=>x.c===c&&(x.nuevo||x.n)===n);if(!e){e={c,n};d.editar.push(e)}
+      if(nuevo!==e.n)e.nuevo=nuevo;else delete e.nuevo;if(link)e.link=/^(PPSA|CUSA)/i.test(link)?link.toUpperCase():link;e.et=et;e.f=hoy},'Panel: editar "'+n.slice(0,60)+'" ('+c+')');
+    return j({ok:true,agregar:d.agregar,quitar:d.quitar,editar:d.editar})}
+  if(p==='juegos-revertir'){ // deshace una edición
+    const {d}=await pjCambiar(env,d=>{d.editar=d.editar.filter(x=>!(x.c===c&&(x.nuevo||x.n)===n))},'Panel: deshacer edición de "'+n.slice(0,60)+'" ('+c+')');
+    return j({ok:true,agregar:d.agregar,quitar:d.quitar,editar:d.editar})}
   if(p==='juegos-devolver'){ // deshace un "quitar"
     const {d}=await pjCambiar(env,d=>{d.quitar=d.quitar.filter(x=>!(x.c===c&&x.n===n))},'Panel: devolver "'+n.slice(0,60)+'" ('+c+')');
     return j({ok:true,agregar:d.agregar,quitar:d.quitar})}
@@ -219,6 +294,7 @@ async function panel(req,env,u){
   const p=u.pathname.slice(11);
   try{
     if(p==='juegos'||p.startsWith('juegos-'))return await panelJuegos(p,req,env,u);
+    if(['archivo','archivo-guardar','gp-estado','gp-revisar','gp-publicar','foto','respaldo'].includes(p))return await panelDatos(p,req,env,u);
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
@@ -242,7 +318,7 @@ async function panel(req,env,u){
       if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       const hoy=hoyCuba(),aviso={id:`${hoy}-${Math.floor(Date.now()/1000)}`,fecha:hoy,titulo,texto};
-      if(url)aviso.url=url;if(vence)aviso.vence=vence;
+      if(url)aviso.url=url;if(vence)aviso.vence=vence;const img=String(q.img||'').trim();if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(img))aviso.img=img;
       const modo=['ambas','oferta','aviso'].includes(q.modo)?q.modo:(q.notificar===false?'oferta':'ambas');
       const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
       if(modo==='aviso')aviso.solo=true; // no se guarda en Ofertas
@@ -270,7 +346,7 @@ async function panel(req,env,u){
       if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       let hallada=false;
-      const d=await cambiarAvisos(env,d=>{for(const l of [d.avisos,d.silenciosas||[]])for(const x of l)if(x.id===idA){hallada=true;x.titulo=titulo;x.texto=texto;if(url)x.url=url;else delete x.url;if(vence)x.vence=vence;else delete x.vence;x.editada=hoyCuba()}},'Panel: editar oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');
+      const d=await cambiarAvisos(env,d=>{for(const l of [d.avisos,d.silenciosas||[]])for(const x of l)if(x.id===idA){hallada=true;x.titulo=titulo;x.texto=texto;if(url)x.url=url;else delete x.url;if(q.img!==undefined){const im=String(q.img||'');if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(im))x.img=im;else delete x.img}if(vence)x.vence=vence;else delete x.vence;x.editada=hoyCuba()}},'Panel: editar oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');
       if(!hallada)return j({error:'No encontré esa oferta (¿ya la quitaron?)'},404);
       return j({ok:true,avisos:activos(d).reverse()});
     }

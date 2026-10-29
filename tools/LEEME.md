@@ -39,3 +39,13 @@
 - El panel guarda lo agregado/quitado en `datos/panel_juegos.json` (agregar: c, n, link, et, f · quitar: c, n, f).
 - La acción de GitHub `.github/workflows/panel-juegos.yml` corre `resolver_panel.py` (busca el id de la PlayStation Store por código PPSA/CUSA o por nombre) y `armar.py`, y sube el resultado.
 - `armar.py` aplica ese archivo encima de las listas normales. La copia del catálogo en Claude (artifact) no se actualiza sola: publicarla en la próxima sesión.
+- También se editan los juegos que ya están (nombre, enlace, etiquetas): van en `editar` de `panel_juegos.json`.
+
+## Pestaña ⚙️ Tienda del panel
+- Datos de la tienda (inicio, números, horario, dirección, mapa, texto de Rewards) → `datos/tienda.json`; `armar.py` los pone en la página.
+- Servicios → `datos/servicios.json`; PS Plus → `datos/ps_plus.json` (códigos PPSA/CUSA los completa `resolver_panel.py`).
+- Al guardar, la acción "Cambios del panel" rearma todo.
+- Game Pass: "Revisar" lanza `.github/workflows/gamepass.yml` (vista previa en la rama `gamepass-pendiente`, archivo `tools/salida/gamepass_cambios.json`); "Publicar" vuelve a bajar Game Pass, marca los solo online (`gamepass_marcar.py`), arma y sube.
+- Reglas de GameX Rewards (números) viven en el Durable Object (tabla cfg); el texto está en `tienda.json`.
+- Fotos de ofertas: se suben a `app/fotos/` y la oferta guarda `img`.
+- Si cambian números u horario, las apps de PS4/PS5/Switch necesitan versión nueva (traen los datos por dentro).

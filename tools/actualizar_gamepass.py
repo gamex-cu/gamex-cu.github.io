@@ -131,6 +131,11 @@ def main():
     lin += [f'## Por revisar si son solo online ({len(revisar)})'] + [f'- {n}' for n in sorted(revisar, key=sk)] + ['']
     rep = '\n'.join(lin)
     print(rep)
+    os.makedirs(T + 'salida', exist_ok=True)
+    json.dump({'fecha': hoy, 'total': len(juegos), 'antes': len(previos), 'entraron': entraron, 'salieron': salieron,
+               'saliendo': nuevo['saliendo'], 'revisar': sorted(revisar, key=sk),
+               'saliendo_cambio': sorted(nuevo['saliendo']) != sorted(antes.get('saliendo', []))},
+              open(T + 'salida/gamepass_cambios.json', 'w'), ensure_ascii=False, indent=1)
     if probar: return
     json.dump(nuevo, open(DATOS + 'gamepass.json', 'w'), ensure_ascii=False)
     reglas['nombres'] = dict(sorted(nombres.items()))

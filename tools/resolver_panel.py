@@ -13,6 +13,12 @@ def main():
     pj = json.load(open(F))
     pend = [a for a in pj.get('agregar', []) if a.get('c') in ('PS4', 'PS5') and not a.get('buscado')
             and (not a.get('link') or COD.match(a['link'].strip()))]
+    pend += [a for a in pj.get('editar', []) if a.get('c') in ('PS4', 'PS5') and a.get('link') and COD.match(a['link'].strip())]
+    try: psp = json.load(open(T + 'datos/ps_plus.json'))
+    except Exception: psp = {'juegos': []}
+    pend_psp = [g for g in psp.get('juegos', []) if not g.get('id') or COD.match(str(g.get('id')).strip())]
+    for g in pend_psp: g['c'] = 'PS5' if 'PS5' in g.get('n', '') else 'PS4'; g['link'] = g.get('id', ''); g['psp'] = True
+    pend += pend_psp
     if not pend: print('nada que buscar'); return
     sys.path.insert(0, T)
     try:
@@ -29,7 +35,7 @@ def main():
         else:
             for p in cands: p.setdefault('nn', bp.norm(p['n'])); p.setdefault('nums', bp.numeros(p['n']))
             try:
-                hit, r = bp.elegir(a['n'], cands)
+                hit, r = bp.elegir(re.sub(r'\s*\((PS4|PS5|PS4 y PS5)\)$', '', a.get('nuevo') or a['n']), cands)
                 if r < 0.85: hit = None
             except Exception: hit = None
         a['buscado'] = True
@@ -38,6 +44,12 @@ def main():
         else:
             a['link'] = ''; print('sin encontrar', a['n'], cod)
     json.dump(pj, open(F, 'w'), ensure_ascii=False, indent=1)
+    if pend_psp:
+        for g in pend_psp:
+            g['id'] = g.pop('link', '') or ''
+            for k in ('c', 'psp', 'buscado'): g.pop(k, None)
+            if not g['id']: g.pop('id')
+        json.dump(psp, open(T + 'datos/ps_plus.json', 'w'), ensure_ascii=False, indent=1)
 
 
 if __name__ == '__main__':
