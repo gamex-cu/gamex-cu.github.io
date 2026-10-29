@@ -139,7 +139,8 @@ function validar(f,d){
     const dias=[...new Set((Array.isArray(d.dias)?d.dias:[]).map(Number).filter(x=>x>=0&&x<=6))].sort();
     if(!HHMM.test(d.abre||'')||!HHMM.test(d.cierra||'')||d.abre>=d.cierra)return 'Revisa la hora de abrir y de cerrar';
     if(d.mapa&&!/^https:\/\//.test(d.mapa))return 'El enlace del mapa tiene que empezar con https://';
-    return {inicio:txt(d.inicio,300).trim(),numeros:nums.slice(0,5),dias,abre:d.abre,cierra:d.cierra,direccion:txt(d.direccion,200).trim(),mapa:txt(d.mapa,300).trim(),reglas:txt(d.reglas,6000).replace(/\r/g,'')};
+    return {inicio:txt(d.inicio,300).trim(),numeros:nums.slice(0,5),dias,abre:d.abre,cierra:d.cierra,direccion:txt(d.direccion,200).trim(),mapa:txt(d.mapa,300).trim(),reglas:txt(d.reglas,6000).replace(/\r/g,''),
+      ocultar:{secciones:(d.ocultar?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)),catalogos:(d.ocultar?.catalogos||[]).map(x=>txt(x,40)).slice(0,20),servicios:(d.ocultar?.servicios||[]).map(x=>txt(x,60)).slice(0,20)}};
   }
   if(f==='servicios'){
     if(!Array.isArray(d)||!d.length||d.some(s=>!s||!s.s||!Array.isArray(s.items)))return 'Los servicios no están bien';

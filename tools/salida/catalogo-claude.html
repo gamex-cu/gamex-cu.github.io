@@ -597,7 +597,11 @@ function render(){
   drawFilters();
   sync();
 }
+const SECOFF=[];
+function gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}
+SECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});
 function route(){
+  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
   $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}

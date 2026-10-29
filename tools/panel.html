@@ -296,6 +296,16 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   </div>
   <div id="t-ti" hidden>
   <section class="card">
+    <h2>👁️ Qué se ve en la web y la app</h2>
+    <p class="nota" style="margin:-6px 0 6px">Desmarca lo que quieras esconder. No se borra nada: lo vuelves a marcar y aparece igual que antes.</p>
+    <label>Secciones de la página principal</label><div class="tipos" id="vi-sec"></div>
+    <label>Catálogos</label><div class="tipos" id="vi-cat"></div>
+    <label>Tipos de servicio</label><div class="tipos" id="vi-sv"></div>
+    <p class="nota">Para esconder un solo servicio (por ejemplo EA Play), ábrelo abajo en 🧾 Servicios y marca "Oculto".</p>
+    <button class="btn" id="vi-guardar" type="button">Guardar</button>
+    <div class="msg" id="mvi"></div>
+  </section>
+  <section class="card">
     <h2>🎮 Game Pass</h2>
     <p class="jest" id="gp-est">Cargando…</p>
     <div id="gp-cambios"></div>
@@ -904,7 +914,7 @@ let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GP
 async function tienda(){
   try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
     TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
-    tiPintar();svPintar();psPintar();rwPintar()}catch(e){msg('mti','bad',esc(e.message))}
+    tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
   gpEstado()}
 // --- datos de la tienda ---
 const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -926,7 +936,8 @@ $('rw-guardar').onclick=async()=>{const b=$('rw-guardar');b.disabled=true;nomsg(
 // --- servicios ---
 function svPintar(){$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" class="chip" data-s="${i}" aria-pressed="${i===SVI}">${esc((x.icono||'')+' '+x.s)}</button>`).join('');
   const sec=SV[SVI];if(!sec){$('sv-items').innerHTML='';return}
-  $('sv-items').innerHTML=sec.items.map((it,i)=>`<details class="svi" data-i="${i}"><summary>${esc(it.t||'(sin nombre)')}</summary><div class="in">
+  $('sv-items').innerHTML=sec.items.map((it,i)=>`<details class="svi" data-i="${i}"><summary>${it.oculto?'🙈 ':''}${esc(it.t||'(sin nombre)')}</summary><div class="in">
+    <label class="sw" style="margin:4px 0 0"><input type="checkbox" data-k="oculto" ${it.oculto?'checked':''}><span>Oculto <small>(no sale en la web ni en la app)</small></span></label>
     <label>Nombre</label><input data-k="t" value="${esc(it.t||'')}" required>
     <label>Descripción <small>(opcional)</small></label><textarea data-k="d" rows="3">${esc(it.d||'')}</textarea>
     <div class="g2"><div><label>Texto del pedido <small>(opcional)</small></label><input data-k="pedido" value="${esc(it.pedido||'')}" placeholder="${esc(it.t||'')}"></div><div><label>Texto del botón <small>(opcional)</small></label><input data-k="boton" value="${esc(it.boton||'')}" placeholder="Pedir"></div></div>
@@ -936,7 +947,7 @@ function svPintar(){$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" 
 function svLeer(){const sec=SV[SVI];if(!sec)return;const ab=new Set();
   sec.items=[...document.querySelectorAll('#sv-items .svi')].map(el=>{const it={...sec.items[+el.dataset.i]};if(el.open)ab.add(el);
     const v=k=>el.querySelector(`[data-k="${k}"]`).value.trim();
-    it.t=v('t');for(const k of ['d','pedido','boton']){const x=k==='d'?el.querySelector('[data-k="d"]').value.trim():v(k);if(x)it[k]=x;else delete it[k]}
+    it.t=v('t');if(el.querySelector('[data-k="oculto"]').checked)it.oculto=true;else delete it.oculto;for(const k of ['d','pedido','boton']){const x=k==='d'?el.querySelector('[data-k="d"]').value.trim():v(k);if(x)it[k]=x;else delete it[k]}
     const m=v('montos').split(/[,\s]+/).map(Number).filter(x=>x>0);if(m.length)it.montos=m;else delete it.montos;
     const gs=[...el.querySelectorAll('.svg')].map(g=>({n:g.querySelector('[data-g="n"]').value.trim(),o:g.querySelector('[data-g="o"]').value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const[t,...d]=l.split('|');const o={t:t.trim()};if(d.join('|').trim())o.d=d.join('|').trim();return o})})).filter(g=>g.o.length);
     if(gs.length)it.grupos=gs;else delete it.grupos;return it})}
@@ -1019,6 +1030,19 @@ $('fpw').onsubmit=async e=>{e.preventDefault();nomsg('mpw');const n=$('pw-n1').v
   try{await api('panel-clave',{actual:$('pw-act').value,nueva:n});CLAVE=n;try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}
     $('fpw').reset();['pw-act','pw-n1','pw-n2'].forEach(i=>$(i).type='password');msg('mpw','ok','✅ Contraseña cambiada. Desde ahora entra con la nueva.')}catch(err){msg('mpw','bad',esc(err.message))}
   $('pw-b').disabled=false};
+
+// ---------- mostrar u ocultar ----------
+const VSEC=[['catalogos','🎮 Catálogos'],['ofertas','🏷️ Ofertas'],['servicios','💲 Servicios'],['cuenta','🏆 Mi cuenta GameX']];
+const VCAT=['PS4','PS5','PC','Xbox Game Pass','Xbox pago','Meta Quest','Switch','PlayStation Plus'];
+const VCATN={'Xbox pago':'Xbox (pago)','Switch':'Nintendo Switch','Xbox Game Pass':'Game Pass','PlayStation Plus':'PS Plus'};
+function viPintar(){const o=TI.ocultar||{};const ck=(l,v)=>(l||[]).includes(v)?'':'checked';
+  $('vi-sec').innerHTML=VSEC.map(([k,l])=>`<label><input type="checkbox" value="${k}" ${ck(o.secciones,k)}>${l}</label>`).join('');
+  $('vi-cat').innerHTML=VCAT.map(c=>`<label><input type="checkbox" value="${esc(c)}" ${ck(o.catalogos,c)}>${esc(VCATN[c]||c)}</label>`).join('');
+  $('vi-sv').innerHTML=SV.map(x=>`<label><input type="checkbox" value="${esc(x.s)}" ${ck(o.servicios,x.s)}>${esc((x.icono||'')+' '+x.s)}</label>`).join('')}
+$('vi-guardar').onclick=async()=>{const b=$('vi-guardar');b.disabled=true;nomsg('mvi');
+  const off=id=>[...document.querySelectorAll('#'+id+' input:not(:checked)')].map(i=>i.value);
+  try{const r=await api('archivo-guardar',{f:'tienda',d:{...TI,ocultar:{secciones:off('vi-sec'),catalogos:off('vi-cat'),servicios:off('vi-sv')}},sha:TISHA});TI=r.d;TISHA=r.sha;
+    const n=off('vi-sec').length+off('vi-cat').length+off('vi-sv').length;msg('mvi','ok','✅ Guardado. '+(n?'Lo desmarcado se esconde':'Todo se ve')+' en la web y la app en 1 o 2 minutos.')}catch(e){msg('mvi','bad',esc(e.message))}b.disabled=false};
 
 </script>
 </body>

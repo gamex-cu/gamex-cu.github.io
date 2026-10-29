@@ -46,6 +46,11 @@ def _tienda(head,js):
     js=js.replace("const on=p.weekday!=='Sun'&&h>=10&&h<18;",f"const on={json.dumps([WD[d] for d in dias])}.includes(p.weekday)&&h+(+p.minute||0)/60>={a1}&&h+(+p.minute||0)/60<{c1};")
     js=js.replace("{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}","{timeZone:'America/Havana',weekday:'short',hour:'numeric',minute:'numeric',hour12:false}")
     js=js.replace("let dest='5353441089';",f"let dest='{w(nums[0])}';")
+    _oc=TI.get('ocultar') or {}
+    _sec=[x for x in _oc.get('secciones',[]) if x in ('catalogos','ofertas','servicios','cuenta')]
+    _cat=[x for x in _oc.get('catalogos',[])]
+    if _cat: js=js.replace("const CI=Object.fromEntries(CONS","CONS.splice(0,CONS.length,...CONS.filter(c=>!"+json.dumps(_cat,ensure_ascii=False)+".includes(c[0])));\nconst CI=Object.fromEntries(CONS",1)
+    js=js.replace("function route(){","const SECOFF="+json.dumps(_sec)+";\nfunction gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}\nSECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});\nfunction route(){\n  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);",1)
     if TI.get('reglas'):
         out=[];lis=[]
         def inl(t): return _re.sub(r'\*\*(.+?)\*\*',r'<b>\1</b>',_h.escape(t))
@@ -141,6 +146,10 @@ for _e in PJ['editar']:
             for _l in ('x360','xog'):
                 if _l in XP: XP[_l]=[_nn if x==_n else x for x in XP[_l]]
     if 'et' in _e: _pj_et(_c,_nn,set(_e['et'] or []))
+# ---- catálogos ocultos desde el panel (tienda.json → ocultar.catalogos) ----
+OCULTOS_DATA={}
+for _c in (TI.get('ocultar') or {}).get('catalogos',[]):
+    if _c in data: OCULTOS_DATA[_c]=data.pop(_c)
 CARD='''<a class="dlapp" id="dlapp" href="https://gamex-avisos.gamex-cu.workers.dev/descargar" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
 '''
 DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
@@ -206,6 +215,9 @@ for _c,_b in [('PS4','ps4'),('PS5','ps5'),('PC','pc'),('Meta Quest','meta_quest'
         _y,_m,_d=_f.split('-');NOTES[_c]=f'Catálogo actualizado el <b>{int(_d)} de {MESES[int(_m)-1]} de {_y}</b>'
 try: SERV=json.load(open(D+'servicios.json'))
 except FileNotFoundError: SERV=[]
+_SO=set((TI.get('ocultar') or {}).get('servicios',[]))
+SERV=[dict(x,items=[it for it in x.get('items',[]) if not it.get('oculto')]) for x in SERV if x.get('s') not in _SO]
+SERV=[x for x in SERV if x['items']]
 js=js.replace('__SERV__',json.dumps(SERV,ensure_ascii=False).replace('</','<\\/')).replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()
@@ -218,7 +230,7 @@ except Exception: HOY=_dt.date.today()
 _AF=D+'agregados.json'
 try: AGR=json.load(open(_AF))
 except FileNotFoundError: AGR=None
-_todas={c+'|'+n for c,l in data.items() for n in l}
+_todas={c+'|'+n for c,l in list(data.items())+list(OCULTOS_DATA.items()) for n in l}
 if AGR is None: AGR={k:'2000-01-01' for k in _todas}   # primera vez: nada es nuevo
 for _o,_k in RENOMBRA.items():
     if _o in AGR and _k not in AGR: AGR[_k]=AGR[_o]
@@ -341,7 +353,7 @@ gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)
 (function(){const K='gamex-avisos-cerrados';let c=[];try{c=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
  const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
  fetch('app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
-  const a=(j.avisos||[]).filter(x=>x.id&&!x.silenciosa&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a)return;
+  const a=(j.avisos||[]).filter(x=>x.id&&!x.silenciosa&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a||(typeof SECOFF!=='undefined'&&SECOFF.includes('ofertas')))return;
   const el=document.getElementById('aviso');document.getElementById('aviso-t').textContent=a.titulo||'';document.getElementById('aviso-x').textContent='Toca para ver la oferta completa';el.hidden=false;
   const cerrar=()=>{el.hidden=true;c.push(a.id);try{localStorage.setItem(K,JSON.stringify(c.slice(-50)))}catch(e){}};
   document.getElementById('aviso-c').onclick=ev=>{ev.stopPropagation();cerrar()};

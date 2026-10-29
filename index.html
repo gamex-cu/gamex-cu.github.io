@@ -645,7 +645,11 @@ function render(){
   drawFilters();
   sync();
 }
+const SECOFF=[];
+function gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWith('oferta=')):s==='servicios'?(h==='servicios'||h.startsWith('sv-')):s==='cuenta'?h==='cuenta':(h==='catalogos'||!!BYSLUG[h]))}
+SECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});
 function route(){
+  if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
   $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}
@@ -872,7 +876,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=175;
+const GXV=180;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
@@ -887,7 +891,7 @@ gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)
 (function(){const K='gamex-avisos-cerrados';let c=[];try{c=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
  const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
  fetch('app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
-  const a=(j.avisos||[]).filter(x=>x.id&&!x.silenciosa&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a)return;
+  const a=(j.avisos||[]).filter(x=>x.id&&!x.silenciosa&&!c.includes(x.id)&&(x.vence?x.vence>=hoy:(x.fecha||'')>=lim)).pop();if(!a||(typeof SECOFF!=='undefined'&&SECOFF.includes('ofertas')))return;
   const el=document.getElementById('aviso');document.getElementById('aviso-t').textContent=a.titulo||'';document.getElementById('aviso-x').textContent='Toca para ver la oferta completa';el.hidden=false;
   const cerrar=()=>{el.hidden=true;c.push(a.id);try{localStorage.setItem(K,JSON.stringify(c.slice(-50)))}catch(e){}};
   document.getElementById('aviso-c').onclick=ev=>{ev.stopPropagation();cerrar()};
