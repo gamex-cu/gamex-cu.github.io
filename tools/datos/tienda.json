@@ -23,6 +23,11 @@
   "catalogos": [],
   "servicios": []
  },
+ "mantenimiento": {
+  "activo": true,
+  "mensaje": ""
+ },
+ "botones": [],
  "orden": {
   "secciones": [
    "catalogos",
