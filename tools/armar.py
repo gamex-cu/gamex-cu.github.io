@@ -209,8 +209,14 @@ OCULTOS_DATA={}
 for _c in (TI.get('ocultar') or {}).get('catalogos',[]):
     if _c in data: OCULTOS_DATA[_c]=data.pop(_c)
 CARD='''<a class="dlapp" id="dlapp" href="https://gamex-avisos.gamex-cu.workers.dev/descargar" rel="noopener"><span class="dli">⬇</span><span class="dlt"><b>Descarga la app para Android</b><small id="dlv">Última versión · funciona sin internet</small></span></a>
+<details class="dlayuda"><summary>¿Te sale un aviso de Google al instalar?</summary><p>Es normal en las apps que no vienen de la Play Store. Toca <b>Más detalles</b> y luego <b>Instalar de todas formas</b>. Si te pregunta si quieres enviarla para que la analicen, puedes poner <b>Enviar</b>.</p></details>
 '''
-DCSS='''.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
+DCSS='''.dlayuda{max-width:560px;margin:6px 0 0;font-size:.82rem;color:var(--muted)}
+.dlayuda summary{cursor:pointer;padding:4px 2px;list-style:none;text-decoration:underline;text-underline-offset:3px;width:max-content;max-width:100%}
+.dlayuda summary::-webkit-details-marker{display:none}
+.dlayuda p{margin:6px 2px 0;line-height:1.45}
+.dlayuda b{color:var(--fg)}
+.dlapp{display:flex;align-items:center;gap:14px;margin-top:12px;padding:14px;border-radius:10px;border:1px solid var(--accent);background:rgba(61,123,255,.12);color:var(--fg);text-decoration:none;max-width:560px}
 .dlapp:hover,.dlapp:focus-visible{background:rgba(61,123,255,.22);outline:none}
 .dli{flex:none;width:38px;height:38px;border-radius:8px;background:var(--accent);color:#fff;display:grid;place-items:center;font-size:1.2rem}
 .dlt{display:flex;flex-direction:column;gap:2px;min-width:0}
