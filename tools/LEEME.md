@@ -34,3 +34,8 @@
 - Las claves (secretos/), el proyecto de la app Android con su firma (gamex-release.jks) y los APK están en el repositorio PRIVADO gamex-cu/gamex-herramientas (ver su README).
 - En una sesión nueva: copiar gamex-herramientas/secretos/* a /home/claude/secretos/ antes de usar enviar_aviso.py o desplegar_worker.py.
 - Para borrar todas las estadísticas (p. ej. el día del lanzamiento): POST /panel/api/stats-reiniciar con X-Panel y {"confirmar":"LANZAMOS"}.
+
+## Juegos a mano desde el panel (pestaña 🎮 Juegos)
+- El panel guarda lo agregado/quitado en `datos/panel_juegos.json` (agregar: c, n, link, et, f · quitar: c, n, f).
+- La acción de GitHub `.github/workflows/panel-juegos.yml` corre `resolver_panel.py` (busca el id de la PlayStation Store por código PPSA/CUSA o por nombre) y `armar.py`, y sube el resultado.
+- `armar.py` aplica ese archivo encima de las listas normales. La copia del catálogo en Claude (artifact) no se actualiza sola: publicarla en la próxima sesión.
