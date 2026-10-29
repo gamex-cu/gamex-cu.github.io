@@ -1,0 +1,35 @@
+# Cuando el panel agrega o quita juegos (tools/datos/panel_juegos.json), rearma la web, la app y el catálogo de consolas.
+name: Juegos del panel
+on:
+  push:
+    branches: [main]
+    paths: ['tools/datos/panel_juegos.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: armar-catalogo
+  cancel-in-progress: false
+jobs:
+  armar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Buscar enlaces de PlayStation
+        run: python3 tools/resolver_panel.py || true
+      - name: Armar catálogo
+        run: python3 tools/armar.py
+      - name: Subir
+        run: |
+          git config user.name "GameX panel"
+          git config user.email "gamex-panel@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m "Panel: catálogo actualizado con los juegos del panel"
+          for i in 1 2 3; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep 5; done
+          exit 1
