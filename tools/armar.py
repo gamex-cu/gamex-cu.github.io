@@ -64,22 +64,28 @@ def _tienda(head,js):
         head,k=_re.subn(pat,lambda m:new,head,count=1,flags=_re.S)
         if not k: print('aviso: no encontré',pat[:30])
     _botoff=set((TI.get('ocultar') or {}).get('secciones',[]))
-    tiles='';pags=''
-    for b in TI.get('botones') or []:
-        bid=b.get('id','');col=b.get('color','#3d7bff')
-        if not _re.fullmatch(r'[a-z0-9-]{1,30}',bid) or not _re.fullmatch(r'#[0-9a-fA-F]{6}',col) or 'x-'+bid in _botoff: continue
-        tit=_h.escape(b.get('titulo',''));sub=_h.escape(b.get('sub',''));ico=_h.escape(b.get('icono','') or '⭐')
-        st=f'style="background:linear-gradient(135deg,{_rgba(col,.22)},{_rgba(col,.06)})"'
-        tipo=b.get('tipo','pagina')
-        if tipo=='seccion' and _re.fullmatch(r'[a-z0-9=-]{1,60}',str(b.get('destino',''))): at=f'href="#{b["destino"]}"'
-        elif tipo=='enlace' and str(b.get('enlace','')).startswith('https://'): at=f'href="{_h.escape(b["enlace"])}" target="_blank" rel="noopener"'
-        elif tipo=='whatsapp': at=f'href="#" class="sbtn wa-pick" data-t="{_h.escape(b.get("wa") or ("Hola GameX, quiero información sobre: "+b.get("titulo","")))}"'
-        else:
-            at=f'href="#p-{bid}"'
-            wa=f'<a class="op wa-pick" href="#" data-t="{_h.escape(b.get("wa") or ("Hola GameX, quiero información sobre: "+b.get("titulo","")))}">Escribir por WhatsApp</a>' if b.get('conwa') else ''
-            pags+=f'<div id="pg-{bid}" class="pgx" hidden>\n<div class="bar"><div class="wrap"><div class="vtitle"><a class="back" href="#">← Inicio</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">{tit}</span><span class="vc">{sub}</span></span></div></div></div>\n<div class="wrap"><article class="scard cu-rw" style="margin-top:16px;border-color:var(--line)">{_md(b.get("texto",""))}{wa}</article></div>\n</div>\n'
-        cls='class="sbtn"' if 'class=' not in at else ''
-        tiles+=f'\n  <a {cls} {at} id="b-x-{bid}" {st}>\n    <span class="sbi" aria-hidden="true" style="background:{col};font-size:1.7rem">{ico}</span>\n    <span class="sbt"><b>{tit}</b><small>{sub}</small></span>\n    <span class="sgo" aria-hidden="true">→</span>\n  </a>'
+    BOT=[b for b in (TI.get('botones') or []) if _re.fullmatch(r'[a-z0-9-]{1,30}',b.get('id','')) and _re.fullmatch(r'#[0-9a-fA-F]{6}',b.get('color','')) and not b.get('oculto')]
+    _ids={b['id'] for b in BOT}
+    def _padre(b): p=b.get('padre') or '';return p if p in _ids and p!=b['id'] else ''
+    def _wa(b): return _h.escape(b.get('wa') or ('Hola GameX, quiero información sobre: '+b.get('titulo','')))
+    def _tile(b):
+        bid=b['id'];col=b['color'];tit=_h.escape(b.get('titulo',''));sub=_h.escape(b.get('sub',''));ico=_h.escape(b.get('icono','') or '⭐')
+        st=f'style="background:linear-gradient(135deg,{_rgba(col,.22)},{_rgba(col,.06)})"';tipo=b.get('tipo','pagina')
+        if tipo=='seccion' and _re.fullmatch(r'[a-z0-9=-]{1,60}',str(b.get('destino',''))): at=f'href="#{b["destino"]}" class="sbtn"'
+        elif tipo=='enlace' and str(b.get('enlace','')).startswith('https://'): at=f'href="{_h.escape(b["enlace"])}" target="_blank" rel="noopener" class="sbtn"'
+        elif tipo=='whatsapp': at=f'href="#" class="sbtn wa-pick" data-t="{_wa(b)}"'
+        else: at=f'href="#p-{bid}" class="sbtn"'
+        return f'\n  <a {at} id="b-x-{bid}" {st}>\n    <span class="sbi" aria-hidden="true" style="background:{col};font-size:1.7rem">{ico}</span>\n    <span class="sbt"><b>{tit}</b><small>{sub}</small></span>\n    <span class="sgo" aria-hidden="true">→</span>\n  </a>'
+    tiles=''.join(_tile(b) for b in BOT if not _padre(b) and 'x-'+b['id'] not in _botoff)
+    pags=''
+    for b in BOT:
+        if b.get('tipo','pagina') not in ('pagina',''): continue
+        hijos=''.join(_tile(x) for x in BOT if _padre(x)==b['id'])
+        cuerpo=_md(b.get('texto',''))+(f'<a class="op wa-pick" href="#" data-t="{_wa(b)}">Escribir por WhatsApp</a>' if b.get('conwa') else '')
+        vuelta='#p-'+_padre(b) if _padre(b) else '#'
+        pags+=(f'<div id="pg-{b["id"]}" class="pgx" hidden>\n<div class="bar"><div class="wrap"><div class="vtitle"><a class="back" href="{vuelta}">← Volver</a><span class="vtx"><span class="vn" style="--ct:var(--fg)">{_h.escape(b.get("titulo",""))}</span><span class="vc">{_h.escape(b.get("sub",""))}</span></span></div></div></div>\n<div class="wrap">'
+               +(f'<article class="scard cu-rw" style="margin-top:16px;border-color:var(--line)">{cuerpo}</article>' if cuerpo else '')
+               +hijos+('' if cuerpo or hijos else '<p class="empty">Pronto habrá contenido aquí.</p>')+'</div>\n</div>\n')
     if tiles:
         head,k=_re.subn(r'(<a class="sbtn sb-gx" href="#cuenta" id="b-cuenta">.*?</a>)',lambda m:m.group(1)+tiles,head,count=1,flags=_re.S)
         if not k: print('aviso: no encontré dónde poner los botones')
