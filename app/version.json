@@ -1,7 +1,7 @@
 {
   "catalogo": 191,
-  "apk": 6,
-  "apkNombre": "1.5",
+  "apk": 7,
+  "apkNombre": "1.6",
   "apkUrl": "https://gamex-cu.github.io/app/GAMEX-Catalogo.apk",
-  "notas": "Al tocar el aviso de una oferta se abre esa oferta en la app. Las ofertas largas se ven plegadas: toca \"Ver detalles\" para leerlas completas."
+  "notas": "Desde esta versión las actualizaciones de la app se descargan e instalan desde un cartel abajo, con barra de progreso."
 }
