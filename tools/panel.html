@@ -113,7 +113,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .vacio{color:var(--muted);font-size:.92rem}
 .salir{background:none;border:0;color:var(--muted);font:inherit;font-size:.85rem;text-decoration:underline;cursor:pointer;margin-left:auto}
 .tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:16px}
-.tabs button{flex:1;font:inherit;font-weight:600;padding:10px;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button{flex:1;font:inherit;font-weight:600;font-size:.86rem;padding:10px 4px;white-space:nowrap;border:0;border-radius:8px;background:transparent;color:var(--muted);cursor:pointer}
 .tabs button[aria-selected="true"]{background:var(--accent);color:#fff}
 .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .kpi{background:#0b0f20;border:1px solid var(--line);border-radius:10px;padding:12px}
@@ -141,6 +141,13 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .rank .br i{display:block;height:100%;background:var(--accent);border-radius:4px}
 .rank.warn .br i{background:var(--warn)}
 .nota{color:var(--muted);font-size:.8rem;margin:4px 0 0}
+.jhit{display:flex;gap:10px;align-items:center;border-top:1px solid var(--line);padding:9px 0}
+.jhit div{flex:1;min-width:0}.jhit small{color:var(--muted);font-size:.78rem;display:block}
+.jhit button{flex:none;font:inherit;font-size:.8rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
+.jhit button.q{border-color:var(--bad);color:var(--bad)}
+.ya{margin-top:8px;padding:10px 12px;border-radius:10px;border:1px solid var(--warn);background:rgba(255,176,32,.1);font-size:.88rem}
+.ya:empty{display:none}
+.jest{font-size:.88rem;color:var(--muted);margin:0 0 6px}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -160,7 +167,7 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 </section>
 
 <div id="app" hidden>
-  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Estadísticas</button><button role="tab" id="tb-cl" aria-selected="false">👥 Clientes <span class="bdg" id="nsol2"></span></button></div>
+  <div class="tabs" role="tablist"><button role="tab" id="tb-of" aria-selected="true">📣 Ofertas</button><button role="tab" id="tb-es" aria-selected="false">📊 Estadísticas</button><button role="tab" id="tb-cl" aria-selected="false">👥 Clientes <span class="bdg" id="nsol2"></span></button><button role="tab" id="tb-ju" aria-selected="false">🎮 Juegos</button></div>
   <div id="t-cl" hidden>
     <section class="card" id="s-sol">
       <h2>Solicitudes de cuenta <span class="bdg" id="nsol"></span></h2>
@@ -242,6 +249,37 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
     </section>
   </div>
 
+  <div id="t-ju" hidden>
+  <section class="card">
+    <h2>Agregar un juego</h2>
+    <p class="nota" style="margin:-6px 0 10px">Sale en la web, la app y las apps de PS4/PS5 en 1 o 2 minutos, con la etiqueta "Nuevo" por 7 días.</p>
+    <form id="fju">
+      <label>Consola</label>
+      <div class="row" id="jcons"></div>
+      <label for="jnom">Nombre del juego <small>(si pegas "Juego-PPSA12345(v01.000)" separo el código solo)</small></label>
+      <input id="jnom" maxlength="120" required autocomplete="off" placeholder="Ej: Ninja Gaiden: Ragebound">
+      <div class="ya" id="jya"></div>
+      <label for="jlink" id="ljlink">Enlace <small>(opcional)</small></label>
+      <input id="jlink" maxlength="300" autocomplete="off" inputmode="url">
+      <label>Etiquetas <small>(opcional)</small></label>
+      <div class="tipos" id="jet"></div>
+      <button class="btn" id="bju">Agregar juego</button>
+    </form>
+    <div class="msg" id="mju"></div>
+  </section>
+  <section class="card">
+    <h2>Quitar un juego</h2>
+    <label for="jbus">Busca el juego</label>
+    <input id="jbus" autocomplete="off" placeholder="Escribe parte del nombre">
+    <div id="jres"></div>
+    <div class="msg" id="mjq"></div>
+  </section>
+  <section class="card">
+    <h2>Cambios hechos desde el panel</h2>
+    <p class="jest" id="jest"></p>
+    <div id="jlista"><p class="vacio">Cargando…</p></div>
+  </section>
+  </div>
   <div id="t-es" hidden>
     <section class="card">
       <div class="rng" id="rng"><button type="button" class="chip" data-d="1">Hoy</button><button type="button" class="chip" data-d="7" aria-pressed="true">7 días</button><button type="button" class="chip" data-d="30">30 días</button><button type="button" class="chip" data-d="90">90 días</button></div>
@@ -428,8 +466,8 @@ $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)r
 
 // ---------- pestañas y estadísticas ----------
 let DIAS=7,cargadas=false;
-function tab(t){['of','es','cl'].forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});
-  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes()}
+function tab(t){['of','es','cl','ju'].forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});
+  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes();if(t==='ju')juegos()}
 $('tb-cl').onclick=()=>tab('cl');
 $('tb-of').onclick=()=>tab('of');
 const copiar=t=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t);
@@ -696,6 +734,46 @@ $('comp-sh').onclick=async()=>{if(!COMP_BLOB)return;const f=new File([COMP_BLOB]
 $('comp-dl').onclick=e=>{if(!COMP_BLOB)return;const a=document.createElement('a');a.href=URL.createObjectURL(COMP_BLOB);a.download=nombreComp();document.body.appendChild(a);a.click();a.remove();e.preventDefault()};
 prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
+// ---------- juegos a mano ----------
+const JPL={'PS4':'PS4','PS5':'PS5','PC':'PC','Switch':'Switch','Meta Quest':'Meta Quest','Xbox pago':'Xbox (pago)'};
+const JET={online:'Solo online',vr:'VR',vro:'VR opcional',port:'Port',emu:'Emulador',series:'Series X|S',excl:'Exclusivo'};
+const JETP={'PS4':['online','vr','vro','excl'],'PS5':['online','vr','vro','excl'],'PC':['online','port','excl'],'Switch':['online','port','emu','excl'],'Meta Quest':['online','port','excl'],'Xbox pago':['online','series','excl']};
+let JC='PS5',JT=null,JQ=null,JPOLL=null;
+function jCons(){ $('jcons').innerHTML=Object.entries(JPL).map(([k,v])=>`<button type="button" class="chip" data-c="${esc(k)}" aria-pressed="${k===JC}">${esc(v)}</button>`).join('');
+  const ps=JC==='PS4'||JC==='PS5';
+  $('ljlink').innerHTML=ps?'Código o enlace de la PlayStation Store <small>(opcional: PPSA12345 / CUSA12345; si lo dejas vacío lo busco por el nombre)</small>':'Enlace de la tienda <small>(opcional; ej. Steam, Nintendo, Meta, Xbox)</small>';
+  $('jlink').placeholder=ps?'PPSA28002':'https://…';
+  const sel=new Set([...document.querySelectorAll('#jet input:checked')].map(i=>i.value));
+  $('jet').innerHTML=JETP[JC].map(k=>`<label><input type="checkbox" value="${k}" ${sel.has(k)?'checked':''}>${JET[k]}</label>`).join('');jYa()}
+$('jcons').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;JC=b.dataset.c;jCons()};
+$('jnom').addEventListener('input',()=>{const v=$('jnom').value,m=v.match(/^(.*?)[\s\-–_]*\b((?:PPSA|CUSA)\d{5})\b.*$/i);
+  if(m&&m[1].trim()){$('jnom').value=m[1].trim();$('jlink').value=m[2].toUpperCase();if(!(JC==='PS4'||JC==='PS5')){JC=/^CUSA/i.test(m[2])?'PS4':'PS5';jCons()}}
+  clearTimeout(JT);JT=setTimeout(jYa,350)});
+async function jYa(){const t=$('jnom').value.trim();if(t.length<3){$('jya').innerHTML='';return}
+  try{const d=await api('juegos-buscar?c='+encodeURIComponent(JC)+'&q='+encodeURIComponent(t));
+    $('jya').innerHTML=d.hits.length?'⚠️ Parecidos que ya están en '+esc(JPL[JC])+':<br>'+d.hits.slice(0,6).map(h=>'• '+esc(h.n)).join('<br>'):''}catch(e){}}
+$('fju').onsubmit=async e=>{e.preventDefault();const b=$('bju');b.disabled=true;nomsg('mju');
+  try{const n=$('jnom').value.trim();await api('juegos-agregar',{c:JC,n,link:$('jlink').value.trim(),et:[...document.querySelectorAll('#jet input:checked')].map(i=>i.value)});
+    msg('mju','ok','✅ <b>'+esc(n)+'</b> agregado a '+esc(JPL[JC])+'. Sale en la web y la app en 1 o 2 minutos.');$('jnom').value='';$('jlink').value='';$('jya').innerHTML='';
+    document.querySelectorAll('#jet input').forEach(i=>i.checked=false);juegos()}catch(err){msg('mju','bad',esc(err.message))}b.disabled=false};
+$('jbus').addEventListener('input',()=>{clearTimeout(JQ);JQ=setTimeout(async()=>{const t=$('jbus').value.trim();if(t.length<2){$('jres').innerHTML='';return}
+  try{const d=await api('juegos-buscar?q='+encodeURIComponent(t));$('jres').innerHTML=d.hits.length?d.hits.map(h=>`<div class="jhit"><div>${esc(h.n)}<small>${esc(JPL[h.c]||h.c)}</small></div><button class="q" data-c="${esc(h.c)}" data-n="${esc(h.n)}">Quitar</button></div>`).join(''):'<p class="vacio">No encontré ese juego.</p>'}catch(e){msg('mjq','bad',esc(e.message))}},350)});
+$('jres').onclick=async e=>{const b=e.target.closest('button[data-n]');if(!b)return;
+  if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{if(b.isConnected){b.dataset.ok='';b.textContent='Quitar'}},4000);return}
+  b.disabled=true;try{await api('juegos-quitar',{c:b.dataset.c,n:b.dataset.n});b.closest('.jhit').remove();msg('mjq','ok','✅ <b>'+esc(b.dataset.n)+'</b> quitado de '+esc(JPL[b.dataset.c])+'. Se va de la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));b.disabled=false}};
+async function juegos(){jCons();
+  try{const d=await api('juegos');const r=d.run;
+    const enc=r&&r.estado!=='completed';
+    $('jest').innerHTML=!r?'':enc?'⏳ Publicando los últimos cambios…':r.res==='success'?'✅ Todo publicado':'⚠️ La última publicación falló. Avísale a Claude.';
+    clearTimeout(JPOLL);if(enc&&!$('t-ju').hidden)JPOLL=setTimeout(juegos,15000);
+    const ag=d.agregar.slice().reverse(),qu=d.quitar.slice().reverse();
+    $('jlista').innerHTML=(ag.length||qu.length)?ag.map(x=>`<div class="jhit"><div>➕ ${esc(x.n)}<small>${esc(JPL[x.c]||x.c)} · ${fecha(x.f)}${x.et&&x.et.length?' · '+x.et.map(k=>JET[k]).join(', '):''}${x.link?' · con enlace':(x.buscado?' · sin enlace':'')}</small></div><button data-a="q" data-c="${esc(x.c)}" data-n="${esc(x.n)}">Deshacer</button></div>`).join('')
+      +qu.map(x=>`<div class="jhit"><div>➖ ${esc(x.n)}<small>${esc(JPL[x.c]||x.c)} · quitado el ${fecha(x.f)}</small></div><button data-a="d" data-c="${esc(x.c)}" data-n="${esc(x.n)}">Devolver</button></div>`).join('')
+      :'<p class="vacio">Todavía no has agregado ni quitado juegos desde aquí.</p>'}catch(e){$('jlista').innerHTML='<p class="vacio">'+esc(e.message)+'</p>'}}
+$('jlista').onclick=async e=>{const b=e.target.closest('button[data-a]');if(!b)return;b.disabled=true;
+  try{await api(b.dataset.a==='q'?'juegos-quitar':'juegos-devolver',{c:b.dataset.c,n:b.dataset.n});juegos()}catch(err){alert(err.message);b.disabled=false}};
+$('tb-ju').onclick=()=>tab('ju');
+
 </script>
 </body>
 </html>

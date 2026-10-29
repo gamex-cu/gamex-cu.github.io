@@ -95,6 +95,59 @@ async function guardarAvisos(env,d,sha,msg){
 async function cambiarAvisos(env,fn,msg){ // reintenta si alguien más cambió el archivo a la vez
   for(let i=0;i<3;i++){const {d,sha}=await leerAvisos(env);fn(d);try{await guardarAvisos(env,d,sha,msg);return d}catch(e){if(i===2||!/ 409| 422/.test(e.message))throw e}}
 }
+// ---------- juegos agregados/quitados a mano (tools/datos/panel_juegos.json; una acción de GitHub rearma el catálogo) ----------
+const PJ='tools/datos/panel_juegos.json',PJ_PLAT=['PS4','PS5','PC','Switch','Meta Quest','Xbox pago'];
+async function pjLeer(env){
+  const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${PJ}?ref=main`,{headers:GH(env)});
+  if(res.status===404)return {d:{agregar:[],quitar:[]},sha:null};
+  if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));
+  const f=await res.json();let d;try{d=JSON.parse(TD.decode(unb64(f.content)))}catch(e){d={}}
+  if(!Array.isArray(d.agregar))d.agregar=[];if(!Array.isArray(d.quitar))d.quitar=[];return {d,sha:f.sha};
+}
+async function pjCambiar(env,fn,msg){
+  for(let i=0;i<3;i++){const {d,sha}=await pjLeer(env);const r=fn(d);
+    const body={message:msg,content:b64(TE.encode(JSON.stringify(d,null,1)+'\n')),branch:'main'};if(sha)body.sha=sha;
+    const res=await fetch(`https://api.github.com/repos/${REPO}/contents/${PJ}`,{method:'PUT',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(res.ok)return {d,r};const t=(await res.text()).slice(0,200);if(i===2||!(res.status===409||res.status===422))throw new Error('GitHub '+res.status+': '+t)}
+}
+let CONS_CACHE=null;
+async function consolaTxt(){ // catálogo publicado (para buscar juegos que ya están)
+  if(CONS_CACHE&&Date.now()-CONS_CACHE.t<60000)return CONS_CACHE.l;
+  const res=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/consola.txt',{cf:{cacheTtl:0}});
+  if(!res.ok)throw new Error('No se pudo leer el catálogo ('+res.status+')');
+  const l=[];let c='';for(const ln of (await res.text()).split('\n')){const f=ln.split('\t');if(f[0]==='C')c=f[2];else if(f[0]==='J'&&PJ_PLAT.includes(c))l.push({c,n:f[2]})}
+  CONS_CACHE={t:Date.now(),l};return l;
+}
+const normJ=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+async function panelJuegos(p,req,env,u){
+  const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);
+  const hoy=hoyCuba();
+  if(p==='juegos'){const {d}=await pjLeer(env);let run=null;
+    try{const r=await fetch(`https://api.github.com/repos/${REPO}/actions/workflows/panel-juegos.yml/runs?per_page=1`,{headers:GH(env)});if(r.ok){const x=(await r.json()).workflow_runs?.[0];if(x)run={estado:x.status,res:x.conclusion,fecha:x.created_at}}}catch(e){}
+    return j({...d,run,plataformas:PJ_PLAT})}
+  if(p==='juegos-buscar'){const t=normJ(q.q);if(t.length<2)return j({hits:[]});const ws=t.split(' ');
+    const hits=(await consolaTxt()).filter(g=>(!q.c||g.c===q.c)&&ws.every(w=>normJ(g.n).includes(w))).slice(0,40);return j({hits})}
+  if(req.method!=='POST')return j({error:'Usa POST'},405);
+  const c=String(q.c||''),n=String(q.n||'').replace(/\s+/g,' ').trim().slice(0,120);
+  if(!PJ_PLAT.includes(c))return j({error:'Escoge la consola'},400);
+  if(!n)return j({error:'Falta el nombre del juego'},400);
+  if(p==='juegos-agregar'){
+    const link=String(q.link||'').trim().slice(0,300);
+    if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!(c==='Xbox pago'&&/^[0-9A-Z]{12}$/.test(link)))
+      return j({error:'El enlace tiene que empezar con https:// (o ser un código como PPSA28002)'},400);
+    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl'].includes(x));
+    const {d}=await pjCambiar(env,d=>{d.agregar=d.agregar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));d.quitar=d.quitar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));
+      const e={c,n,f:hoy};if(link)e.link=/^(PPSA|CUSA)/i.test(link)?link.toUpperCase():link;if(et.length)e.et=et;d.agregar.push(e)},'Panel: agregar "'+n.slice(0,60)+'" ('+c+')');
+    return j({ok:true,agregar:d.agregar,quitar:d.quitar})}
+  if(p==='juegos-quitar'){
+    const {d,r}=await pjCambiar(env,d=>{const antes=d.agregar.length;d.agregar=d.agregar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));
+      if(d.agregar.length<antes)return 'deshecho';if(!d.quitar.some(x=>x.c===c&&x.n===n))d.quitar.push({c,n,f:hoy});return 'quitado'},'Panel: quitar "'+n.slice(0,60)+'" ('+c+')');
+    return j({ok:true,r,agregar:d.agregar,quitar:d.quitar})}
+  if(p==='juegos-devolver'){ // deshace un "quitar"
+    const {d}=await pjCambiar(env,d=>{d.quitar=d.quitar.filter(x=>!(x.c===c&&x.n===n))},'Panel: devolver "'+n.slice(0,60)+'" ('+c+')');
+    return j({ok:true,agregar:d.agregar,quitar:d.quitar})}
+  return j({error:'No existe'},404);
+}
 // Las ofertas sin notificación van aparte (silenciosas) para que las apps viejas de Android no las avisen.
 const activos=d=>{const h=hoyCuba();return d.avisos.concat(d.silenciosas||[]).filter(x=>!x.vence||x.vence>=h).sort((a,b)=>a.id<b.id?-1:1)};
 
@@ -165,6 +218,7 @@ async function panel(req,env,u){
   if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
+    if(p==='juegos'||p.startsWith('juegos-'))return await panelJuegos(p,req,env,u);
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
