@@ -231,7 +231,14 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
-.ocard .ofoto{display:block;width:calc(100% + 32px);margin:-16px -16px 12px;border-radius:13px 13px 0 0;max-height:320px;object-fit:cover;background:#0b0f20}
+.oadj{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:8px;border:1px solid var(--line,#2a3360);border-radius:12px;background:rgba(0,0,0,.25);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.oadj:hover,.oadj:focus-visible{border-color:var(--hot,#f2a900);outline:none}
+.oadj img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;background:#0b0f20}
+.oadj span{display:flex;flex-direction:column;gap:2px;min-width:0}.oadj b{font-size:.95rem}.oadj small{opacity:.7;font-size:.82rem}
+.ovis{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}
+.ovis[hidden]{display:none}
+.ovis img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.ovx{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer}
 .ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
 .ocard .ox{font-size:.88rem;font-weight:600;color:var(--hot)}.ocard .ox::after{content:' ▾'}
 .ocard.abierta .ox{display:none}
@@ -764,12 +771,16 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-cuenta').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-ofer').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
+$('olist').addEventListener('click',e=>{const f=e.target.closest('.oadj');if(!f)return;e.stopPropagation();let v=document.getElementById('ovis');
+  if(!v){v=document.createElement('div');v.id='ovis';v.className='ovis';v.setAttribute('role','dialog');v.setAttribute('aria-label','Imagen de la oferta');v.innerHTML='<button type="button" class="ovx" aria-label="Cerrar">✕</button><img alt="">';document.body.appendChild(v);
+    v.addEventListener('click',ev=>{if(ev.target.tagName!=='IMG'||ev.target.closest('.ovx'))v.hidden=true});document.addEventListener('keydown',ev=>{if(ev.key==='Escape')v.hidden=true})}
+  v.querySelector('img').src=f.dataset.img;v.hidden=false});
 $('olist').addEventListener('click',e=>{const b=e.target.closest('.oh');if(!b)return;const c=b.closest('.ocard'),on=!c.classList.contains('abierta');c.classList.toggle('abierta',on);b.setAttribute('aria-expanded',on)});
 function cargarOfertas(){const el=$('olist');const hoy=new Date().toISOString().slice(0,10),lim=new Date(Date.now()-14*864e5).toISOString().slice(0,10);
   const fd=d=>{const[y,m,dd]=d.split('-');return `${+dd} de ${['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'][m-1]}`};
   fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{
     const a=(j.avisos||[]).concat(j.silenciosas||[]).filter(x=>x.vence?x.vence>=hoy:(x.fecha||'')>=lim).sort((p,q)=>p.id<q.id?1:-1);
-    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}">${/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(x.img||'')?`<img class="ofoto" src="${esc(x.img)}" alt="" loading="lazy">`:''}<button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p></div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
+    el.innerHTML=a.length?a.map(x=>{const own=x.url&&x.url.startsWith('https://')&&!/wa\.me\//.test(x.url),ab=x.id&&x.id===window.gxAbrir;return `<article class="ocard${ab?' abierta':''}" data-id="${esc(x.id||'')}"><button type="button" class="oh" aria-expanded="${ab}"><h3>${esc(x.titulo||'')}</h3><span class="ox">Ver detalles</span></button><div class="ob"><p>${esc(x.texto||'')}</p>${/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(x.img||'')?`<button type="button" class="oadj" data-img="${esc(x.img)}"><img src="${esc(x.img)}" alt="" loading="lazy"><span><b>📎 Imagen de la oferta</b><small>Toca para verla completa</small></span></button>`:''}</div>${x.vence?`<span class="ov">Válida hasta el ${fd(x.vence)}</span>`:''}${own?`<a class="op" href="${esc(x.url)}" target="_blank" rel="noopener">Ver oferta</a>`:`<a class="op wa-pick" href="#" data-t="${esc('Hola GameX, me interesa la oferta: '+(x.titulo||''))}">Pedir por WhatsApp</a>`}</article>`}).join('')
       :'<p class="empty">Ahora mismo no hay ofertas activas.<br>Sigue nuestro canal de WhatsApp para enterarte primero.</p>';
     const ab=el.querySelector('.ocard.abierta');if(ab){window.gxAbrir=null;setTimeout(()=>ab.scrollIntoView({block:'start',behavior:'smooth'}),50)}
   }).catch(()=>{el.innerHTML='<p class="empty">No se pudieron cargar las ofertas. Revisa tu conexión a internet.</p>'})}
@@ -876,7 +887,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=181;
+const GXV=182;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';

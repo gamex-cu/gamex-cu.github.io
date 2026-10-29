@@ -203,7 +203,14 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 
 .ocard{border:1px solid var(--hot);border-radius:14px;background:linear-gradient(135deg,rgba(242,169,0,.12),rgba(61,123,255,.08));padding:16px}
 .ocard h3{margin:0;font:700 1.2rem var(--display)}
-.ocard .ofoto{display:block;width:calc(100% + 32px);margin:-16px -16px 12px;border-radius:13px 13px 0 0;max-height:320px;object-fit:cover;background:#0b0f20}
+.oadj{display:flex;align-items:center;gap:12px;width:100%;margin-top:12px;padding:8px;border:1px solid var(--line,#2a3360);border-radius:12px;background:rgba(0,0,0,.25);color:inherit;font:inherit;text-align:left;cursor:pointer}
+.oadj:hover,.oadj:focus-visible{border-color:var(--hot,#f2a900);outline:none}
+.oadj img{width:52px;height:52px;border-radius:8px;object-fit:cover;flex:none;background:#0b0f20}
+.oadj span{display:flex;flex-direction:column;gap:2px;min-width:0}.oadj b{font-size:.95rem}.oadj small{opacity:.7;font-size:.82rem}
+.ovis{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;padding:16px}
+.ovis[hidden]{display:none}
+.ovis img{max-width:100%;max-height:100%;object-fit:contain;border-radius:8px}
+.ovx{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:1.2rem;cursor:pointer}
 .ocard .oh{display:flex;flex-direction:column;align-items:flex-start;gap:6px;width:100%;background:none;border:0;padding:0;color:inherit;text-align:left;cursor:pointer;font:inherit}
 .ocard .ox{font-size:.88rem;font-weight:600;color:var(--hot)}.ocard .ox::after{content:' ▾'}
 .ocard.abierta .ox{display:none}
