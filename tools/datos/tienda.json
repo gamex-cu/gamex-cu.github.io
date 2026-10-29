@@ -24,7 +24,7 @@
   "servicios": []
  },
  "mantenimiento": {
-  "activo": true,
+  "activo": false,
   "mensaje": ""
  },
  "botones": [],
