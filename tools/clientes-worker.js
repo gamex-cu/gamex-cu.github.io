@@ -82,6 +82,8 @@ const CLI={
     let n=0;for(const m of d.movs||[]){const c=this._cli1(m.gx);const o=calcularMov(m.tipo,+m.importe||0,+m.n||0,m.fecha,c&&c.nac);
       this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',m.fecha,m.gx,m.tipo,m.descr||'',+m.importe||0,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,m.obs||'',Date.now());n++}
     return {ok:true,clientes:(d.clientes||[]).length,movs:n}},
+  panelHash(){this.cliInit();const r=this.sql.exec("SELECT v FROM cfg WHERE k='panel'").toArray()[0];return r?JSON.parse(r.v):null},
+  panelHashPoner(h,sal){this.cliInit();this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('panel',?)",JSON.stringify({h,sal,fecha:Date.now()}));return {ok:true}},
   cfgReglas(){this.cliInit();return {reglas:{...GXR},def:GXR_DEF}},
   cfgGuardarReglas(r){this.cliInit();const n={};
     for(const k of Object.keys(GXR_DEF)){const v=Number(r&&r[k]);if(!Number.isFinite(v)||v<0||v>1e6)return {error:'Valor no válido en '+k};n[k]=v}

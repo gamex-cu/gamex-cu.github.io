@@ -287,15 +287,32 @@ async function evento(req,env){
   return r('ok');
 }
 
+// Contraseña del panel: si se cambió desde el panel vive cifrada en el Durable Object (cfg 'panel'); si no, la del secreto PANEL.
+// HERRAMIENTAS es una llave larga para las herramientas y tareas programadas; no cambia con la contraseña.
+const PANEL_OK=new Map();
+async function panelAuth(env,clave){
+  clave=sinAst(String(clave||''));if(!clave||clave.length>200)return false;
+  if(env.HERRAMIENTAS&&igual(clave,env.HERRAMIENTAS))return true;
+  const k=await id('gx-panel|'+clave),t=PANEL_OK.get(k);if(t&&t>Date.now())return true;
+  const ph=env.STATS?await statsDO(env).panelHash():null;
+  const ok=ph?igual(await hashClave(clave,ph.sal),ph.h):(!!env.PANEL&&igual(clave,sinAst(env.PANEL)));
+  if(ok)PANEL_OK.set(k,Date.now()+60000);return ok;
+}
 async function panel(req,env,u){
   if(u.pathname==='/panel'||u.pathname==='/panel/')return new Response(PANEL_HTML,{headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store','X-Frame-Options':'DENY','Referrer-Policy':'no-referrer','X-Content-Type-Options':'nosniff','Strict-Transport-Security':'max-age=31536000','Permissions-Policy':'camera=(), microphone=(), geolocation=()','Content-Security-Policy':"default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://gamex-cu.github.io; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'"}});
   if(!u.pathname.startsWith('/panel/api/'))return j({error:'No existe'},404);
   const ipP=req.headers.get('CF-Connecting-IP')||'?',DOp=env.STATS?statsDO(env):null;
   if(DOp&&await DOp.fallo('p:'+ipP,false)>=10)return j({error:'Demasiados intentos con contraseña equivocada. Espera 15 minutos.'},429);
-  if(!env.PANEL||!igual(sinAst(req.headers.get('X-Panel')||''),sinAst(env.PANEL))){if(DOp)await DOp.fallo('p:'+ipP,true);await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
+  if(!await panelAuth(env,req.headers.get('X-Panel')||'')){if(DOp)await DOp.fallo('p:'+ipP,true);await new Promise(z=>setTimeout(z,1200));return j({error:'Contraseña incorrecta'},401)}
   const p=u.pathname.slice(11);
   try{
     if(p==='juegos'||p.startsWith('juegos-'))return await panelJuegos(p,req,env,u);
+    if(p==='panel-clave'&&req.method==='POST'){const q=await req.json().catch(()=>({}));const act=String(q.actual||''),nu=String(q.nueva||'');
+      if(!await panelAuth(env,act)||(env.HERRAMIENTAS&&igual(sinAst(act),env.HERRAMIENTAS)))return j({error:'La contraseña actual no es correcta'},400);
+      if(nu.length<10)return j({error:'La nueva tiene que tener al menos 10 caracteres'},400);if(nu.length>100)return j({error:'Demasiado larga'},400);
+      if(!/[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(nu)||!/\d/.test(nu))return j({error:'Ponle letras y al menos un número'},400);
+      if(sinAst(nu)!==nu)return j({error:'No empieces ni termines con espacio o *'},400);if(nu===sinAst(act))return j({error:'Es igual a la actual'},400);
+      const sal=crypto.randomUUID();await statsDO(env).panelHashPoner(await hashClave(nu,sal),sal);PANEL_OK.clear();return j({ok:true})}
     if(['archivo','archivo-guardar','gp-estado','gp-revisar','gp-publicar','foto','respaldo'].includes(p))return await panelDatos(p,req,env,u);
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){

@@ -348,6 +348,18 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <div class="msg" id="mrw"></div>
   </section>
   <section class="card">
+    <h2>🔑 Contraseña del panel</h2>
+    <form id="fpw">
+      <label for="pw-act">Contraseña actual</label><input id="pw-act" type="password" autocomplete="current-password" required>
+      <label for="pw-n1">Contraseña nueva <small>(mínimo 10 caracteres, con letras y números; ej. Vedado-Consola-Mango-27)</small></label><input id="pw-n1" type="password" autocomplete="new-password" required minlength="10">
+      <label for="pw-n2">Repite la nueva</label><input id="pw-n2" type="password" autocomplete="new-password" required>
+      <label class="sw" style="margin-top:10px"><input type="checkbox" id="pw-ver"><span>Ver lo que escribo</span></label>
+      <p class="nota">Al cambiarla, los otros teléfonos donde tengas el panel abierto tendrán que entrar con la nueva. Guárdala en un lugar seguro: si la olvidas, Claude te la puede reiniciar.</p>
+      <button class="btn" id="pw-b">Cambiar contraseña</button>
+    </form>
+    <div class="msg" id="mpw"></div>
+  </section>
+  <section class="card">
     <h2>💾 Copia de seguridad</h2>
     <p class="nota" style="margin:-6px 0 6px">Baja todo junto: clientes, compras y canjes, solicitudes, ofertas, juegos agregados a mano, servicios, datos de la tienda y reglas.</p>
     <div class="row"><button class="btn" id="bk-xls" type="button" style="flex:1">Bajar en Excel</button><button class="btn sec" id="bk-json" type="button" style="flex:1">Bajar completo (.json)</button></div>
@@ -998,6 +1010,15 @@ $('bk-xls').onclick=async()=>{nomsg('mbk');$('bk-xls').disabled=true;
     hoja('Reglas',Object.entries(d.reglas.reglas).map(([k,v])=>({'Regla':(RWC.find(r=>r[0]===k)||[k,k])[1],'Valor':v})));
     XLSX.writeFile(wb,'GameX-respaldo-'+d.fecha+'.xlsx');msg('mbk','ok','✅ Respaldo bajado en Excel.')}catch(e){msg('mbk','bad',esc(e.message))}$('bk-xls').disabled=false};
 $('tb-ti').onclick=()=>tab('ti');
+
+// ---------- cambiar contraseña del panel ----------
+$('pw-ver').onchange=()=>['pw-act','pw-n1','pw-n2'].forEach(i=>$(i).type=$('pw-ver').checked?'text':'password');
+$('fpw').onsubmit=async e=>{e.preventDefault();nomsg('mpw');const n=$('pw-n1').value;
+  if(n!==$('pw-n2').value){msg('mpw','bad','Las dos contraseñas nuevas no son iguales');return}
+  $('pw-b').disabled=true;
+  try{await api('panel-clave',{actual:$('pw-act').value,nueva:n});CLAVE=n;try{localStorage.setItem('gx_panel',CLAVE)}catch(e){}
+    $('fpw').reset();['pw-act','pw-n1','pw-n2'].forEach(i=>$(i).type='password');msg('mpw','ok','✅ Contraseña cambiada. Desde ahora entra con la nueva.')}catch(err){msg('mpw','bad',esc(err.message))}
+  $('pw-b').disabled=false};
 
 </script>
 </body>

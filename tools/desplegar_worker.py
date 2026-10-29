@@ -1,7 +1,7 @@
 """Sube (o actualiza) el Worker de avisos a Cloudflare y guarda su dirección en tools/datos/push.json.
 Necesita ~/secretos/cloudflare.json (o /home/claude/secretos/cloudflare.json) con {"cuenta": "...", "token": "..."}
 y acceso a api.cloudflare.com. La clave del Worker se crea sola la primera vez.
-Para el panel (/panel) también lee de la misma carpeta: panel.json {"clave": "contraseña del panel", "github": "github_pat_..."},
+Para el panel (/panel) también lee de la misma carpeta: panel.json {"clave": "contraseña inicial del panel (luego se cambia desde el panel)", "github": "github_pat_...", "herramientas": "llave larga que se crea sola"},
 vapid.json y firebase-admin.json. Si falta alguno, el panel no se activa pero los avisos siguen funcionando."""
 import base64, json, os, secrets, ssl, urllib.request, uuid
 T = os.path.dirname(os.path.abspath(__file__)) + '/'
@@ -24,7 +24,10 @@ ns = [n for n in cf('/storage/kv/namespaces?per_page=100')['result'] if n['title
 ns_id = ns[0]['id'] if ns else cf('/storage/kv/namespaces', 'POST', json.dumps({'title': NOMBRE}).encode())['result']['id']
 meta = {'main_module': 'worker.js', 'compatibility_date': '2025-01-01',
         'bindings': [{'type': 'kv_namespace', 'name': 'SUBS', 'namespace_id': ns_id}, {'type': 'durable_object_namespace', 'name': 'STATS', 'class_name': 'Stats'}, {'type': 'secret_text', 'name': 'CLAVE', 'text': CF['clave_worker']}]}
-for nombre, archivo, campo in [('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None)]:
+_pj = json.load(open(SEC + '/panel.json')) if os.path.exists(SEC + '/panel.json') else None
+if _pj is not None and not _pj.get('herramientas'):  # llave larga para las herramientas y tareas programadas (no cambia con la contraseña del panel)
+    _pj['herramientas'] = secrets.token_urlsafe(32); json.dump(_pj, open(SEC + '/panel.json', 'w'), indent=1)
+for nombre, archivo, campo in [('HERRAMIENTAS', 'panel.json', 'herramientas'), ('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None)]:
     try:
         d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
         if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})
