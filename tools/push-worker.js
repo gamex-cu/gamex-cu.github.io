@@ -314,7 +314,7 @@ async function evento(req,env){
   const disp=['app','android','iphone','iphone-app','pc','ps4','ps5','switch','otro'].includes(b&&b.d)?b.d:'otro';
   const org=b&&b.o==='app'?'app':'web';
   const filas=lista.filter(x=>x&&TIPOS.has(x.t)).map(x=>({tipo:x.t,v:String(x.v||'').trim().slice(0,120),n:Number.isFinite(+x.n)?Math.max(0,Math.min(x.t==='tiempo'?10800:9999,Math.round(+x.n))):null,uid,disp,org}))
-    .map(f=>f.tipo==='busca'?{...f,v:f.v.toLowerCase().replace(/\s+/g,' ')}:f).filter(f=>f.tipo==='visita'||f.tipo==='contacto'||f.tipo==='envio'||f.v);
+    .map(f=>f.tipo==='busca'?{...f,v:f.v.toLowerCase().replace(/\s+/g,' ')}:f).filter(f=>f.tipo==='visita'||f.tipo==='contacto'||f.tipo==='envio'||(f.tipo==='tiempo'&&f.n>0)||f.v);
   if(filas.length)await statsDO(env).agregar(filas);
   return r('ok');
 }
