@@ -1,5 +1,5 @@
 GAMEX1
-V	188
+V	189
 F	29 oct 2026
 M	Octubre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6734,6 +6734,7 @@ J	4	Plants vs. Zombies
 J	0	Plants vs. Zombies Garden Warfare
 J	0	Plants vs. Zombies Garden Warfare 2
 J	0	Plants vs. Zombies: Battle for Neighborville
+J	0	Plants vs. Zombies: Replanted
 J	0	PlateUp!
 J	0	Police Simulator: Patrol Officers
 J	2	PowerWash Simulator 2
@@ -6832,6 +6833,7 @@ J	0	Tell Me Why: Chapters 1-3
 J	0	Tempopo
 J	0	Terraria
 J	2	TerraTech Legion
+J	2	Terrible Lizards
 J	2	The Alters
 J	0	The Bard's Tale ARPG : Remastered and Resnarkled
 J	0	The Bard's Tale IV: Director's Cut

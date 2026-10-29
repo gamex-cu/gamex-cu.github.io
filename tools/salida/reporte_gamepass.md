@@ -1,10 +1,10 @@
 # Game Pass – revisión del 2026-10-29
 
-Total: 610 juegos (antes 608).
+Total: 612 juegos (antes 610).
 
 ## Entraron (2)
-- Final Fantasy VII Remake Intergrade
-- Mouthwashing
+- Plants vs. Zombies: Replanted
+- Terrible Lizards
 
 ## Salieron (0)
 
