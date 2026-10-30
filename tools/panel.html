@@ -461,6 +461,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <div class="kpis" id="c-kpis"></div>
       <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
       <div class="row" style="margin-top:10px;align-items:center" id="c-ord"><span class="nota" style="margin:0">Ordenar:</span><button type="button" class="chip" data-o="rec" aria-pressed="true">Recientes</button><button type="button" class="chip" data-o="gx" aria-pressed="false">Por GX</button><button type="button" class="chip" data-o="pts" aria-pressed="false">Más puntos</button><button type="button" class="chip" data-o="nom" aria-pressed="false">Nombre A–Z</button></div>
+      <div class="row" style="margin-top:8px;align-items:center" id="c-act"><span class="nota" style="margin:0">Cuenta:</span><button type="button" class="chip" data-a="" aria-pressed="true">Todos</button><button type="button" class="chip" data-a="si" aria-pressed="false">🔓 Activada</button><button type="button" class="chip" data-a="no" aria-pressed="false">🔒 Sin activar</button></div>
       <div class="row" style="margin-top:8px;align-items:center"><span class="nota" style="margin:0">Puntos:</span><input id="c-min" type="number" inputmode="numeric" placeholder="desde" style="width:90px;padding:7px 9px"><input id="c-max" type="number" inputmode="numeric" placeholder="hasta" style="width:90px;padding:7px 9px"><button type="button" class="chip" id="c-res" aria-pressed="false">Ver IDs reservados</button></div>
       <p class="nota" id="c-cuenta" style="margin:8px 0 0"></p>
       <div id="c-lista" class="clist"><p class="vacio">Cargando…</p></div>
@@ -725,7 +726,7 @@ function tipEn(el){document.querySelectorAll('.tip').forEach(x=>x.remove());cons
 $('chart').addEventListener('pointerover',e=>tipEn(e.target));$('chart').addEventListener('focusin',e=>tipEn(e.target));
 $('chart').addEventListener('pointerleave',()=>tipEn(null));$('chart').addEventListener('focusout',()=>tipEn(null));
 // ---------- Clientes (GameX Rewards) ----------
-let CLI=null,FICHA=null,VERRES=false,ORD='rec';
+let CLI=null,FICHA=null,VERRES=false,ORD='rec',CACT='';
 const hoyL=()=>new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
 const money=x=>'$'+(Math.round(x*100)/100).toLocaleString('es',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fechaA=f=>{if(!f)return'—';const[y,m,d]=f.split('-');return +d+' '+MES[+m-1]+' '+y};
@@ -751,12 +752,14 @@ function pintarClientes(){
   if(q)ls=ls.filter(c=>(c.gx+c.nombre+c.tel).toLowerCase().replace(/\s/g,'').includes(q.replace(/^gx/,'gx')));
   const mn=$('c-min').value===''?null:+$('c-min').value,mx=$('c-max').value===''?null:+$('c-max').value;
   if(mn!=null)ls=ls.filter(c=>c.saldo>=mn);if(mx!=null)ls=ls.filter(c=>c.saldo<=mx);
+  if(CACT)ls=ls.filter(c=>c.estado==='activo'&&(CACT==='si'?c.activada:!c.activada));
   const so={rec:(a,b)=>(b.ultima||'').localeCompare(a.ultima||'')||a.gx.localeCompare(b.gx),gx:(a,b)=>a.gx.localeCompare(b.gx),pts:(a,b)=>b.saldo-a.saldo||b.prestigio-a.prestigio||a.gx.localeCompare(b.gx),nom:(a,b)=>(a.nombre||'~').localeCompare(b.nombre||'~','es')};
-  ls.sort(so[ORD]);$('c-cuenta').textContent=ls.length+' cliente'+(ls.length===1?'':'s')+(q||mn!=null||mx!=null?' con ese filtro':'');
+  ls.sort(so[ORD]);$('c-cuenta').textContent=ls.length+' cliente'+(ls.length===1?'':'s')+(q||mn!=null||mx!=null||CACT?' con ese filtro':'');
   $('c-lista').innerHTML=ls.length?ls.map(c=>`<button type="button" class="cl${c.estado==='reservado'?' res':''}" data-gx="${c.gx}"><span class="gx">${c.gx}</span><span class="nm">${c.estado==='reservado'?'<i>Reservado</i>':esc(c.nombre)}<small>${c.estado==='reservado'?'Libre para dar':(c.activada?'🔓 cuenta activada':'🔒 sin activar')+(c.ultima?' · última compra '+fecha(c.ultima):'')}</small></span><span class="sd">${nivelCls(c.nivel)} ${N(c.saldo)} GX<small>${c.prestigio?'⭐'.repeat(Math.min(c.prestigio,5))+' ':''}${money(c.valor)}</small></span></button>`).join(''):'<p class="vacio">Nadie coincide con la búsqueda.</p>';
 }
 $('c-bus').oninput=pintarClientes;
 $('c-min').oninput=pintarClientes;$('c-max').oninput=pintarClientes;
+$('c-act').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;CACT=b.dataset.a;$('c-act').querySelectorAll('[data-a]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-ord').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;ORD=b.dataset.o;$('c-ord').querySelectorAll('[data-o]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-res').onclick=()=>{VERRES=!VERRES;$('c-res').setAttribute('aria-pressed',VERRES);$('c-res').textContent=VERRES?'Ocultar reservados':'Ver IDs reservados';pintarClientes()};
 $('c-lista').onclick=e=>{const b=e.target.closest('[data-gx]');if(b)abrirFicha(b.dataset.gx)};
