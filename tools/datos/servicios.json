@@ -180,13 +180,13 @@
     "pedido": "Desbloqueo de PlayStation 4 (hasta 14.0)",
     "grupos": [
      {
-      "n": "PlayStation 4 14.0",
+      "n": "Versión del Sistema",
       "o": [
        {
-        "t": "Versión 13.52"
+        "t": "v13.52"
        },
        {
-        "t": "Versión 14.0"
+        "t": "v14.0"
        }
       ]
      }
