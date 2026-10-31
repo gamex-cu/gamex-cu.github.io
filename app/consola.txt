@@ -1,6 +1,6 @@
 GAMEX1
-V	201
-F	30 oct 2026
+V	202
+F	31 oct 2026
 M	Octubre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -1216,6 +1216,7 @@ J	0	Euro Truck Simulator 2
 J	0	Europa
 J	0	Europa Universalis 4 - Golden Century
 J	0	Europa Universalis III - Chronicles
+J	0	Europa Universalis V Premium Edition
 J	0	European Ship Simulator
 J	0	Eve of Destruction - REDUX VIETNAM
 J	0	Eventide Slavic Fable Collector's Edition
