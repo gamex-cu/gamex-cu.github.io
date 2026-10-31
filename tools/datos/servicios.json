@@ -175,18 +175,18 @@
     "pedido": "Desbloqueo de PlayStation 5 (hasta 13.60)"
    },
    {
-    "t": "PlayStation 4 13.52",
-    "d": "Hasta la versión 13.52",
+    "t": "PlayStation 4 14.0",
+    "d": "Hasta la versión 14.0",
     "pedido": "Desbloqueo de PlayStation 4 (hasta 14.0)",
     "grupos": [
      {
       "n": "PlayStation 4 14.0",
       "o": [
        {
-        "t": "Version 14.0"
+        "t": "Versión 13.52"
        },
        {
-        "t": "Es la ultima version de la consola y el desbloqueo para esta version es bastante inestable"
+        "t": "Versión 14.0"
        }
       ]
      }
