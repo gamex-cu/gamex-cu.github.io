@@ -1,6 +1,6 @@
 GAMEX1
-V	209
-F	31 oct 2026
+V	210
+F	1 nov 2026
 M	Octubre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -2573,6 +2573,7 @@ J	0	Onikira - Demon Killer
 J	0	Onimusha 2: Samurai's Destiny
 J	0	Onimusha 3 - Demon Siege
 J	0	Onimusha: Warlords
+J	0	Onimusha: Way of the Sword
 J	0	ONINAKI
 J	0	Open Country
 J	0	Operencia: The Stolen Sun
