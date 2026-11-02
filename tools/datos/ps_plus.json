@@ -1,20 +1,19 @@
 {
- "mes": "Octubre 2026",
- "hasta": "2026-11-02",
+ "mes": "Noviembre 2026",
+ "hasta": "2026-12-02",
  "fuente": "Juegos mensuales de PlayStation Plus Essential",
  "juegos": [
   {
-   "n": "F1 25 (PS5)",
-   "id": "UP0006-PPSA24662_00-F12025PS5GAME000"
+   "n": "Tomb Raider IV-VI Remastered (PS4 y PS5)",
+   "id": "UP1032-PPSA18154_00-TOMBRAIDER456225"
   },
   {
-   "n": "Hunt: Showdown 1896 (PS5)",
-   "id": "UP4291-PPSA16358_00-0708166676236847",
-   "online": true
+   "n": "Monster Train 2 (PS5)",
+   "id": "EP8909-PPSA25758_00-0047300101977880"
   },
   {
-   "n": "Earth Defense Force: World Brothers 2 (PS4 y PS5)",
-   "id": "UP3177-PPSA15927_00-EDFWORLDBROTHER2"
+   "n": "Dead Island 2 (PS4 y PS5)",
+   "id": "UP2047-PPSA03098_00-DI2MAINSIEAPS500"
   }
  ]
 }
