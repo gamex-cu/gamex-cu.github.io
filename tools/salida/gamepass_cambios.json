@@ -1,20 +1,24 @@
 {
  "fecha": "2026-11-02",
  "total": 604,
- "antes": 612,
+ "antes": 604,
  "entraron": [],
- "salieron": [
-  "Day of the Tentacle Remastered",
-  "Dead Static Drive",
-  "Deep Rock Galactic",
-  "Full Throttle Remastered",
-  "Lara Croft and the Temple of Osiris",
-  "LEGO Star Wars: The Skywalker Saga",
-  "Wartales",
-  "Wildgate"
- ],
+ "salieron": [],
  "saliendo": [
-  "Football Manager 26 Console"
+  "1000xRESIST",
+  "Barbie Horse Trails",
+  "DRAGON BALL XENOVERSE 2",
+  "Firefighting Simulator - The Squad",
+  "Football Manager 26 Console",
+  "GoldenEye 007",
+  "Great God Grove",
+  "Moonlighter",
+  "Pigeon Simulator",
+  "Police Simulator: Patrol Officers",
+  "Relic Hunters Legend",
+  "Total Chaos",
+  "Winter Burrow",
+  "Wreckfest"
  ],
  "revisar": [],
  "saliendo_cambio": true
