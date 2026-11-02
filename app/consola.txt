@@ -1,7 +1,7 @@
 GAMEX1
-V	212
+V	213
 F	2 nov 2026
-M	Octubre 2026
+M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
 J	0	-KLAUS-
@@ -6338,9 +6338,9 @@ J	0	You Suck At Parking
 J	0	Ys X: Proud Nordics
 J	0	Zorro: The Chronicles
 C	PlayStation Plus	PlayStation Plus	f5c400	ffd84d
-J	0	Earth Defense Force: World Brothers 2 (PS4 y PS5)
-J	0	F1 25 (PS5)
-J	1	Hunt: Showdown 1896 (PS5)
+J	0	Dead Island 2 (PS4 y PS5)
+J	0	Monster Train 2 (PS5)
+J	0	Tomb Raider IV-VI Remastered (PS4 y PS5)
 C	Xbox Game Pass	Xbox Game Pass	107c10	7fdc7f
 J	2	1000xRESIST
 J	1	33 Immortals
