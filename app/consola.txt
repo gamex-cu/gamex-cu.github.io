@@ -1,5 +1,5 @@
 GAMEX1
-V	210
+V	211
 F	1 nov 2026
 M	Octubre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6461,7 +6461,6 @@ J	4	Crysis 2
 J	4	Crysis 3
 J	4	Dante's Inferno
 J	2	Date Everything!
-J	0	Day of the Tentacle Remastered
 J	1	DayZ
 J	1	Dead by Daylight
 J	0	Dead Island 2
@@ -6470,12 +6469,10 @@ J	4	Dead Space (2008)
 J	4	Dead Space 2
 J	4	Dead Space 3
 J	4	Dead Space Ignition
-J	0	Dead Static Drive
 J	2	Death Howl
 J	2	Death Stranding Director's Cut
 J	2	Deathloop
 J	2	Deep Dish Dungeon
-J	0	Deep Rock Galactic
 J	2	Denshattack!
 J	0	Descenders
 J	0	Descenders Next (Game Preview)
@@ -6565,7 +6562,6 @@ J	2	Forza Horizon 6
 J	3	Forza Motorsport
 J	3	FragPunk
 J	2	Frog Sqwad
-J	0	Full Throttle Remastered
 J	128	Fuzion Frenzy
 J	0	Gang Beasts
 J	0	Gears 5 Game of the Year Edition
@@ -6639,9 +6635,7 @@ J	3	Kiln
 J	0	Kingdom Come: Deliverance
 J	2	Kingdom Come: Deliverance II
 J	0	Kingdom Two Crowns
-J	0	Lara Croft and the Temple of Osiris
 J	2	Legend of Mana
-J	0	LEGO Star Wars: The Skywalker Saga
 J	0	Like a Dragon: Infinite Wealth
 J	0	Like a Dragon: Pirate Yakuza in Hawaii
 J	0	LIMBO
@@ -6917,7 +6911,6 @@ J	3	Warhammer 40,000: Darktide
 J	2	Warhammer 40,000: Rogue Trader
 J	2	Warhammer 40,000: Space Marine 2
 J	0	Warhammer: Vermintide 2
-J	0	Wartales
 J	0	Wasteland 2: Director's Cut
 J	0	Wasteland 3
 J	0	Wasteland Remastered
@@ -6930,7 +6923,6 @@ J	0	Wheel Of Fortune
 J	2	Wheel World
 J	3	Where Winds Meet
 J	2	Wild Hearts
-J	3	Wildgate
 J	2	Winds of Arcana: Ruination
 J	0	Winter Burrow
 J	0	Wo Long: Fallen Dynasty

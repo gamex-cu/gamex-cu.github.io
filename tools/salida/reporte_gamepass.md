@@ -1,23 +1,21 @@
-# Game Pass – revisión del 2026-10-29
+# Game Pass – revisión del 2026-11-02
 
-Total: 612 juegos (antes 610).
+Total: 604 juegos (antes 612).
 
-## Entraron (2)
-- Plants vs. Zombies: Replanted
-- Terrible Lizards
+## Entraron (0)
 
-## Salieron (0)
-
-## Se van pronto (9)
+## Salieron (8)
 - Day of the Tentacle Remastered
 - Dead Static Drive
 - Deep Rock Galactic
-- Football Manager 26 Console
 - Full Throttle Remastered
 - Lara Croft and the Temple of Osiris
 - LEGO Star Wars: The Skywalker Saga
 - Wartales
 - Wildgate
+
+## Se van pronto (1)
+- Football Manager 26 Console
 
 ## Por revisar si son solo online (0)
 

@@ -1,23 +1,21 @@
 {
- "fecha": "2026-10-29",
- "total": 612,
- "antes": 610,
- "entraron": [
-  "Plants vs. Zombies: Replanted",
-  "Terrible Lizards"
- ],
- "salieron": [],
- "saliendo": [
+ "fecha": "2026-11-02",
+ "total": 604,
+ "antes": 612,
+ "entraron": [],
+ "salieron": [
   "Day of the Tentacle Remastered",
   "Dead Static Drive",
   "Deep Rock Galactic",
-  "Football Manager 26 Console",
   "Full Throttle Remastered",
   "Lara Croft and the Temple of Osiris",
   "LEGO Star Wars: The Skywalker Saga",
   "Wartales",
   "Wildgate"
  ],
+ "saliendo": [
+  "Football Manager 26 Console"
+ ],
  "revisar": [],
- "saliendo_cambio": false
+ "saliendo_cambio": true
 }
