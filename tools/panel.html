@@ -179,6 +179,16 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .svi[open]>summary::after{content:'▴'}
 .svi .in{padding:0 12px 12px}
 .svg{border:1px dashed var(--line);border-radius:10px;padding:10px;margin-top:10px}
+.svi summary .mut{color:var(--muted);font-weight:400;font-size:12px}
+.svcols{display:grid;gap:14px}@media(min-width:960px){.svcols{grid-template-columns:1fr 280px}}
+.seg{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}.seg label{margin:0;cursor:pointer}.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:inline-block;padding:9px 12px;border:1px solid var(--line);border-radius:999px;font-size:13px}
+.seg input:checked+span{background:var(--accent);border-color:transparent;color:#fff;font-weight:600}.seg input:focus-visible+span{outline:2px solid #fff}
+.in .bk-opc,.in .bk-mon{display:none}.in[data-modo="opc"] .bk-opc,.in[data-modo="mon"] .bk-mon{display:block}
+.op{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;margin-top:6px}@media(max-width:520px){.op{grid-template-columns:1fr auto}.op [data-o="d"]{grid-column:1;grid-row:2}}
+.avz{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}.avz>summary{cursor:pointer;color:var(--muted);font-size:14px;padding:4px 0}
+.svprev{border:1px solid var(--line);border-radius:12px;padding:12px;background:#11162b;display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.svprev small{color:var(--muted)}.svprev .pbtn{align-self:flex-start;background:#25d366;color:#04210f;font-weight:700;border-radius:8px;padding:7px 12px;font-size:13px}.svprev .pmsg{font-size:12px;border-top:1px dashed var(--line);padding-top:6px}
 .mini{font:inherit;font-size:.8rem;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:transparent;color:var(--fg);cursor:pointer}
 .mini.bad{border-color:var(--bad);color:var(--bad)}
 .gpl{margin:6px 0 0;padding-left:20px}.gpl li{margin:2px 0}
@@ -1062,34 +1072,53 @@ $('rw-guardar').onclick=async()=>{const b=$('rw-guardar');b.disabled=true;nomsg(
     if(($('rw-txt').value||'')!==(TI.reglas||'')){const t=await api('archivo-guardar',{f:'tienda',d:{...TI,reglas:$('rw-txt').value},sha:TISHA});TI=t.d;TISHA=t.sha}
     msg('mrw','ok','✅ Reglas guardadas. El texto sale en la web y la app en 1 o 2 minutos.')}catch(e){msg('mrw','bad',esc(e.message))}b.disabled=false};
 // --- servicios ---
+function svModo(it){return it.montos&&it.montos.length?'mon':it.grupos&&it.grupos.length?'opc':'dir'}
+function svOp(o){return `<div class="op"><input data-o="t" value="${esc(o.t||'')}" placeholder="Ej: Hasta la v13.52"><input data-o="d" value="${esc(o.d||'')}" placeholder="Detalle (opcional)"><button type="button" class="mini bad" data-qo="1" title="Quitar opción" aria-label="Quitar opción">✕</button></div>`}
+function svGr(g){return `<div class="svg"><label>Título de la lista</label><input data-g="n" value="${esc(g.n||'')}" placeholder="Ej: Versión del sistema, Plan, Tiempo"><label>Opciones que el cliente puede escoger</label><div class="ops">${(g.o||[{t:''}]).map(svOp).join('')}</div><div class="row" style="margin-top:6px"><button type="button" class="mini" data-ao="1">+ Opción</button><button type="button" class="mini bad" data-qg="1">Quitar esta lista</button></div></div>`}
+function svPrev(el){const sec=SV[SVI],v=k=>(el.querySelector(`[data-k="${k}"]`)||{}).value?.trim()||'';const m=el.querySelector('.in').dataset.modo,t=v('t')||'…';
+  const msg=v('msg')||('Hola GameX, me interesa: '+(v('pedido')||t)+(m!=='dir'?' + lo que escoja el cliente':v('pedido')?'':' ('+sec.s+')'));
+  el.querySelector('.svprev').innerHTML=`<b>${esc(t)}</b>${v('d')?`<small>${esc(v('d'))}</small>`:''}<span class="pbtn">${esc(v('boton')||(m==='dir'?'Pedir por WhatsApp':'Escoger'))}</span><small class="pmsg">💬 Te llega: “${esc(msg)}”</small>`;
+  el.querySelector('summary .nm').textContent=v('t')||'(sin nombre)'}
 function svPintar(){svTipoNext();$('sv-secs').innerHTML=SV.map((x,i)=>`<button type="button" class="chip" data-s="${i}" aria-pressed="${i===SVI}">${esc((x.icono||'')+' '+x.s)}</button>`).join('');
   const sec=SV[SVI];if(!sec){$('sv-items').innerHTML='';svTipo();return}
-  $('sv-items').innerHTML=sec.items.map((it,i)=>`<details class="svi" data-i="${i}"><summary>${it.oculto?'🙈 ':''}${esc(it.t||'(sin nombre)')}</summary><div class="in">
-    <label class="sw" style="margin:4px 0 0"><input type="checkbox" data-k="oculto" ${it.oculto?'checked':''}><span>Oculto <small>(no sale en la web ni en la app)</small></span></label>
-    <label>Nombre</label><input data-k="t" value="${esc(it.t||'')}" required>
-    <label>Descripción <small>(opcional)</small></label><textarea data-k="d" rows="3">${esc(it.d||'')}</textarea>
-    <div class="g2"><div><label>Texto del pedido <small>(opcional)</small></label><input data-k="pedido" value="${esc(it.pedido||'')}" placeholder="${esc(it.t||'')}"></div><div><label>Texto del botón <small>(opcional)</small></label><input data-k="boton" value="${esc(it.boton||'')}" placeholder="Pedir"></div></div>
-    <label>Montos en $ <small>(solo gift cards; separados por coma)</small></label><input data-k="montos" value="${esc((it.montos||[]).join(', '))}" placeholder="10, 20, 30, 50">
-    <div class="grs">${(it.grupos||[]).map(g=>`<div class="svg"><label>Nombre de la lista</label><input data-g="n" value="${esc(g.n||'')}" placeholder="Plan, Tiempo, Tipo…"><label>Opciones <small>(una por línea; para una explicación: Opción | explicación)</small></label><textarea data-g="o" rows="4">${esc(g.o.map(o=>o.t+(o.d?' | '+o.d:'')).join('\n'))}</textarea><button type="button" class="mini bad" data-qg="1" style="margin-top:6px">Quitar lista</button></div>`).join('')}</div>
-    <div class="row" style="margin-top:10px"><button type="button" class="mini" data-ag="1">+ Lista de opciones</button><button type="button" class="mini" data-up="1">↑ Subir</button><button type="button" class="mini" data-dn="1">↓ Bajar</button><button type="button" class="mini bad" data-del="1">Borrar servicio</button></div></div></details>`).join('')}
-function svLeer(){svTipoLeer();const sec=SV[SVI];if(!sec)return;const ab=new Set();
-  sec.items=[...document.querySelectorAll('#sv-items .svi')].map(el=>{const it={...sec.items[+el.dataset.i]};if(el.open)ab.add(el);
+  $('sv-items').innerHTML=sec.items.map((it,i)=>{const m=svModo(it),avz=!!(it.pedido||it.boton||it.msg);return `<details class="svi" data-i="${i}"><summary>${it.oculto?'🙈 ':''}<span class="nm">${esc(it.t||'(sin nombre)')}</span><small class="mut">${m==='opc'?'con opciones':m==='mon'?'con montos':''}</small></summary><div class="in" data-modo="${m}">
+    <div class="svcols"><div>
+    <label>Nombre</label><input data-k="t" value="${esc(it.t||'')}" placeholder="Ej: PlayStation 4" required>
+    <label>Descripción <small>(opcional)</small></label><textarea data-k="d" rows="2" placeholder="Ej: Hasta la versión 14.0">${esc(it.d||'')}</textarea>
+    <label>¿Qué escoge el cliente?</label>
+    <div class="seg" role="radiogroup">${[['dir','Nada, pide directo'],['opc','Opciones'],['mon','Un monto en $']].map(([k,n])=>`<label><input type="radio" name="sm${i}" value="${k}" ${m===k?'checked':''}><span>${n}</span></label>`).join('')}</div>
+    <div class="bk-opc"><div class="grs">${(it.grupos&&it.grupos.length?it.grupos:[{n:'',o:[{t:''}]}]).map(svGr).join('')}</div><button type="button" class="mini" data-ag="1" style="margin-top:8px">+ Otra lista de opciones</button></div>
+    <div class="bk-mon"><label>Montos en $ <small>(separados por coma)</small></label><input data-k="montos" value="${esc((it.montos||[]).join(', '))}" placeholder="10, 20, 30, 50"></div>
+    <details class="avz"${avz?' open':''}><summary>Más ajustes <small>(opcional)</small></summary>
+      <div class="g2"><div><label>Cómo se llama en el pedido</label><input data-k="pedido" value="${esc(it.pedido||'')}" placeholder="${esc(it.t||'')}"></div><div><label>Texto del botón</label><input data-k="boton" value="${esc(it.boton||'')}" placeholder="Automático"></div></div>
+      <label>Mensaje completo de WhatsApp <small>(si lo pones, reemplaza el automático)</small></label><input data-k="msg" value="${esc(it.msg||'')}" placeholder="Hola GameX, me interesa…">
+      <label class="sw" style="margin-top:10px"><input type="checkbox" data-k="oculto" ${it.oculto?'checked':''}><span>Ocultarlo <small>(no sale en la web ni en la app)</small></span></label>
+    </details></div>
+    <div><label>Así lo ve el cliente</label><div class="svprev"></div></div></div>
+    <div class="row" style="margin-top:12px"><button type="button" class="mini" data-dup="1">⧉ Duplicar</button><button type="button" class="mini" data-up="1">↑ Subir</button><button type="button" class="mini" data-dn="1">↓ Bajar</button><button type="button" class="mini bad" data-del="1">Borrar</button></div></div></details>`}).join('');
+  document.querySelectorAll('#sv-items .svi').forEach(svPrev)}
+function svLeer(){svTipoLeer();const sec=SV[SVI];if(!sec)return;
+  sec.items=[...document.querySelectorAll('#sv-items .svi')].map(el=>{const it={...sec.items[+el.dataset.i]};const m=el.querySelector('.in').dataset.modo;
     const v=k=>el.querySelector(`[data-k="${k}"]`).value.trim();
-    it.t=v('t');if(el.querySelector('[data-k="oculto"]').checked)it.oculto=true;else delete it.oculto;for(const k of ['d','pedido','boton']){const x=k==='d'?el.querySelector('[data-k="d"]').value.trim():v(k);if(x)it[k]=x;else delete it[k]}
-    const m=v('montos').split(/[,\s]+/).map(Number).filter(x=>x>0);if(m.length)it.montos=m;else delete it.montos;
-    const gs=[...el.querySelectorAll('.svg')].map(g=>({n:g.querySelector('[data-g="n"]').value.trim(),o:g.querySelector('[data-g="o"]').value.split('\n').map(l=>l.trim()).filter(Boolean).map(l=>{const[t,...d]=l.split('|');const o={t:t.trim()};if(d.join('|').trim())o.d=d.join('|').trim();return o})})).filter(g=>g.o.length);
-    if(gs.length)it.grupos=gs;else delete it.grupos;return it})}
+    it.t=v('t');if(el.querySelector('[data-k="oculto"]').checked)it.oculto=true;else delete it.oculto;for(const k of ['d','pedido','boton','msg']){const x=v(k);if(x)it[k]=x;else delete it[k]}
+    const mo=v('montos').split(/[,\s$]+/).map(Number).filter(x=>x>0);if(m==='mon'&&mo.length)it.montos=mo;else delete it.montos;
+    const gs=[...el.querySelectorAll('.svg')].map(g=>({n:g.querySelector('[data-g="n"]').value.trim()||'Opciones',o:[...g.querySelectorAll('.op')].map(r=>{const o={t:r.querySelector('[data-o="t"]').value.trim()},d=r.querySelector('[data-o="d"]').value.trim();if(d)o.d=d;return o}).filter(o=>o.t)})).filter(g=>g.o.length);
+    if(m==='opc'&&gs.length)it.grupos=gs;else delete it.grupos;return it})}
 $('sv-secs').onclick=e=>{const b=e.target.closest('[data-s]');if(!b)return;svLeer();SVI=+b.dataset.s;svPintar()};
+$('sv-items').addEventListener('input',e=>{const el=e.target.closest('.svi');if(!el)return;if(e.target.type==='radio'){el.querySelector('.in').dataset.modo=e.target.value;const sm=el.querySelector('summary .mut');sm.textContent=e.target.value==='opc'?'con opciones':e.target.value==='mon'?'con montos':''}svPrev(el)});
 $('sv-items').onclick=e=>{const el=e.target.closest('.svi');if(!el)return;const i=+el.dataset.i;
-  const act=['ag','qg','up','dn','del'].find(k=>e.target.closest(`[data-${k}]`));if(!act)return;
+  if(e.target.closest('[data-ao]')){const ops=e.target.closest('.svg').querySelector('.ops');ops.insertAdjacentHTML('beforeend',svOp({t:''}));ops.lastElementChild.querySelector('input').focus();return}
+  if(e.target.closest('[data-qo]')){const ops=e.target.closest('.ops');if(ops.children.length>1)e.target.closest('.op').remove();else ops.querySelectorAll('input').forEach(x=>x.value='');svPrev(el);return}
+  if(e.target.closest('[data-ag]')){el.querySelector('.grs').insertAdjacentHTML('beforeend',svGr({n:'',o:[{t:''}]}));el.querySelector('.grs').lastElementChild.querySelector('input').focus();return}
+  if(e.target.closest('[data-qg]')){const grs=el.querySelector('.grs');if(grs.children.length>1)e.target.closest('.svg').remove();else{el.querySelector('input[value="dir"]').click()}svPrev(el);return}
+  const act=['dup','up','dn','del'].find(k=>e.target.closest(`[data-${k}]`));if(!act)return;
   if(act==='del'&&!confirm('¿Borrar este servicio?'))return;
   svLeer();const it=SV[SVI].items;
-  if(act==='ag'){(it[i].grupos=it[i].grupos||[]).push({n:'',o:[{t:'Opción 1'}]})}
-  if(act==='qg'){const gi=[...el.querySelectorAll('.svg')].indexOf(e.target.closest('.svg'));it[i].grupos.splice(gi,1)}
+  if(act==='dup'){const c=JSON.parse(JSON.stringify(it[i]));c.t=(c.t||'')+' (copia)';it.splice(i+1,0,c)}
   if(act==='up'&&i>0)[it[i-1],it[i]]=[it[i],it[i-1]];
   if(act==='dn'&&i<it.length-1)[it[i+1],it[i]]=[it[i],it[i+1]];
   if(act==='del')it.splice(i,1);
-  svPintar();const k=act==='up'?i-1:act==='dn'?i+1:i;const n=document.querySelector(`#sv-items .svi[data-i="${Math.max(0,Math.min(k,it.length-1))}"]`);if(n&&act!=='del')n.open=true};
+  svPintar();const k=act==='up'?i-1:act==='dn'||act==='dup'?i+1:i;const n=document.querySelector(`#sv-items .svi[data-i="${Math.max(0,Math.min(k,it.length-1))}"]`);if(n&&act!=='del'){n.open=true;if(act==='dup')n.querySelector('input').select()}};
 $('sv-add').onclick=()=>{svLeer();SV[SVI].items.push({t:'Servicio nuevo'});svPintar();const l=document.querySelectorAll('#sv-items .svi');l[l.length-1].open=true;l[l.length-1].querySelector('input').select()};
 $('sv-guardar').onclick=async()=>{const b=$('sv-guardar');b.disabled=true;nomsg('msv');svLeer();
   try{const r=await api('archivo-guardar',{f:'servicios',d:SV,sha:SVSHA});SV=r.d;SVSHA=r.sha;svPintar();msg('msv','ok','✅ Servicios guardados. Salen en la web y la app en 1 o 2 minutos.')}catch(e){msg('msv','bad',esc(e.message))}b.disabled=false};
