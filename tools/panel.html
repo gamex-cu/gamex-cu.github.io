@@ -460,7 +460,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
         </div>
         <div class="g2">
           <div><label for="m-fecha">Fecha</label><input id="m-fecha" type="date" required></div>
-          <div id="m-imp-w"><label for="m-imp">Importe ($)</label><input id="m-imp" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Ej: 30"></div>
+          <div id="m-imp-w"><label for="m-cup">Importe en CUP</label><input id="m-cup" type="number" step="1" min="0" inputmode="numeric" placeholder="Ej: 13500"><label for="m-imp" style="margin-top:6px">Importe ($)</label><input id="m-imp" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Ej: 30"><small id="m-tasa" style="display:block;color:var(--mut,#9aa3c7);margin-top:4px"></small></div>
           <div id="m-n-w" hidden><label for="m-n">GX</label><input id="m-n" type="number" step="1" min="1" inputmode="numeric" placeholder="Ej: 1500"></div>
         </div>
         <label for="m-desc" id="m-desc-l">Qué compró</label>
@@ -793,7 +793,12 @@ $('c-act').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;CACT=b.
 $('c-ord').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;ORD=b.dataset.o;$('c-ord').querySelectorAll('[data-o]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-res').onclick=()=>{VERRES=!VERRES;$('c-res').setAttribute('aria-pressed',VERRES);$('c-res').textContent=VERRES?'Ocultar reservados':'Ver IDs reservados';pintarClientes()};
 $('c-lista').onclick=e=>{const b=e.target.closest('[data-gx]');if(b)abrirFicha(b.dataset.gx)};
-async function abrirFicha(gx){try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
+// tasa del día que anotan en GameX Manager: el CUP se pasa solo a USD
+let TASA=null;async function cargarTasa(){try{TASA=await api('cli-tasa')}catch(e){TASA=null}const el=$('m-tasa');if(!el)return;const hoy=new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
+  el.textContent=TASA&&TASA.valor?`Dólar a ${TASA.valor} CUP${TASA.f&&TASA.f!==hoy?' (del '+TASA.f.split('-').reverse().join('/')+')':' (hoy)'} · de GameX Manager`:'Sin tasa: ponla en GameX Manager para pasar CUP a USD solo.'}
+$('m-cup').addEventListener('input',()=>{const c=+$('m-cup').value||0;if(TASA&&TASA.valor&&c>0){$('m-imp').value=(Math.round(c/TASA.valor*100)/100).toFixed(2);movPrev()}});
+$('m-imp').addEventListener('input',()=>{if(document.activeElement===$('m-imp'))$('m-cup').value=''});
+async function abrirFicha(gx){cargarTasa();try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
 $('f-cerrar').onclick=()=>{$('s-ficha').hidden=true;FICHA=null};
 function pintarFicha(f){
   FICHA=f;const c=f.cliente,r=f.resumen,R=f.reglas;
@@ -827,7 +832,7 @@ function movPrev(){
 $('fmov').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;nomsg('mmov');$('m-btn').disabled=true;
   try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:$('m-desc').value.trim()});
     pintarFicha(d);msg('mmov','ok',`✅ ${esc(t)} guardada: ${d.nuevo.ganados?'+'+N(d.nuevo.ganados):'−'+N(d.nuevo.usados)} GX${d.nuevo.cumple?' 🎂 (x2 cumpleaños)':''}. Saldo: ${N(d.resumen.saldo)} GX · ${esc(d.resumen.nivel)}.`);
-    $('m-imp').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes();
+    $('m-imp').value='';$('m-cup').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes();
     if(t==='Compra'&&d.movs.length){const nm=d.movs.reduce((a,b)=>b.id>a.id?b:a);abrirComp(d.cliente,nm,d.movs)}}
   catch(err){msg('mmov','bad',esc(err.message))}$('m-btn').disabled=false};
 $('f-hist').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b||!FICHA)return;const m=FICHA.movs.find(x=>x.id===+b.dataset.cp);if(m)abrirComp(FICHA.cliente,m,FICHA.movs)});

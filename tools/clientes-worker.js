@@ -87,6 +87,9 @@ const CLI={
     return {ok:true,clientes:(d.clientes||[]).length,movs:n}},
   panelHash(){this.cliInit();const r=this.sql.exec("SELECT v FROM cfg WHERE k='panel'").toArray()[0];return r?JSON.parse(r.v):null},
   panelHashPoner(h,sal){this.cliInit();this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('panel',?)",JSON.stringify({h,sal,fecha:Date.now()}));return {ok:true}},
+  // tasa del dólar del día, la manda GameX Manager cuando la anotan (no es un dato secreto)
+  tasaVer(){this.cliInit();const x=this.sql.exec("SELECT v FROM cfg WHERE k='tasa'").toArray()[0];return x?JSON.parse(x.v):{valor:0,f:''}},
+  tasaPoner(d){this.cliInit();const v=+d.valor,f=esFecha(d.f)?d.f:diaCuba(Date.now());if(!(v>0&&v<100000))return {error:'Tasa no válida'};this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('tasa',?)",JSON.stringify({valor:v,f,t:Date.now()}));return {ok:true,valor:v,f}},
   cfgReglas(){this.cliInit();return {reglas:{...GXR},def:GXR_DEF}},
   cfgGuardarReglas(r){this.cliInit();const n={};
     for(const k of Object.keys(GXR_DEF)){const v=Number(r&&r[k]);if(!Number.isFinite(v)||v<0||v>1e6)return {error:'Valor no válido en '+k};n[k]=v}
@@ -186,6 +189,7 @@ async function panelClientes(p,req,env,q){
   if(p==='cli-sol-borrar')return jx(await D.solBorrar(q.id));
   if(p==='cli-importar')return jx(await D.cliImportar(q));
   if(p==='cli-exportar')return j(await D.cliExportar());
+  if(p==='cli-tasa')return q&&q.valor?jx(await D.tasaPoner(q)):j(await D.tasaVer());
   if(p==='cli-reglas')return q&&q.reglas?jx(await D.cfgGuardarReglas(q.reglas)):j(await D.cfgReglas());
   return null;
 }
