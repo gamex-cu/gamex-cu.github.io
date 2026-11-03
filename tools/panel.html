@@ -270,7 +270,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   </section>
   </div>
   <div id="t-ju" class="pest" hidden>
-  <div class="subnav" data-g="ju"><button type="button" class="chip" data-s="ju-0" aria-pressed="true">Agregar y editar</button><button type="button" class="chip" data-s="ju-1" aria-pressed="false">Game Pass</button><button type="button" class="chip" data-s="ju-2" aria-pressed="false">PS Plus</button><button type="button" class="chip" data-s="ju-3" aria-pressed="false">Catálogos nuevos</button></div>
+  <div class="subnav" data-g="ju"><button type="button" class="chip" data-s="ju-0" aria-pressed="true">Agregar y editar</button><button type="button" class="chip" data-s="ju-1" aria-pressed="false">Game Pass</button><button type="button" class="chip" data-s="ju-2" aria-pressed="false">PS Plus</button><button type="button" class="chip" data-s="ju-3" aria-pressed="false">Catálogos nuevos</button><button type="button" class="chip" data-s="ju-4" aria-pressed="false">Filtros propios</button></div>
   <div class="subp" id="ju-0">
 
   <section class="card">
@@ -320,6 +320,8 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   <div class="subp" id="ju-2" hidden>
   <section class="card">
     <h2>🎁 Juegos del mes de PS Plus</h2>
+    <div class="svg" style="margin:0 0 12px"><p class="jest" id="psa-est" style="margin:0 0 6px">Busca solo los juegos del mes en el blog oficial de PlayStation.</p><div id="psa-res"></div>
+    <div class="row"><button class="btn sec" id="psa-rev" type="button" style="margin:6px 0 0;flex:1">🔄 Buscar juegos del mes automáticamente</button><button class="btn" id="psa-usar" type="button" style="margin:6px 0 0;flex:1" hidden>Usar estos juegos</button></div></div>
     <div class="g2"><div><label for="ps-mes">Mes</label><input id="ps-mes" placeholder="Noviembre 2026"></div><div><label for="ps-hasta">Se pueden reclamar hasta</label><input id="ps-hasta" type="date" class="fecha"></div></div>
     <div id="ps-js"></div>
     <button class="mini" type="button" id="ps-add" style="margin-top:8px">+ Agregar juego</button>
@@ -337,6 +339,24 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <label class="sw"><input type="checkbox" id="ce-d"><span>Consola desbloqueada <small>(sale el candado abierto junto al nombre, como en PS4)</small></span></label>
     <button class="btn" id="ce-add" type="button">Crear catálogo</button>
     <div class="msg" id="mce"></div>
+  </section>
+  </div>
+  <div class="subp" id="ju-4" hidden>
+  <section class="card">
+    <h2>🏷️ Filtros propios</h2>
+    <p class="nota" style="margin:-6px 0 6px">Crea filtros como "Hypervisor", "Para niños" o "Multijugador local". Salen como botón de filtro en el catálogo y como etiqueta al lado del juego.</p>
+    <div id="fl-lista"></div>
+    <div class="g2"><div><label for="fl-n">Nombre del filtro</label><input id="fl-n" maxlength="30" placeholder="Para niños"></div><div><label for="fl-c">Color</label><input id="fl-c" type="color" value="#22c3e6" style="height:46px;padding:4px"></div></div>
+    <button class="btn" id="fl-add" type="button">Crear filtro</button>
+    <div class="msg" id="mfl"></div>
+  </section>
+  <section class="card" id="fl-ed" hidden>
+    <h2 id="fl-edt">Juegos del filtro</h2>
+    <div id="fl-mem"></div>
+    <label for="fl-bus">Agregar juegos <small>(busca en todos los catálogos)</small></label>
+    <input id="fl-bus" autocomplete="off" placeholder="Escribe parte del nombre">
+    <div id="fl-res"></div>
+    <div class="msg" id="mfl2"></div>
   </section>
   </div>
   </div>
@@ -952,7 +972,7 @@ function jCons(){ $('jcons').innerHTML=Object.entries(JPL).map(([k,v])=>`<button
   $('ljlink').innerHTML=ps?'Código o enlace de la PlayStation Store <small>(opcional: PPSA12345 / CUSA12345; si lo dejas vacío lo busco por el nombre)</small>':(JC.startsWith('Xbox')?'Enlace de la tienda de Xbox <small>(opcional; o el código de 12 letras, ej. 9NPF9F0DCVKS)</small>':'Enlace de la tienda <small>(opcional; ej. Steam, Nintendo, Meta)</small>');
   $('jlink').placeholder=ps?'PPSA28002':'https://…';
   const sel=new Set([...document.querySelectorAll('#jet input:checked')].map(i=>i.value));
-  $('jet').innerHTML=JETP[JC].map(k=>`<label><input type="checkbox" value="${k}" ${sel.has(k)?'checked':''}>${JET[k]}</label>`).join('');jYa()}
+  $('jet').innerHTML=JETP[JC].map(k=>`<label><input type="checkbox" value="${k}" ${sel.has(k)?'checked':''}>${JET[k]}</label>`).join('')+(TI&&TI.filtros||[]).map(f=>`<label><input type="checkbox" value="u-${esc(f.id)}" ${sel.has('u-'+f.id)?'checked':''}><span style="color:${esc(f.color)}">${esc(f.nombre)}</span></label>`).join('');jYa()}
 $('jcons').onclick=e=>{const b=e.target.closest('[data-c]');if(!b)return;JC=b.dataset.c;jCons()};
 $('jnom').addEventListener('input',()=>{const v=$('jnom').value,m=v.match(/^(.*?)[\s\-–_]*\b((?:PPSA|CUSA)\d{5})\b.*$/i);
   if(m&&m[1].trim()){$('jnom').value=m[1].trim();$('jlink').value=m[2].toUpperCase();if(!(JC==='PS4'||JC==='PS5')){JC=/^CUSA/i.test(m[2])?'PS4':'PS5';jCons()}}
@@ -961,7 +981,7 @@ async function jYa(){const t=$('jnom').value.trim();if(t.length<3){$('jya').inne
   try{const d=await api('juegos-buscar?c='+encodeURIComponent(JC)+'&q='+encodeURIComponent(t));
     $('jya').innerHTML=d.hits.length?'⚠️ Parecidos que ya están en '+esc(JPL[JC])+':<br>'+d.hits.slice(0,6).map(h=>'• '+esc(h.n)).join('<br>'):''}catch(e){}}
 $('fju').onsubmit=async e=>{e.preventDefault();const b=$('bju');b.disabled=true;nomsg('mju');
-  try{const n=$('jnom').value.trim();await api('juegos-agregar',{c:JC,n,link:$('jlink').value.trim(),et:[...document.querySelectorAll('#jet input:checked')].map(i=>i.value)});
+  try{const n=$('jnom').value.trim(),ets=[...document.querySelectorAll('#jet input:checked')].map(i=>i.value);await api('juegos-agregar',{c:JC,n,link:$('jlink').value.trim(),et:ets.filter(x=>!x.startsWith('u-'))});if(ets.some(x=>x.startsWith('u-'))||true)await flAsignar(JC+'|'+n,ets);
     msg('mju','ok','✅ <b>'+esc(n)+'</b> agregado a '+esc(JPL[JC])+'. Sale en la web y la app en 1 o 2 minutos.');$('jnom').value='';$('jlink').value='';$('jya').innerHTML='';
     document.querySelectorAll('#jet input').forEach(i=>i.checked=false);juegos()}catch(err){msg('mju','bad',esc(err.message))}b.disabled=false};
 const JFL={online:1,series:2,vr:8,vro:16,port:32,emu:64,excl:128,hyper:256};
@@ -975,14 +995,14 @@ $('jres').onclick=async e=>{const bq=e.target.closest('button[data-q]'),be=e.tar
     const ps=h.c==='PS4'||h.c==='PS5',et=etDe(h.f);
     row.insertAdjacentHTML('afterend',`<form class="edf" data-i="${be.dataset.e}"><label>Nombre</label><input name="nuevo" maxlength="120" value="${esc(h.n)}" required>
       <label>Enlace nuevo <small>(déjalo vacío para no cambiarlo${ps?'; puedes poner PPSA12345 / CUSA12345':''})</small></label><input name="link" maxlength="300" autocomplete="off" placeholder="${ps?'PPSA12345 o https://…':'https://…'}">
-      <label>Etiquetas</label><div class="tipos">${(JETP[h.c]||[]).map(k=>`<label><input type="checkbox" value="${k}" ${et.includes(k)?'checked':''}>${JET[k]}</label>`).join('')}</div>
+      <label>Etiquetas</label><div class="tipos">${(JETP[h.c]||[]).map(k=>`<label><input type="checkbox" value="${k}" ${et.includes(k)?'checked':''}>${JET[k]}</label>`).join('')}${(TI.filtros||[]).map(f=>`<label><input type="checkbox" value="u-${esc(f.id)}" ${flDe(h.c+'|'+h.n).includes('u-'+f.id)?'checked':''}><span style="color:${esc(f.color)}">${esc(f.nombre)}</span></label>`).join('')}</div>
       <div class="row" style="margin-top:12px"><button class="btn" style="margin:0;flex:1">Guardar cambios</button><button type="button" class="btn sec" style="margin:0;flex:1" data-x="1">Cancelar</button></div></form>`);return}
   if(!bq)return;const h=JHITS[+bq.dataset.q];
   if(bq.dataset.ok!=='1'){bq.dataset.ok='1';bq.textContent='¿Seguro?';setTimeout(()=>{if(bq.isConnected){bq.dataset.ok='';bq.textContent='Quitar'}},4000);return}
   bq.disabled=true;try{await api('juegos-quitar',{c:h.c,n:h.n});bq.closest('.jhit').remove();msg('mjq','ok','✅ <b>'+esc(h.n)+'</b> quitado de '+esc(JPL[h.c])+'. Se va de la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));bq.disabled=false}};
 $('jres').addEventListener('click',e=>{if(e.target.closest('[data-x]'))e.target.closest('.edf').remove()});
 $('jres').addEventListener('submit',async e=>{e.preventDefault();const f=e.target,h=JHITS[+f.dataset.i],b=f.querySelector('button.btn');b.disabled=true;
-  try{await api('juegos-editar',{c:h.c,n:h.n,nuevo:f.nuevo.value.trim(),link:f.link.value.trim(),et:[...f.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value)});
+  try{const ets=[...f.querySelectorAll('input[type=checkbox]:checked')].map(i=>i.value);await api('juegos-editar',{c:h.c,n:h.n,nuevo:f.nuevo.value.trim(),link:f.link.value.trim(),et:ets.filter(x=>!x.startsWith('u-'))});await flAsignar(h.c+'|'+(f.nuevo.value.trim()||h.n),ets,h.c+'|'+h.n);
     f.remove();msg('mjq','ok','✅ Cambios guardados en <b>'+esc(f.nuevo.value.trim())+'</b>. Salen en la web y la app en 1 o 2 minutos.');juegos()}catch(err){msg('mjq','bad',esc(err.message));b.disabled=false}});
 let JPL_EXTRA_OK=false;
 async function juegos(){jCons();
@@ -1022,7 +1042,7 @@ let TI={},TISHA=null,SV=[],SVSHA=null,SVI=0,PS={},PSSHA=null,RW=null,GPC=null,GP
 async function tienda(){
   try{const [t,sv,ps,rw]=await Promise.all([api('archivo?f=tienda'),api('archivo?f=servicios'),api('archivo?f=ps_plus'),api('cli-reglas')]);
     TI=t.d||{};TISHA=t.sha;SV=sv.d||[];SVSHA=sv.sha;PS=ps.d||{juegos:[]};PSSHA=ps.sha;RW=rw.reglas;
-    ceCargar();btPintar();btModo();mtPintar();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
+    ceCargar();btPintar();btModo();mtPintar();flPintar();psaEstado();tiPintar();svPintar();psPintar();rwPintar();viPintar()}catch(e){msg('mti','bad',esc(e.message))}
   gpEstado()}
 // --- datos de la tienda ---
 const DSEM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
@@ -1230,6 +1250,46 @@ function mtPintar(){const m=TI.mantenimiento||{};$('mt-on').checked=!!m.activo;$
 $('mt-g').onclick=async()=>{const on=$('mt-on').checked;if(on&&!confirm('¿Poner la web y la app en mantenimiento? Los clientes solo verán el cartel.'))return;$('mt-g').disabled=true;nomsg('mmt');
   try{const r=await api('archivo-guardar',{f:'tienda',d:{...TI,mantenimiento:{activo:on,mensaje:$('mt-msg').value.trim()}},sha:TISHA});TI=r.d;TISHA=r.sha;mtPintar();
     msg('mmt','ok',on?'🚧 Mantenimiento activado. En 1 o 2 minutos los clientes verán el cartel.':'✅ Mantenimiento apagado. En 1 o 2 minutos la tienda vuelve a verse normal.')}catch(e){msg('mmt','bad',esc(e.message))}$('mt-g').disabled=false};
+
+// ---------- filtros propios ----------
+let FLSEL=null,FLQ=null;
+const flSlug=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,30)||'filtro';
+async function flGuardar(lista,m,ok){const r=await api('archivo-guardar',{f:'tienda',d:{...TI,filtros:lista},sha:TISHA});TI=r.d;TISHA=r.sha;flPintar();if(ok)msg(m,'ok',ok)}
+function flPintar(){const l=TI.filtros||[];
+  $('fl-lista').innerHTML=l.length?l.map(f=>`<div class="jhit"><div><span class="chip" style="border-color:${esc(f.color)};color:${esc(f.color)};padding:3px 10px">${esc(f.nombre)}</span><small>${f.juegos.length} juego${f.juegos.length===1?'':'s'}</small></div><button data-fe="${esc(f.id)}">Juegos</button><button class="q" data-fd="${esc(f.id)}">Borrar</button></div>`).join(''):'<p class="vacio">Todavía no has creado filtros propios.</p>';
+  const f=l.find(x=>x.id===FLSEL);$('fl-ed').hidden=!f;if(!f)return;
+  $('fl-edt').innerHTML='Juegos de <span style="color:'+esc(f.color)+'">'+esc(f.nombre)+'</span>';
+  $('fl-mem').innerHTML=f.juegos.length?f.juegos.map(k=>{const[c,n]=k.split('|');return `<div class="jhit"><div>${esc(n)}<small>${esc(JPL[c]||c)}</small></div><button class="q" data-fq="${esc(k)}">Quitar</button></div>`}).join(''):'<p class="vacio">Este filtro todavía no tiene juegos.</p>';
+  if(typeof jCons==='function'&&$('jet'))jCons()}
+$('fl-add').onclick=async()=>{const n=$('fl-n').value.trim();if(!n){msg('mfl','bad','Ponle nombre');return}const l=(TI.filtros||[]).slice();let id=flSlug(n),k=2;while(l.some(x=>x.id===id))id=flSlug(n)+'-'+k++;
+  $('fl-add').disabled=true;try{FLSEL=id;await flGuardar(l.concat([{id,nombre:n,color:$('fl-c').value,juegos:[]}]),'mfl','✅ Filtro <b>'+esc(n)+'</b> creado. Ahora agrégale juegos abajo.');$('fl-n').value='';$('fl-bus').focus()}catch(e){msg('mfl','bad',esc(e.message))}$('fl-add').disabled=false};
+$('fl-lista').onclick=async e=>{const be=e.target.closest('[data-fe]'),bd=e.target.closest('[data-fd]');
+  if(be){FLSEL=be.dataset.fe;flPintar();$('fl-ed').scrollIntoView({block:'start',behavior:'smooth'});return}
+  if(bd){const f=(TI.filtros||[]).find(x=>x.id===bd.dataset.fd);if(!confirm('¿Borrar el filtro "'+f.nombre+'"? Los juegos no se borran, solo el filtro.'))return;
+    try{if(FLSEL===f.id)FLSEL=null;await flGuardar(TI.filtros.filter(x=>x!==f),'mfl','✅ Filtro borrado.')}catch(err){msg('mfl','bad',esc(err.message))}}};
+$('fl-bus').addEventListener('input',()=>{clearTimeout(FLQ);FLQ=setTimeout(async()=>{const t=$('fl-bus').value.trim();if(t.length<2){$('fl-res').innerHTML='';return}
+  try{const d=await api('juegos-buscar?q='+encodeURIComponent(t));const f=(TI.filtros||[]).find(x=>x.id===FLSEL);
+    $('fl-res').innerHTML=d.hits.length?d.hits.map(h=>{const k=h.c+'|'+h.n,ya=f&&f.juegos.includes(k);return `<div class="jhit"><div>${esc(h.n)}<small>${esc(JPL[h.c]||h.c)}</small></div>${ya?'<small>✓ ya está</small>':`<button data-fa="${esc(k)}">+ Agregar</button>`}</div>`}).join(''):'<p class="vacio">No encontré ese juego.</p>'}catch(e){msg('mfl2','bad',esc(e.message))}},350)});
+$('fl-res').onclick=async e=>{const b=e.target.closest('[data-fa]');if(!b)return;b.disabled=true;
+  try{const l=TI.filtros.map(f=>f.id===FLSEL?{...f,juegos:f.juegos.concat([b.dataset.fa])}:f);await flGuardar(l,'mfl2','✅ Agregado. Sale en la web y la app en 1 o 2 minutos.');b.outerHTML='<small>✓ ya está</small>'}catch(err){msg('mfl2','bad',esc(err.message));b.disabled=false}};
+$('fl-mem').onclick=async e=>{const b=e.target.closest('[data-fq]');if(!b)return;b.disabled=true;
+  try{const l=TI.filtros.map(f=>f.id===FLSEL?{...f,juegos:f.juegos.filter(x=>x!==b.dataset.fq)}:f);await flGuardar(l,'mfl2','✅ Quitado del filtro.')}catch(err){msg('mfl2','bad',esc(err.message));b.disabled=false}};
+// filtros propios dentro de Agregar / Editar juego
+const flDe=k=>(TI.filtros||[]).filter(f=>f.juegos.includes(k)).map(f=>'u-'+f.id);
+async function flAsignar(k,sel,viejo){const l=(TI.filtros||[]).map(f=>{let j=f.juegos.filter(x=>x!==k&&x!==viejo);if(sel.includes('u-'+f.id))j=j.concat([k]);return {...f,juegos:j}});
+  if(JSON.stringify(l)!==JSON.stringify(TI.filtros||[]))await flGuardar(l)}
+
+// ---------- PS Plus automático ----------
+let PSA=null,PSAT=null;
+async function psaEstado(){clearTimeout(PSAT);
+  try{const d=await api('psp-estado');const r=d.run,c=d.propuesta;PSA=c;const corr=r&&r.estado!=='completed';
+    $('psa-est').innerHTML=corr?'⏳ Buscando en el blog de PlayStation… (1 o 2 minutos)':!c?'Busca solo los juegos del mes en el blog oficial de PlayStation.':c.error?'⚠️ '+esc(c.error):'Encontrado el '+fecha(c.fecha)+': <b>'+esc(c.mes)+'</b>, se pueden reclamar hasta el '+fecha(c.hasta)+(c.link?` · <a href="${esc(c.link)}" target="_blank" rel="noopener" style="color:inherit">ver anuncio</a>`:'');
+    $('psa-res').innerHTML=!c||corr||c.error?'':'<ul class="gpl">'+c.juegos.map(g=>`<li>${esc(g.n)} <small style="color:var(--muted)">(${esc(g.p)})${g.id?'':' · sin enlace'}</small></li>`).join('')+'</ul>';
+    $('psa-usar').hidden=!c||corr||!!c.error;$('psa-rev').disabled=corr;
+    if(corr&&!$('t-ju').hidden)PSAT=setTimeout(psaEstado,12000)}catch(e){$('psa-est').textContent=e.message}}
+$('psa-rev').onclick=async()=>{$('psa-rev').disabled=true;try{await api('psp-revisar',{});$('psa-est').textContent='⏳ Buscando en el blog de PlayStation… (1 o 2 minutos)';$('psa-res').innerHTML='';$('psa-usar').hidden=true;setTimeout(psaEstado,8000)}catch(e){msg('mps','bad',esc(e.message));$('psa-rev').disabled=false}};
+$('psa-usar').onclick=()=>{if(!PSA)return;$('ps-mes').value=PSA.mes;$('ps-hasta').value=PSA.hasta;$('ps-js').innerHTML=PSA.juegos.map(g=>psFila({n:g.n+' ('+g.p+')',id:g.id||''})).join('');$('ps-not').checked=true;
+  msg('mps','inf','Listo, revisa los juegos (marca "Solo online" si alguno lo es) y toca <b>Guardar PS Plus</b>.');$('ps-guardar').scrollIntoView({block:'center',behavior:'smooth'})};
 
 </script>
 </body>

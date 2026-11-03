@@ -23,7 +23,7 @@ const NUEVO=new Set(Object.keys(NUEVO_F).filter(k=>{const[y,m,d]=NUEVO_F[k].spli
 const SALE=new Set(__SALIENDO__);
 const PORT=new Set(__PORT__),EMU=new Set(__EMU__),HYPER=new Set(__HYPER__);
 const EXCL=new Set(__EXCL__);
-const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(EXCL.has(k)?' <span class="ex">Exclusivo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(HYPER.has(k)?' <span class="hv">Hypervisor</span>':'')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
+const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(EXCL.has(k)?' <span class="ex">Exclusivo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(HYPER.has(k)?' <span class="hv">Hypervisor</span>':'')+CUSTOM.filter(f=>f.s.has(k)).map(f=>' <span class="cf" style="--fc:'+f.c+'">'+esc(f.l)+'</span>').join('')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -53,6 +53,7 @@ const FIL=[
  {id:'pt',get l(){return current==='PC'?'PC-Port':'Port'},t:k=>PORT.has(k),c:'pt',s:PORT},
  {id:'em',l:'Emulador',t:k=>EMU.has(k),c:'em',s:EMU},
  {id:'hv',l:'Hypervisor',t:k=>HYPER.has(k),c:'hv',s:HYPER}];
+const CUSTOM=__CUSTOM__;CUSTOM.forEach(f=>{f.s=new Set(f.k);FIL.push({id:'u-'+f.id,l:f.l,t:k=>f.s.has(k),s:f.s,col:f.c})});
 function pintarMarq(c){const el=$('marq'),ks=[...SALE].filter(k=>k.startsWith(c+'|'));el.hidden=!ks.length;if(!ks.length)return;
   const it=ks.map(k=>k.slice(c.length+1)).map(n=>`<button type="button" data-n="${esc(n)}">${esc(n)}</button>`).join('<i>•</i>');
   el.innerHTML=`<b>⏳ Se van pronto</b><div class="mq"><div class="mqi" style="--d:${Math.max(18,ks.length*5)}s"><span>${it}<i>•</i></span><span aria-hidden="true">${it.replace(/<button /g,'<button tabindex="-1" ')}<i>•</i></span></div></div>`}
@@ -62,7 +63,7 @@ function drawFilters(){
   const pool=GAMES.filter(inCons);
   const avail=FIL.filter(f=>pool.some(g=>f.s.has(g.k)));
   const el=$('filt');const sl=el.scrollLeft;el.hidden=!avail.length;
-  el.innerHTML=avail.length?'<button type="button" class="fchip'+(active.size?'':' on')+'" data-f="">Todos</button>'+avail.map(f=>`<button type="button" class="fchip ${f.c?'f-'+f.c:''}${active.has(f.id)?' on':''}" data-f="${f.id}" aria-pressed="${active.has(f.id)}">${f.l} <small>${pool.filter(g=>f.t(g.k)).length}</small></button>`).join(''):'';
+  el.innerHTML=avail.length?'<button type="button" class="fchip'+(active.size?'':' on')+'" data-f="">Todos</button>'+avail.map(f=>`<button type="button" class="fchip ${f.c?'f-'+f.c:''}${f.col?' fcu':''}${active.has(f.id)?' on':''}"${f.col?` style="--fc:${f.col}"`:''} data-f="${f.id}" aria-pressed="${active.has(f.id)}">${f.l} <small>${pool.filter(g=>f.t(g.k)).length}</small></button>`).join(''):'';
   el.scrollLeft=sl;
 }
 

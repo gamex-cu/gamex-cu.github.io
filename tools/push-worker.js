@@ -146,6 +146,7 @@ function validar(f,d){
     if(d.mapa&&!/^https:\/\//.test(d.mapa))return 'El enlace del mapa tiene que empezar con https://';
     return {inicio:txt(d.inicio,300).trim(),numeros:nums.slice(0,5),dias,abre:d.abre,cierra:d.cierra,direccion:txt(d.direccion,200).trim(),mapa:txt(d.mapa,300).trim(),reglas:txt(d.reglas,6000).replace(/\r/g,''),
       ocultar:{secciones:(d.ocultar?.secciones||[]).filter(x=>['catalogos','ofertas','servicios','cuenta'].includes(x)||/^x-[a-z0-9-]{1,30}$/.test(x)),catalogos:(d.ocultar?.catalogos||[]).map(x=>txt(x,40)).slice(0,20),servicios:(d.ocultar?.servicios||[]).map(x=>txt(x,60)).slice(0,20)},
+      filtros:(Array.isArray(d.filtros)?d.filtros:[]).slice(0,20).map(f=>({id:txt(f.id,30).toLowerCase().replace(/[^a-z0-9-]/g,''),nombre:txt(f.nombre,30).replace(/[<>"]/g,'').trim(),color:/^#[0-9a-f]{6}$/i.test(f.color||'')?f.color:'#22c3e6',juegos:[...new Set((Array.isArray(f.juegos)?f.juegos:[]).map(x=>txt(x,200)).filter(x=>x.includes('|')))].slice(0,3000)})).filter(f=>f.id&&f.nombre),
       mantenimiento:{activo:!!d.mantenimiento?.activo,mensaje:txt(d.mantenimiento?.mensaje,500).trim()},
       botones:(Array.isArray(d.botones)?d.botones:[]).slice(0,60).map(b=>({padre:txt(b.padre,30).toLowerCase().replace(/[^a-z0-9-]/g,''),oculto:!!b.oculto,id:txt(b.id,30).toLowerCase().replace(/[^a-z0-9-]/g,'')||('b'+Math.random().toString(36).slice(2,8)),titulo:txt(b.titulo,40).trim(),sub:txt(b.sub,120).trim(),icono:txt(b.icono,8).trim(),color:/^#[0-9a-f]{6}$/i.test(b.color||'')?b.color:'#3d7bff',tipo:['pagina','enlace','whatsapp','seccion'].includes(b.tipo)?b.tipo:'pagina',destino:/^[a-z0-9=-]{1,60}$/.test(b.destino||'')?b.destino:'',enlace:/^https:\/\//.test(b.enlace||'')?txt(b.enlace,300):'',texto:txt(b.texto,4000).replace(/\r/g,''),wa:txt(b.wa,300),conwa:!!b.conwa})).filter(b=>b.titulo),
       orden:{secciones:(d.orden?.secciones||[]).filter(x=>(['catalogos','ofertas','servicios','cuenta'].includes(x)||/^x-[a-z0-9-]{1,30}$/.test(x))),catalogos:(d.orden?.catalogos||[]).map(x=>txt(x,40)).slice(0,40)}};
@@ -185,6 +186,9 @@ async function panelDatos(p,req,env,u){
     const {sha}=await ghJson(env,ARCHS[f]);if(q.sha&&sha&&q.sha!==sha)return j({error:'Alguien cambió esto mientras editabas. Recarga y vuelve a intentarlo.'},409);
     const r=await ghPut(env,ARCHS[f],JSON.stringify(v,null,1)+'\n',sha,'Panel: '+{tienda:'datos de la tienda',servicios:'servicios',ps_plus:'juegos de PS Plus',catalogos:'catálogos nuevos'}[f]);return j({ok:true,sha:r.content&&r.content.sha,d:v})}
   if(p==='gp-estado'){const {d}=await ghJson(env,'tools/salida/gamepass_cambios.json','gamepass-pendiente').catch(()=>({d:null}));return j({cambios:d,run:await ultimaCorrida(env,'gamepass.yml')})}
+  if(p==='psp-estado'){const {d}=await ghJson(env,'tools/salida/psplus_propuesta.json','psplus-pendiente').catch(()=>({d:null}));return j({propuesta:d,run:await ultimaCorrida(env,'psplus.yml')})}
+  if(p==='psp-revisar'){const res=await fetch(`https://api.github.com/repos/${REPO}/dispatches`,{method:'POST',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify({event_type:'psp-revisar'})});
+    if(!res.ok)throw new Error('GitHub '+res.status+': '+(await res.text()).slice(0,200));return j({ok:true})}
   if(p==='gp-revisar'||p==='gp-publicar'){
     const online=(Array.isArray(q.online)?q.online:[]).map(x=>txt(x,120)).slice(0,50);
     const res=await fetch(`https://api.github.com/repos/${REPO}/dispatches`,{method:'POST',headers:{...GH(env),'Content-Type':'application/json'},body:JSON.stringify({event_type:p,client_payload:{online}})});
@@ -345,7 +349,7 @@ async function panel(req,env,u){
       if(!/[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(nu)||!/\d/.test(nu))return j({error:'Ponle letras y al menos un número'},400);
       if(sinAst(nu)!==nu)return j({error:'No empieces ni termines con espacio o *'},400);if(nu===sinAst(act))return j({error:'Es igual a la actual'},400);
       const sal=crypto.randomUUID();await statsDO(env).panelHashPoner(await hashClave(nu,sal),sal);PANEL_OK.clear();return j({ok:true})}
-    if(['archivo','archivo-guardar','gp-estado','gp-revisar','gp-publicar','foto','respaldo'].includes(p))return await panelDatos(p,req,env,u);
+    if(['archivo','archivo-guardar','gp-estado','gp-revisar','gp-publicar','psp-estado','psp-revisar','foto','respaldo'].includes(p))return await panelDatos(p,req,env,u);
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);

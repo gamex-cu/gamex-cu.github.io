@@ -1,0 +1,28 @@
+# PS Plus desde el panel: busca en el blog de PlayStation los juegos del mes y deja la propuesta en la rama psplus-pendiente.
+name: PS Plus (panel)
+on:
+  repository_dispatch:
+    types: [psp-revisar]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: psplus
+  cancel-in-progress: true
+jobs:
+  psplus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Buscar juegos del mes
+        run: python3 tools/psplus_buscar.py
+      - name: Subir propuesta
+        run: |
+          git config user.name "GameX panel"; git config user.email "gamex-panel@users.noreply.github.com"
+          git checkout -B psplus-pendiente
+          git add -f tools/salida/psplus_propuesta.json
+          git commit -m "PS Plus: propuesta" || true
+          git push -f origin psplus-pendiente
