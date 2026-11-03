@@ -1,8 +1,11 @@
 {
- "fecha": "2026-11-02",
- "total": 604,
+ "fecha": "2026-11-03",
+ "total": 606,
  "antes": 604,
- "entraron": [],
+ "entraron": [
+  "GRAVHOUNDS (Game Preview)",
+  "Pit Of Goblin"
+ ],
  "salieron": [],
  "saliendo": [
   "1000xRESIST",
@@ -21,5 +24,5 @@
   "Wreckfest"
  ],
  "revisar": [],
- "saliendo_cambio": true
+ "saliendo_cambio": false
 }

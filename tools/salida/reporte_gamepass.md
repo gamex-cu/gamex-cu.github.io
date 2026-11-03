@@ -1,8 +1,10 @@
-# Game Pass – revisión del 2026-11-02
+# Game Pass – revisión del 2026-11-03
 
-Total: 604 juegos (antes 604).
+Total: 606 juegos (antes 604).
 
-## Entraron (0)
+## Entraron (2)
+- GRAVHOUNDS (Game Preview)
+- Pit Of Goblin
 
 ## Salieron (0)
 

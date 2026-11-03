@@ -1,6 +1,6 @@
 GAMEX1
-V	224
-F	2 nov 2026
+V	225
+F	3 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -6728,6 +6728,7 @@ J	2	Ghostwire: Tokyo
 J	2	GOALS
 J	0	Goat Simulator 3
 J	0	GoldenEye 007
+J	2	GRAVHOUNDS (Game Preview)
 J	2	Great God Grove
 J	0	GRID Legends
 J	0	Grim Fandango Remastered
@@ -6872,6 +6873,7 @@ J	0	Phoenix Point
 J	2	Pigeon Simulator
 J	0	Pillars of Eternity II: Deadfire - Ultimate Edition
 J	0	Pillars of Eternity: Complete Edition
+J	2	Pit Of Goblin
 J	2	Planet Coaster 2
 J	0	Planet of Lana II
 J	4	Plants vs. Zombies
