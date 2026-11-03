@@ -944,8 +944,8 @@ prev();
 if(CLAVE){$('clave').value=CLAVE;entrar()}
 // ---------- juegos a mano ----------
 const JPL={'PS4':'PS4','PS5':'PS5','PC':'PC','Switch':'Switch','Meta Quest':'Meta Quest','Xbox pago':'Xbox (pago)','Xbox Game Pass':'Game Pass'};
-const JET={online:'Solo online',vr:'VR',vro:'VR opcional',port:'Port',emu:'Emulador',series:'Series X|S',excl:'Exclusivo'};
-const JETP={'PS4':['online','vr','vro','excl'],'PS5':['online','vr','vro','excl'],'PC':['online','port','excl'],'Switch':['online','port','emu','excl'],'Meta Quest':['online','port','excl'],'Xbox pago':['online','series','excl'],'Xbox Game Pass':['online','series','excl']};
+const JET={online:'Solo online',vr:'VR',vro:'VR opcional',port:'Port',emu:'Emulador',series:'Series X|S',excl:'Exclusivo',hyper:'Hypervisor'};
+const JETP={'PS4':['online','vr','vro','excl'],'PS5':['online','vr','vro','excl'],'PC':['online','port','hyper','excl'],'Switch':['online','port','emu','excl'],'Meta Quest':['online','port','excl'],'Xbox pago':['online','series','excl'],'Xbox Game Pass':['online','series','excl']};
 let JC='PS5',JT=null,JQ=null,JPOLL=null;
 function jCons(){ $('jcons').innerHTML=Object.entries(JPL).map(([k,v])=>`<button type="button" class="chip" data-c="${esc(k)}" aria-pressed="${k===JC}">${esc(v)}</button>`).join('');
   const ps=JC==='PS4'||JC==='PS5';
@@ -964,7 +964,7 @@ $('fju').onsubmit=async e=>{e.preventDefault();const b=$('bju');b.disabled=true;
   try{const n=$('jnom').value.trim();await api('juegos-agregar',{c:JC,n,link:$('jlink').value.trim(),et:[...document.querySelectorAll('#jet input:checked')].map(i=>i.value)});
     msg('mju','ok','✅ <b>'+esc(n)+'</b> agregado a '+esc(JPL[JC])+'. Sale en la web y la app en 1 o 2 minutos.');$('jnom').value='';$('jlink').value='';$('jya').innerHTML='';
     document.querySelectorAll('#jet input').forEach(i=>i.checked=false);juegos()}catch(err){msg('mju','bad',esc(err.message))}b.disabled=false};
-const JFL={online:1,series:2,vr:8,vro:16,port:32,emu:64,excl:128};
+const JFL={online:1,series:2,vr:8,vro:16,port:32,emu:64,excl:128,hyper:256};
 const etDe=f=>Object.keys(JFL).filter(k=>f&JFL[k]);
 let JHITS=[];
 $('jbus').addEventListener('input',()=>{clearTimeout(JQ);JQ=setTimeout(jBuscar,350)});

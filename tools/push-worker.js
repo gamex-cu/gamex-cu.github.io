@@ -216,7 +216,7 @@ async function panelJuegos(p,req,env,u){
     const link=String(q.link||'').trim().slice(0,300);
     if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!((c==='Xbox pago'||c==='Xbox Game Pass')&&/^[0-9A-Z]{12}$/.test(link)))
       return j({error:'El enlace tiene que empezar con https:// (o ser un código como PPSA28002)'},400);
-    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl'].includes(x));
+    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl','hyper'].includes(x));
     const {d}=await pjCambiar(env,d=>{d.agregar=d.agregar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));d.quitar=d.quitar.filter(x=>!(x.c===c&&normJ(x.n)===normJ(n)));
       const e={c,n,f:hoy};if(link)e.link=/^(PPSA|CUSA)/i.test(link)?link.toUpperCase():link;if(et.length)e.et=et;d.agregar.push(e)},'Panel: agregar "'+n.slice(0,60)+'" ('+c+')');
     return j({ok:true,agregar:d.agregar,quitar:d.quitar})}
@@ -228,7 +228,7 @@ async function panelJuegos(p,req,env,u){
     const nuevo=String(q.nuevo||'').replace(/\s+/g,' ').trim().slice(0,120)||n,link=String(q.link||'').trim().slice(0,300);
     if(link&&!/^https:\/\//.test(link)&&!/^(PPSA|CUSA)\d{5}$/i.test(link)&&!/^[A-Z]{2}\d{4}-[A-Z]{4}\d{5}_00-\w+$/.test(link)&&!((c==='Xbox pago'||c==='Xbox Game Pass')&&/^[0-9A-Z]{12}$/.test(link)))
       return j({error:'El enlace tiene que empezar con https:// (o ser un código como PPSA28002)'},400);
-    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl'].includes(x));
+    const et=(Array.isArray(q.et)?q.et:[]).filter(x=>['online','vr','vro','port','emu','series','excl','hyper'].includes(x));
     const {d}=await pjCambiar(env,d=>{
       const ag=d.agregar.find(x=>x.c===c&&normJ(x.n)===normJ(n));
       if(ag){ag.n=nuevo;if(link){ag.link=/^(PPSA|CUSA)/i.test(link)?link.toUpperCase():link;delete ag.buscado}ag.et=et;return}

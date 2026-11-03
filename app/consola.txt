@@ -1,5 +1,5 @@
 GAMEX1
-V	214
+V	215
 F	2 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -50,6 +50,7 @@ J	0	Accel World VS. Sword Art Online Deluxe Edition
 J	0	Ace Attorney Investigations Collection
 J	0	Ace Combat - Assault Horizon Enhanced Edition
 J	0	ACE COMBAT 7: SKIES UNKNOWN
+J	256	Ace Combat 8: Wings of Theve Deluxe Edition
 J	0	Ace Combat Zero The Belkan War
 J	0	Aces of the Luftwaffe
 J	0	Aces of the Luftwaffe - Squadron
@@ -1106,6 +1107,7 @@ J	0	DYNASTY WARRIORS 9
 J	0	Dynasty Warriors Origins Deluxe Edition
 J	0	DYSMANTLE
 J	0	EA SPORTS College Football 27
+J	256	EA Sports FC 27
 J	0	Earth 2150 Trilogy
 J	0	EARTH DEFENSE FORCE
 J	0	EARTH DEFENSE FORCE 5
