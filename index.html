@@ -616,6 +616,14 @@ const ORDER=['#',...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const fold=s=>s.normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 const alias={fifa:'fc',cod:'call of duty',gta:'grand theft auto'};
+/* búsqueda que perdona faltas: primero busca exacto; si no hay nada, busca parecidos */
+const nrm=s=>fold(s).replace(/['’`´]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+function lev(a,b,max){if(Math.abs(a.length-b.length)>max)return max+1;let p=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){const c=[i];let m=i;for(let j=1;j<=b.length;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(c[j]<m)m=c[j]}if(m>max)return max+1;p=c}return p[b.length]}
+const PAL=new Map();const palDe=n=>{let w=PAL.get(n);if(!w){const t=nrm(n);w={t,c:t.replace(/ /g,''),w:t.split(' ')};PAL.set(n,w)}return w};
+function parecido(q,n){const g=palDe(n),qw=q.split(' ').filter(Boolean);if(!qw.length)return false;
+  return qw.every((x,i)=>{const ult=i===qw.length-1;return g.w.some(w=>{if(w===x||(x.length>=2&&w.startsWith(x)))return true;
+    if(x.length<4)return false;if(w.includes(x))return true;const tol=x.length>=7?2:1;if(lev(x,w,tol)<=tol)return true;return ult&&w.length>x.length&&lev(x,w.slice(0,x.length),1)<=1})})}
 const tagHTML=c=>{const x=CONS[CI[c]];return `<span class="ctag" style="background:${x[2]};color:${x[3]}">${nom(c)}</span>`};
 const $=id=>document.getElementById(id);
 const list=$('list'),lettersEl=$('letters'),countEl=$('count');
@@ -658,13 +666,17 @@ function render(){
   const all=current==='todas';
   const terms=fold(query.trim()),extra=alias[terms];
   const fs=FIL.filter(f=>active.has(f.id));
-  const hits=GAMES.filter(g=>(all||g.c===current)&&fs.every(f=>f.t(g.k))&&(!terms||fold(g.n).includes(terms)||(extra&&fold(g.n).includes(extra))));
+  const base=GAMES.filter(g=>(all||g.c===current)&&fs.every(f=>f.t(g.k)));
+  const qn=nrm(terms),qc=qn.replace(/ /g,''),xn=extra?nrm(extra):'';
+  let hits=!terms?base:base.filter(g=>{const p=palDe(g.n);return fold(g.n).includes(terms)||(qn&&p.t.includes(qn))||(qc.length>=6&&p.c.includes(qc))||(xn&&p.t.includes(xn))});
+  let aprox=false;if(terms&&!hits.length&&qn.length>=3){hits=base.filter(g=>parecido(qn,g.n));aprox=hits.length>0}
+  window.gxAprox=aprox;
   hits.sort((a,b)=>key(a.n).localeCompare(key(b.n),'es',{sensitivity:'base'})||CI[a.c]-CI[b.c]);
   const groups={};hits.forEach(g=>(groups[letterOf(g.n)]??=[]).push(g));
   const hl=n=>{if(!terms)return esc(n);const t=fold(n).includes(terms)?terms:extra;const i=fold(n).indexOf(t);return i<0?esc(n):esc(n.slice(0,i))+'<mark>'+esc(n.slice(i,i+t.length))+'</mark>'+esc(n.slice(i+t.length))};
   list.innerHTML=hits.length?ORDER.filter(l=>groups[l]).map(l=>`<section id="l-${l==='#'?'num':l}"><h2>${l}<small>${groups[l].length}</small></h2><ul>${groups[l].map(g=>`<li data-k="${esc(g.k)}">${all?tagHTML(g.c):''}<span class="gn">${hl(g.n)}${badges(g.k)}</span>${linkOf(g)?`<a class="info" href="${linkOf(g)}" target="_blank" rel="noopener" aria-label="Ver ${esc(g.n)} en la tienda" title="Ver en la tienda oficial">i</a>`:''}<button class="add" type="button">+</button></li>`).join('')}</ul></section>`).join(''):`<p class="empty">${terms?`No encontramos “${esc(query)}”.`:'Todavía no hay juegos aquí.'} Escríbenos por WhatsApp al 5344 1089, 5382 7989 o 5293 3943 y te lo conseguimos.</p>`;
   lettersEl.innerHTML=ORDER.map(l=>`<a href="#l-${l==='#'?'num':l}" class="${groups[l]?'':'off'}">${l}</a>`).join('');
-  countEl.textContent=(terms||fs.length)?`${hits.length} resultado${hits.length===1?'':'s'}`:'';
+  countEl.textContent=(terms||fs.length)?(aprox?`${hits.length} parecido${hits.length===1?'':'s'}`:`${hits.length} resultado${hits.length===1?'':'s'}`):'';
   drawFilters();
   sync();
 }
@@ -906,7 +918,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=219;
+const GXV=222;
 async function gxRefresh(){const b=document.getElementById('refresh');
   try{const r=await fetch('./?v='+Date.now(),{cache:'reload'});if(!r.ok)throw 0;
     if(b)b.textContent='Actualizando…';
