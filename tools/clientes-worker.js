@@ -3,7 +3,9 @@
 // Durable Object de estadísticas (SQLite), en tablas aparte: cli, mov, sol, ses, fallos.
 // Reglas copiadas del Excel "GameX Rewards v2" (hoja GX_Config).
 const GXR_DEF={porDolar:10,valorGX:0.005,n1:1500,p1:9,n2:2500,p2:17.5,n3:3500,p3:28,referido:100,prestigio:2000,cumple:2};
-const GXR={...GXR_DEF}; // se pueden cambiar desde el panel (tabla cfg)
+const GXR={...GXR_DEF};
+const SIN_GX='Sin GX (canjeó)'; // marca en obs: compra que suma al gasto pero no da puntos
+const esSinGX=m=>String(m&&m.obs||'').startsWith(SIN_GX); // se pueden cambiar desde el panel (tabla cfg)
 const nivelDe=s=>s>=GXR.n3?'Nivel 3 / MAX':s>=GXR.n2?'Nivel 2':s>=GXR.n1?'Nivel 1':'Base';
 const valorDe=s=>s>=GXR.n3?GXR.p3:s>=GXR.n2?GXR.p2+(s-GXR.n2)*GXR.valorGX:s>=GXR.n1?GXR.p1+(s-GXR.n1)*GXR.valorGX:s*GXR.valorGX;
 const r2=x=>Math.round(x*100)/100;
@@ -15,9 +17,10 @@ function enCumple(fecha,nac){
   return [y-1,y,y+1].some(a=>Math.abs(f-Date.UTC(a,mn-1,dn))<=3*864e5);
 }
 /* Calcula los GX de un movimiento. n = GX escritos a mano (canje y ajustes). */
-function calcularMov(tipo,importe,n,fecha,nac){
+function calcularMov(tipo,importe,n,fecha,nac,sinGX){
   const o={cumple:0,base:0,bono:0,ganados:0,usados:0,prest:0};
-  if(tipo==='Compra'){o.base=Math.round(importe*GXR.porDolar);o.cumple=enCumple(fecha,nac)?1:0;o.bono=o.cumple?o.base*(GXR.cumple-1):0;o.ganados=o.base+o.bono;o.prest=o.ganados}
+  if(tipo==='Compra'&&sinGX){/* compra con canje: cuenta el gasto pero no da GX */}
+  else if(tipo==='Compra'){o.base=Math.round(importe*GXR.porDolar);o.cumple=enCumple(fecha,nac)?1:0;o.bono=o.cumple?o.base*(GXR.cumple-1):0;o.ganados=o.base+o.bono;o.prest=o.ganados}
   else if(tipo==='Referido'){o.bono=GXR.referido;o.ganados=GXR.referido}
   else if(tipo==='Ajuste +'){o.ganados=Math.max(0,Math.round(n))}
   else if(tipo==='Canje'||tipo==='Ajuste -'){o.usados=Math.max(0,Math.round(n))}
@@ -62,15 +65,15 @@ const CLI={
     else this.sql.exec('INSERT INTO cli VALUES(?,?,?,?,?,?,?,NULL,NULL,?,?)',gx,v.nombre,v.tel,v.nac,v.registro,v.plataforma,v.estado,Date.now(),v.nota);
     if(c&&c.nac!==v.nac)this._recalcCumple(gx,v.nac);
     return this.cliFicha(gx)},
-  _recalcCumple(gx,nac){for(const m of this._movs(gx))if(m.tipo==='Compra'){const o=calcularMov('Compra',m.importe,0,m.fecha,nac);this.sql.exec('UPDATE mov SET cumple=?,base=?,bono=?,ganados=?,prest=? WHERE id=?',o.cumple,o.base,o.bono,o.ganados,o.prest,m.id)}},
+  _recalcCumple(gx,nac){for(const m of this._movs(gx))if(m.tipo==='Compra'&&!esSinGX(m)){const o=calcularMov('Compra',m.importe,0,m.fecha,nac);this.sql.exec('UPDATE mov SET cumple=?,base=?,bono=?,ganados=?,prest=? WHERE id=?',o.cumple,o.base,o.bono,o.ganados,o.prest,m.id)}},
   cliMov(d){this.cliInit();const gx=limpiaGX(d.gx),c=gx&&this._cli1(gx);if(!c)return {error:'Cliente no encontrado'};
     if(!TIPOS_MOV.includes(d.tipo))return {error:'Tipo no válido'};
     const fecha=esFecha(d.fecha)?d.fecha:diaCuba(Date.now()),importe=d.tipo==='Compra'?r2(Math.max(0,+d.importe||0)):0,n=+d.n||0;
     if(d.tipo==='Compra'&&!(importe>0))return {error:'Pon el importe de la compra'};
     if(['Canje','Ajuste +','Ajuste -'].includes(d.tipo)&&!(n>0))return {error:'Pon cuántos GX'};
     if(['Canje','Ajuste -'].includes(d.tipo)){const s=resumenCli(this._movs(gx)).saldo;if(n>s)return {error:`El cliente solo tiene ${s} GX`}}
-    const o=calcularMov(d.tipo,importe,n,fecha,c.nac);
-    this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',fecha,gx,d.tipo,String(d.descr||'').slice(0,120),importe,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,String(d.obs||'').slice(0,200),Date.now());
+    const sinGX=d.tipo==='Compra'&&!!d.sinGX,o=calcularMov(d.tipo,importe,n,fecha,c.nac,sinGX),obs=(sinGX?SIN_GX+(d.obs?' · ':''):'')+String(d.obs||'');
+    this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',fecha,gx,d.tipo,String(d.descr||'').slice(0,120),importe,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,obs.slice(0,200),Date.now());
     return {...this.cliFicha(gx),nuevo:{tipo:d.tipo,...o}}},
   cliMovBorrar(id){this.cliInit();const m=this.sql.exec('SELECT gx FROM mov WHERE id=?',+id).toArray()[0];if(!m)return {error:'No existe'};this.sql.exec('DELETE FROM mov WHERE id=?',+id);return this.cliFicha(m.gx)},
   cliBorrar(gx){this.cliInit();const n=this.sql.exec('SELECT COUNT(*) c FROM mov WHERE gx=?',gx).one().c;if(n)return {error:'Tiene movimientos: bórralos primero o déjalo como reservado'};this.sql.exec('DELETE FROM cli WHERE gx=?',gx);this.sql.exec('DELETE FROM ses WHERE gx=?',gx);return {ok:true}},
@@ -79,7 +82,7 @@ const CLI={
     if(hay&&!d.reemplazar)return {error:'Ya hay datos; manda reemplazar:true para borrarlos y cargar de nuevo'};
     if(d.reemplazar){this.sql.exec('DELETE FROM cli');this.sql.exec('DELETE FROM mov')}
     for(const c of d.clientes||[])this.sql.exec('INSERT INTO cli VALUES(?,?,?,?,?,?,?,NULL,NULL,?,?)',c.gx,c.nombre||'',c.tel||'',c.nac||'',c.registro||'',c.plataforma||'',c.estado||'activo',Date.now(),c.nota||'');
-    let n=0;for(const m of d.movs||[]){const c=this._cli1(m.gx);const o=calcularMov(m.tipo,+m.importe||0,+m.n||0,m.fecha,c&&c.nac);
+    let n=0;for(const m of d.movs||[]){const c=this._cli1(m.gx);const o=calcularMov(m.tipo,+m.importe||0,+m.n||0,m.fecha,c&&c.nac,esSinGX(m));
       this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',m.fecha,m.gx,m.tipo,m.descr||'',+m.importe||0,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,m.obs||'',Date.now());n++}
     return {ok:true,clientes:(d.clientes||[]).length,movs:n}},
   panelHash(){this.cliInit();const r=this.sql.exec("SELECT v FROM cfg WHERE k='panel'").toArray()[0];return r?JSON.parse(r.v):null},
