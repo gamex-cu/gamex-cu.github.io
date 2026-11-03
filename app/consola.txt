@@ -1,5 +1,5 @@
 GAMEX1
-V	213
+V	214
 F	2 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -5523,40 +5523,58 @@ J	0	Ōkami HD
 C	PlayStation 5	PS5	f2f4ff	e9ecff
 J	0	007 First Light
 J	0	1348 Ex Voto
+J	0	15 in 1 Solitaire
+J	0	3D Billiards: Pool & Snooker Remastered
+J	0	3D MiniGolf
 J	0	41 Hours
+J	0	63 Days
 J	0	7 Days to Die Console Edition
+J	0	A Memoir Blue
 J	0	A Plague Tale: Innocence
 J	0	A Plague Tale: Requiem
 J	0	A Quiet Place
 J	0	A.I.L.A
+J	0	AAA Dynamic Scenes
 J	0	Abandoned Realtime Trailers Demo
 J	0	Abiotic Factor
 J	0	Absolum
 J	0	Ace Combat 8: Wings of Theve
 J	0	Ad Infinitum
+J	0	Aeterna Noctis
 J	0	AEW Fight Forever
+J	8	After the Fall - Complete Edition
 J	0	Afterdream
 J	0	Afterimage
+J	0	Agatha Christie - Death on the Nile
 J	0	Age of Mythology: Retold
+J	0	AI LIMIT
 J	0	Alan Wake II
 J	0	Alan Wake Remastered
 J	0	Alex Kidd in Miracle World DX
 J	0	Alfred Hitchcock Vertigo
+J	8	Alien: Rogue Incursion Evolved Edition
 J	0	Aliens: Dark Descent
 J	0	Aliens: Fireteam Elite
 J	0	Alone in the Dark
 J	0	Among Us
 J	0	Anger Foot
+J	0	ANIMAL WELL
+J	0	Anno 117: Pax Romana
 J	0	Anno 1800 Console Edition
+J	0	Another Crab's Treasure
 J	128	Ape Academy 2
 J	128	Ape Escape
+J	0	Ape Escape Academy
 J	128	Ape Escape: On the Loose
 J	0	Apsulov: End of Gods
 J	0	Aragami 2
 J	0	Arcade Game Zone
+J	0	Arcade Paradise
 J	0	Arcade Spirits: The New Challengers
 J	0	Arcadegeddon
 J	0	ArcRunner
+J	8	Arizona Sunshine 2
+J	8	Arizona Sunshine Remake
 J	0	ARK: Survival Ascended
 J	0	Arkanoid: Eternal Battle
 J	0	Armored Core VI: Fires of Rubicon
@@ -5567,11 +5585,19 @@ J	0	Assassin's Creed Shadows
 J	0	Assassin's Creed Valhalla
 J	0	Assetto Corsa Competizione
 J	0	Asterigos: Curse of the Stars
+J	0	Asterix & Obelix - Mission Babylon
+J	0	Asterix & Obelix Slap Them All!
+J	0	Asterix & Obelix Slap Them All! 2
+J	0	Asterix & Obelix XXL 2
+J	0	Asterix & Obelix XXL 3: The Crystal Menhir
+J	0	Asterix & Obelix XXL: Romastered
 J	0	Asterix & Obelix XXXL: The Ram from Hibernia
+J	0	Asterix & Obelix: Heroes
 J	0	Astria Ascending
 J	128	Astro Bot
 J	128	Astro's Playroom
 J	0	ASTRONEER
+J	0	Atari 50: The Anniversary Celebration
 J	0	Atelier Yumia: The Alchemist of Memories & the Envisioned Land
 J	0	Atlas Fallen
 J	0	Atomfall
@@ -5586,15 +5612,21 @@ J	0	Balan Wonderworld
 J	0	Balatro
 J	0	Baldur's Gate 3
 J	0	BALL x PIT
+J	0	Bang-On Balls: Chronicles
 J	0	Banishers: Ghosts of New Eden
+J	0	Barbie Project Friendship
 J	0	Bassmaster Fishing 2022
 J	0	Battlefield 6
 J	0	Beast of Reincarnation Digital Deluxe Edition
 J	8	Beat Saber
 J	0	Bendy and the Dark Revival
+J	0	Bendy and the Ink Machine
 J	0	Bendy: Lone Wolf
+J	0	Beneath
 J	0	Besiege
 J	0	Beyond a Steel Sky
+J	0	Beyond Good & Evil 20th Anniversary Edition
+J	0	Bibi & Tina at the Horse Farm
 J	0	Big Helmet Heroes
 J	0	Biomutant
 J	0	Biped
@@ -5605,18 +5637,26 @@ J	0	Blackwind
 J	0	Blades of Fire
 J	0	Blasphemous 2
 J	0	BlazBlue Entropy Effect X
+J	0	Blazing Strike
+J	0	BLEACH Rebirth of Souls
 J	0	Bleak Faith: Forsaken
 J	0	Blood Bowl 3
 J	0	BloodRayne Betrayal: Fresh Bites
+J	0	Blue Prince
 J	0	Blue Reflection Quartet
 J	0	Borderlands 3 Ultimate Edition
 J	0	Borderlands 4
 J	0	Born of Bread
 J	0	Boti: Byteland Overclocked
 J	0	Bramble: The Mountain King
+J	0	Breathedge
 J	0	Brigandine Abyss
 J	0	Broken Sword – Shadow of the Templars: Reforged
+J	0	Brothers: A Tale of Two Sons Remake
+J	0	BUBBLE BOBBLE Sugar Dungeons
 J	0	Bugsnax
+J	0	Bum Simulator
+J	0	Bye Sweet Carole
 J	0	Call of Duty: Black Ops
 J	0	Call of Duty: Black Ops Cold War
 J	0	Call of Duty: Black Ops II
@@ -5632,6 +5672,7 @@ J	0	CarX Street
 J	0	Castlevania Dominus Collection
 J	0	Castlevania: Belmont's Curse
 J	0	Cat Quest III
+J	16	Cave Digger 2: Dig Harder
 J	0	Charon's Staircase
 J	0	Chernobylite
 J	0	Choo-Choo Charles
@@ -5639,11 +5680,14 @@ J	0	Clair Obscur: Expedition 33
 J	0	Clash: Artifacts of Chaos
 J	0	Clive Barker's Hellraiser: Revival Deluxe Edition
 J	0	Cloudberry Kingdom
+J	0	Cobra Kai 2: Dojos Rising
 J	0	Cocoon
 J	0	Code Vein II
+J	0	Code Violet
 J	0	Coffee Talk
 J	0	Coffee Talk Episode 2: Hibiscus & Butterfly
 J	0	Commandos: Origins
+J	0	Construction Simulator
 J	0	Contra: Operation Galuga
 J	0	Control Resonant
 J	0	Control Ultimate Edition
@@ -5651,9 +5695,11 @@ J	0	Cookie Clicker
 J	0	Coral Island
 J	0	Crash Bandicoot 4: It's About Time
 J	0	Crazy Chicken Shooter Bundle
+J	0	Cricket 24
 J	0	Crime Boss: Rockay City
 J	0	Crimson Desert
 J	0	Crimson Spires
+J	0	Cris Tales
 J	0	Crisis Core: Final Fantasy VII Reunion
 J	0	Crisol: Theater of Idols
 J	0	Cronos: The New Dawn
@@ -5661,6 +5707,7 @@ J	8	Crossfire: Sierra Squad VR
 J	0	Crow Country
 J	0	Crown Wars: The Black Prince
 J	0	Crusader Kings III
+J	0	CRYMACHINA
 J	0	Cult of the Lamb
 J	0	Curved Space
 J	0	Cyberpunk 2077 Ultimate Edition
@@ -5671,12 +5718,14 @@ J	0	Darkest Dungeon II
 J	0	Darksiders II: Deathinitive Edition
 J	0	Darksiders Warmastered Edition
 J	0	Darwin's Paradox!
+J	0	DAVE THE DIVER
 J	0	Daymare: 1994 Sandcastle
 J	0	Days Gone Remastered
 J	0	Dead Cells
 J	0	Dead Island 2 Ultimate Edition
 J	0	Dead Rising Deluxe Remastered
 J	0	Dead Space
+J	0	DEADCRAFT
 J	0	Death Stranding 2: On the Beach
 J	0	Death Stranding Director's Cut
 J	0	Deathloop Deluxe Edition
@@ -5697,13 +5746,20 @@ J	0	Disciples Liberation
 J	0	Disgaea 6 Complete
 J	0	Disgaea 7: Vows of the Virtueless
 J	0	Disney Epic Mickey Rebrushed
+J	0	Disney Illusion Island Starring Mickey and Friends
 J	0	Disney•Pixar Toy Story 2: Buzz Lightyear to the Rescue!
 J	0	Disney•Pixar WALL-E
+J	0	Dispatch
 J	0	Divinity: Original Sin 2 Definitive Edition
+J	0	DNF Duel
 J	0	Dolmen
+J	0	Dolphin Spirit - Ocean Mission
 J	0	Don't Starve Together Console Edition
+J	0	DOOM + DOOM II
 J	0	DOOM Eternal
 J	0	DOOM: The Dark Ages
+J	0	Double Dragon Gaiden: Rise of the Dragons
+J	0	Double Dragon Revive
 J	0	Dragon Age: The Veilguard
 J	0	Dragon Ball FighterZ
 J	0	Dragon Ball Xenoverse 2
@@ -5719,37 +5775,53 @@ J	0	DreamWorks All-Star Kart Racing
 J	0	Dredge
 J	8	Drums Rock
 J	0	Dungeons & Dragons: Dark Alliance
+J	0	Dungeons 4
 J	0	Dusk Diver 2
 J	0	Duskfade
+J	0	Dying Light 2 Stay Human
 J	0	Dying Light: The Beast
 J	0	Dynasty Warriors 3: Complete Edition Remastered
 J	0	Dynasty Warriors Origins
 J	0	EA Sports College Football 26
 J	0	EA Sports FC 26
 J	0	EA Sports FC 27
+J	0	EA SPORTS PGA TOUR
 J	0	EA Sports UFC 5
+J	0	EA SPORTS UFC 6
 J	0	EA Sports WRC
 J	0	Earth Defense Force: World Brothers 2
+J	0	Earthion
 J	0	Echoes of Aincrad
 J	0	Echoes of the End
 J	0	Ed-0: Zombie Uprising
+J	0	EDENS ZERO
 J	0	eFootball
+J	0	ELDEN RING NIGHTREIGN
 J	0	Elden Ring: Shadow of the Erdtree
+J	0	Electronics Puzzle Lab
 J	0	Elex 2
 J	0	Empire of the Ants
+J	0	Enchanted Portals
 J	0	Endless Dungeon
+J	0	Endling - Extinction is Forever
 J	0	Enotria: The Last Song Deluxe Edition
+J	0	Eriksholm: The Stolen Dream
+J	0	Eternights
 J	0	Ever Forward
 J	0	Evergate
 J	0	Everspace 2
 J	0	Evil Genius 2: World Domination
+J	0	Evil Inside
 J	0	Evil West
 J	0	Evotinction
+J	0	Exodemon
 J	0	Expeditions: A MudRunner Game
 J	0	F.I.S.T.: Forged in Shadow Torch
 J	0	F1 25
 J	0	Fairy Fencer F: Refrain Chord
 J	0	Fallout 4 Anniversary Edition
+J	0	FANTASIAN Neo Dimension
+J	0	FANTASY LIFE i: The Girl Who Steals Time
 J	0	Far Cry 6
 J	0	Farming Simulator 22
 J	0	Farming Simulator 25
@@ -5757,6 +5829,8 @@ J	0	Fast & Furious Arcade Edition
 J	0	Fatal Frame II: Crimson Butterfly Remake
 J	0	Fatal Frame: Maiden of Black Water
 J	0	Fatal Frame: Mask of the Lunar Eclipse
+J	0	FATAL FURY: City of the Wolves
+J	0	Fate/Samurai Remnant
 J	0	Final Fantasy Tactics: The Ivalice Chronicles
 J	0	Final Fantasy VII Rebirth
 J	0	Final Fantasy VII Remake Intergrade
@@ -5766,6 +5840,7 @@ J	0	Finding Frankie
 J	0	Firefighting Simulator Ignite
 J	0	Fishing North Atlantic Enhanced Edition
 J	0	Five Nights at Freddy's: Help Wanted 2
+J	0	Five Nights at Freddy's: Secret of the Mimic
 J	0	Five Nights at Freddy's: Security Breach
 J	0	Flashback 2
 J	0	Flintlock: The Siege of Dawn
@@ -5774,6 +5849,7 @@ J	0	Football Manager 26 Console Edition
 J	0	For The King II
 J	0	Forever Skies
 J	0	Forgive Me Father 2
+J	0	Formula Retro Racing: World Tour Special Edition
 J	0	Forspoken
 J	0	Fort Solis
 J	0	Forza Horizon 5 Premium Edition
@@ -5783,6 +5859,7 @@ J	0	Funko Fusion
 J	0	Furi
 J	0	Gamedec Definitive Edition
 J	0	Gangs of Sherwood
+J	0	Garfield Kart 2 - All You Can Drift
 J	0	Garten of Banban
 J	0	Garten of Banban II
 J	0	Gear Club Unlimited 2 Ultimate Edition
@@ -5791,14 +5868,19 @@ J	0	Gex Trilogy
 J	0	Ghost Master Resurrection
 J	0	Ghost of Tsushima Director's Cut
 J	128	Ghost of Yōtei Complete Edition
+J	0	Ghost Song
 J	0	Ghostbusters: Spirits Unleashed
 J	0	Ghostrunner
 J	0	Ghostrunner 2
 J	0	Ghostwire: Tokyo
+J	0	GigaBash
+J	0	Gigantosaurus: Dino Kart
 J	0	Goat Simulator 3
 J	0	God of Rock
 J	0	God of War Ragnarök
 J	128	God of War: Sons of Sparta
+J	0	Goosebumps: Terror in Little Creek
+J	0	Gori: Cuddly Carnage
 J	0	Gotham Knights
 J	0	Gothic 1 Remake
 J	0	Gothic Classic
@@ -5811,12 +5893,15 @@ J	0	Grand Theft Auto: San Andreas – The Definitive Edition
 J	0	Grand Theft Auto: Vice City – The Definitive Edition
 J	0	Graven
 J	0	Graveyard Keeper 2
+J	0	Greak: Memories of Azur
 J	0	GreedFall Gold Edition
+J	0	GreedFall: The Dying World
 J	0	Greyhill Incident
 J	0	GRID Legends
 J	0	GrimGrimoire OnceMore
 J	0	GRIS
 J	0	Guilty Gear Strive
+J	0	GUNDAM BREAKER 4
 J	0	Gungrave G.O.R.E
 J	0	Gunsmith Simulator
 J	0	GYLT
@@ -5824,28 +5909,39 @@ J	0	Hades
 J	0	Hades II
 J	0	Halloween: The Game
 J	0	Halo: Campaign Evolved Premium Edition
+J	0	Hamster Playground
+J	0	HappyFunland
 J	0	Harmony's Odyssey
 J	0	Harvest Days
+J	0	Harvest Moon: The Winds of Anthos
 J	0	Heavenly Bodies
 J	0	Hell Is Us
 J	0	Hellblade: Senua's Sacrifice
+J	0	Hellboy Web of Wyrd
+J	0	Hello Kitty Island Adventure
 J	0	Hello Neighbor
 J	0	Hello Neighbor 2
 J	0	Heretic + Hexen
+J	0	Hi-Fi RUSH
 J	0	High on Life
 J	0	High on Life 2
 J	16	Hitman World of Assassination
+J	0	HOA
 J	0	Hogwarts Legacy
 J	0	Hollow Knight: Silksong
 J	0	Hollow Knight: Voidheart Edition
 J	136	Horizon Call of the Mountain
+J	0	Horizon Chase 2
 J	0	Horizon Forbidden West Complete Edition
 J	0	Horizon Zero Dawn Remastered
 J	0	Horror Tales: The Wine
 J	0	Hot Wheels Infinite Rush Deluxe Edition
+J	0	Hot Wheels Let's Race: Ultimate Speed
 J	0	Hot Wheels Monster Trucks: Stunt Mayhem
 J	0	Hot Wheels Unleashed
+J	0	HOT WHEELS UNLEASHED 2 - Turbocharged
 J	0	Hotel Barcelona
+J	0	Hotline Miami
 J	8	Hubris
 J	0	Human Fall Flat
 J	0	Humankind
@@ -5853,8 +5949,11 @@ J	0	Hunting Simulator 2
 J	0	Ikai
 J	0	Immortals Fenyx Rising
 J	0	Immortals of Aveum
+J	0	In Nightmare
 J	0	In Sound Mind
 J	0	Inazuma Eleven Victory Road
+J	0	Indiana Jones and the Great Circle
+J	0	Indiana Jones and the Staff of Kings
 J	0	Indika
 J	0	Industria
 J	0	Infinity Strash: Dragon Quest The Adventure of Dai
@@ -5871,15 +5970,21 @@ J	0	Jay and Silent Bob Chronic Blunt Punch
 J	128	Jeanne d'Arc
 J	0	Jet Kave Adventure
 J	0	Jitsu Squad
+J	0	JoJo's Bizarre Adventure: All-Star Battle R
 J	0	Judgment
+J	0	Juicy Realm
 J	0	Jumanji: The Video Game
 J	128	Jumping Flash!
 J	0	Jurassic Park: Classic Games Collection
+J	0	Jurassic World Evolution 2
 J	0	Jurassic World Evolution 3
 J	0	Jusant
+J	0	KAGE: Shadow of the Ninja
 J	0	KAKU: Ancient Seal
 J	0	Kao the Kangaroo
+J	0	KARMA: The Dark World
 J	0	Kena: Bridge of Spirits
+J	0	Kerbal Space Program: Enhanced Edition
 J	0	KeyWe
 J	0	Kid A Mnesia Exhibition
 J	0	Killing Floor III
@@ -5887,33 +5992,51 @@ J	0	Kingdom Come: Deliverance II
 J	0	Kingdom Hearts HD 1.5 + 2.5 ReMIX
 J	0	Kingdom Hearts HD 2.8 Final Chapter Prologue
 J	0	Kingdom Hearts III + Re Mind
+J	0	Kitaria Fables
+J	0	Kitten Island
+J	0	KLONOA Phantasy Reverie Series
 J	0	Kong: Survivor Instinct
 J	0	Kunitsu-Gami: Path of the Goddess
+J	0	L.O.L. Surprise! B.B.s BORN TO TRAVEL
 J	0	Last Days of Lazarus
+J	0	Layers of Fear
+J	0	Legacy of Kain Soul Reaver 1&2 Remastered
 J	0	LEGO 2K Drive
 J	0	LEGO Batman: Legacy of the Dark Knight
+J	0	LEGO Brawls
+J	0	LEGO Bricktales
+J	0	LEGO Builder's Journey
 J	0	LEGO Harry Potter Collection
 J	0	LEGO Horizon Adventures
 J	0	LEGO Party!
+J	0	LEGO Star Wars II: The Original Trilogy
 J	0	LEGO Star Wars: The Skywalker Saga
+J	0	LEGO Voyagers
+J	0	Let's Build a Zoo
 J	0	Lies of P
 J	0	Life is Strange: Double Exposure
 J	0	Life is Strange: Reunion
 J	0	Life is Strange: True Colors
+J	0	Like a Dragon Gaiden: The Man Who Erased His Name
 J	0	Like a Dragon: Infinite Wealth
 J	0	Like a Dragon: Ishin!
 J	0	Like a Dragon: Pirate Yakuza in Hawaii
 J	0	Little Big Adventure – Twinsen's Quest
+J	0	Little Nightmares Enhanced Edition
 J	0	Little Nightmares II
 J	0	Little Nightmares III
 J	0	Lollipop Chainsaw RePOP
 J	0	Looney Tunes: Wacky World of Sports
 J	0	Lords of the Fallen
+J	0	LOST EPIC
 J	0	Lost in Play
+J	0	Lost in Random
 J	0	Lost Judgment
 J	0	Lost Records: Bloom & Rage
 J	0	Lost Soul Aside
 J	0	Luna Abyss
+J	0	Lunar Lander Beyond
+J	0	Luto
 J	0	Madden NFL 26
 J	0	Madden NFL 27
 J	0	MADiSON
@@ -5925,6 +6048,7 @@ J	0	Maneater
 J	0	Marsupilami 2: Salsa Palombia
 J	0	Marsupilami: Hoobadventure
 J	0	Martha Is Dead
+J	0	MARVEL Cosmic Invasion
 J	0	Marvel Tōkon: Fighting Souls
 J	0	Marvel's Avengers Definitive Edition
 J	0	Marvel's Guardians of the Galaxy
@@ -5933,14 +6057,20 @@ J	0	Marvel's Spider-Man 2 Deluxe Edition
 J	0	Marvel's Spider-Man Remastered
 J	0	Marvel's Spider-Man: Miles Morales
 J	128	Marvel's Wolverine
+J	0	Master Detective Archives: RAIN CODE Plus
 J	0	Matchbox Driving Adventures
 J	0	Mayhem Brawler
 J	0	MechWarrior 5: Mercenaries
 J	0	Medieval Dynasty
+J	0	Mega Man Star Force Legacy Collection
 J	0	Megaton Musashi W Wired
+J	0	METAL GEAR SOLID - Master Collection Version
+J	0	METAL GEAR SOLID 2: Sons of Liberty - Master Collection Version
+J	0	METAL GEAR SOLID 3: Snake Eater - Master Collection Version
 J	0	Metal Gear Solid 4: Guns of the Patriots – Master Collection Version
 J	0	Metal Gear Solid Δ: Snake Eater
 J	0	Metal Gear Solid: Master Collection Vol. 1 Bonus Content
+J	0	METAL GEAR SOLID: Master Collection Vol. 2
 J	0	Metal Gear Solid: Peace Walker – Master Collection Version
 J	0	Metal Slug Tactics
 J	0	Metaphor: ReFantazio
@@ -5948,12 +6078,15 @@ J	8	Metro Awakening
 J	0	Metro Exodus Complete Edition
 J	0	Mewgenics
 J	0	Miasma Chronicles
+J	0	Mighty Morphin Power Rangers: Rita's Rewind
 J	0	MindsEye
 J	0	Minecraft
 J	0	Minecraft Dungeons II
+J	0	Minecraft Legends
 J	0	Minecraft Preview
 J	0	MLB The Show 26
 J	0	Monster Boy and the Cursed Kingdom
+J	0	Monster Energy Supercross 25 - The Official Video Game
 J	0	Monster Energy Supercross – The Official Videogame 4
 J	0	Monster Energy Supercross – The Official Videogame 5
 J	0	Monster Energy Supercross – The Official Videogame 6
@@ -5965,6 +6098,7 @@ J	0	Morbid: The Lords of Ire
 J	0	Mordhau
 J	0	Mortal Kombat 1
 J	0	Mortal Kombat 11 Ultimate
+J	0	Mortal Kombat: Legacy Kollection
 J	0	Mortal Shell 2
 J	0	Mortal Shell Enhanced Edition
 J	8	Moss: The Forgotten Relic
@@ -5980,14 +6114,18 @@ J	0	MXGP 2020 – The Official Motocross Videogame
 J	0	MXGP 26 – The Official Game
 J	0	My Friend Peppa Pig
 J	0	My Little Puppy
+J	0	NAIAD
 J	0	Naruto x Boruto Ultimate Ninja Storm Connections
 J	0	NASCAR Arcade Rush
 J	0	NBA 2K26
 J	0	NBA 2K27
 J	0	Necromunda Hired Gun
 J	0	Need for Speed Unbound
+J	0	Neptunia ReVerse
 J	0	Nerf Legends
+J	0	Neva
 J	0	New Monopoly
+J	0	New Super Lucky's Tale
 J	0	New Tales from the Borderlands
 J	0	NHL 24
 J	0	NHL 27
@@ -5995,6 +6133,7 @@ J	0	Nice Day for Fishing
 J	0	Nickelodeon All-Star Brawl
 J	0	Nickelodeon All-Star Brawl 2
 J	0	Nickelodeon Kart Racers 3: Slime Speedway
+J	0	Nikoderiko: The Magical World - Director's Cut
 J	0	Ninja Gaiden 2 Black
 J	0	Ninja Gaiden 4
 J	0	Ninja Gaiden: Ragebound
@@ -6071,6 +6210,7 @@ J	16	Resident Evil 4 Remake
 J	0	Resident Evil 7 Gold Edition
 J	0	Resident Evil Requiem
 J	16	Resident Evil Village Gold Edition
+J	0	Resistance: Retribution
 J	0	Resonance: A Plague Tale Legacy
 J	0	Returnal
 J	0	RIDE 4
@@ -6157,12 +6297,14 @@ J	0	Street Fighter 6
 J	0	Street Outlaws 2: Winner Takes All
 J	0	Subnautica
 J	0	Subnautica: Below Zero
+J	0	Sudden Strike 5
 J	0	Suikoden I & II HD Remaster: Gate Rune and Dunan Unification Wars
 J	0	Super Bomberman R 2
 J	0	Super Meat Boy 3D
 J	0	Super Mega Baseball 4
 J	0	Super Woden GP
 J	0	Superliminal
+J	0	Survival: Fountain of Youth
 J	0	Sword Art Online: Last Recollection
 J	0	Sword of the Sea
 J	0	Syberia Remastered
@@ -6223,6 +6365,7 @@ J	0	The Last of Us Part I
 J	0	The Last of Us Part II Remastered
 J	0	The Last Oricru Final Cut
 J	0	The Last Stand Aftermath
+J	0	The Legend of Heroes: Trails beyond the Horizon
 J	0	The Long Dark
 J	0	The Lord of the Rings: Gollum
 J	0	The Lord of the Rings: Return to Moria
@@ -6257,6 +6400,7 @@ J	0	Tiny Tina's Wonderlands
 J	0	TOEM
 J	0	Tomb Raider I-III Remastered
 J	0	Tomb Raider IV-VI Remastered
+J	0	Tomb Raider: Legend
 J	0	Tony Hawk's Pro Skater 1 + 2
 J	0	TopSpin 2K25
 J	0	Tormented Souls
@@ -6264,6 +6408,7 @@ J	0	Tormented Souls II
 J	0	Tour de France 2024
 J	0	Tourist Bus Simulator
 J	0	Towerborne
+J	0	Trackmania
 J	0	Trails in The Sky 2nd Chapter
 J	0	Train Life
 J	0	Train Sim World 2 Rush Hour
