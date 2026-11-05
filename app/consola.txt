@@ -1,5 +1,5 @@
 GAMEX1
-V	226
+V	228
 F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -722,7 +722,7 @@ J	0	Crazy Machines: Golden Gears
 J	0	Creatures of Ava
 J	0	Crime Boss: Rockay City
 J	0	Crime Life Gang Wars
-J	0	Crimson Desert
+J	256	Crimson Desert
 J	0	Crimson Earth 2
 J	0	Crimson Metal Episode II
 J	0	Crimson Moon Deluxe Edition
@@ -1338,6 +1338,7 @@ J	0	Filthy Lucre
 J	0	Final Fantasy I-VI Pixel Remaster Series
 J	0	FINAL FANTASY III
 J	0	Final Fantasy IV Complete Collection
+J	256	Final Fantasy Resonance
 J	0	FINAL FANTASY TYPE-0 HD
 J	0	FINAL FANTASY V
 J	0	FINAL FANTASY VI
@@ -3365,6 +3366,7 @@ J	0	Star Wars Outlaws
 J	0	STAR WARS Republic Commando
 J	0	STAR WARS Zero Company
 J	0	STAR WARS: Episode I: Jedi Power Battles
+J	256	Star Wars: Galactic Racer
 J	0	STAR WARS: Rebel Assault I + II
 J	0	STAR WARS: Squadrons
 J	0	STAR WARS: The Force Unleashed II
