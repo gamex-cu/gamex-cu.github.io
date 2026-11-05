@@ -57,7 +57,10 @@ const CLI={
     const pend=this.sql.exec("SELECT COUNT(*) c FROM sol WHERE estado='pendiente'").one().c;
     return {clientes:cs.map(c=>({...this._pub(c),...resumenCli(por[c.gx]||[]),ultima:(por[c.gx]||[]).reduce((a,m)=>m.fecha>a?m.fecha:a,'')})),pendientes:pend,siguiente:this.cliSiguiente(),reglas:GXR}},
   cliSiguiente(){this.cliInit();const xs=[...this.sql.exec('SELECT gx FROM cli').toArray(),...this.sql.exec("SELECT gx FROM sol WHERE gx!=''").toArray()].map(x=>numGX(x.gx)).filter(n=>!isNaN(n));return fmtGX(xs.length?Math.max(...xs)+1:0)},
-  cliFicha(gx){this.cliInit();const c=this._cli1(gx);if(!c)return null;const movs=this._movs(gx);return {cliente:this._pub(c),resumen:resumenCli(movs),movs,reglas:GXR}},
+  // clientes que no acumulan GX en sus compras (la compra cuenta igual para el gasto)
+  sinGXLista(){this.cliInit();const x=this.sql.exec("SELECT v FROM cfg WHERE k='singx'").toArray()[0];return x?JSON.parse(x.v):['GX0008','GX0009']},
+  sinGXPoner(gx,on){const l=new Set(this.sinGXLista());gx=limpiaGX(gx);if(!gx)return {error:'ID no válido'};if(on)l.add(gx);else l.delete(gx);this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('singx',?)",JSON.stringify([...l]));return this.cliFicha(gx)},
+  cliFicha(gx){this.cliInit();const c=this._cli1(gx);if(!c)return null;const movs=this._movs(gx);return {cliente:{...this._pub(c),sinGX:this.sinGXLista().includes(gx)},resumen:resumenCli(movs),movs,reglas:GXR}},
   cliGuardar(d){this.cliInit();const gx=limpiaGX(d.gx);if(!gx)return {error:'ID GX no válido'};const c=this._cli1(gx);
     if(d.nuevo&&c)return {error:gx+' ya existe'};if(!d.nuevo&&!c)return {error:gx+' no existe'};
     const v={nombre:String(d.nombre||'').trim().slice(0,80),tel:String(d.tel||'').replace(/\D/g,'').slice(-8),nac:esFecha(d.nac)?d.nac:'',registro:esFecha(d.registro)?d.registro:diaCuba(Date.now()),plataforma:String(d.plataforma||'').slice(0,30),estado:d.estado==='reservado'?'reservado':'activo',nota:String(d.nota||'').slice(0,200)};
@@ -72,7 +75,7 @@ const CLI={
     if(d.tipo==='Compra'&&!(importe>0))return {error:'Pon el importe de la compra'};
     if(['Canje','Ajuste +','Ajuste -'].includes(d.tipo)&&!(n>0))return {error:'Pon cuántos GX'};
     if(['Canje','Ajuste -'].includes(d.tipo)){const s=resumenCli(this._movs(gx)).saldo;if(n>s)return {error:`El cliente solo tiene ${s} GX`}}
-    const sinGX=d.tipo==='Compra'&&!!d.sinGX,o=calcularMov(d.tipo,importe,n,fecha,c.nac,sinGX),obs=(sinGX?SIN_GX+(d.obs?' · ':''):'')+String(d.obs||'');
+    const sinGX=d.tipo==='Compra'&&(!!d.sinGX||this.sinGXLista().includes(gx)),o=calcularMov(d.tipo,importe,n,fecha,c.nac,sinGX),obs=(sinGX?SIN_GX+(d.obs?' · ':''):'')+String(d.obs||'');
     this.sql.exec('INSERT INTO mov(fecha,gx,tipo,descr,importe,cumple,base,bono,ganados,usados,prest,obs,creado) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)',fecha,gx,d.tipo,String(d.descr||'').slice(0,120),importe,o.cumple,o.base,o.bono,o.ganados,o.usados,o.prest,obs.slice(0,200),Date.now());
     return {...this.cliFicha(gx),nuevo:{tipo:d.tipo,...o}}},
   cliMovBorrar(id){this.cliInit();const m=this.sql.exec('SELECT gx FROM mov WHERE id=?',+id).toArray()[0];if(!m)return {error:'No existe'};this.sql.exec('DELETE FROM mov WHERE id=?',+id);return this.cliFicha(m.gx)},
@@ -178,6 +181,7 @@ async function cuenta(req,env,u){
 async function panelClientes(p,req,env,q){
   const D=statsDO(env);
   if(p==='cli-lista')return j(await D.cliLista());
+  if(p==='cli-singx')return jx(await D.sinGXPoner(q.gx,!!q.on));
   if(p==='cli-ficha'){const f=await D.cliFicha(limpiaGX(q.gx));return f?j(f):j({error:'No existe'},404)}
   if(p==='cli-guardar')return jx(await D.cliGuardar(q));
   if(p==='cli-mov')return jx(await D.cliMov(q));

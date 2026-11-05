@@ -483,6 +483,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
         </form>
         <div class="row" style="margin-top:12px"><a class="chip" id="f-wa" target="_blank" rel="noopener">💬 Mandarle su GX por WhatsApp</a><button type="button" class="chip" id="f-clave">🔑 Reiniciar contraseña</button></div>
         <p class="nota" id="f-cuenta"></p>
+        <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="f-singx"> 🚫 No acumula GX en sus compras (las compras cuentan igual para su total)</label>
         <div class="msg" id="mdat"></div>
       </details>
     </section>
@@ -800,8 +801,9 @@ $('m-cup').addEventListener('input',()=>{const c=+$('m-cup').value||0;if(TASA&&T
 $('m-imp').addEventListener('input',()=>{if(document.activeElement===$('m-imp'))$('m-cup').value=''});
 async function abrirFicha(gx){cargarTasa();try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
 $('f-cerrar').onclick=()=>{$('s-ficha').hidden=true;FICHA=null};
+$('f-singx').onchange=async()=>{const on=$('f-singx').checked;try{pintarFicha(await api('cli-singx',{gx:FICHA.cliente.gx,on}));msg('mcli','ok',on?'Ese cliente ya no acumula GX en sus compras.':'Ese cliente vuelve a acumular GX.')}catch(e){$('f-singx').checked=!on;msg('mcli','bad',esc(e.message))}};
 function pintarFicha(f){
-  FICHA=f;const c=f.cliente,r=f.resumen,R=f.reglas;
+  FICHA=f;const c=f.cliente,r=f.resumen,R=f.reglas;$('f-singx').checked=!!c.sinGX;
   $('f-tit').innerHTML=`<span style="color:var(--warn)">${c.gx}</span> · ${esc(c.nombre||'Reservado')}`;
   $('f-sub').textContent=[c.tel&&'WhatsApp '+c.tel,c.nac&&'nació el '+fechaA(c.nac),c.plataforma,c.registro&&'cliente desde '+fechaA(c.registro)].filter(Boolean).join(' · ');
   $('f-kpis').innerHTML=`<div class="kpi"><b>${N(r.saldo)}</b><span>GX de saldo</span><small>${N(r.historicos)} ganados en total</small></div><div class="kpi"><b>${nivelCls(r.nivel)} ${esc(r.nivel)}</b><span>Nivel</span><small>puede canjear ${money(r.valor)}</small></div><div class="kpi"><b>${r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5)):'0'}</b><span>Prestigio ${r.prestigio}</span><small>faltan ${N(r.faltaPrestigio)} GX para el siguiente</small></div><div class="kpi"><b>${money(r.gastado)}</b><span>Gastado</span><small>${pl(r.compras,'compra')}${r.referidos?' · '+pl(r.referidos,'referido'):''}</small></div>`;
