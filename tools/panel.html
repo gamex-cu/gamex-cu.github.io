@@ -463,8 +463,9 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
           <div id="m-imp-w"><label for="m-cup">Importe en CUP</label><input id="m-cup" type="number" step="1" min="0" inputmode="numeric" placeholder="Ej: 13500"><label for="m-imp" style="margin-top:6px">Importe ($)</label><input id="m-imp" type="number" step="0.01" min="0" inputmode="decimal" placeholder="Ej: 30"><small id="m-tasa" style="display:block;color:var(--mut,#9aa3c7);margin-top:4px"></small></div>
           <div id="m-n-w" hidden><label for="m-n">GX</label><input id="m-n" type="number" step="1" min="1" inputmode="numeric" placeholder="Ej: 1500"></div>
         </div>
+        <div id="m-cat-w"><label>Categoría</label><div class="row" id="m-cat" style="flex-wrap:wrap;gap:6px"></div></div>
         <label for="m-desc" id="m-desc-l">Qué compró</label>
-        <input id="m-desc" maxlength="120" placeholder="Ej: Inyección Xbox">
+        <input id="m-desc" maxlength="120" placeholder="Ej: FC 26 (opcional)">
         <div class="prevgx" id="m-prev"></div>
         <button class="btn" id="m-btn">Guardar movimiento</button>
       </form>
@@ -805,6 +806,12 @@ $('m-imp').addEventListener('input',()=>{if(document.activeElement===$('m-imp'))
 async function abrirFicha(gx){cargarTasa();try{pintarFicha(await api('cli-ficha?gx='+encodeURIComponent(gx)));$('s-ficha').hidden=false;$('s-ficha').scrollIntoView({behavior:'smooth',block:'start'})}catch(e){msg('mcli','bad',esc(e.message))}}
 $('f-cerrar').onclick=()=>{$('s-ficha').hidden=true;FICHA=null};
 $('f-singx').onchange=async()=>{const on=$('f-singx').checked;try{pintarFicha(await api('cli-singx',{gx:FICHA.cliente.gx,on}));msg('mcli','ok',on?'Ese cliente ya no acumula GX en sus compras.':'Ese cliente vuelve a acumular GX.')}catch(e){$('f-singx').checked=!on;msg('mcli','bad',esc(e.message))}};
+// categorías de venta (las mismas de GameX Manager): cada compra lleva la suya delante, p. ej. "Xbox Online · FC 26"
+const CATV=[['PC Crack','#7c5cff'],['PC Online','#3d7bff'],['PC Activaciones','#22a6f2'],['Xbox Inyección','#1db954'],['Xbox Online','#107c10'],['PS Piratería','#5b8cff'],['PS Online','#0070d1'],['Nintendo Piratería','#e60012'],['Otros','#8a8fa8']];
+let MCAT='';$('m-cat').innerHTML=CATV.map(([n,c])=>`<button type="button" class="chip" data-mc="${esc(n)}" style="border-color:${c}">${esc(n)}</button>`).join('');
+$('m-cat').onclick=e=>{const b=e.target.closest('[data-mc]');if(!b)return;MCAT=MCAT===b.dataset.mc?'':b.dataset.mc;$('m-cat').querySelectorAll('[data-mc]').forEach(x=>{const on=x.dataset.mc===MCAT;x.style.background=on?x.style.borderColor:'';x.style.color=on?'#fff':''})};
+// separa la categoría de lo demás para mostrarla como etiqueta
+function catMov(d){d=String(d||'');const c=CATV.find(([n])=>d===n||d.startsWith(n+' · '));return c?{cat:c,resto:d.slice(c[0].length).replace(/^ · /,'')}:{cat:null,resto:d}}
 function pintarFicha(f){
   FICHA=f;const c=f.cliente,r=f.resumen,R=f.reglas;$('f-singx').checked=!!c.sinGX;
   $('f-tit').innerHTML=`<span style="color:var(--warn)">${c.gx}</span> · ${esc(c.nombre||'Reservado')}`;
@@ -812,7 +819,7 @@ function pintarFicha(f){
   $('f-kpis').innerHTML=`<div class="kpi"><b>${N(r.saldo)}</b><span>GX de saldo</span><small>${N(r.historicos)} ganados en total</small></div><div class="kpi"><b>${nivelCls(r.nivel)} ${esc(r.nivel)}</b><span>Nivel</span><small>puede canjear ${money(r.valor)}</small></div><div class="kpi"><b>${r.prestigio?'⭐'.repeat(Math.min(r.prestigio,5)):'0'}</b><span>Prestigio ${r.prestigio}</span><small>faltan ${N(r.faltaPrestigio)} GX para el siguiente</small></div><div class="kpi"><b>${money(r.gastado)}</b><span>Gastado</span><small>${pl(r.compras,'compra')}${r.referidos?' · '+pl(r.referidos,'referido'):''}</small></div>`;
   const ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;$('f-barra').style.width=(r.siguiente?Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100):100)+'%';
   $('f-barra-t').textContent=r.siguiente?`Le faltan ${N(r.faltan)} GX para el ${r.siguiente===R.n1?'Nivel 1 ($'+R.p1+')':r.siguiente===R.n2?'Nivel 2 ($'+R.p2+')':'Nivel 3 / MAX ($'+R.p3+')'}`:'¡Está en el nivel máximo!';
-  $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${esc(m.descr)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span>${m.tipo==='Compra'?`<button type="button" class="cmp" data-cp="${m.id}">🧾</button>`:''}<button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
+  $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';const cm=m.tipo==='Compra'?catMov(m.descr):{cat:null,resto:m.descr};return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${cm.cat?`<span style="display:inline-block;font-size:.78rem;font-weight:700;padding:1px 7px;border-radius:6px;background:${cm.cat[1]};color:#fff;margin-right:4px">${esc(cm.cat[0])}</span>`:''}${esc(cm.resto)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span>${m.tipo==='Compra'?`<button type="button" class="cmp" data-cp="${m.id}">🧾</button>`:''}<button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
   $('d-nom').value=c.nombre||'';$('d-tel').value=c.tel||'';$('d-nac').value=c.nac||'';$('d-pla').value=c.plataforma||'';
   $('f-cuenta').textContent=c.activada?'🔓 Ya activó su cuenta en la web o la app.':'🔒 Todavía no ha activado su cuenta. Para hacerlo necesita su ID, su fecha de nacimiento y los 4 últimos dígitos de su teléfono.';
   const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
@@ -823,7 +830,7 @@ const MT=()=>(document.querySelector('input[name=mt]:checked')||{}).value||'Comp
 function movPrev(){
   if(!FICHA)return;const t=MT(),R=FICHA.reglas,c=FICHA.cliente,imp=+$('m-imp').value||0,n=Math.round(+$('m-n').value||0);
   $('m-imp-w').hidden=t!=='Compra';$('m-n-w').hidden=!['Canje','Ajuste +','Ajuste -'].includes(t);
-  $('m-desc-l').textContent=t==='Compra'?'Qué compró':t==='Canje'?'En qué lo canjea':t==='Referido'?'Nombre del amigo que trajo (ya hizo su primera compra)':'Motivo';
+  $('m-cat-w').hidden=t!=='Compra';$('m-desc-l').textContent=t==='Compra'?'Qué compró (opcional)':t==='Canje'?'En qué lo canjea':t==='Referido'?'Nombre del amigo que trajo (ya hizo su primera compra)':'Motivo';
   let h='';
   if(t==='Compra'&&imp>0){const b=Math.round(imp*R.porDolar),cu=enCumple($('m-fecha').value,c.nac);h=`Ganará <b>${N(cu?b*2:b)} GX</b>${cu?' 🎂 (semana de cumpleaños: x2)':''} · suma ${N(cu?b*2:b)} al prestigio`}
   else if(t==='Referido')h=`Ganará <b>${R.referido} GX</b> por referido (no suma prestigio)`;
@@ -835,9 +842,9 @@ function movPrev(){
 }
 ['m-imp','m-n','m-fecha'].forEach(i=>$(i).addEventListener('input',movPrev));$('m-tipos').addEventListener('change',()=>{if(FICHA&&MT()==='Canje')$('m-n').value=FICHA.resumen.saldo||'';else if(MT()!=='Ajuste +'&&MT()!=='Ajuste -')$('m-n').value='';movPrev()});
 $('fmov').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;nomsg('mmov');$('m-btn').disabled=true;
-  try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:$('m-desc').value.trim()});
+  try{const t=MT(),d=await api('cli-mov',{gx:FICHA.cliente.gx,tipo:t,fecha:$('m-fecha').value,importe:$('m-imp').value,n:$('m-n').value,descr:(t==='Compra'&&MCAT?MCAT+($('m-desc').value.trim()?' · '+$('m-desc').value.trim():''):$('m-desc').value.trim())});
     pintarFicha(d);msg('mmov','ok',`✅ ${esc(t)} guardada: ${d.nuevo.ganados?'+'+N(d.nuevo.ganados):'−'+N(d.nuevo.usados)} GX${d.nuevo.cumple?' 🎂 (x2 cumpleaños)':''}. Saldo: ${N(d.resumen.saldo)} GX · ${esc(d.resumen.nivel)}.`);
-    $('m-imp').value='';$('m-cup').value='';$('m-n').value='';$('m-desc').value='';movPrev();clientes();
+    $('m-imp').value='';$('m-cup').value='';$('m-n').value='';$('m-desc').value='';MCAT='';$('m-cat').querySelectorAll('[data-mc]').forEach(x=>{x.style.background='';x.style.color=''});movPrev();clientes();
     if(t==='Compra'&&d.movs.length){const nm=d.movs.reduce((a,b)=>b.id>a.id?b:a);abrirComp(d.cliente,nm,d.movs)}}
   catch(err){msg('mmov','bad',esc(err.message))}$('m-btn').disabled=false};
 $('f-hist').addEventListener('click',e=>{const b=e.target.closest('[data-cp]');if(!b||!FICHA)return;const m=FICHA.movs.find(x=>x.id===+b.dataset.cp);if(m)abrirComp(FICHA.cliente,m,FICHA.movs)});
