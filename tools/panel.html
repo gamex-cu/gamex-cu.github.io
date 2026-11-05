@@ -279,6 +279,10 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <div id="lista"><p class="vacio">Cargando…</p></div>
     <div class="msg" id="mlista"></div>
   </section>
+  <section class="card">
+    <details id="dpas"><summary><h2 style="display:inline">🗂️ Ofertas pasadas</h2> <small class="nota">(las que quitaste o se vencieron)</small></summary>
+    <div id="lpas" style="margin-top:10px"><p class="vacio">Cargando…</p></div><div class="msg" id="mpas"></div></details>
+  </section>
   </div>
   <div id="t-ju" class="pest" hidden>
   <div class="subnav" data-g="ju"><button type="button" class="chip" data-s="ju-0" aria-pressed="true">Agregar y editar</button><button type="button" class="chip" data-s="ju-1" aria-pressed="false">Game Pass</button><button type="button" class="chip" data-s="ju-2" aria-pressed="false">PS Plus</button><button type="button" class="chip" data-s="ju-3" aria-pressed="false">Catálogos nuevos</button><button type="button" class="chip" data-s="ju-4" aria-pressed="false">Filtros propios</button></div>
@@ -632,6 +636,16 @@ function pintar(avisos){AVS={};avisos.forEach(a=>AVS[a.id]=a);
   $('nof').textContent=avisos.length;
   $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence)+(a.sinFecha?' (sin mostrar la fecha)':''):' · sin fecha de fin'}${a.img?' · 📷 con foto':''}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
 }
+// ---------- ofertas pasadas ----------
+let PAS=[],REPUB='';
+async function cargarPas(){try{PAS=(await api('pasadas')).pasadas||[];pintarPas()}catch(e){msg('mpas','bad',esc(e.message))}}
+function pintarPas(){$('lpas').innerHTML=PAS.length?PAS.map(a=>`<div class="of"><div>${a.img?`<img src="${esc(a.img)}" alt="" style="width:64px;height:64px;object-fit:cover;border-radius:8px;float:left;margin-right:10px">`:''}<b>${esc(a.titulo)}</b><p>${esc(a.texto||'')}</p><small>Publicada el ${fecha(a.fecha)} · ${a.motivo==='vencida'?'se venció':'la quitaste'} el ${fecha(a.quitada)}${a.url?' · con enlace':''}</small></div><div class="row" style="margin-top:8px"><button type="button" class="chip" data-rp="${esc(a.id)}">↩️ Volver a publicar</button><button type="button" class="chip" data-pb="${esc(a.id)}">🗑️ Borrar</button></div></div>`).join(''):'<p class="vacio">Todavía no hay ofertas pasadas.</p>'}
+$('dpas').addEventListener('toggle',()=>{if($('dpas').open)cargarPas()});
+$('lpas').onclick=async e=>{const rp=e.target.closest('[data-rp]'),pb=e.target.closest('[data-pb]');
+  if(pb){if(pb.dataset.ok!=='1'){pb.dataset.ok='1';pb.textContent='¿Borrar para siempre?';return}try{PAS=(await api('pasada-borrar',{id:pb.dataset.pb})).pasadas;cargarPas()}catch(err){msg('mpas','bad',esc(err.message))}return}
+  if(rp){const a=PAS.find(x=>x.id===rp.dataset.rp);if(!a)return;REPUB=a.id;$('tit').value=String(a.titulo||'').replace(/^🥷\s*/,'');$('txt').value=a.texto||'';$('url').value=a.url||'';$('vence').value='';$('vsin').checked=!!a.sinFecha;vtxt();
+    FOTO=a.img||'';if(FOTO){$('fprev').hidden=false;$('fimg').src=FOTO;$('fest').textContent='✅ La misma foto'}else{$('fprev').hidden=true}
+    try{prev()}catch(_){}$('fenv').scrollIntoView({behavior:'smooth',block:'start'});msg('menv','inf','Oferta cargada. Revisa la fecha y si quieres mandar la notificación, y toca <b>Enviar</b>.')}};
 async function cargar(){const d=await api('estado');$('niph').textContent=d.iphones;pintar(d.avisos);return d}
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
 async function entrar(){
@@ -676,7 +690,7 @@ $('bsi').onclick=async()=>{
     if(notificar)L.push(total?(ok?'✅':'⚠️')+` Enviada a <b>${ok} de ${total} iPhone</b>`+(viejos?` (${viejos} ya no tenían la web y se borraron)`:'')+(fallos?` · ${fallos} con error`:''):'ℹ️ Todavía no hay iPhone con avisos activados');
     const malo=(m!=='aviso'&&r.ofertas!=='ok')||(notificar&&r.android!=='ok');
     msg('menv',malo?'bad':'ok','<b>'+(malo?'Se envió con problemas':'¡Listo!')+'</b><ul><li>'+L.join('</li><li>')+'</li></ul>');
-    if(!malo){$('fenv').reset();FOTO='';$('fprev').hidden=true;prev();modo();vtxt()}
+    if(!malo){$('fenv').reset();FOTO='';$('fprev').hidden=true;prev();modo();vtxt();if(REPUB){api('pasada-borrar',{id:REPUB}).catch(()=>{});REPUB='';if($('dpas').open)cargarPas()}}
     cargar().catch(()=>{});
   }catch(e){msg('menv','bad','<b>No se pudo enviar.</b> '+esc(e.message)+(L.length?'<ul><li>'+L.join('</li><li>')+'</li></ul>':''))}
   $('bsi').disabled=$('bno').disabled=false;$('conf').classList.remove('on');$('benv').hidden=false;

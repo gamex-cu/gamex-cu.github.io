@@ -366,8 +366,14 @@ async function panel(req,env,u){
       const [ks,{d}]=await Promise.all([claves(env),leerAvisos(env)]);
       return j({iphones:ks.length,avisos:activos(d).reverse(),hoy:hoyCuba()});
     }
+    if(p==='pasadas'){ /* ofertas quitadas o vencidas: las guardadas + las vencidas que siguen en el archivo */
+      const [{d},g]=await Promise.all([leerAvisos(env),statsDO(env).pasadasVer()]);const h=hoyCuba();
+      const ven=d.avisos.concat(d.silenciosas||[]).filter(x=>x.vence&&x.vence<h&&!g.some(y=>y.id===x.id)).map(x=>({...x,quitada:x.vence,motivo:'vencida'}));
+      return j({pasadas:ven.concat(g).sort((a,b)=>(b.quitada||'')<(a.quitada||'')?-1:1)});
+    }
     if(req.method!=='POST')return j({error:'Usa POST'},405);
     const q=await req.json().catch(()=>({}));
+    if(p==='pasada-borrar'){return j({pasadas:await statsDO(env).pasadasBorrar(String(q.id||''))})}
     if(p==='enviar'){
       let titulo=String(q.titulo||'').trim().replace(/🎮/g,'🥷').slice(0,80),texto=String(q.texto||'').trim().slice(0,1500);
       const url=String(q.url||'').trim().slice(0,500),vence=/^\d{4}-\d{2}-\d{2}$/.test(q.vence||'')?q.vence:'';
@@ -381,7 +387,7 @@ async function panel(req,env,u){
       const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
       if(modo==='aviso')aviso.solo=true; // no se guarda en Ofertas
       const res={aviso,notificar,modo};
-      if(modo==='aviso')res.ofertas='no';else try{await cambiarAvisos(env,d=>{if(aviso.silenciosa)d.silenciosas=(d.silenciosas||[]).filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso]);else d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok'}catch(e){res.ofertas=e.message}
+      if(modo==='aviso')res.ofertas='no';else try{let venc=[];await cambiarAvisos(env,d=>{venc=d.avisos.concat(d.silenciosas||[]).filter(x=>x.vence&&x.vence<hoy);if(aviso.silenciosa)d.silenciosas=(d.silenciosas||[]).filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso]);else d.avisos=d.avisos.filter(x=>!x.vence||x.vence>=hoy).slice(-19).concat([aviso])},'Panel: oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');res.ofertas='ok';try{await statsDO(env).pasadasAgregar(venc,'vencida')}catch(e){}}catch(e){res.ofertas=e.message}
       if(notificar){try{await pushAndroid(env,aviso);res.android='ok'}catch(e){res.android=e.message}}else res.android='no';
       return j(res);
     }
@@ -410,7 +416,8 @@ async function panel(req,env,u){
     }
     if(p==='borrar'){
       const idA=String(q.id||'');if(!idA)return j({error:'Falta la oferta'},400);
-      const d=await cambiarAvisos(env,d=>{d.avisos=d.avisos.filter(x=>x.id!==idA);d.silenciosas=(d.silenciosas||[]).filter(x=>x.id!==idA)},'Panel: quitar oferta');
+      let quit=[];const d=await cambiarAvisos(env,d=>{quit=d.avisos.concat(d.silenciosas||[]).filter(x=>x.id===idA);d.avisos=d.avisos.filter(x=>x.id!==idA);d.silenciosas=(d.silenciosas||[]).filter(x=>x.id!==idA)},'Panel: quitar oferta');
+      try{await statsDO(env).pasadasAgregar(quit,'quitada')}catch(e){}
       return j({ok:true,avisos:activos(d).reverse()});
     }
     return j({error:'No existe'},404);

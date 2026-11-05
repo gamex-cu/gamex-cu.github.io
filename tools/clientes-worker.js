@@ -57,6 +57,10 @@ const CLI={
     const pend=this.sql.exec("SELECT COUNT(*) c FROM sol WHERE estado='pendiente'").one().c;
     return {clientes:cs.map(c=>({...this._pub(c),...resumenCli(por[c.gx]||[]),ultima:(por[c.gx]||[]).reduce((a,m)=>m.fecha>a?m.fecha:a,'')})),pendientes:pend,siguiente:this.cliSiguiente(),reglas:GXR}},
   cliSiguiente(){this.cliInit();const xs=[...this.sql.exec('SELECT gx FROM cli').toArray(),...this.sql.exec("SELECT gx FROM sol WHERE gx!=''").toArray()].map(x=>numGX(x.gx)).filter(n=>!isNaN(n));return fmtGX(xs.length?Math.max(...xs)+1:0)},
+  // ofertas que se quitaron o vencieron (para verlas y volver a publicarlas)
+  pasadasVer(){this.cliInit();const x=this.sql.exec("SELECT v FROM cfg WHERE k='pasadas'").toArray()[0];return x?JSON.parse(x.v):[]},
+  pasadasAgregar(l,motivo){if(!l||!l.length)return this.pasadasVer();const h=diaCuba(Date.now()),cur=this.pasadasVer().filter(x=>!l.some(y=>y.id===x.id));const nv=l.map(x=>({...x,quitada:h,motivo})).concat(cur).slice(0,150);this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('pasadas',?)",JSON.stringify(nv));return nv},
+  pasadasBorrar(id){const nv=this.pasadasVer().filter(x=>x.id!==id);this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('pasadas',?)",JSON.stringify(nv));return nv},
   // clientes que no acumulan GX en sus compras (la compra cuenta igual para el gasto)
   sinGXLista(){this.cliInit();const x=this.sql.exec("SELECT v FROM cfg WHERE k='singx'").toArray()[0];return x?JSON.parse(x.v):['GX0008','GX0009']},
   sinGXPoner(gx,on){const l=new Set(this.sinGXLista());gx=limpiaGX(gx);if(!gx)return {error:'ID no válido'};if(on)l.add(gx);else l.delete(gx);this.sql.exec("INSERT OR REPLACE INTO cfg(k,v) VALUES('singx',?)",JSON.stringify([...l]));return this.cliFicha(gx)},
