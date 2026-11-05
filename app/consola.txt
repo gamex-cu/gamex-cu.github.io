@@ -1,6 +1,6 @@
 GAMEX1
-V	225
-F	3 nov 2026
+V	226
+F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -5556,11 +5556,13 @@ J	0	Alan Wake Remastered
 J	0	Alex Kidd in Miracle World DX
 J	0	Alfred Hitchcock Vertigo
 J	8	Alien: Rogue Incursion Evolved Edition
+J	0	Alien: Rogue Incursion Part One - Evolved Edition
 J	0	Aliens: Dark Descent
 J	0	Aliens: Fireteam Elite
 J	0	Alone in the Dark
 J	0	Among Us
 J	0	Anger Foot
+J	0	Anglerfish
 J	0	ANIMAL WELL
 J	0	Anno 117: Pax Romana
 J	0	Anno 1800 Console Edition
@@ -5569,6 +5571,7 @@ J	128	Ape Academy 2
 J	128	Ape Escape
 J	0	Ape Escape Academy
 J	128	Ape Escape: On the Loose
+J	0	Aphelion
 J	0	Apsulov: End of Gods
 J	0	Aragami 2
 J	0	Arcade Game Zone
@@ -5659,6 +5662,7 @@ J	0	Brothers: A Tale of Two Sons Remake
 J	0	BUBBLE BOBBLE Sugar Dungeons
 J	0	Bugsnax
 J	0	Bum Simulator
+J	0	Burnhouse Lane
 J	0	Bye Sweet Carole
 J	0	Call of Duty: Black Ops
 J	0	Call of Duty: Black Ops Cold War
@@ -5726,9 +5730,11 @@ J	0	Daymare: 1994 Sandcastle
 J	0	Days Gone Remastered
 J	0	Dead Cells
 J	0	Dead Island 2 Ultimate Edition
+J	0	Dead of Darkness
 J	0	Dead Rising Deluxe Remastered
 J	0	Dead Space
 J	0	DEADCRAFT
+J	0	Death or Treat
 J	0	Death Stranding 2: On the Beach
 J	0	Death Stranding Director's Cut
 J	0	Deathloop Deluxe Edition
@@ -5755,6 +5761,8 @@ J	0	Disney•Pixar WALL-E
 J	0	Dispatch
 J	0	Divinity: Original Sin 2 Definitive Edition
 J	0	DNF Duel
+J	0	Do Not Open
+J	0	Dollhouse: Behind the Broken Mirror
 J	0	Dolmen
 J	0	Dolphin Spirit - Ocean Mission
 J	0	Don't Starve Together Console Edition
@@ -5878,6 +5886,7 @@ J	0	Ghostrunner 2
 J	0	Ghostwire: Tokyo
 J	0	GigaBash
 J	0	Gigantosaurus: Dino Kart
+J	0	Gloomy Eyes
 J	0	Goat Simulator 3
 J	0	God of Rock
 J	0	God of War Ragnarök
@@ -5937,6 +5946,7 @@ J	136	Horizon Call of the Mountain
 J	0	Horizon Chase 2
 J	0	Horizon Forbidden West Complete Edition
 J	0	Horizon Zero Dawn Remastered
+J	0	Horror Tales: The Beggar
 J	0	Horror Tales: The Wine
 J	0	Hot Wheels Infinite Rush Deluxe Edition
 J	0	Hot Wheels Let's Race: Ultimate Speed
@@ -6145,6 +6155,7 @@ J	0	Nioh 3
 J	0	Nioh Remastered The Complete Edition
 J	16	No Man's Sky
 J	0	No More Heroes III
+J	0	No Son of Mine
 J	0	Nobody Saves the World
 J	0	Nobody Wants to Die
 J	0	Observer System Redux
@@ -6155,12 +6166,14 @@ J	0	OlliOlli World
 J	0	On The Road The Truck Simulator
 J	0	One Piece Odyssey
 J	0	Onimusha: Way of the Sword
+J	0	Out of Sight
 J	0	Outcast – A New Beginning
 J	0	Outer Wilds
 J	0	Overpass 2
 J	0	Override 2: Super Mech League
 J	8	OVRDARK: A Do Not Open Story
 J	0	Oxide Room 104
+J	0	Oxide Room 208
 J	0	Pacific Drive
 J	0	Palworld
 J	0	Park Beyond
@@ -6191,7 +6204,9 @@ J	0	Potionomics Masterwork Edition
 J	0	PowerWash Simulator
 J	0	Pragmata
 J	0	Prince of Persia: The Lost Crown
+J	0	Project Nightmares Case 36: Henrietta Kedward
 J	0	Project Wingman: Frontline 59
+J	0	Puppet House
 J	0	Pure Pool Pro
 J	0	Quake
 J	0	Quantum Error
@@ -6207,6 +6222,7 @@ J	0	Record of Lodoss War: Deedlit in Wonder Labyrinth
 J	0	Red Dead Redemption
 J	8	Red Matter
 J	0	Remnant 2
+J	0	Remorse: The List
 J	0	Resident Evil 2 Remake
 J	0	Resident Evil 3 Remake
 J	16	Resident Evil 4 Remake
@@ -6215,6 +6231,7 @@ J	0	Resident Evil Requiem
 J	16	Resident Evil Village Gold Edition
 J	0	Resistance: Retribution
 J	0	Resonance: A Plague Tale Legacy
+J	0	RetroRealms Double Feature: Halloween and Ash vs Evil Dead
 J	0	Returnal
 J	0	RIDE 4
 J	0	RIDE 5
@@ -6234,6 +6251,7 @@ J	0	Saints Row The Third Remastered
 J	0	Samson: A Tyndalston Story
 J	0	Sand Land
 J	128	Saros
+J	0	Saturnalia
 J	0	Scarlet Nexus
 J	0	Scars Above
 J	0	Scorn
@@ -6339,6 +6357,7 @@ J	8	The 7th Guest VR
 J	0	The Adventures of Elliot: The Millennium Tales
 J	0	The Alters
 J	0	The Ascent
+J	0	The Beast Inside
 J	0	The Blood of Dawnwalker
 J	0	The Bridge Curse 2: The Extrication
 J	0	The Caligula Effect 2
@@ -6387,6 +6406,7 @@ J	0	The Riftbreaker
 J	0	The Rogue Prince of Persia
 J	0	The Sinking City 2
 J	0	The Sinking City Remastered
+J	0	The Sinking Forest
 J	0	The Smurfs Dreams
 J	0	The Smurfs: Mission Vileaf
 J	0	The Tale of Onogoro
@@ -6459,6 +6479,8 @@ J	0	Way of the Hunter
 J	0	Weird West
 J	0	Welcome to ParadiZe
 J	0	Werewolf: The Apocalypse – Earthblood
+J	0	White Day 2: The Flower That Tells Lies - Complete Edition
+J	0	White Day: A Labyrinth Named School
 J	0	Who Wants to Be a Millionaire?
 J	0	Wild Hearts
 J	0	Withering Rooms
