@@ -1,8 +1,8 @@
 {
-  "catalogo": 246,
-  "apk": 8,
-  "apkNombre": "1.7",
-  "apkUrl": "https://gamex-cu.github.io/app/GameX-1.7.apk",
-  "notas": "Mejoras y catálogo al día.",
+  "catalogo": 247,
+  "apk": 9,
+  "apkNombre": "1.8",
+  "apkUrl": "https://gamex-cu.github.io/app/GameX-1.8.apk",
+  "notas": "Los enlaces de GameX (por ejemplo, el de tu cuenta) ahora se abren directo en la app.",
   "mantenimiento": false
 }

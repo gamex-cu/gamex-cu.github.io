@@ -272,7 +272,7 @@ async function nombresGoogle(lista){
     if(d)for(const k of pedir)if(d[k])out[k]=d[k]}));
   return out;
 }
-const APK='https://gamex-cu.github.io/app/GameX-1.7.apk'; // respaldo: la dirección buena se lee de app/version.json (apkUrl)
+const APK='https://gamex-cu.github.io/app/GameX-1.8.apk'; // respaldo: la dirección buena se lee de app/version.json (apkUrl)
 let APK_CACHE=null;
 async function apkUrl(){if(APK_CACHE&&Date.now()-APK_CACHE.t<300000)return APK_CACHE.u;try{const r=await fetch('https://raw.githubusercontent.com/'+REPO+'/main/app/version.json',{cf:{cacheTtl:0}});const j=await r.json();if(/^https:\/\/gamex-cu\.github\.io\/app\/[\w.-]+\.apk$/.test(j.apkUrl||'')){APK_CACHE={t:Date.now(),u:j.apkUrl};return j.apkUrl}}catch(e){}return APK}
 const diaCuba=ms=>{try{return new Date(ms).toLocaleDateString('en-CA',{timeZone:'America/Havana'})}catch(e){return new Date(ms).toISOString().slice(0,10)}};

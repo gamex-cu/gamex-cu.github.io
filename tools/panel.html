@@ -822,7 +822,7 @@ function pintarFicha(f){
   $('f-hist').innerHTML=f.movs.length?f.movs.map(m=>{const v=m.ganados?'+'+N(m.ganados):m.usados?'−'+N(m.usados):'0';const cm=m.tipo==='Compra'?catMov(m.descr):{cat:null,resto:m.descr};return `<div class="hm"><div><b>${esc(m.tipo)}</b> ${cm.cat?`<span style="display:inline-block;font-size:.78rem;font-weight:700;padding:1px 7px;border-radius:6px;background:${cm.cat[1]};color:#fff;margin-right:4px">${esc(cm.cat[0])}</span>`:''}${esc(cm.resto)}<small>${fechaA(m.fecha)}${m.importe?' · '+money(m.importe):''}${m.cumple?' · 🎂 semana de cumpleaños x2':''}</small></div><span class="gxv ${m.ganados?'mas':m.usados?'menos':''}">${v} GX</span>${m.tipo==='Compra'?`<button type="button" class="cmp" data-cp="${m.id}">🧾</button>`:''}<button type="button" data-mb="${m.id}">Borrar</button></div>`}).join(''):'<p class="vacio">Todavía no tiene movimientos.</p>';
   $('d-nom').value=c.nombre||'';$('d-tel').value=c.tel||'';$('d-nac').value=c.nac||'';$('d-pla').value=c.plataforma||'';
   $('f-cuenta').textContent=c.activada?'🔓 Ya activó su cuenta en la web o la app.':'🔒 Todavía no ha activado su cuenta. Para hacerlo necesita su ID, su fecha de nacimiento y los 4 últimos dígitos de su teléfono.';
-  const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
+  const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
   $('f-wa').href=c.tel?'https://wa.me/53'+c.tel+'?text='+encodeURIComponent(txt):'#';$('f-wa').hidden=!c.tel;
   if(!$('m-fecha').value)$('m-fecha').value=hoyL();movPrev();
 }
@@ -860,7 +860,7 @@ $('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;
   if(a==='rechazar'&&b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Rechazar?';return}
   b.disabled=true;nomsg('msol');
   try{const d=await api('cli-solicitud',{id,accion:a,gx:($('sg'+id)||{}).value});pintarSol(d);
-    if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.`;
+    if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.`;
       msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/53${esc(x.tel)}?text=${encodeURIComponent(t)}">💬 Avisarle por WhatsApp</a>`)}
     else msg('msol','ok','Solicitud rechazada.');clientes()}
   catch(err){msg('msol','bad',esc(err.message));b.disabled=false}};
