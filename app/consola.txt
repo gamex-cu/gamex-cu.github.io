@@ -1,5 +1,5 @@
 GAMEX1
-V	234
+V	236
 F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -630,7 +630,7 @@ J	0	Classified: France '44
 J	0	Claudun Returns This Is Sengoku
 J	0	Claybook
 J	0	Cliff Empire
-J	0	Clive Barker's Hellraiser: Revival
+J	0	Clive Barker's Hellraiser: Revival Deluxe Edition
 J	0	Clive Barker's Jericho
 J	0	Clive Barker's Undying
 J	0	Close Combat - Gateway to Caen
@@ -1692,6 +1692,7 @@ J	0	Hellblade: Senua's Sacrifice
 J	0	Hellboy Web of Wyrd
 J	0	Hellbreach: Vegas
 J	0	HELLDIVERS
+J	0	HELLDIVERS 2
 J	0	HELLGATE: London
 J	0	Hello Neighbor
 J	0	Hello Neighbor Hide & Seek
