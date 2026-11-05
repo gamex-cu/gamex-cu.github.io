@@ -1,10 +1,13 @@
-# Game Pass – revisión del 2026-11-03
+# Game Pass – revisión del 2026-11-05
 
-Total: 606 juegos (antes 604).
+Total: 611 juegos (antes 606).
 
-## Entraron (2)
-- GRAVHOUNDS (Game Preview)
-- Pit Of Goblin
+## Entraron (5)
+- Escape Academy 2: Back 2 School
+- Firefighting Simulator: Ignite
+- MySims
+- MySims Kingdom
+- Void/breaker
 
 ## Salieron (0)
 

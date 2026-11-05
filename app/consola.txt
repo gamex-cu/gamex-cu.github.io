@@ -1,5 +1,5 @@
 GAMEX1
-V	251
+V	253
 F	5 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6694,6 +6694,7 @@ J	0	Echo Weaver
 J	2	Egging On
 J	1	Elite Dangerous
 J	1	Enlisted
+J	2	Escape Academy 2: Back 2 School
 J	0	Escape Simulator
 J	2	Escape the Backrooms
 J	2	Eternal Strands
@@ -6727,6 +6728,7 @@ J	2	Final Fantasy V
 J	2	Final Fantasy VI
 J	2	Final Fantasy VII Remake Intergrade
 J	0	Firefighting Simulator - The Squad
+J	2	Firefighting Simulator: Ignite
 J	2	FixForce
 J	0	Football Manager 26 Console
 J	1	For Honor
@@ -6860,6 +6862,8 @@ J	2	Motorslice
 J	0	Mouthwashing
 J	0	Moving Out 2
 J	0	My Friend Peppa Pig
+J	2	MySims
+J	2	MySims Kingdom
 J	1	Naraka: Bladepoint
 J	0	Need for Speed
 J	0	Need for Speed Heat
@@ -7083,6 +7087,7 @@ J	2	Virtua Fighter 5 R.E.V.O. World Stage
 J	2	Visions of Mana
 J	4	Viva Piñata
 J	132	Viva Piñata: Trouble in Paradise
+J	2	Void/breaker
 J	2	Voidtrain
 J	1	War Thunder
 J	3	Warhammer 40,000: Darktide
