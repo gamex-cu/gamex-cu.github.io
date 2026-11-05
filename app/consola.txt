@@ -1,5 +1,5 @@
 GAMEX1
-V	232
+V	234
 F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -1514,6 +1514,7 @@ J	0	God Eater Resurrection
 J	0	GOD FORSAKEN
 J	0	God of Rock
 J	0	God of War
+J	32	God of War II HD
 J	32	God of War III Remastered
 J	0	God of War Ragnarök
 J	32	God of War Sons of Sparta
@@ -2279,6 +2280,7 @@ J	0	Microsoft Flight Simulator X Gold Edition
 J	0	Middle Earth Shadow Of Mordor G.O.T.Y Edition
 J	0	Middle Earth Shadow of War Definitive Edition
 J	0	Midnight Club 2
+J	32	Midnight Club: Los Angeles Complete Edition
 J	0	Might & Magic Clash of Heroes
 J	0	Might & Magic X Legacy DLC The Falcon And The Unicorn
 J	0	Might and Magic Heroes VII
