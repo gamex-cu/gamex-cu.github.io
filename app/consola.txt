@@ -1,5 +1,5 @@
 GAMEX1
-V	230
+V	232
 F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -8142,6 +8142,7 @@ J	0	Gate of Doom
 J	0	Gato Roboto
 J	0	Gear Club Unlimited
 J	0	Gear Club Unlimited 2
+J	32	Gears of War 2
 J	0	Gearshifters
 J	0	Geki Yaba Runner Anniversary Edition
 J	0	Gekkido's Kintaro's Revenge
