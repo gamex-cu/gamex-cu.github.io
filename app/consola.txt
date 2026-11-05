@@ -1,5 +1,5 @@
 GAMEX1
-V	242
+V	243
 F	4 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -10425,4 +10425,18 @@ J	0	Zero Caliber 2
 J	0	Zero Caliber: Reloaded
 J	0	Zombie Army VR
 J	0	ZOMBIE ELEVATOR
+C	Emulador Switch 2 (Experimental)	Emulador Switch 2 (Experimental)	ff3c28	ffffff
+J	0	Donkey Kong Bananza
+J	0	Fire Emblem: Fortune's Weave
+J	0	Hyrule Warriors: Age of Imprisonment
+J	0	Kirby Air Riders
+J	0	Mario Kart World
+J	0	Mario Tennis Fever
+J	0	Nintendo Switch Sports Resort
+J	0	Pokémon Legends: Z-A Nintendo Switch 2 Edition + DLC
+J	0	Pokémon Pokopia
+J	0	Splatoon Raiders
+J	0	Star Fox
+J	0	Super Mario Bros. Wonder Nintendo Switch 2 Edition + DLC
+J	0	Yoshi and the Mysterious Book
 FIN
