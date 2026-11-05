@@ -1,5 +1,5 @@
 GAMEX1
-V	247
+V	248
 F	5 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -10438,5 +10438,6 @@ J	0	Pokémon Pokopia
 J	0	Splatoon Raiders
 J	0	Star Fox
 J	0	Super Mario Bros. Wonder Nintendo Switch 2 Edition + DLC
+J	0	The Legend of Zelda: Ocarina of Time
 J	0	Yoshi and the Mysterious Book
 FIN
