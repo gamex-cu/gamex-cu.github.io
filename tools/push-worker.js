@@ -376,7 +376,7 @@ async function panel(req,env,u){
       if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       const hoy=hoyCuba(),aviso={id:`${hoy}-${Math.floor(Date.now()/1000)}`,fecha:hoy,titulo,texto};
-      if(url)aviso.url=url;if(vence)aviso.vence=vence;const img=String(q.img||'').trim();if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(img))aviso.img=img;
+      if(url)aviso.url=url;if(vence)aviso.vence=vence;if(vence&&q.sinFecha)aviso.sinFecha=true;const img=String(q.img||'').trim();if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(img))aviso.img=img;
       const modo=['ambas','oferta','aviso'].includes(q.modo)?q.modo:(q.notificar===false?'oferta':'ambas');
       const notificar=modo!=='oferta';if(!notificar)aviso.silenciosa=true;
       if(modo==='aviso')aviso.solo=true; // no se guarda en Ofertas
@@ -404,7 +404,7 @@ async function panel(req,env,u){
       if(url&&!/^https:\/\//.test(url))return j({error:'El enlace tiene que empezar con https://'},400);
       if(!titulo.startsWith('🥷'))titulo='🥷 '+titulo;
       let hallada=false;
-      const d=await cambiarAvisos(env,d=>{for(const l of [d.avisos,d.silenciosas||[]])for(const x of l)if(x.id===idA){hallada=true;x.titulo=titulo;x.texto=texto;if(url)x.url=url;else delete x.url;if(q.img!==undefined){const im=String(q.img||'');if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(im))x.img=im;else delete x.img}if(vence)x.vence=vence;else delete x.vence;x.editada=hoyCuba()}},'Panel: editar oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');
+      const d=await cambiarAvisos(env,d=>{for(const l of [d.avisos,d.silenciosas||[]])for(const x of l)if(x.id===idA){hallada=true;x.titulo=titulo;x.texto=texto;if(q.sinFecha!==undefined){if(q.sinFecha)x.sinFecha=true;else delete x.sinFecha}if(url)x.url=url;else delete x.url;if(q.img!==undefined){const im=String(q.img||'');if(/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(im))x.img=im;else delete x.img}if(vence)x.vence=vence;else delete x.vence;x.editada=hoyCuba()}},'Panel: editar oferta "'+titulo.replace(/^🥷\s*/,'').slice(0,50)+'"');
       if(!hallada)return j({error:'No encontré esa oferta (¿ya la quitaron?)'},404);
       return j({ok:true,avisos:activos(d).reverse()});
     }

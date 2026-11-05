@@ -248,6 +248,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <div id="fprev" hidden style="margin-top:8px"><img id="fimg" alt="" style="width:100%;border-radius:10px;max-height:260px;object-fit:cover"><button type="button" class="chip" id="fquitar" style="margin-top:6px">Quitar foto</button> <small id="fest" class="nota"></small></div>
       <div id="bvence"><label for="vence">Se quita de Ofertas el <small>(opcional)</small></label>
       <input id="vence" type="date" class="fecha">
+      <label style="display:flex;gap:8px;align-items:center;margin-top:6px"><input type="checkbox" id="vsin"> No mostrar hasta cuándo es válida (igual se quita de la página ese día)</label>
       <div class="vtxt" id="vtxt">Sin fecha de fin: se queda hasta que la quites</div>
       <div class="row" style="margin-top:8px">
         <button type="button" class="chip" data-d="3">3 días</button>
@@ -629,7 +630,7 @@ async function api(p,body){
 let AVS={};
 function pintar(avisos){AVS={};avisos.forEach(a=>AVS[a.id]=a);
   $('nof').textContent=avisos.length;
-  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence):' · sin fecha de fin'}${a.img?' · 📷 con foto':''}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
+  $('lista').innerHTML=avisos.length?avisos.map(a=>`<div class="of"><div><b>${esc(a.titulo)}</b><p>${esc(a.texto)}</p><small>${a.silenciosa?'🔕 Sin notificación · Publicada':'🔔 Enviada'} el ${fecha(a.fecha)}${a.vence?' · se quita el '+fecha(a.vence)+(a.sinFecha?' (sin mostrar la fecha)':''):' · sin fecha de fin'}${a.img?' · 📷 con foto':''}${a.url?' · con enlace':''}</small></div><span class="ofb"><button type="button" class="ed" data-ed="${esc(a.id)}">Editar</button><button data-id="${esc(a.id)}">Quitar</button></span></div>`).join(''):'<p class="vacio">No hay ofertas activas.</p>';
 }
 async function cargar(){const d=await api('estado');$('niph').textContent=d.iphones;pintar(d.avisos);return d}
 function salir(){CLAVE='';try{localStorage.removeItem('gx_panel')}catch(e){}$('app').hidden=true;$('login').hidden=false;$('salir').hidden=true}
@@ -666,7 +667,7 @@ $('bsi').onclick=async()=>{
   const L=[];
   try{
     const m=MODO(),notificar=m!=='oferta';
-    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:m==='aviso'?'':$('vence').value,modo:m,notificar,img:m==='aviso'?'':FOTO});
+    const r=await api('enviar',{titulo:$('tit').value,texto:$('txt').value,url:$('url').value.trim(),vence:m==='aviso'?'':$('vence').value,sinFecha:$('vsin').checked,modo:m,notificar,img:m==='aviso'?'':FOTO});
     if(m!=='aviso')L.push(r.ofertas==='ok'?'✅ Publicada en <b>Ofertas</b> (web y app; tarda 1–2 minutos en verse)':'❌ Ofertas: '+esc(r.ofertas));
     if(notificar)L.push(r.android==='ok'?'✅ Enviada a los <b>Android</b>':'❌ Android: '+esc(r.android));
     else L.push('🔕 Sin notificación: nadie recibe aviso, solo sale en Ofertas');
@@ -683,7 +684,7 @@ $('bsi').onclick=async()=>{
 $('lista').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if(!b)return;const a=AVS[b.dataset.ed];if(!a)return;
   document.querySelectorAll('.edf').forEach(x=>x.remove());const row=b.closest('.of');const f=document.createElement('form');f.className='edf';f.dataset.id=a.id;
   f.innerHTML=`<label>Título</label><input name="titulo" maxlength="80" required value="${esc(a.titulo.replace(/^🥷\s*/,''))}"><label>Texto</label><textarea name="texto" maxlength="1500" rows="8" required>${esc(a.texto)}</textarea>
-  <label>Enlace <small>(opcional)</small></label><input name="url" type="url" value="${esc(a.url||'')}" placeholder="https://…"><label>Se quita de Ofertas el <small>(vacío = sin fecha)</small></label><input name="vence" type="date" value="${esc(a.vence||'')}">
+  <label>Enlace <small>(opcional)</small></label><input name="url" type="url" value="${esc(a.url||'')}" placeholder="https://…"><label>Se quita de Ofertas el <small>(vacío = sin fecha)</small></label><input name="vence" type="date" value="${esc(a.vence||'')}"><label class="sw" style="margin:6px 0"><input type="checkbox" name="sinfecha" ${a.sinFecha?'checked':''}><span>No mostrar hasta cuándo es válida</span></label>
   <label>Foto</label>${a.img?`<img src="${esc(a.img)}" alt="" style="width:100%;border-radius:10px;max-height:200px;object-fit:cover"><label class="sw" style="margin:6px 0"><input type="checkbox" name="sinfoto"><span>Quitar la foto</span></label>`:''}<input name="foto" type="file" accept="image/*">
   <p class="nota">Los cambios se ven en Ofertas (web y app) en 1–2 minutos. No se vuelve a mandar la notificación.</p>
   <div class="row"><button class="btn" style="flex:1;margin-top:8px">Guardar cambios</button><button type="button" class="btn sec ec" style="flex:1;margin-top:8px">Cancelar</button></div>`;
@@ -691,7 +692,7 @@ $('lista').addEventListener('click',e=>{const b=e.target.closest('[data-ed]');if
 $('lista').addEventListener('click',e=>{if(e.target.closest('.ec'))e.target.closest('.edf').remove()});
 $('lista').addEventListener('submit',async e=>{const f=e.target.closest('.edf');if(!f)return;e.preventDefault();const bt=f.querySelector('.btn');bt.disabled=true;nomsg('mlista');
   const v=n=>f.elements[n].value;
-  try{const b={id:f.dataset.id,titulo:v('titulo'),texto:v('texto'),url:v('url').trim(),vence:v('vence')};const fl=f.elements.foto.files[0];if(fl){msg('mlista','inf','Subiendo la foto…');b.img=await fotoSubir(fl)}else if(f.elements.sinfoto&&f.elements.sinfoto.checked)b.img='';
+  try{const b={id:f.dataset.id,titulo:v('titulo'),texto:v('texto'),url:v('url').trim(),vence:v('vence'),sinFecha:f.elements.sinfecha.checked};const fl=f.elements.foto.files[0];if(fl){msg('mlista','inf','Subiendo la foto…');b.img=await fotoSubir(fl)}else if(f.elements.sinfoto&&f.elements.sinfoto.checked)b.img='';
     const d=await api('editar',b);pintar(d.avisos);msg('mlista','ok','✅ Oferta actualizada. Se ve en la web y la app en 1–2 minutos.')}
   catch(err){msg('mlista','bad',esc(err.message));bt.disabled=false}});
 $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)return;
