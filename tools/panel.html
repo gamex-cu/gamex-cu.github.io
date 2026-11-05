@@ -780,7 +780,10 @@ function pintarClientes(){
   const act=CLI.clientes.filter(c=>c.estado==='activo'),gx=act.reduce((a,c)=>a+c.saldo,0),val=act.reduce((a,c)=>a+c.valor,0);
   $('c-kpis').innerHTML=`<div class="kpi"><b>${N(act.length)}</b><span>Clientes</span><small>${N(act.filter(c=>c.activada).length)} con cuenta activada</small></div><div class="kpi"><b>${N(gx)}</b><span>GX en saldo</span><small>${money(val)} en premios posibles</small></div><div class="kpi"><b>${N(act.filter(c=>c.nivel!=='Base').length)}</b><span>Con nivel 1 o más</span></div>`;
   let ls=CLI.clientes.filter(c=>VERRES||c.estado==='activo');
-  if(q)ls=ls.filter(c=>(c.gx+c.nombre+c.tel).toLowerCase().replace(/\s/g,'').includes(q.replace(/^gx/,'gx')));
+  // GX09, gx9, 9 o 0009 → directo al cliente GX0009 (como en GameX Manager); si no, busca por nombre o teléfono
+  const qq=(q||'').toLowerCase().replace(/\s/g,''),mid=qq.match(/^gx0*(\d{1,6})$/)||qq.match(/^0*(\d{1,4})$/),idq=mid?'GX'+String(+mid[1]).padStart(4,'0'):'';
+  if(idq&&CLI.clientes.some(c=>c.gx===idq))ls=CLI.clientes.filter(c=>c.gx===idq);
+  else if(qq)ls=ls.filter(c=>(c.gx+c.nombre+c.tel).toLowerCase().replace(/\s/g,'').includes(qq));
   const mn=$('c-min').value===''?null:+$('c-min').value,mx=$('c-max').value===''?null:+$('c-max').value;
   if(mn!=null)ls=ls.filter(c=>c.saldo>=mn);if(mx!=null)ls=ls.filter(c=>c.saldo<=mx);
   if(CACT)ls=ls.filter(c=>c.estado==='activo'&&(CACT==='si'?c.activada:!c.activada));
