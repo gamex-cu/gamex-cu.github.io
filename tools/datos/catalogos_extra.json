@@ -1,1 +1,10 @@
-[]
+[
+ {
+  "n": "Emulador Switch 2 (Experimental)",
+  "color": "#ff3c28",
+  "texto": "#ffffff",
+  "desbloqueo": false,
+  "riesgo": true,
+  "nota": "Emulación EXPERIMENTAL de Nintendo Switch 2. Los juegos pueden tener fallos, cierres o bajo rendimiento, y no funcionan igual en todos los equipos. Su uso es bajo riesgo del cliente: GameX no garantiza su funcionamiento."
+ }
+]

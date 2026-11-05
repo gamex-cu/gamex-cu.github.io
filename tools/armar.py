@@ -285,6 +285,10 @@ for _c,_b in [('PS4','ps4'),('PS5','ps5'),('PC','pc'),('Meta Quest','meta_quest'
     _f=max([_f]+[x.get('f','') for x in PJ.get('agregar',[])+PJ.get('quitar',[]) if x.get('c')==_c])
     if _f:
         _y,_m,_d=_f.split('-');NOTES[_c]=f'Catálogo actualizado el <b>{int(_d)} de {MESES[int(_m)-1]} de {_y}</b>'
+# catálogos nuevos con aviso arriba (p. ej. "uso a riesgo del cliente")
+for _x in CE:
+    if _x.get('n') and _x.get('nota'): NOTES[_x['n']]=('<span class="riesgo">' if _x.get('riesgo') else '<span>')+_h.escape(_x['nota']).replace('\n','<br>')+'</span>'
+head=head.replace('.vnote.ask::before{content:"💬 "}','.vnote.ask::before{content:"💬 "}\n.vnote:has(.riesgo){padding:10px 12px;border:1px solid #ff9a2e;border-radius:10px;background:rgba(255,154,46,.12);color:#ffd2a6;font-size:.88rem}.vnote:has(.riesgo)::before{content:"⚠️ ";color:inherit}.vnote .riesgo b{color:#fff}.ccard .cn{overflow-wrap:break-word;hyphens:auto;-webkit-hyphens:auto}',1)
 try: SERV=json.load(open(D+'servicios.json'))
 except FileNotFoundError: SERV=[]
 _SO=set((TI.get('ocultar') or {}).get('servicios',[]))
