@@ -431,13 +431,14 @@ async function gxRefresh(e){const bs=[document.getElementById('refresh'),documen
   poner('Actualizando…',1);document.getElementById('upd').classList.add('cargando');
   try{const r=await fetch('app/version.json?t='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const j=await r.json();GXN=Math.max(GXN,+j.catalogo||0);
     try{const rg=await navigator.serviceWorker?.getRegistration();if(rg)rg.update().catch(()=>{})}catch(x){}
+    try{sessionStorage.setItem('gx-upd-n',String(GXN))}catch(x){}
     location.replace(location.pathname+'?v='+(GXN||Date.now())+location.hash);
   }catch(x){document.getElementById('upd').classList.remove('cargando');poner('Sin internet, prueba otra vez');setTimeout(()=>{document.getElementById('refresh').textContent='Actualizar catálogo';document.getElementById('upd-b').textContent='Actualizar'},3000)}}
 if(/[?&]v=\\d/.test(location.search))history.replaceState(null,'',location.pathname+location.hash);
 navigator.serviceWorker?.ready.then(rg=>{rg.active&&rg.active.postMessage('guardar')}).catch(()=>{});
 document.getElementById('refresh').onclick=gxRefresh;document.getElementById('upd-b').onclick=gxRefresh;
 function gxCheck(){fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{GXN=Math.max(GXN,+j.catalogo||0);if(j.catalogo>GXV){let byp=false,n=0;try{byp=localStorage.getItem('gx-ver-igual')==='1';n=+(sessionStorage.getItem('gx-mrf')||0)}catch(e){}
-  if(!byp&&!!j.mantenimiento!==document.body.classList.contains('mant-on')&&n<2){try{sessionStorage.setItem('gx-mrf',n+1)}catch(e){}gxRefresh()}else document.getElementById('upd').hidden=false}}).catch(()=>{})}
+  if(!byp&&!!j.mantenimiento!==document.body.classList.contains('mant-on')&&n<2){try{sessionStorage.setItem('gx-mrf',n+1)}catch(e){}gxRefresh()}else{let ya='';try{ya=sessionStorage.getItem('gx-upd-n')||''}catch(e){}if(ya!==String(j.catalogo))document.getElementById('upd').hidden=false}}}).catch(()=>{})}
 fetch('app/version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.apkNombre)document.getElementById('dlv').textContent='Versión '+j.apkNombre+' · funciona sin internet'}).catch(()=>{});
 gxCheck();document.addEventListener('visibilitychange',()=>{if(!document.hidden)gxCheck()});
 (function(){const K='gamex-avisos-cerrados';let c=[];try{c=JSON.parse(localStorage.getItem(K)||'[]')}catch(e){}
