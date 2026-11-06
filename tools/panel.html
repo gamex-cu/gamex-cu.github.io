@@ -503,6 +503,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
           <button class="btn sec" id="d-btn">Guardar datos</button>
         </form>
         <div class="row" style="margin-top:12px"><a class="chip" id="f-wa" target="_blank" rel="noopener">💬 Mandarle su GX por WhatsApp</a><button type="button" class="chip" id="f-clave">🔑 Reiniciar contraseña</button></div>
+        <div class="row" style="margin-top:12px;gap:8px;align-items:flex-end"><div style="flex:1"><label for="f-unir">🔗 Unir con otra ficha del mismo cliente</label><input id="f-unir" placeholder="ID repetido, ej: GX0065"></div><button type="button" class="chip" id="f-unir-b">Unir aquí</button></div><small class="nota">Pasa a esta ficha las compras, GX y contraseña de la otra, y borra la otra.</small>
         <p class="nota" id="f-cuenta"></p>
         <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="f-singx"> 🚫 No acumula GX en sus compras (las compras cuentan igual para su total)</label>
         <div class="msg" id="mdat"></div>
@@ -808,8 +809,8 @@ function enCumple(fecha,nac){if(!fecha||!nac)return false;const[y,m,d]=fecha.spl
 function pintarSol(d){
   const p=d.solicitudes.filter(s=>s.estado==='pendiente'),otras=d.solicitudes.filter(s=>s.estado!=='pendiente').slice(0,5);
   $('nsol').textContent=p.length||'';$('nsol2').textContent=p.length||'';
-  $('sols').innerHTML=(p.length?p.map(s=>`<div class="solc"><b>${esc(s.nombre)} ${esc(s.apellidos)}</b><br><small class="nota">Nació el ${fechaA(s.nac)} · WhatsApp ${esc(s.tel)} · ${esc(s.plataforma||'—')} · pidió el ${fechaA(s.fecha)} · solicitud n.º ${s.id}</small>
-    <div class="acc"><div><label for="sg${s.id}" style="margin:6px 0 4px">ID que le das</label><input id="sg${s.id}" value="${esc(d.siguiente)}"></div>
+  $('sols').innerHTML=(p.length?p.map(s=>`<div class="solc"><b>${esc(s.nombre)} ${esc(s.apellidos)}</b><br><small class="nota">Nació el ${fechaA(s.nac)} · WhatsApp ${esc(s.tel)} · ${esc(s.plataforma||'—')} · pidió el ${fechaA(s.fecha)} · solicitud n.º ${s.id}</small>${(s.existe||[]).length?`<p class="nota" style="margin:8px 0 0;padding:8px 10px;border:1px solid var(--hot);border-radius:10px">⚠️ <b>Ya es cliente</b> con ese teléfono: ${s.existe.map(x=>`<b>${esc(x.gx)}</b> ${esc(x.nombre||'')} (${x.activada?'ya tiene cuenta activada':'sin activar'})`).join(', ')}.${s.existe.some(x=>!x.activada)?' Al aceptar se activa <b>esa misma ficha</b>, con sus GX y compras. No le crees otra.':' Ya tiene cuenta: mejor rechaza esta y dile que entre con su ID.'}</p>`:''}
+    <div class="acc"><div><label for="sg${s.id}" style="margin:6px 0 4px">ID que le das</label><input id="sg${s.id}" value="${esc(((s.existe||[]).find(x=>!x.activada)||{}).gx||d.siguiente)}"></div>
     <button type="button" data-sol="${s.id}" data-a="aprobar" style="background:var(--ok);color:#fff">✓ Aceptar</button><button type="button" data-sol="${s.id}" data-a="rechazar" style="background:transparent;border:1px solid var(--bad);color:var(--bad)">Rechazar</button></div></div>`).join(''):'<p class="vacio">No hay solicitudes pendientes.</p>')
     +(otras.length?`<p class="nota" style="margin-top:14px">Últimas resueltas: ${otras.map(s=>esc(s.nombre)+' '+(s.estado==='aprobada'?'✓ '+esc(s.gx):'✕')).join(' · ')}</p>`:'');
 }
@@ -895,6 +896,8 @@ $('f-hist').onclick=async e=>{const b=e.target.closest('[data-mb]');if(!b)return
 $('fdat').onsubmit=async e=>{e.preventDefault();if(!FICHA)return;const c=FICHA.cliente;
   try{pintarFicha(await api('cli-guardar',{gx:c.gx,nombre:$('d-nom').value,tel:$('d-tel').value,nac:$('d-nac').value,plataforma:$('d-pla').value,registro:c.registro,estado:$('d-nom').value.trim()?'activo':c.estado}));msg('mdat','ok','Datos guardados. Si cambiaste la fecha de nacimiento, se recalcularon los bonos de cumpleaños.');clientes()}
   catch(err){msg('mdat','bad',esc(err.message))}};
+$('f-unir-b').onclick=async()=>{const de=$('f-unir').value.trim(),b=$('f-unir-b');if(!de)return msg('mdat','bad','Escribe el ID repetido.');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{b.dataset.ok='';b.textContent='Unir aquí'},4000);return}
+  b.dataset.ok='';b.textContent='Unir aquí';try{const r=await api('cli-unir',{a:FICHA.cliente.gx,de});$('f-unir').value='';await abrirFicha(r.gx);msg('mdat','ok','✅ Listo: '+esc(r.borrado)+' se unió a '+esc(r.gx)+' y se borró.');clientes()}catch(err){msg('mdat','bad',esc(err.message))}};
 $('f-clave').onclick=async()=>{const b=$('f-clave');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{b.dataset.ok='';b.textContent='🔑 Reiniciar contraseña'},4000);return}
   try{pintarFicha(await api('cli-clave',{gx:FICHA.cliente.gx}));msg('mdat','ok','Contraseña borrada. El cliente vuelve a activar su cuenta con "Ya soy cliente" y pone una nueva.')}catch(err){msg('mdat','bad',esc(err.message))}b.dataset.ok='';b.textContent='🔑 Reiniciar contraseña'};
 $('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;const id=+b.dataset.sol,a=b.dataset.a;

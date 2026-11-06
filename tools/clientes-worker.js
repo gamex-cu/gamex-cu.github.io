@@ -108,16 +108,23 @@ const CLI={
     const rec=this.sql.exec("SELECT COUNT(*) c FROM sol WHERE tel=? AND estado='pendiente'",d.tel).one().c;if(rec)return {error:'Ya hay una solicitud pendiente con ese teléfono. Te escribimos pronto.'};
     this.sql.exec("INSERT INTO sol(fecha,nombre,apellidos,nac,tel,plataforma,ph,sal,k,estado,gx,creado,nota) VALUES(?,?,?,?,?,?,?,?,?,'pendiente','',?,'')",hoy,d.nombre,d.apellidos,d.nac,d.tel,d.plataforma,d.ph,d.sal,d.k,Date.now());
     return {id:this.sql.exec('SELECT last_insert_rowid() id').one().id}},
-  solLista(){this.cliInit();return {solicitudes:this.sql.exec('SELECT id,fecha,nombre,apellidos,nac,tel,plataforma,estado,gx,nota FROM sol ORDER BY (estado=\'pendiente\') DESC,id DESC LIMIT 200').toArray(),siguiente:this.cliSiguiente()}},
+  solLista(){this.cliInit();const t8=x=>String(x||'').replace(/\D/g,'').slice(-8);const cs=this.sql.exec('SELECT gx,nombre,tel,estado,ph FROM cli').toArray();
+    const sols=this.sql.exec('SELECT id,fecha,nombre,apellidos,nac,tel,plataforma,estado,gx,nota FROM sol ORDER BY (estado=\'pendiente\') DESC,id DESC LIMIT 200').toArray().map(x=>{if(x.estado!=='pendiente')return x;const m=t8(x.tel);const e=m.length===8&&cs.filter(c=>t8(c.tel)===m).map(c=>({gx:c.gx,nombre:c.nombre,activada:!!c.ph}));return e&&e.length?{...x,existe:e}:x});
+    return {solicitudes:sols,siguiente:this.cliSiguiente()}},
+  cliUnir(a,de){this.cliInit();a=limpiaGX(a);de=limpiaGX(de);if(!a||!de||a===de)return {error:'Pon dos ID GX distintos'};const A=this._cli1(a),B=this._cli1(de);if(!A||!B)return {error:'No existe '+(A?de:a)};
+    if(A.ph&&B.ph)return {error:'Las dos fichas tienen contraseña: reinicia la contraseña de una antes de unirlas'};
+    const v=(x,y)=>x||y||'';this.sql.exec('UPDATE cli SET tel=?,nac=?,plataforma=?,registro=?,ph=?,sal=?,estado=?,nota=? WHERE gx=?',v(A.tel,B.tel),v(A.nac,B.nac),v(A.plataforma,B.plataforma),[A.registro,B.registro].filter(Boolean).sort()[0]||'',A.ph||B.ph||null,A.ph?A.sal:(B.ph?B.sal:null),(A.ph||B.ph)?'activo':A.estado,[A.nota,B.nota].filter(Boolean).join(' · ').slice(0,500),a);
+    this.sql.exec('UPDATE mov SET gx=? WHERE gx=?',a,de);this.sql.exec('UPDATE sol SET gx=? WHERE gx=?',a,de);this.sql.exec('DELETE FROM ses WHERE gx=?',de);this.sql.exec('DELETE FROM cli WHERE gx=?',de);
+    return {ok:true,gx:a,borrado:de}},
   solBorrar(id){this.cliInit();this.sql.exec('DELETE FROM sol WHERE id=?',+id);return this.solLista()},
   solEstado(id,k){this.cliInit();const s=this.sql.exec('SELECT estado,gx,k FROM sol WHERE id=?',+id).toArray()[0];if(!s||s.k!==k)return {error:'No encontrada'};return {estado:s.estado,gx:s.estado==='aprobada'?s.gx:''}},
   solResolver(id,accion,gxPedido,nota){this.cliInit();const s=this.sql.exec('SELECT * FROM sol WHERE id=?',+id).toArray()[0];if(!s)return {error:'No existe'};
     if(s.estado!=='pendiente')return {error:'Ya estaba '+s.estado};
     if(accion==='rechazar'){this.sql.exec("UPDATE sol SET estado='rechazada',nota=? WHERE id=?",String(nota||'').slice(0,200),+id);return this.solLista()}
     const gx=limpiaGX(gxPedido)||this.cliSiguiente(),c=this._cli1(gx);
-    if(c&&c.estado!=='reservado')return {error:gx+' ya es de '+(c.nombre||'otro cliente')};
+    if(c&&c.estado!=='reservado'&&c.ph)return {error:gx+' ya es de '+(c.nombre||'otro cliente')+' y ya tiene su cuenta activada'};
     const nombre=(s.nombre+' '+s.apellidos).trim();
-    if(c)this.sql.exec("UPDATE cli SET nombre=?,tel=?,nac=?,registro=?,plataforma=?,estado='activo',ph=?,sal=? WHERE gx=?",nombre,s.tel,s.nac,diaCuba(Date.now()),s.plataforma,s.ph,s.sal,gx);
+    if(c)this.sql.exec("UPDATE cli SET nombre=?,tel=?,nac=?,registro=?,plataforma=?,estado='activo',ph=?,sal=? WHERE gx=?",c.estado==='reservado'?nombre:(c.nombre||nombre),s.tel,s.nac,c.estado==='reservado'?diaCuba(Date.now()):(c.registro||diaCuba(Date.now())),s.plataforma,s.ph,s.sal,gx);
     else this.sql.exec("INSERT INTO cli VALUES(?,?,?,?,?,?,'activo',?,?,?,'')",gx,nombre,s.tel,s.nac,diaCuba(Date.now()),s.plataforma,s.ph,s.sal,Date.now());
     this.sql.exec("UPDATE sol SET estado='aprobada',gx=? WHERE id=?",gx,+id);
     return {...this.solLista(),aprobado:{gx,nombre,tel:s.tel}}},
@@ -194,6 +201,7 @@ async function panelClientes(p,req,env,q){
   if(p==='cli-clave')return jx(await D.cliClaveReset(limpiaGX(q.gx)));
   if(p==='cli-solicitudes')return j(await D.solLista());
   if(p==='cli-solicitud')return jx(await D.solResolver(q.id,q.accion,q.gx,q.nota));
+  if(p==='cli-unir')return jx(await D.cliUnir(q.a,q.de));
   if(p==='cli-sol-borrar')return jx(await D.solBorrar(q.id));
   if(p==='cli-importar')return jx(await D.cliImportar(q));
   if(p==='cli-exportar')return j(await D.cliExportar());
