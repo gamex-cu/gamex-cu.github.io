@@ -374,7 +374,7 @@ async function panel(req,env,u){
     if(req.method!=='POST')return j({error:'Usa POST'},405);
     const q=await req.json().catch(()=>({}));
     if(p==='tema'){ /* tema temporal de la web y la app (lanzamientos) */
-      const ok=['aventura','neon'];const fe=x=>/^\d{4}-\d{2}-\d{2}$/.test(x||'')?x:'';
+      const ok=['aventura','neon','navidad','gala'];const fe=x=>/^\d{4}-\d{2}-\d{2}$/.test(x||'')?x:'';
       let tema=null;if(q.id&&ok.includes(q.id)){const c=q.cartel||{},img=String(c.img||'');tema={id:q.id,desde:fe(q.desde),hasta:fe(q.hasta),cartel:{etiqueta:String(c.etiqueta||'').slice(0,60),titulo:String(c.titulo||'').slice(0,90),texto:String(c.texto||'').slice(0,400),boton:String(c.boton||'').slice(0,30),url:/^https:\/\//.test(c.url||'')?String(c.url).slice(0,500):'',img:/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(img)?img:''}}}
       await cambiarAvisos(env,d=>{if(tema)d.tema=tema;else delete d.tema},tema?'Panel: tema de la web':'Panel: quitar tema');return j({ok:true,tema})}
     if(p==='tema-ver'){const {d}=await leerAvisos(env);return j({tema:d.tema||null})}
