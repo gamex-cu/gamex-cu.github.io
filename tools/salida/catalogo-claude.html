@@ -831,3 +831,43 @@ $('copy').onclick=()=>{const m=$('msg');if(!cart.length){m.textContent='Escoge a
   navigator.clipboard.writeText(text()).then(()=>m.textContent='Lista copiada. Pégala en el chat de WhatsApp de GameX.').catch(()=>{m.textContent='No se pudo copiar automáticamente. Mantén presionada la lista para copiarla.'})};
 route();
 </script>
+<script>
+/* ---------- temas temporales (lanzamientos): se ponen y se quitan solos por fechas, desde el panel ---------- */
+(function(){const hoy=new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
+ fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const t=j.tema;if(!t||!t.id||(t.desde&&t.desde>hoy)||(t.hasta&&t.hasta<hoy))return;
+  if(t.id==='aventura'){
+   const f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap';document.head.appendChild(f);
+   const st=document.createElement('style');st.textContent=`
+:root{--bg:#07150f;--panel:#0f2419;--line:#1f4430;--fg:#eef6e8;--muted:#a3bfa6;--accent:#3fbf6a;--hot:#e8c25a}
+body{background:radial-gradient(1200px 600px at 50% -10%,rgba(63,191,106,.25),transparent 60%),radial-gradient(800px 500px at 100% 100%,rgba(232,194,90,.10),transparent 60%),#07150f!important}
+header{background:radial-gradient(700px 220px at 50% 0%,rgba(232,194,90,.25),transparent 70%),linear-gradient(180deg,rgba(20,60,35,.6),transparent)!important;border-bottom:1px solid #2a5a3a!important}
+h2,.ccard .cn,.sbt b,.secc-t,.tag,.tm-c small,.tm-c b{font-family:"Cinzel",serif!important;letter-spacing:.04em}
+.tag{color:var(--hot)!important;border-color:var(--hot)!important}
+.sbtn,.ccard,.secc{position:relative;background:rgba(6,20,13,.82)!important;border:1px solid rgba(232,194,90,.55)!important;box-shadow:inset 0 0 0 3px rgba(6,20,13,.9),inset 0 0 0 4px rgba(232,194,90,.25),0 6px 24px rgba(0,0,0,.4)!important;border-radius:10px!important}
+.sbtn::before,.sbtn::after,.tm-c::before,.tm-c::after{content:"";position:absolute;width:18px;height:18px;border:2px solid #e8c25a;pointer-events:none}
+.sbtn::before{top:-1px;left:-1px;border-right:0;border-bottom:0;border-radius:10px 0 0 0}.sbtn::after{bottom:-1px;right:-1px;border-left:0;border-top:0;border-radius:0 0 10px 0}
+.sbtn .sgo{color:#e8c25a!important}.sbi{border-radius:50%!important;box-shadow:0 0 0 2px #e8c25a,0 0 14px rgba(232,194,90,.4)}
+.tm-hada{position:fixed;width:7px;height:7px;border-radius:50%;background:#fff6c8;box-shadow:0 0 12px 5px rgba(255,236,150,.75),0 0 26px 10px rgba(120,220,160,.35);pointer-events:none;z-index:3;animation:tmv var(--t) ease-in-out infinite alternate}
+@keyframes tmv{0%{transform:translate(0,0)}50%{transform:translate(var(--x),calc(var(--y)*-1))}100%{transform:translate(calc(var(--x)*-1),var(--y))}}
+@media (prefers-reduced-motion:reduce){.tm-hada{animation:none}}
+.tm-c{position:relative;overflow:hidden;margin:18px auto 0;max-width:720px;border-radius:10px;border:1px solid #e8c25a;background:linear-gradient(135deg,#1d3d28 0%,#0f2419 55%,#3a2f12 100%);padding:20px 22px 18px;text-align:left;box-shadow:inset 0 0 0 4px rgba(15,36,25,.95),inset 0 0 0 5px rgba(232,194,90,.35),0 10px 40px rgba(0,0,0,.5)}
+.tm-c::before{top:6px;left:6px;border-right:0;border-bottom:0}.tm-c::after{bottom:6px;right:6px;border-left:0;border-top:0}
+.tm-c small{display:block;font-size:.75rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--hot)}
+.tm-c b{display:block;font-size:1.45rem;line-height:1.15;margin:4px 0 6px;color:#fff8de}
+.tm-c p{margin:0 0 12px;color:#cfe3cf;white-space:pre-line}
+.tm-c .tm-n{position:absolute;right:16px;top:12px;font-size:1.3rem;color:rgba(232,194,90,.55);letter-spacing:6px}
+.tm-c img{display:block;width:100%;max-height:260px;object-fit:cover;border-radius:8px;margin:0 0 12px}
+.tm-c a{display:inline-flex;gap:8px;align-items:center;background:var(--hot);color:#1d1600;font-weight:700;padding:10px 14px;border-radius:10px;text-decoration:none}
+.tm-sep{display:flex;align-items:center;gap:10px;justify-content:center;color:#e8c25a;margin:14px 0 0;font-size:.8rem}
+.tm-sep::before,.tm-sep::after{content:"";height:1px;width:90px;background:linear-gradient(90deg,transparent,#e8c25a)}.tm-sep::after{transform:scaleX(-1)}
+@media(max-width:760px){.tm-c{margin:16px 16px 0}.tm-c .tm-n{display:none}}`;document.head.appendChild(st);
+   const h=[[12,20,6,40,30],[80,14,7,-50,25],[65,55,8,35,-40],[25,70,9,-30,35],[90,80,6.5,45,20],[45,35,7.5,-40,30]];
+   h.forEach(([l,tp,d,x,y])=>{const i=document.createElement('i');i.className='tm-hada';i.style.cssText=`left:${l}%;top:${tp}%;--t:${d}s;--x:${x}px;--y:${y}px`;document.body.appendChild(i)});
+  }
+  const c=t.cartel||{};if(!c.titulo)return;const hd=document.querySelector('#home header');if(!hd)return;
+  const e=s=>String(s||'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]));
+  const d=document.createElement('div');d.className='tm-c';
+  d.innerHTML=`${t.id==='aventura'?'<span class="tm-n">♪ ♫ ♪</span>':''}${c.etiqueta?`<small>${e(c.etiqueta)}</small>`:''}<b>${e(c.titulo)}</b>${c.img&&/^https:\/\/gamex-cu\.github\.io\//.test(c.img)?`<img src="${e(c.img)}" alt="">`:''}${c.texto?`<p>${e(c.texto)}</p>`:''}${c.url&&/^https:\/\//.test(c.url)?`<a href="${e(c.url)}" target="_blank" rel="noopener">${e(c.boton||'Ver más')} →</a>`:`<a class="wa-pick" href="#" data-t="${e('Hola GameX, quiero: '+c.titulo)}">${e(c.boton||'Pedir por WhatsApp')} →</a>`}`;
+  hd.appendChild(d);if(t.id==='aventura'){const s=document.createElement('div');s.className='tm-sep';s.textContent='✦ ✦ ✦';hd.appendChild(s)}
+ }).catch(()=>{})})();
+</script>
