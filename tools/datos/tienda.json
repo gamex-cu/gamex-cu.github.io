@@ -23,6 +23,7 @@
   "catalogos": [],
   "servicios": []
  },
+ "filtros": [],
  "mantenimiento": {
   "activo": false,
   "mensaje": ""
