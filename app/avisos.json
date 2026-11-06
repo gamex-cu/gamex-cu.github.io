@@ -41,5 +41,18 @@
    "img": "https://gamex-cu.github.io/app/fotos/2026-10-30-dc0ca8037059.jpg",
    "silenciosa": true
   }
- ]
+ ],
+ "tema": {
+  "id": "aventura",
+  "desde": "",
+  "hasta": "",
+  "cartel": {
+   "etiqueta": "",
+   "titulo": "",
+   "texto": "",
+   "boton": "",
+   "url": "",
+   "img": ""
+  }
+ }
 }
