@@ -502,7 +502,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
           </div>
           <button class="btn sec" id="d-btn">Guardar datos</button>
         </form>
-        <div class="row" style="margin-top:12px"><a class="chip" id="f-wa" target="_blank" rel="noopener">💬 Mandarle su GX por WhatsApp</a><button type="button" class="chip" id="f-clave">🔑 Reiniciar contraseña</button></div>
+        <div class="row" style="margin-top:12px"><a class="chip" id="f-wa" target="_blank" rel="noopener">💬 Mandarle su GX por WhatsApp</a><a class="chip" id="f-tg" target="_blank" rel="noopener" title="Te lo manda a Telegram para abrirlo en el celular">✈️ Pasarlo por Telegram</a><button type="button" class="chip" id="f-clave">🔑 Reiniciar contraseña</button></div>
         <div class="row" style="margin-top:12px;gap:8px;align-items:flex-end"><div style="flex:1"><label for="f-unir">🔗 Unir con otra ficha del mismo cliente</label><input id="f-unir" placeholder="ID repetido, ej: GX0065"></div><button type="button" class="chip" id="f-unir-b">Unir aquí</button></div><small class="nota">Pasa a esta ficha las compras, GX y contraseña de la otra, y borra la otra.</small>
         <p class="nota" id="f-cuenta"></p>
         <label style="display:flex;gap:8px;align-items:center;margin-top:10px"><input type="checkbox" id="f-singx"> 🚫 No acumula GX en sus compras (las compras cuentan igual para su total)</label>
@@ -628,7 +628,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   <img id="comp-img" alt="Comprobante de compra">
   <p class="nota" id="comp-st"></p>
   <button type="button" class="btn" id="comp-sh">📤 Compartir imagen (WhatsApp)</button>
-  <div class="row" style="margin-top:8px"><a class="btn sec" id="comp-dl" href="#" style="flex:1;margin:0;text-align:center;text-decoration:none">⬇️ Bajar imagen</a><a class="btn sec" id="comp-wa" target="_blank" rel="noopener" style="flex:1;margin:0;text-align:center;text-decoration:none">💬 Mandar mensaje</a></div>
+  <div class="row" style="margin-top:8px"><a class="btn sec" id="comp-dl" href="#" style="flex:1;margin:0;text-align:center;text-decoration:none">⬇️ Bajar imagen</a><a class="btn sec" id="comp-wa" target="_blank" rel="noopener" style="flex:1;margin:0;text-align:center;text-decoration:none">💬 Mandar mensaje</a><a class="btn sec" id="comp-tg" target="_blank" rel="noopener" style="flex:1;margin:0;text-align:center;text-decoration:none">✈️ Por Telegram</a></div>
   <p class="nota" style="margin-top:8px">"Compartir imagen" abre WhatsApp con la foto lista para escoger al cliente. "Mandar mensaje" le escribe un texto con sus GX.</p>
 </div></div>
 </main>
@@ -865,7 +865,7 @@ function pintarFicha(f){
   $('d-nom').value=c.nombre||'';$('d-tel').value=c.tel||'';$('d-nac').value=c.nac||'';$('d-pla').value=c.plataforma||'';
   $('f-cuenta').textContent=c.activada?'🔓 Ya activó su cuenta en la web o la app.':'🔒 Todavía no ha activado su cuenta. Para hacerlo necesita su ID, su fecha de nacimiento y los 4 últimos dígitos de su teléfono.';
   const txt=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, tu ID de GameX Rewards es *${c.gx}*.\nPara ver tus GX, tu nivel y tu historial entra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Ya soy cliente*, pon tu ID, tu fecha de nacimiento y los 4 últimos dígitos de tu teléfono, y crea tu contraseña.`;
-  $('f-wa').href=c.tel?'https://wa.me/53'+c.tel+'?text='+encodeURIComponent(txt):'#';$('f-wa').hidden=!c.tel;
+  $('f-wa').href=c.tel?waUrl(c.tel,txt):'#';$('f-wa').hidden=!c.tel;$('f-tg').href=c.tel?tgUrl(c.tel,txt):'#';$('f-tg').hidden=!c.tel;
   if(!$('m-fecha').value)$('m-fecha').value=hoyL();movPrev();
 }
 const MT=()=>(document.querySelector('input[name=mt]:checked')||{}).value||'Compra';
@@ -905,7 +905,7 @@ $('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;
   b.disabled=true;nomsg('msol');
   try{const d=await api('cli-solicitud',{id,accion:a,gx:($('sg'+id)||{}).value});pintarSol(d);
     if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.`;
-      msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/53${esc(x.tel)}?text=${encodeURIComponent(t)}">💬 Avisarle por WhatsApp</a>`)}
+      msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(waUrl(x.tel,t))}">💬 Avisarle por WhatsApp</a> <a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(tgUrl(x.tel,t))}">✈️ Pasarlo por Telegram</a>`)}
     else msg('msol','ok','Solicitud rechazada.');clientes()}
   catch(err){msg('msol','bad',esc(err.message));b.disabled=false}};
 $('fnue').onsubmit=async e=>{e.preventDefault();nomsg('mnue');
@@ -1018,12 +1018,15 @@ async function dibujarComp(c,m,est){
   g.fillStyle='#0a0c0b';g.fillRect(-34,-5,18,6);g.fillRect(-28,-11,6,18);[[20,-8],[30,2],[20,10],[10,2]].forEach(([a,b])=>{g.beginPath();g.arc(a,b,4,0,7);g.fill()});g.restore();
   return await new Promise(r=>cv.toBlob(r,'image/png'));
 }
+// WhatsApp directo (api.whatsapp.com no rompe los emojis) y versión para pasarlo por Telegram al celular
+function waUrl(tel,t){return 'https://api.whatsapp.com/send/?'+(tel?'phone=53'+String(tel).replace(/\D/g,'').slice(-8)+'&':'')+'text='+encodeURIComponent(t)}
+function tgUrl(tel,t){return 'https://t.me/share/url?url='+encodeURIComponent(waUrl(tel,t))}
 async function abrirComp(c,m,movs){
   const est=estadoEn(movs,m.id);COMP_INFO={c,m,est};
   $('comp').hidden=false;$('comp-img').removeAttribute('src');$('comp-st').textContent='Preparando el comprobante…';
   COMP_BLOB=await dibujarComp(c,m,est);$('comp-img').src=URL.createObjectURL(COMP_BLOB);$('comp-st').textContent='';
   const t=`Hola${c.nombre?' '+c.nombre.split(' ')[0]:''} 👋, gracias por tu compra en GameX 💚\nGanaste *${m.ganados} GX*${m.cumple?' (¡doble por tu cumpleaños! 🎂)':''} y ahora tienes *${est.saldo} GX*.\nMira tu cuenta en https://gamex-cu.github.io/#cuenta`;
-  $('comp-wa').href=c.tel?'https://wa.me/53'+c.tel+'?text='+encodeURIComponent(t):'https://wa.me/?text='+encodeURIComponent(t);
+  $('comp-wa').href=waUrl(c.tel,t);$('comp-tg').href=tgUrl(c.tel,t);
 }
 $('comp-x').onclick=()=>$('comp').hidden=true;$('comp').onclick=e=>{if(e.target===$('comp'))$('comp').hidden=true};
 const nombreComp=()=>`Comprobante-${COMP_INFO.c.gx}-${COMP_INFO.m.fecha}.png`;
