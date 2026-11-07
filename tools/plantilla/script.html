@@ -504,3 +504,88 @@ footer{background:transparent!important}
   hd.appendChild(d);if(t.id==='aventura'){const s=document.createElement('div');s.className='tm-sep';s.textContent='✦ ✦ ✦';hd.appendChild(s)}
  }).catch(()=>{})})();
 </script>
+<script>
+/* Asistente de respuestas rápidas de GameX (sin IA: responde lo que se escribe en el panel) */
+(()=>{const INFO=__BOTINFO__;
+const DEF={activo:true,nombre:'Asistente GameX',saludo:'¡Hola! 👋 Soy el asistente de GameX. Toca una pregunta o escríbeme lo que buscas (por ejemplo el nombre de un juego).',preguntas:[
+ {p:'🕐 Horario y dirección',claves:'horario, hora, abren, cierran, abierto, cerrado, direccion, donde, ubicacion, local, mapa, domingo',r:'🕐 Estamos abiertos: {horario}.\n📍 {direccion}\n🗺️ Cómo llegar: {mapa}'},
+ {p:'🛒 ¿Cómo compro?',claves:'comprar, compro, pedido, pedir, carrito, encargar, como hago',r:'Busca lo que quieras en *Catálogos* o *Servicios*, agrégalo al carrito 🛒 y toca *Enviar pedido*. Te llega a nuestro WhatsApp y te respondemos enseguida.'},
+ {p:'💳 Formas de pago',claves:'pago, pagar, precio, efectivo, transferencia, dolares, usd, cup, zelle, tarjeta',r:'Aceptamos efectivo en CUP, dólares y transferencia. Los precios te los damos por WhatsApp según lo que pidas.'},
+ {p:'🎁 GameX Rewards (GX)',claves:'gx, puntos, rewards, recompensa, nivel, canje, canjear, prestigio, cumpleanos, referido',r:'Por cada $1 de compra ganas *10 GX*. Al llegar a 1,500 GX tienes $9 de recompensa, a 2,500 GX $17.50 y a 3,500 GX $28 para usar en tus compras. En tu cumpleaños ganas el doble 🎂.\nMira tus puntos en *Mi cuenta* (si ya eres cliente, entra con *Ya soy cliente*).',url:'#cuenta',boton:'Ir a Mi cuenta'},
+ {p:'🔓 Desbloqueos',claves:'desbloqueo, desbloquear, chip, piratear, pirateria, flashear, hackear, modificar',r:'Desbloqueamos PS5, PS4, Nintendo Switch (por software o chip) y Meta Quest 2, 3 y 3S. Escríbenos con tu modelo y versión y te decimos si se puede y el precio.',url:'#servicios',boton:'Ver servicios'},
+ {p:'🔧 Mantenimiento',claves:'mantenimiento, limpieza, reparar, arreglo, calienta, ruido, ventilador, pasta termica, roto',r:'Damos mantenimiento a PS4, PS5, Xbox One y Xbox Series X|S. Cuéntanos qué le pasa a tu consola por WhatsApp.',url:'#servicios',boton:'Ver servicios'},
+ {p:'💎 Suscripciones y gift cards',claves:'game pass, gamepass, ps plus, plus, suscripcion, ea play, ubisoft, fortnite, crew, gift, tarjeta regalo, steam, nintendo online',r:'Tenemos Xbox Game Pass Ultimate, PlayStation Plus, Nintendo Switch Online, Fortnite Crew, EA Play y Ubisoft+, y gift cards de Steam, PlayStation, Nintendo y Xbox.',url:'#servicios',boton:'Ver servicios'}
+]};
+let CFG=DEF;
+const norm=s=>String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9ñ ]+/g,' ').replace(/\s+/g,' ').trim();
+const e=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=s=>e(String(s||'').replace(/\{horario\}/g,INFO.horario||'').replace(/\{direccion\}/g,INFO.dir||'').replace(/\{mapa\}/g,INFO.mapa||'')).replace(/\*([^*\n]+)\*/g,'<b>$1</b>').replace(/(https:\/\/[^\s<]+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>').replace(/\n/g,'<br>');
+const st=document.createElement('style');st.textContent=`
+.gb-b{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:15;width:58px;height:58px;border-radius:50%;border:0;background:var(--accent,#3b82f6);color:#fff;font-size:27px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.gb-b:hover{transform:scale(1.06)}.gb-b:focus-visible{outline:3px solid #fff;outline-offset:3px}
+body:has(#cartbar:not([hidden])) .gb-b{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+.gb-b .gb-n{position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:2px solid #0d1124}
+.gb-w{margin:0;padding:0;position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(88px + env(safe-area-inset-bottom,0px));z-index:15;width:min(380px,calc(100vw - 32px));height:min(560px,calc(100dvh - 120px));display:flex;flex-direction:column;background:var(--panel,#141a33);color:var(--fg,#eef2ff);border:1px solid var(--line,#2a3366);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.55);overflow:hidden}
+body:has(#cartbar:not([hidden])) .gb-w{bottom:calc(162px + env(safe-area-inset-bottom,0px));height:min(520px,calc(100dvh - 190px))}
+.gb-w[hidden]{display:none}
+.gb-h{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line,#2a3366);background:rgba(0,0,0,.18)}
+.gb-h b{flex:1;font-size:15px}.gb-h small{display:block;font-weight:400;color:#22c55e;font-size:12px}
+.gb-x{background:none;border:0;color:inherit;font-size:22px;line-height:1;cursor:pointer;padding:4px 8px;border-radius:8px}.gb-x:hover{background:rgba(255,255,255,.08)}
+.gb-m{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.gb-q,.gb-a{max-width:88%;padding:10px 12px;border-radius:14px;font-size:14px;line-height:1.45;overflow-wrap:anywhere}
+.gb-a{align-self:flex-start;background:rgba(255,255,255,.07);border-bottom-left-radius:4px}
+.gb-q{align-self:flex-end;background:var(--accent,#3b82f6);color:#fff;border-bottom-right-radius:4px}
+.gb-a a{color:#8fb0ff}
+.gb-o{display:flex;flex-wrap:wrap;gap:6px}
+.gb-o button,.gb-o a{font-family:inherit;font-weight:600;font-size:13px;padding:8px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:transparent;color:inherit;cursor:pointer;text-decoration:none}
+.gb-o button:hover,.gb-o a:hover{border-color:var(--accent,#3b82f6);background:rgba(59,130,246,.12)}
+.gb-o .gb-wa{background:#16a34a;border-color:#16a34a;color:#fff}
+.gb-f{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line,#2a3366)}
+.gb-f input{flex:1;min-width:0;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.25);color:inherit;font-family:inherit;font-size:16px}
+.gb-f button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#3b82f6);color:#fff;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer}
+.gb-j{display:flex;flex-direction:column;gap:4px;margin-top:6px}.gb-j span{font-size:13px;opacity:.85}
+@media(prefers-reduced-motion:no-preference){.gb-a,.gb-q{animation:gbIn .18s ease-out}}@keyframes gbIn{from{opacity:0;transform:translateY(6px)}}`;
+document.head.appendChild(st);
+const b=document.createElement('button');b.className='gb-b';b.type='button';b.setAttribute('aria-label','Abrir asistente de GameX');b.setAttribute('aria-expanded','false');b.innerHTML='💬<span class="gb-n" aria-hidden="true"></span>';
+const w=document.createElement('div');w.className='gb-w';w.hidden=true;w.setAttribute('role','dialog');w.setAttribute('aria-label','Asistente de GameX');
+w.innerHTML=`<div class="gb-h"><span style="font-size:24px" aria-hidden="true">🤖</span><b><span class="gb-t"></span><small>Respuestas al momento</small></b><button class="gb-x" type="button" aria-label="Cerrar">×</button></div><div class="gb-m" aria-live="polite"></div><form class="gb-f"><input type="text" placeholder="Escribe tu pregunta o un juego…" aria-label="Tu pregunta" maxlength="120" enterkeyhint="send"><button type="submit" aria-label="Enviar">➤</button></form>`;
+const M=w.querySelector('.gb-m'),I=w.querySelector('input');let empezado=false;
+const baja=()=>{M.scrollTop=M.scrollHeight};
+function di(html,ops){const d=document.createElement('div');d.className='gb-a';d.innerHTML=html+(ops?`<div class="gb-o" style="margin-top:8px">${ops}</div>`:'');M.appendChild(d);baja()}
+function yo(t){const d=document.createElement('div');d.className='gb-q';d.textContent=t;M.appendChild(d);baja()}
+const persona=t=>`<a class="gb-wa wa-pick" href="#" data-t="${e(t||'Hola GameX, tengo una pregunta')}">💬 Hablar con una persona</a>`;
+const menu=()=>(CFG.preguntas||[]).map((q,i)=>`<button type="button" data-q="${i}">${e(q.p)}</button>`).join('')+`<button type="button" data-j="1">🔍 ¿Tienen un juego?</button>`+persona();
+function resp(q){di(fmt(q.r),(q.url&&/^(#[a-z0-9=-]+|https:\/\/)/.test(q.url)?`<a href="${e(q.url)}" ${q.url[0]==='#'?'data-ir="1"':'target="_blank" rel="noopener"'}>${e(q.boton||'Ver más')} →</a>`:'')+`<button type="button" data-menu="1">☰ Otras preguntas</button>`+persona('Hola GameX, tengo una pregunta sobre: '+q.p.replace(/^\W+\s*/,'')))}
+const PAL=['el','la','los','las','de','del','tienen','tienes','tiene','hay','juego','juegos','un','una','para','y','en','me','quiero','busco','ustedes','venden','el','lo','algun','alguno','ps4','ps5','pc','switch','xbox','quest'];
+const limpio=t=>norm(t).split(' ').filter(x=>x.length>1&&!PAL.includes(x)).join(' ');
+function juegos(t){if(typeof RAW!=='object')return [];const ws=limpio(t).split(' ').filter(Boolean);if(!ws.length)return [];const out=[];
+ for(const c in RAW){for(const n of RAW[c]||[]){const k=norm(n);if(ws.every(x=>k.includes(x))){out.push([c,n]);if(out.length>60)return out}}}return out}
+function buscaJ(t){const r=juegos(t);if(!r.length){di(`No encontré <b>${e(t)}</b> en el catálogo 😕. Puede que lo tengamos igual o que lo podamos conseguir: pregúntanos.`,persona('Hola GameX, ¿tienen '+t+'?')+`<button type="button" data-menu="1">☰ Otras preguntas</button>`);return true}
+ const por={};r.forEach(([c,n])=>{(por[c]=por[c]||[]).push(n)});const cs=Object.keys(por);
+ di(`Sí 🎮, encontré <b>${r.length>60?'más de 60':r.length}</b> resultado${r.length===1?'':'s'}:<div class="gb-j">${cs.slice(0,6).map(c=>`<span><b>${e(typeof nom==='function'?nom(c):c)}:</b> ${por[c].slice(0,4).map(e).join(', ')}${por[c].length>4?' y '+(por[c].length-4)+' más':''}</span>`).join('')}</div>`,`<button type="button" data-ver="${e(limpio(t))}">Ver en el catálogo →</button>`+persona('Hola GameX, me interesa: '+(r.length===1?r[0][1]+' ('+r[0][0]+')':t)));return true}
+let modoJ=false;
+function contesta(t){const n=norm(t);if(!n)return;
+ if(modoJ){modoJ=false;buscaJ(t);return}
+ if(/^(hola|buenas|buenos dias|buenas tardes|buenas noches|hey|saludos)\b/.test(n)&&n.split(' ').length<=3){di('¡Hola! 😄 ¿En qué te ayudo?',menu());return}
+ if(/\b(gracias|ok|okey|perfecto|listo|dale)\b/.test(n)&&n.split(' ').length<=3){di('¡A ti! 💚 Si necesitas algo más, aquí estoy.',`<button type="button" data-menu="1">☰ Otras preguntas</button>`);return}
+ if(/\b(persona|humano|asesor|alguien|whatsapp|hablar|llamar|telefono|numero|contacto)\b/.test(n)){di('Claro, escríbenos por WhatsApp y te atiende una persona:',persona('Hola GameX, '+t));return}
+ let best=null,bs=0;(CFG.preguntas||[]).forEach(q=>{let s=0;String(q.claves||'').split(',').map(norm).filter(Boolean).forEach(k=>{if((' '+n+' ').includes(' '+k+' ')||(k.length>4&&n.includes(k)))s+=k.split(' ').length});if(s>bs){bs=s;best=q}});
+ if(best){resp(best);return}
+ const r=juegos(t);if(r.length){buscaJ(t);return}
+ di('No estoy seguro de haberte entendido 🤔. Prueba con una de estas preguntas, escribe el nombre de un juego, o habla con nosotros:',menu())}
+w.addEventListener('click',ev=>{const x=ev.target.closest('button,a');if(!x||!w.contains(x))return;
+ if(x.classList.contains('gb-x')){abrir(false);return}
+ if(x.dataset.q!=null){const q=CFG.preguntas[+x.dataset.q];if(q){yo(q.p);resp(q)}return}
+ if(x.dataset.j){yo('🔍 ¿Tienen un juego?');modoJ=true;di('Escríbeme el nombre del juego (o una parte) y lo busco en todos los catálogos 👇');I.focus();return}
+ if(x.dataset.menu){di('Estas son las preguntas más comunes:',menu());return}
+ if(x.dataset.ver!=null){ev.preventDefault();const v=x.dataset.ver;try{query=v;$('q').value=v}catch(er){}location.hash='todas';setTimeout(()=>{try{$('q').value=v;$('q').dispatchEvent(new Event('input',{bubbles:true}))}catch(er){}},60);if(matchMedia('(max-width:760px)').matches)abrir(false);return}
+ if(x.dataset.ir){if(matchMedia('(max-width:760px)').matches)abrir(false)}});
+w.querySelector('form').addEventListener('submit',ev=>{ev.preventDefault();const t=I.value.trim();if(!t)return;I.value='';yo(t);setTimeout(()=>contesta(t),250)});
+function abrir(on){w.hidden=!on;b.setAttribute('aria-expanded',on);b.innerHTML=on?'×':'💬';b.setAttribute('aria-label',on?'Cerrar asistente':'Abrir asistente de GameX');
+ if(on){if(!empezado){empezado=true;w.querySelector('.gb-t').textContent=CFG.nombre||DEF.nombre;di(e(CFG.saludo||DEF.saludo),menu())}if(!matchMedia('(pointer:coarse)').matches)setTimeout(()=>I.focus(),50)}else b.focus()}
+b.addEventListener('click',()=>abrir(w.hidden));
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&!w.hidden)abrir(false)});
+function poner(){document.body.appendChild(w);document.body.appendChild(b)}
+fetch('https://gamex-cu.github.io/app/avisos.json?b='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j&&j.bot){if(j.bot.activo===false)return;CFG={...DEF,...j.bot,preguntas:(j.bot.preguntas&&j.bot.preguntas.length?j.bot.preguntas:DEF.preguntas)}}poner()}).catch(poner);
+})();
+</script>

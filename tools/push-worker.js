@@ -377,6 +377,11 @@ async function panel(req,env,u){
       const ok=['aventura','neon','navidad','gala','blackfriday'];const fe=x=>/^\d{4}-\d{2}-\d{2}$/.test(x||'')?x:'';
       let tema=null;if(q.id&&ok.includes(q.id)){const c=q.cartel||{},img=String(c.img||'');tema={id:q.id,desde:fe(q.desde),hasta:fe(q.hasta),cartel:{etiqueta:String(c.etiqueta||'').slice(0,60),titulo:String(c.titulo||'').slice(0,90),texto:String(c.texto||'').slice(0,400),boton:String(c.boton||'').slice(0,30),url:/^https:\/\//.test(c.url||'')?String(c.url).slice(0,500):'',img:/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(img)?img:''}}}
       await cambiarAvisos(env,d=>{if(tema)d.tema=tema;else delete d.tema},tema?'Panel: tema de la web':'Panel: quitar tema');return j({ok:true,tema})}
+    if(p==='bot'){ /* asistente de respuestas rápidas de la web */
+      const T=(x,n)=>String(x||'').slice(0,n);const ps=(Array.isArray(q.preguntas)?q.preguntas:[]).slice(0,30).map(x=>({p:T(x.p,60),claves:T(x.claves,400),r:T(x.r,1200),url:/^(#[a-z0-9=-]{1,40}|https:\/\/\S{1,400})$/.test(x.url||'')?x.url:'',boton:T(x.boton,30)})).filter(x=>x.p&&x.r);
+      const bot={activo:q.activo!==false,nombre:T(q.nombre,40)||'Asistente GameX',saludo:T(q.saludo,400),preguntas:ps};
+      await cambiarAvisos(env,d=>{d.bot=bot},'Panel: asistente de la web');return j({ok:true,bot})}
+    if(p==='bot-ver'){const {d}=await leerAvisos(env);return j({bot:d.bot||null})}
     if(p==='tema-ver'){const {d}=await leerAvisos(env);return j({tema:d.tema||null})}
     if(p==='pasada-borrar'){return j({pasadas:await statsDO(env).pasadasBorrar(String(q.id||''))})}
     if(p==='enviar'){

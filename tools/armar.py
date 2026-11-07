@@ -33,6 +33,7 @@ def _md(t):
     return ''.join(out)
 def _rgba(h,a):
     h=h.lstrip('#');return 'rgba(%d,%d,%d,%s)'%(int(h[0:2],16),int(h[2:4],16),int(h[4:6],16),a)
+BOTINFO={'nums':[],'horario':'','dir':'','mapa':''}
 def _tienda(head,js):
     nums=[n for n in TI.get('numeros') or [] if _re.sub(r'\D','',n)]
     if not nums: return head,js
@@ -52,6 +53,7 @@ def _tienda(head,js):
     cer=[d for d in range(7) if d not in dias]
     hrs+=''.join(f'<p class="hrs"><span>{_h.escape(r)}</span><b>Cerrado</b></p>' for r in rangos(cer))
     dirc=_h.escape(TI.get('direccion',''));mapa=_h.escape(TI.get('mapa',''))
+    BOTINFO.update(nums=[[w(n),n] for n in nums],horario='; '.join(f'{r} de {h12(abre)} a {h12(cierra)}' for r in rangos(dias))+('; '+', '.join(rangos(cer))+' cerrado' if cer else ''),dir=TI.get('direccion',''),mapa=TI.get('mapa',''))
     R1=lambda f:''.join(f(n) for n in nums)
     rep=[(r'<div class="wa">.*?</div>','<div class="wa">'+R1(lambda n:f'<a href="https://wa.me/{w(n)}" target="_blank" rel="noopener">{_h.escape(n)} <small>WhatsApp</small></a>')+'</div>'),
          (r'<h4>Horario</h4>.*?<p class="open" id="open-now"></p>','<h4>Horario</h4>'+hrs+'<p class="open" id="open-now"></p>'),
@@ -294,6 +296,7 @@ except FileNotFoundError: SERV=[]
 _SO=set((TI.get('ocultar') or {}).get('servicios',[]))
 SERV=[dict(x,items=[it for it in x.get('items',[]) if not it.get('oculto')]) for x in SERV if x.get('s') not in _SO]
 SERV=[x for x in SERV if x['items']]
+js=js.replace('__BOTINFO__',json.dumps(BOTINFO,ensure_ascii=False).replace('</','<\\/'))
 js=js.replace('__SERV__',json.dumps(SERV,ensure_ascii=False).replace('</','<\\/')).replace('__PSPMES__',json.dumps(PSP.get('mes',''),ensure_ascii=False)).replace('__LINKS__',json.dumps(LINKS,ensure_ascii=False)).replace('__NOTES__',json.dumps(NOTES,ensure_ascii=False))
 import base64 as _b64
 ICONO='data:image/png;base64,'+_b64.b64encode(open(R+'icon-180.png','rb').read()).decode()

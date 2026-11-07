@@ -390,6 +390,18 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   </div>
   <div id="t-pp" class="pest" hidden>
   <section class="card">
+    <details id="dbot"><summary><h2 style="display:inline">🤖 Asistente de la web</h2> <small class="nota">(el botón 💬 que responde preguntas al momento)</small></summary>
+    <p class="nota">Cuando el cliente toca una pregunta, o escribe algo que tenga alguna de las <b>palabras clave</b>, le sale la respuesta. Si escribe el nombre de un juego, lo busca solo en los catálogos. Y siempre tiene el botón para hablar con ustedes por WhatsApp. En las respuestas puedes usar <b>{horario}</b>, <b>{direccion}</b> y <b>{mapa}</b> (salen de los datos de la tienda) y *negrita*.</p>
+    <form id="fbot">
+      <label class="sw"><input type="checkbox" id="ab-on" checked> Mostrar el asistente en la web y la app</label>
+      <div class="row"><div style="flex:1"><label for="ab-nom">Nombre</label><input id="ab-nom" maxlength="40"></div></div>
+      <label for="ab-sal">Saludo</label><textarea id="ab-sal" rows="2" maxlength="400"></textarea>
+      <h3 style="margin:14px 0 6px">Preguntas</h3><div id="ab-lista"></div>
+      <div class="row" style="margin-top:8px"><button type="button" class="chip" id="ab-add">+ Agregar pregunta</button><button type="button" class="chip" id="ab-def">↺ Volver a las de ejemplo</button></div>
+      <button class="btn" type="submit" style="margin-top:12px">Guardar asistente</button>
+    </form><div class="msg" id="mbot"></div></details>
+  </section>
+  <section class="card">
     <details id="dtema" open><summary><h2 style="display:inline">🎨 Tema de la web</h2> <small class="nota">(ambiente por un lanzamiento, se pone y se quita solo)</small></summary>
     <form id="ftema" style="margin-top:10px">
       <label for="tm-id">Tema</label><select id="tm-id"><option value="">Ninguno (la web normal)</option><option value="aventura">🌲 Aventura medieval (verde y dorado, hadas, letras de grabado)</option><option value="neon">🌴 Neón playero (atardecer, palmeras y neón, para el GTA)</option><option value="navidad">🎄 Navidad (nieve cayendo, luces, pinos y lazo rojo)</option><option value="gala">🏆 Gala de premios (negro y dorado, focos y brillos, para The Game Awards)</option><option value="blackfriday">🏷️ Black Friday (negro, amarillo y rojo, cinta de ofertas)</option></select>
@@ -656,6 +668,32 @@ function pintar(avisos){AVS={};avisos.forEach(a=>AVS[a.id]=a);
 let TMIMG='';
 function tmPintar(t){t=t||{};const c=t.cartel||{};$('tm-id').value=t.id||'';$('tm-desde').value=t.desde||'';$('tm-hasta').value=t.hasta||'';$('tm-et').value=c.etiqueta||'';$('tm-ti').value=c.titulo||'';$('tm-tx').value=c.texto||'';$('tm-bo').value=c.boton||'';$('tm-url').value=c.url||'';TMIMG=c.img||'';$('tm-img').hidden=!TMIMG;if(TMIMG)$('tm-img').src=TMIMG;$('tm-sinf-l').hidden=!TMIMG;$('tm-sinf').checked=false;
   const h=new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});msg('mtema','inf',!t.id?'Ahora la web está normal, sin tema.':(t.desde&&t.desde>h)?'Programado: empieza el '+fecha(t.desde)+'.':(t.hasta&&t.hasta<h)?'Ese tema ya terminó: la web está normal.':'✅ Activo ahora'+(t.hasta?' hasta el '+fecha(t.hasta):' (sin fecha de fin)')+'.')}
+const BOTDEF={activo:true,nombre:'Asistente GameX',saludo:'¡Hola! 👋 Soy el asistente de GameX. Toca una pregunta o escríbeme lo que buscas (por ejemplo el nombre de un juego).',preguntas:[
+ {p:'🕐 Horario y dirección',claves:'horario, hora, abren, cierran, abierto, cerrado, direccion, donde, ubicacion, local, mapa, domingo',r:'🕐 Estamos abiertos: {horario}.\n📍 {direccion}\n🗺️ Cómo llegar: {mapa}'},
+ {p:'🛒 ¿Cómo compro?',claves:'comprar, compro, pedido, pedir, carrito, encargar, como hago',r:'Busca lo que quieras en *Catálogos* o *Servicios*, agrégalo al carrito 🛒 y toca *Enviar pedido*. Te llega a nuestro WhatsApp y te respondemos enseguida.'},
+ {p:'💳 Formas de pago',claves:'pago, pagar, precio, efectivo, transferencia, dolares, usd, cup, zelle, tarjeta',r:'Aceptamos efectivo en CUP, dólares y transferencia. Los precios te los damos por WhatsApp según lo que pidas.'},
+ {p:'🎁 GameX Rewards (GX)',claves:'gx, puntos, rewards, recompensa, nivel, canje, canjear, prestigio, cumpleanos, referido',r:'Por cada $1 de compra ganas *10 GX*. Al llegar a 1,500 GX tienes $9 de recompensa, a 2,500 GX $17.50 y a 3,500 GX $28 para usar en tus compras. En tu cumpleaños ganas el doble 🎂.\nMira tus puntos en *Mi cuenta* (si ya eres cliente, entra con *Ya soy cliente*).',url:'#cuenta',boton:'Ir a Mi cuenta'},
+ {p:'🔓 Desbloqueos',claves:'desbloqueo, desbloquear, chip, piratear, pirateria, flashear, hackear, modificar',r:'Desbloqueamos PS5, PS4, Nintendo Switch (por software o chip) y Meta Quest 2, 3 y 3S. Escríbenos con tu modelo y versión y te decimos si se puede y el precio.',url:'#servicios',boton:'Ver servicios'},
+ {p:'🔧 Mantenimiento',claves:'mantenimiento, limpieza, reparar, arreglo, calienta, ruido, ventilador, pasta termica, roto',r:'Damos mantenimiento a PS4, PS5, Xbox One y Xbox Series X|S. Cuéntanos qué le pasa a tu consola por WhatsApp.',url:'#servicios',boton:'Ver servicios'},
+ {p:'💎 Suscripciones y gift cards',claves:'game pass, gamepass, ps plus, plus, suscripcion, ea play, ubisoft, fortnite, crew, gift, tarjeta regalo, steam, nintendo online',r:'Tenemos Xbox Game Pass Ultimate, PlayStation Plus, Nintendo Switch Online, Fortnite Crew, EA Play y Ubisoft+, y gift cards de Steam, PlayStation, Nintendo y Xbox.',url:'#servicios',boton:'Ver servicios'}
+]};
+function abFila(q){const d=document.createElement('div');d.className='ab-f';d.style.cssText='border:1px solid var(--line);border-radius:12px;padding:10px;margin:8px 0';
+  d.innerHTML=`<div class="row" style="gap:6px;align-items:flex-end"><div style="flex:1"><label>Pregunta (botón)</label><input class="ab-p" maxlength="60"></div><button type="button" class="chip ab-up" title="Subir">↑</button><button type="button" class="chip ab-dn" title="Bajar">↓</button><button type="button" class="chip ab-del" title="Quitar">✕</button></div>
+  <label>Palabras clave <small class="nota">(separadas por comas, sin tildes da igual)</small></label><input class="ab-k" maxlength="400">
+  <label>Respuesta</label><textarea class="ab-r" rows="3" maxlength="1200"></textarea>
+  <div class="row" style="gap:6px"><div style="flex:1"><label>Botón extra (opcional)</label><input class="ab-b" maxlength="30" placeholder="Ej: Ver servicios"></div><div style="flex:1"><label>Lleva a</label><input class="ab-u" maxlength="400" placeholder="#servicios, #cuenta o https://…"></div></div>`;
+  d.querySelector('.ab-p').value=q.p||'';d.querySelector('.ab-k').value=q.claves||'';d.querySelector('.ab-r').value=q.r||'';d.querySelector('.ab-b').value=q.boton||'';d.querySelector('.ab-u').value=q.url||'';
+  d.querySelector('.ab-del').onclick=()=>d.remove();d.querySelector('.ab-up').onclick=()=>{if(d.previousElementSibling)d.parentNode.insertBefore(d,d.previousElementSibling)};d.querySelector('.ab-dn').onclick=()=>{if(d.nextElementSibling)d.parentNode.insertBefore(d.nextElementSibling,d)};return d}
+function abPintar(b){b=b||BOTDEF;$('ab-on').checked=b.activo!==false;$('ab-nom').value=b.nombre||BOTDEF.nombre;$('ab-sal').value=b.saludo||BOTDEF.saludo;const L=$('ab-lista');L.innerHTML='';(b.preguntas&&b.preguntas.length?b.preguntas:BOTDEF.preguntas).forEach(q=>L.appendChild(abFila(q)))}
+let ABOK=false;
+$('dbot').addEventListener('toggle',async()=>{if(!$('dbot').open||ABOK)return;try{abPintar((await api('bot-ver',{})).bot);ABOK=true}catch(e){msg('mbot','bad',esc(e.message))}});
+$('ab-add').onclick=()=>{const f=abFila({});$('ab-lista').appendChild(f);f.querySelector('.ab-p').focus()};
+$('ab-def').onclick=()=>{const b=$('ab-def');if(b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Seguro? Toca otra vez';setTimeout(()=>{b.dataset.ok='';b.textContent='↺ Volver a las de ejemplo'},4000);return}b.dataset.ok='';b.textContent='↺ Volver a las de ejemplo';abPintar(BOTDEF)};
+$('fbot').onsubmit=async ev=>{ev.preventDefault();const preguntas=[...document.querySelectorAll('#ab-lista .ab-f')].map(d=>({p:d.querySelector('.ab-p').value.trim(),claves:d.querySelector('.ab-k').value.trim(),r:d.querySelector('.ab-r').value.trim(),boton:d.querySelector('.ab-b').value.trim(),url:d.querySelector('.ab-u').value.trim()})).filter(x=>x.p||x.r);
+  const mal=preguntas.find(x=>!x.p||!x.r);if(mal)return msg('mbot','bad','Cada pregunta necesita el texto del botón y la respuesta.');
+  const malu=preguntas.find(x=>x.url&&!/^(#[a-z0-9=-]{1,40}|https:\/\/\S+)$/.test(x.url));if(malu)return msg('mbot','bad','En "Lleva a" pon #servicios, #cuenta, #ofertas o un enlace que empiece por https://');
+  const btn=ev.submitter||$('fbot').querySelector('button[type=submit]');btn.disabled=true;
+  try{await api('bot',{activo:$('ab-on').checked,nombre:$('ab-nom').value.trim(),saludo:$('ab-sal').value.trim(),preguntas});msg('mbot','ok','✅ Asistente guardado. En 1–2 minutos se ve en la web y la app.')}catch(e){msg('mbot','bad',esc(e.message))}finally{btn.disabled=false}};
 async function cargarTemaP(){try{tmPintar((await api('tema-ver',{})).tema)}catch(e){msg('mtema','bad',esc(e.message))}}
 $('dtema').addEventListener('toggle',()=>{if($('dtema').open&&!$('t-pp').hidden)cargarTemaP()});
 $('tm-foto').onchange=async()=>{const f=$('tm-foto').files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{TMIMG=await fotoSubir(f);$('tm-img').src=TMIMG;$('tm-img').hidden=false;$('tm-sinf-l').hidden=false;nomsg('mtema')}catch(e){msg('mtema','bad',esc(e.message))}};
