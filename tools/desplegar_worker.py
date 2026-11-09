@@ -27,7 +27,7 @@ meta = {'main_module': 'worker.js', 'compatibility_date': '2025-01-01',
 _pj = json.load(open(SEC + '/panel.json')) if os.path.exists(SEC + '/panel.json') else None
 if _pj is not None and not _pj.get('herramientas'):  # llave larga para las herramientas y tareas programadas (no cambia con la contraseña del panel)
     _pj['herramientas'] = secrets.token_urlsafe(32); json.dump(_pj, open(SEC + '/panel.json', 'w'), indent=1)
-for nombre, archivo, campo in [('HERRAMIENTAS', 'panel.json', 'herramientas'), ('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None)]:
+for nombre, archivo, campo in [('HERRAMIENTAS', 'panel.json', 'herramientas'), ('PANEL', 'panel.json', 'clave'), ('GITHUB', 'panel.json', 'github'), ('VAPID', 'vapid.json', None), ('FIREBASE', 'firebase-admin.json', None), ('PUENTE', 'puente.json', 'secreto')]:
     try:
         d = json.load(open(SEC + '/' + archivo)); v = d[campo] if campo else json.dumps(d)
         if v: meta['bindings'].append({'type': 'secret_text', 'name': nombre, 'text': v})

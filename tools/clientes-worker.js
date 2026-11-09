@@ -148,6 +148,8 @@ const azar=n=>hex(crypto.getRandomValues(new Uint8Array(n)));
 async function hashClave(pass,sal){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(sal),iterations:20000},k,256))}
 const claveOK=p=>typeof p==='string'&&p.length>=6&&p.length<=64;
+// IP real del cliente: si la llamada viene por el puente de pages.dev (para Cuba sin VPN), la trae en X-GX-IP firmada con el secreto
+function ipReal(req,env){const p=req.headers.get('X-GX-Puente');if(p&&env.PUENTE&&p===env.PUENTE)return req.headers.get('X-GX-IP')||'';return req.headers.get('CF-Connecting-IP')||''}
 async function cuenta(req,env,u){
   const D=statsDO(env),ruta=u.pathname.slice(8);
   if(ruta==='yo'||ruta==='salir'){
@@ -170,7 +172,7 @@ async function cuenta(req,env,u){
   }
   if(ruta==='activar'||ruta==='entrar'){
     const gx=limpiaGX(q.gx);if(!gx)return r({error:'Escribe tu ID GX (ej. GX0012)'},400);
-    const ip=req.headers.get('CF-Connecting-IP')||'';
+    const ip=ipReal(req,env);
     if(await D.fallo('g:'+gx,false)>=8||await D.fallo('i:'+ip,false)>=20)return r({error:'Demasiados intentos. Espera 15 minutos o escríbenos por WhatsApp.'},429);
     const c=await D.cred(gx),mal=async m=>{await D.fallo('g:'+gx,true);await D.fallo('i:'+ip,true);return r({error:m},400)};
     if(!c||c.estado!=='activo')return mal('Ese ID GX no está registrado. Revisa el número o escríbenos.');

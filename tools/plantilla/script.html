@@ -134,9 +134,13 @@ const cuN=n=>(n||0).toLocaleString('es');
 const cuMoney=x=>'$'+(+x).toFixed(2);
 const cuMES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const cuF=f=>{if(!f)return'';const[y,m,d]=f.split('-');return +d+' '+cuMES[+m-1]+' '+y};
+let CU_OK=(()=>{try{return localStorage.getItem('gx-cu-base')||''}catch(e){return ''}})();
 async function cuPost(ruta,body,tok){
   const o={method:body?'POST':'GET',headers:{}};if(body){o.headers['Content-Type']='application/json';o.body=JSON.stringify(body)}if(tok)o.headers.Authorization='Bearer '+tok;
-  let r;try{r=await fetch(CU_API()+ruta,o)}catch(e){throw new Error('No hay conexión a internet. Prueba otra vez.')}
+  // primero por el puente de pages.dev (en Cuba workers.dev está bloqueado sin VPN); si no responde, directo
+  const bases=[...new Set([CU_OK,'https://gamex-cu.pages.dev/cuenta/',CU_API()].filter(Boolean))];let r=null;
+  for(const b of bases){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),15000);try{const x=await fetch(b+ruta,{...o,signal:ac.signal});clearTimeout(tm);if(x.status>=500||(x.status===404&&!(x.headers.get('content-type')||'').includes('json')))continue;r=x;if(CU_OK!==b){CU_OK=b;try{localStorage.setItem('gx-cu-base',b)}catch(e){}}break}catch(e){clearTimeout(tm)}}
+  if(!r){CU_OK='';throw new Error('No hay conexión a internet. Prueba otra vez.')}
   const d=await r.json().catch(()=>({error:'Respuesta rara del servidor'}));if(!r.ok){const e=new Error(d.error||'Error '+r.status);e.status=r.status;throw e}return d}
 function cuMsg(tipo,html){const m=$('cu-msg');m.className='cu-msg '+(tipo||'');m.innerHTML=html;m.hidden=!html}
 function cuTab(t){document.querySelectorAll('[data-cu]').forEach(b=>b.setAttribute('aria-selected',b.dataset.cu===t));['entrar','activar','pedir'].forEach(x=>$('cu-'+x).hidden=x!==t);cuMsg('','')}

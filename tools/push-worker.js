@@ -450,7 +450,7 @@ export default{async fetch(req,env){
     const NUMS=['5353441089','5353827989','5352933943'],num=NUMS[+u.searchParams.get('n')]||NUMS[0];
     const app=['ps4','ps5','switch'].includes(u.searchParams.get('a'))?u.searchParams.get('a'):'otro',t=(u.searchParams.get('t')||'').slice(0,3000);
     if(env.STATS&&t){try{
-      const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
+      const ua=req.headers.get('User-Agent')||'',ip=ipReal(req,env);
       const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
       const filas=[];let cat='';
       for(const l of t.split('\n')){const m1=l.match(/^\*(.+)\*$/);if(m1){cat=m1[1];continue}
@@ -465,7 +465,7 @@ export default{async fetch(req,env){
     return new Response(g.body,{headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'max-age=300'}});
   }
   if(u.pathname==='/descargar'){ /* cuenta la descarga de la app y manda al APK */
-    if(env.STATS){const ua=req.headers.get('User-Agent')||'',ip=req.headers.get('CF-Connecting-IP')||'';
+    if(env.STATS){const ua=req.headers.get('User-Agent')||'',ip=ipReal(req,env);
       const uid=(await id(ip+ua+new Date().toISOString().slice(0,10))).slice(0,24);
       const disp=/android/i.test(ua)?'android':/iphone|ipad/i.test(ua)?'iphone':/windows|macintosh|linux/i.test(ua)?'pc':'otro';
       try{await statsDO(env).agregar([{tipo:'descarga',v:u.searchParams.get('de')||'web',n:null,uid,disp,org:'web'}])}catch(e){}}
