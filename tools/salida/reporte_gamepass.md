@@ -1,13 +1,11 @@
-# Game Pass – revisión del 2026-11-05
+# Game Pass – revisión del 2026-11-10
 
-Total: 611 juegos (antes 606).
+Total: 614 juegos (antes 611).
 
-## Entraron (5)
-- Escape Academy 2: Back 2 School
-- Firefighting Simulator: Ignite
-- MySims
-- MySims Kingdom
-- Void/breaker
+## Entraron (3)
+- Football Manager 27 Console
+- TANUKI: Pon's Summer
+- Warhammer Survivors
 
 ## Salieron (0)
 

@@ -1,5 +1,5 @@
 GAMEX1
-V	282
+V	283
 F	10 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6731,6 +6731,7 @@ J	0	Firefighting Simulator - The Squad
 J	2	Firefighting Simulator: Ignite
 J	2	FixForce
 J	0	Football Manager 26 Console
+J	2	Football Manager 27 Console
 J	1	For Honor
 J	0	For The King II
 J	3	Forever Ago
@@ -7006,6 +7007,7 @@ J	2	Supermarket Simulator
 J	0	Symphonia 𝄞
 J	2	Tales of Kenzera: ZAU
 J	0	Tamashika
+J	0	TANUKI: Pon's Summer
 J	0	TCG Card Shop Simulator
 J	0	Tell Me Why: Chapters 1-3
 J	0	Tempopo
@@ -7093,6 +7095,7 @@ J	1	War Thunder
 J	3	Warhammer 40,000: Darktide
 J	2	Warhammer 40,000: Rogue Trader
 J	2	Warhammer 40,000: Space Marine 2
+J	2	Warhammer Survivors
 J	0	Warhammer: Vermintide 2
 J	0	Wasteland 2: Director's Cut
 J	0	Wasteland 3
