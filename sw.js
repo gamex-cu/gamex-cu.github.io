@@ -1,5 +1,6 @@
 // Catálogo GameX: guarda la página para usarla sin internet.
 // Con internet siempre busca la versión nueva primero; sin internet usa la última guardada.
+// v4: imágenes de app/img y app/fotos se guardan para siempre (nombre-código).
 // v3: el guardado en caché ya no depende de waitUntil dentro de la respuesta (Safari lo rechazaba).
 const C='gamex-offline';
 const BASE=['./','icon-180.png','icon-192.png','icon-512.png','manifest.webmanifest'];
@@ -10,6 +11,9 @@ self.addEventListener('message',e=>{if(e.data==='guardar')e.waitUntil(caches.ope
 self.addEventListener('fetch',e=>{
   const r=e.request;const u=new URL(r.url);
   if(r.method!=='GET'||u.origin!==location.origin||u.pathname.endsWith('version.json')||u.pathname.endsWith('.apk'))return;
+  // Imágenes con nombre-código (app/img) y fotos de ofertas (app/fotos): nunca cambian, así que se usan
+  // directo de lo guardado y solo se bajan la primera vez.
+  if(/\/app\/(img|fotos)\//.test(u.pathname)){e.respondWith(caches.open(C).then(c=>c.match(u.pathname).then(m=>m||fetch(r).then(res=>{if(res&&res.ok&&!res.redirected)c.put(u.pathname,res.clone());return res}))));return}
   const nav=r.mode==='navigate'||(r.headers.get('accept')||'').includes('text/html');
   const key=nav?'./':(u.pathname.replace(/^.*\//,'')||'./');
   const red=fetch(nav?u.pathname+u.search:r,{cache:'no-store'}).then(res=>({res,cp:(res&&res.ok&&!res.redirected)?res.clone():null}));

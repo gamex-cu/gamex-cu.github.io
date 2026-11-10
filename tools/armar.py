@@ -7,6 +7,19 @@ D=T+'datos/'
 os.makedirs(T+'salida',exist_ok=True)
 VJ=R+'app/version.json';VV=json.load(open(VJ));VER=VV['catalogo']+1;VV['catalogo']=VER;json.dump(VV,open(VJ,'w'),ensure_ascii=False,indent=2)
 head=open(T+'plantilla/cabecera.html').read(); js=open(T+'plantilla/script.html').read()
+# ---- imágenes con nombre-código: tools/imagenes/* -> app/img/<código>.<ext> (el código sale del contenido,
+# así cada imagen distinta tiene un nombre distinto y la web puede guardarlas para siempre sin riesgo) ----
+import hashlib as _hl
+_IMG=R+'app/img/';os.makedirs(_IMG,exist_ok=True)
+def _cod(p):
+    b=open(p,'rb').read();n=_hl.sha1(b).hexdigest()[:12]+os.path.splitext(p)[1].lower()
+    if not os.path.exists(_IMG+n): open(_IMG+n,'wb').write(b)
+    return 'img/'+n
+_LG={os.path.splitext(f)[0]:_cod(T+'imagenes/logos/'+f) for f in sorted(os.listdir(T+'imagenes/logos')) if not f.startswith('.')}
+for _a,_b in [('const LOGOS=','const LG='+json.dumps(_LG)+',LOGOS='),
+              ("https://gamex-cu.github.io/app/logos/${m[1]}${m[1].includes('.')?'':'.png'}","https://gamex-cu.github.io/app/${LG[m[1]]}"),
+              ('https://gamex-cu.github.io/app/gta6.png','https://gamex-cu.github.io/app/'+_cod(T+'imagenes/gta6.png'))]:
+    assert _a in js,_a; js=js.replace(_a,_b,1)
 # ---- datos de la tienda (los cambia el panel: tools/datos/tienda.json) ----
 import html as _h, re as _re
 try: TI=json.load(open(D+'tienda.json'))
