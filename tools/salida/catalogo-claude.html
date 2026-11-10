@@ -257,6 +257,7 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sgrid{display:grid;gap:12px;margin-top:8px}
 @media(min-width:720px){.sgrid{grid-template-columns:1fr 1fr}}
 .scard{display:flex;flex-direction:column;border:1px solid rgba(217,43,43,.55);border-radius:14px;background:linear-gradient(135deg,rgba(217,43,43,.12),rgba(61,123,255,.06));padding:16px}
+.scard.slg{position:relative}.scard.slg>h3,.scard.slg>p{padding-right:62px}.slogo{position:absolute;top:16px;right:16px;width:46px;height:46px;object-fit:contain;opacity:.95;pointer-events:none}.slogo.ancho{width:72px;height:22px;top:20px}.scard.slg:has(.ancho)>h3,.scard.slg:has(.ancho)>p{padding-right:84px}
 .scard .si{font-size:1.8rem;line-height:1;margin-bottom:8px}
 .scard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
 .scard p{margin:0;color:var(--muted);line-height:1.45;white-space:pre-line;flex:1}
@@ -534,6 +535,10 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 <p class="note" id="msg">Se abrirá WhatsApp con tu lista ya escrita. Solo tienes que darle a enviar.</p>
 </div></div>
 <script>
+// logo de la marca en la esquina de cada servicio (se carga solo al abrir esa sección)
+const LOGOS=[[/playstation/i,'playstation'],[/xbox/i,'xbox'],[/nintendo/i,'nintendo'],[/steam/i,'steam']];
+function logoServ(t){const m=LOGOS.find(([r])=>r.test(t));return m?`<img class="slogo${m[1]==='nintendo'?' ancho':''}" src="https://gamex-cu.github.io/app/logos/${m[1]}.png" alt="" loading="lazy" width="52" height="52">`:''}
+
 const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a'],['PlayStation Plus','playstation-plus','#f5c400','#0d1124','#ffd84d']];
 const PSPMES="Noviembre 2026";
 const CAND=new Set(['PS4','PS5','Switch','Meta Quest']),lk=c=>CAND.has(c)?' <span class="lk" title="Consola desbloqueada" role="img" aria-label="desbloqueada"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="14" height="10" rx="2.2" fill="currentColor" fill-opacity=".22"/><path d="M8 11V7.5a4.5 4.5 0 0 1 8.7-1.6"/><circle cx="11" cy="16" r="1.3" fill="currentColor" stroke="none"/></svg></span>':'';
@@ -754,7 +759,7 @@ function pintarServ(h){const x=SERV.find(y=>svSlug(y)===h);
   $('sv-n').textContent=x?(x.icono?x.icono+' ':'')+x.s:'Servicios';$('sv-n').style.setProperty('--ct',x&&x.texto||'var(--fg)');
   $('sv-c').textContent=x?(x.d||'Escoge y pídelo por WhatsApp.'):'Escoge un servicio y pídelo por WhatsApp.';
   if(!x)return;
-  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard"><h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?esc(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
+  $('slist').innerHTML=`<div class="sgrid">${(x.items||[]).length?x.items.map((it,ii)=>`<article class="scard${logoServ(it.t)?' slg':''}">${logoServ(it.t)}<h3>${esc(it.t)}</h3>${it.montos?`<p>Montos: ${it.montos.map(m=>'$'+m).join(', ').replace(/, ([^,]*)$/,' y $1')}. Puedes pedir varias.</p>`:''}${it.grupos?`<p>${it.grupos.map(g=>g.o.length>4?g.o.length+' opciones de '+esc(g.n.toLowerCase()):esc(g.o.map(o=>o.t).join(', ').replace(/, ([^,]*)$/,' o $1'))).join(' · ')}</p>`:it.d?`<p>${esc(it.d)}</p>`:''}<a class="op wa-pick" href="#" ${it.grupos||it.montos?`data-sv="${SERV.indexOf(x)}:${ii}" `:''}data-t="${esc(it.msg||'Hola GameX, me interesa: '+(it.pedido||it.t)+(it.grupos||it.pedido?'':' ('+x.s+')'))}">${it.grupos||it.montos?esc(it.boton||'Escoger plan'):'Pedir por WhatsApp'}</a></article>`).join('')
     :`<article class="scard"><p>Escríbenos y te decimos las opciones disponibles de ${esc(x.s.toLowerCase())}.</p><a class="op wa-pick" href="#" data-t="${esc('Hola GameX, quiero información sobre: '+x.s)}">Preguntar por WhatsApp</a></article>`}</div>`}
 $('back-serv').addEventListener('click',e=>{e.preventDefault();if(location.hash.startsWith('#sv-')){location.hash='servicios';return}history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
 $('back-cuenta').addEventListener('click',e=>{e.preventDefault();history.replaceState(null,'',location.pathname+location.search);route();window.scrollTo(0,0)});
