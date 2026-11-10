@@ -285,7 +285,7 @@ footer h4{font-family:var(--display);font-size:.85rem;letter-spacing:.16em;text-
 .sgrid{display:grid;gap:12px;margin-top:8px}
 @media(min-width:720px){.sgrid{grid-template-columns:1fr 1fr}}
 .scard{display:flex;flex-direction:column;border:1px solid rgba(217,43,43,.55);border-radius:14px;background:linear-gradient(135deg,rgba(217,43,43,.12),rgba(61,123,255,.06));padding:16px}
-.scard.slg{position:relative}.scard.slg>h3,.scard.slg>p{padding-right:62px}.slogo{position:absolute;top:16px;right:16px;width:46px;height:46px;object-fit:contain;opacity:.95;pointer-events:none}.slogo.ancho{width:72px;height:22px;top:20px}.scard.slg:has(.ancho)>h3,.scard.slg:has(.ancho)>p{padding-right:84px}
+.scard.slg{position:relative}.scard.slg>h3,.scard.slg>p{padding-right:62px}.slogo{position:absolute;top:16px;right:16px;width:46px;height:46px;object-fit:contain;object-position:right center;opacity:.95;pointer-events:none}.slogo.ancho{width:72px;height:22px;top:20px}.slogo.medio{width:64px;height:46px}.slogo.alto{width:72px;height:56px;top:12px}.scard.slg:has(.alto)>h3,.scard.slg:has(.alto)>p{padding-right:90px}.slogo.largo{width:110px;height:24px;top:19px}.scard.slg:has(.largo)>h3{padding-right:124px}.slogo.foto{border-radius:10px;object-fit:cover;width:46px;height:46px}.scard.slg:has(.ancho)>h3,.scard.slg:has(.ancho)>p,.scard.slg:has(.medio)>h3,.scard.slg:has(.medio)>p{padding-right:84px}
 .scard .si{font-size:1.8rem;line-height:1;margin-bottom:8px}
 .scard h3{margin:0 0 6px;font:700 1.2rem var(--display)}
 .scard p{margin:0;color:var(--muted);line-height:1.45;white-space:pre-line;flex:1}
@@ -593,8 +593,8 @@ mark{background:var(--hot);color:#1a1200;border-radius:2px;padding:0 1px}
 </div></div>
 <script>
 // logo de la marca en la esquina de cada servicio (se carga solo al abrir esa sección)
-const LOGOS=[[/playstation/i,'playstation'],[/xbox/i,'xbox'],[/nintendo/i,'nintendo'],[/steam/i,'steam']];
-function logoServ(t){const m=LOGOS.find(([r])=>r.test(t));return m?`<img class="slogo${m[1]==='nintendo'?' ancho':''}" src="https://gamex-cu.github.io/app/logos/${m[1]}.png" alt="" loading="lazy" width="52" height="52">`:''}
+const LOGOS=[[/game ?pass/i,'gamepass'],[/ea play/i,'eaplay'],[/fortnite/i,'fortnite'],[/meta/i,'meta'],[/ubisoft/i,'ubisoft'],[/playstation plus|ps plus/i,'psplus'],[/playstation 5|ps5/i,'ps5'],[/playstation 4|ps4/i,'ps4'],[/switch/i,'switch'],[/playstation/i,'playstation'],[/xbox one/i,'xboxone'],[/series/i,'xboxxs'],[/xbox/i,'xbox'],[/nintendo/i,'nintendo'],[/steam/i,'steam']],ANCHOS={nintendo:'ancho',eaplay:'ancho',gamepass:'medio',ps4:'ancho',ps5:'ancho',ubisoft:'largo',xboxone:'alto',xboxxs:'alto'};
+function logoServ(t){const m=LOGOS.find(([r])=>r.test(t));return m?`<img class="slogo${ANCHOS[m[1]]?' '+ANCHOS[m[1]]:''}" src="https://gamex-cu.github.io/app/logos/${m[1]}${m[1].includes('.')?'':'.png'}" alt="" loading="lazy" width="52" height="52">`:''}
 
 const CONS=[['PS4','ps4','#1e47b8','#fff','#8fb0ff'],['PS5','ps5','#f2f4ff','#0d1124','#e9ecff'],['PC','pc','#e07a10','#fff','#ffc27d'],['Xbox Game Pass','xbox-game-pass','#107c10','#fff','#7fdc7f'],['Xbox pago','xbox-pago','#0e5c0e','#fff','#a8e6a8'],['Meta Quest','meta-quest','#7a3fe0','#fff','#cdb0ff'],['Switch','switch','#d92b2b','#fff','#ff9a9a'],['PlayStation Plus','playstation-plus','#f5c400','#0d1124','#ffd84d']];
 const PSPMES="Noviembre 2026";
@@ -1243,7 +1243,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=284;
+const GXV=293;
 let GXN=0;
 async function gxRefresh(e){const bs=[document.getElementById('refresh'),document.getElementById('upd-b')].filter(Boolean),b=e&&e.currentTarget||bs[0];
   if(b&&b.classList.contains('cargando'))return;
