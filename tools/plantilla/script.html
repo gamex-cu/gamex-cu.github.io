@@ -160,7 +160,7 @@ async function cuCargar(){
 async function cuSolEstado(){
   const s=cuLS.get('gx-solicitud');if(!s)return $('cu-sol').hidden=true;const [id,k]=s.split(':');
   try{const d=await cuPost(`solicitud?id=${id}&k=${k}`);const el=$('cu-sol');el.hidden=false;
-    if(d.estado==='aprobada'){el.innerHTML=`🎉 <b>¡Tu cuenta fue aprobada!</b> Tu ID es <b>${esc(d.gx)}</b>. Entra con él y la contraseña que pusiste.`;$('ce-gx').value=d.gx}
+    if(d.estado==='aprobada'){el.innerHTML=`🎉 <b>¡Tu cuenta fue aprobada!</b> Tu ID es <b>${esc(d.gx)}</b>. Entra con él y la contraseña que pusiste.<br>⚠️ Por ahora necesitas una <b>VPN</b> encendida para entrar. Estamos trabajando para quitar eso pronto.`;$('ce-gx').value=d.gx}
     else if(d.estado==='rechazada'){el.innerHTML='Tu solicitud no fue aprobada. Escríbenos por WhatsApp si crees que es un error.';cuLS.set('gx-solicitud',null)}
     else el.innerHTML=`⏳ Tu solicitud n.º ${esc(id)} está <b>en revisión</b>. Te avisamos por WhatsApp cuando esté lista.`}
   catch(e){$('cu-sol').hidden=true}

@@ -942,7 +942,7 @@ $('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;
   if(a==='rechazar'&&b.dataset.ok!=='1'){b.dataset.ok='1';b.textContent='¿Rechazar?';return}
   b.disabled=true;nomsg('msol');
   try{const d=await api('cli-solicitud',{id,accion:a,gx:($('sg'+id)||{}).value});pintarSol(d);
-    if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.`;
+    if(d.aprobado){const x=d.aprobado,t=`Hola ${x.nombre.split(' ')[0]} 👋, ¡tu cuenta de GameX Rewards fue aprobada! Tu ID es *${x.gx}*.\nEntra en https://gamex-cu.github.io/#cuenta → *Mi cuenta* → *Entrar*, con tu ID y la contraseña que pusiste.\n\n⚠️ *Importante:* por ahora, para entrar a tu cuenta tienes que tener una *VPN* encendida. Estamos trabajando para quitar eso pronto. Si te da algún problema, escríbenos por aquí 👍`;
       msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(waUrl(x.tel,t))}">💬 Avisarle por WhatsApp</a> <a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(tgUrl(x.tel,t))}">✈️ Pasarlo por Telegram</a>`)}
     else msg('msol','ok','Solicitud rechazada.');clientes()}
   catch(err){msg('msol','bad',esc(err.message));b.disabled=false}};
