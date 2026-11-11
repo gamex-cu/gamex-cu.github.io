@@ -29,7 +29,7 @@ const PORT=new Set(__PORT__),EMU=new Set(__EMU__),HYPER=new Set(__HYPER__);
 const EXCL=new Set(__EXCL__);
 // Juegos que de momento no se pueden pedir (p. ej. FC 25+ en Xbox: no se pueden inyectar; el 24 sí)
 const NODISP=k=>/^Xbox/.test(k)&&/\|ea sports fc 2[5-9]\b/i.test(k);
-const badges=k=>(NODISP(k)?' <span class="nd">De momento no disponible</span>':'')+(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(EXCL.has(k)?' <span class="ex">Exclusivo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(HYPER.has(k)?' <span class="hv">Hypervisor</span>':'')+CUSTOM.filter(f=>f.s.has(k)).map(f=>' <span class="cf" style="--fc:'+f.c+'">'+esc(f.l)+'</span>').join('')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
+const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(EXCL.has(k)?' <span class="ex">Exclusivo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(HYPER.has(k)?' <span class="hv">Hypervisor</span>':'')+CUSTOM.filter(f=>f.s.has(k)).map(f=>' <span class="cf" style="--fc:'+f.c+'">'+esc(f.l)+'</span>').join('')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
 const countOf=c=>(RAW[c]||[]).length;
@@ -250,7 +250,7 @@ $('hq').addEventListener('input',e=>{const v=e.target.value;if(!v.trim())return;
 $('flogo').src=document.querySelector('h1 .logo').src;
 (function(){const el=$('open-now');try{const p=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'America/Havana',weekday:'short',hour:'numeric',hour12:false}).formatToParts(new Date()).map(x=>[x.type,x.value]));const h=+p.hour%24;const on=p.weekday!=='Sun'&&h>=10&&h<18;el.textContent=on?'Abierto ahora':'Cerrado ahora';el.className='open '+(on?'on':'off')}catch(e){el.hidden=true}})();
 
-let cart=[];try{const old=JSON.parse(localStorage.getItem('gamex-cart')||'[]');cart=JSON.parse(localStorage.getItem('gamex-cart-v2')||'null')||old.map(n=>'PS4|'+n);cart=cart.filter(k=>KEYS.has(k)&&!NODISP(k))}catch(e){}
+let cart=[];try{const old=JSON.parse(localStorage.getItem('gamex-cart')||'[]');cart=JSON.parse(localStorage.getItem('gamex-cart-v2')||'null')||old.map(n=>'PS4|'+n);cart=cart.filter(k=>KEYS.has(k))}catch(e){}
 let dest='5353441089';
 const save=()=>{try{localStorage.setItem('gamex-cart-v2',JSON.stringify(cart))}catch(e){}};
 const split=k=>{const i=k.indexOf('|');return [k.slice(0,i),k.slice(i+1)]};
@@ -267,7 +267,8 @@ function sync(){
   const s=$('send');s.href=`https://wa.me/${dest}?text=${encodeURIComponent(text())}`;s.style.opacity=cart.length?1:.45;
   save();
 }
-function ndAviso(k){let t=$('ndt');if(!t){t=document.createElement('div');t.id='ndt';t.setAttribute('role','status');document.body.appendChild(t)}t.textContent='⛔ '+split(k)[1]+' para Xbox de momento no está disponible. El que sí tenemos es el EA Sports FC 24.';t.className='on';clearTimeout(t._t);t._t=setTimeout(()=>t.className='',4200)}
+function ndAviso(k){let m=$('ndm');if(!m){m=document.createElement('div');m.id='ndm';m.hidden=true;m.innerHTML='<div class="ndc" role="dialog" aria-modal="true" aria-labelledby="ndh"><h3 id="ndh"></h3><p>⚠️ Por el momento <b>no está disponible para inyectar</b>, solo funciona <b>con internet</b>.</p><p class="ndok">✅ Disponible para inyectar: <b>EA Sports FC 24</b></p><p>¿Lo quieres de todas formas?</p><div class="ndb"><button type="button" class="si">Sí, agregarlo</button><button type="button" class="no">No</button></div></div>';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m||e.target.closest('.no'))m.hidden=true;else if(e.target.closest('.si')){m.hidden=true;if(!cart.includes(m.dataset.k)){cart.push(m.dataset.k);sync()}}})}
+  m.dataset.k=k;$('ndh').textContent=split(k)[1]+' · '+nom(split(k)[0]);m.hidden=false;m.querySelector('.si').focus()}
 function toggle(k){if(NODISP(k)&&!cart.includes(k))return ndAviso(k);const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);sync()}
 list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
