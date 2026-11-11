@@ -599,7 +599,7 @@ fetch('https://gamex-cu.github.io/app/avisos.json?b='+Date.now(),{cache:'no-stor
 </script>
 <script>
 /* Contador para el lanzamiento de GTA VI (19 nov 2026, hora de Cuba). Ese día dice "¡Ya salió!" y al día siguiente desaparece solo. */
-(()=>{const SALE=Date.parse('2026-11-19T00:00:00-05:00'),FIN=Date.parse('2026-11-20T00:00:00-05:00');if(Date.now()>=FIN)return;
+(()=>{const SALE=Date.parse('2026-11-18T18:00:00-05:00'),FIN=Date.parse('2026-11-20T00:00:00-05:00');if(Date.now()>=FIN)return;
 const l=document.querySelector('#home header .lede');if(!l)return;
 const st=document.createElement('style');st.textContent=`.gx-cd-w{text-align:center;position:relative;z-index:1}.gx-cd{display:inline-flex;align-items:center;gap:8px;margin:12px auto 0;padding:5px 14px 5px 10px;border-radius:999px;background:linear-gradient(90deg,rgba(255,79,139,.18),rgba(122,47,191,.18));border:1px solid rgba(255,79,139,.55);color:#fff;font:600 13px/1.2 system-ui,-apple-system,"Segoe UI",sans-serif;text-decoration:none;box-shadow:0 0 14px rgba(255,79,139,.25)}.gx-cd:hover{border-color:#ff4f8b;box-shadow:0 0 20px rgba(255,79,139,.45)}.gx-cd img{height:24px;width:auto;display:block;margin:-2px 0}.gx-cd .n{font-variant-numeric:tabular-nums;font-weight:700}`;document.head.appendChild(st);
 const w=document.createElement('div');w.className='gx-cd-w';w.innerHTML=`<a class="gx-cd wa-pick" href="#" data-t="Hola GameX, quiero info del GTA VI" aria-label="Cuenta atrás para GTA VI. Toca para preguntar por WhatsApp"><img src="https://gamex-cu.github.io/app/gta6.png" alt="GTA VI" width="32" height="24"><span class="t"></span></a>`;l.after(w);

@@ -1,6 +1,6 @@
 GAMEX1
-V	296
-F	10 nov 2026
+V	297
+F	11 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
