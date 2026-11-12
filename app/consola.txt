@@ -1,6 +1,6 @@
 GAMEX1
-V	300
-F	11 nov 2026
+V	302
+F	12 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -213,6 +213,7 @@ J	0	Asemblance: Oversight
 J	0	Aseprite
 J	0	Ashen
 J	0	Ashes of Oahu
+J	0	Ashes of the Singularity II
 J	0	Ashes of the Singularity: Escalation
 J	0	Assassin's Creed 2
 J	0	Assassin's Creed Black Flag Resynced
@@ -1108,7 +1109,7 @@ J	0	DYNASTY WARRIORS 9
 J	0	Dynasty Warriors Origins Deluxe Edition
 J	0	DYSMANTLE
 J	0	EA SPORTS College Football 27
-J	256	EA Sports FC 27
+J	0	EA Sports FC 27
 J	0	Earth 2150 Trilogy
 J	0	EARTH DEFENSE FORCE
 J	0	EARTH DEFENSE FORCE 5
@@ -5237,6 +5238,7 @@ J	0	Sonic Colors Ultimate
 J	0	Sonic Forces
 J	0	Sonic Frontiers
 J	0	Sonic Mania
+J	0	Sonic Origins Plus
 J	0	Sonic Racing CrossWorlds
 J	0	Sonic Superstars Deluxe Edition
 J	0	Soul Hackers 2
@@ -6292,6 +6294,7 @@ J	0	Sniper Ghost Warrior Contracts 2
 J	0	Snoopy & the Great Mystery Club Deluxe Edition
 J	0	SnowRunner
 J	8	Song in the Smoke: Rekindled
+J	0	Sonic Origins Plus
 J	0	Sonic Racing CrossWorlds
 J	0	Soulstice
 J	0	South of Midnight
