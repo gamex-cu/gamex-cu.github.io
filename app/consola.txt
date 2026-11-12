@@ -1,5 +1,5 @@
 GAMEX1
-V	308
+V	309
 F	12 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -3712,6 +3712,7 @@ J	0	The Legend of Heroes: Trails of Cold Steel II
 J	0	The Legend of Heroes: Trails of Cold Steel IV
 J	0	The Legend of Kyrandia Trilogy
 J	0	The Legend of Zelda Breath of the Wild
+J	32	The Legend of Zelda: Ocarina of Time
 J	0	The LEGO Movie 2 Videogame
 J	0	The LEGO NINJAGO Movie Video Game
 J	0	The Light of Celestia
