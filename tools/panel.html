@@ -434,6 +434,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <label for="tm-bo">Texto del botón</label><input id="tm-bo" maxlength="30" placeholder="Pedir por WhatsApp">
       <label for="tm-url">Enlace del botón <small>(vacío = WhatsApp)</small></label><input id="tm-url" type="url" placeholder="https://…">
       <label for="tm-foto">Foto <small>(opcional)</small></label><input id="tm-foto" type="file" accept="image/*"><img id="tm-img" alt="" hidden style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tm-sinf-l" hidden><input type="checkbox" id="tm-sinf"><span>Quitar la foto</span></label>
+      <button type="button" class="btn sec" id="tm-probar" style="width:100%;margin-top:10px">👁️ Probar en la web (sin guardar)</button><p class="nota" id="tm-probar-n" hidden>La prueba está abierta en otra pestaña: cada cambio que hagas aquí se ve allí en un momento. Cuando te guste, toca "Guardar tema".</p>
       <div class="row" style="margin-top:10px"><button class="btn" style="flex:1">Guardar tema</button><button type="button" class="btn sec" id="tm-quitar" style="flex:1">Quitar tema</button></div>
     </form><div class="msg" id="mtema"></div></details>
   </section>
@@ -713,8 +714,8 @@ function tpLista(){let L=[];try{L=JSON.parse(localStorage.getItem('gx-temas-prop
 function tpPintarLista(){const L=tpLista();$('tp-pl').innerHTML='<option value="">— Escoge para cargarlo —</option>'+L.map((x,i)=>`<option value="${i}">${esc(x.nombre)}</option>`).join('')}
 ['tp-bg','tp-panel','tp-ac','tp-bo','tp-tx','tp-fu','tp-ma','tp-os','tp-qcab','tp-qfon'].forEach(id=>$(id).addEventListener('input',tpVista));$('tp-dec').addEventListener('change',tpVista);
 $('tm-id').addEventListener('change',()=>{$('tp-box').hidden=$('tm-id').value!=='propio';if(!$('tp-box').hidden){tpPintarLista();tpVista()}});
-[['cab','tp-fcab'],['fon','tp-ffon']].forEach(([k,id])=>$(id).onchange=async()=>{const f=$(id).files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{const u=await fotoSubir(f);if(k==='cab')TPCAB=u;else TPFON=u;$('tp-i'+k).src=u;$('tp-i'+k).hidden=false;$('tp-q'+k+'-l').hidden=false;$('tp-q'+k).checked=false;nomsg('mtema');tpVista()}catch(e){msg('mtema','bad',esc(e.message))}});
-$('tp-pl').onchange=()=>{const x=tpLista()[+$('tp-pl').value];if(x){tpPoner(x.cfg);$('tp-nom').value=x.nombre}};
+[['cab','tp-fcab'],['fon','tp-ffon']].forEach(([k,id])=>$(id).onchange=async()=>{const f=$(id).files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{const u=await fotoSubir(f);if(k==='cab')TPCAB=u;else TPFON=u;$('tp-i'+k).src=u;$('tp-i'+k).hidden=false;$('tp-q'+k+'-l').hidden=false;$('tp-q'+k).checked=false;nomsg('mtema');tpVista();tmCambio()}catch(e){msg('mtema','bad',esc(e.message))}});
+$('tp-pl').onchange=()=>{const x=tpLista()[+$('tp-pl').value];if(x){tpPoner(x.cfg);$('tp-nom').value=x.nombre;tmCambio()}};
 $('tp-guarda').onclick=()=>{const n=$('tp-nom').value.trim();if(!n)return msg('mtema','bad','Ponle un nombre para guardarlo.');const L=tpLista().filter(x=>x.nombre!==n);L.unshift({nombre:n,cfg:tpLeer()});try{localStorage.setItem('gx-temas-propios',JSON.stringify(L.slice(0,30)))}catch(e){}tpPintarLista();msg('mtema','ok','💾 Guardado en tus temas: "'+esc(n)+'". Para ponerlo en la web toca "Guardar tema".')};
 $('tp-borra').onclick=()=>{const i=$('tp-pl').value;if(i==='')return;const L=tpLista();const n=L[+i]?.nombre;if(!confirm('¿Borrar "'+n+'" de tus temas guardados?'))return;L.splice(+i,1);try{localStorage.setItem('gx-temas-propios',JSON.stringify(L))}catch(e){}tpPintarLista()};
 function tmPintar(t){t=t||{};const c=t.cartel||{};$('tm-id').value=t.id||'';$('tp-box').hidden=t.id!=='propio';if(t.id==='propio'){tpPintarLista();tpPoner(t.cfg)}$('tm-desde').value=t.desde||'';$('tm-hasta').value=t.hasta||'';$('tm-et').value=c.etiqueta||'';$('tm-ti').value=c.titulo||'';$('tm-tx').value=c.texto||'';$('tm-bo').value=c.boton||'';$('tm-url').value=c.url||'';TMIMG=c.img||'';$('tm-img').hidden=!TMIMG;if(TMIMG)$('tm-img').src=TMIMG;$('tm-sinf-l').hidden=!TMIMG;$('tm-sinf').checked=false;
@@ -747,10 +748,18 @@ $('fbot').onsubmit=async ev=>{ev.preventDefault();const preguntas=[...document.q
   try{await api('bot',{activo:$('ab-on').checked,nombre:$('ab-nom').value.trim(),saludo:$('ab-sal').value.trim(),preguntas});msg('mbot','ok','✅ Asistente guardado. En 1–2 minutos se ve en la web y la app.')}catch(e){msg('mbot','bad',esc(e.message))}finally{btn.disabled=false}};
 async function cargarTemaP(){try{tmPintar((await api('tema-ver',{})).tema)}catch(e){msg('mtema','bad',esc(e.message))}}
 $('dtema').addEventListener('toggle',()=>{if($('dtema').open&&!$('t-pp').hidden)cargarTemaP()});
-$('tm-foto').onchange=async()=>{const f=$('tm-foto').files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{TMIMG=await fotoSubir(f);$('tm-img').src=TMIMG;$('tm-img').hidden=false;$('tm-sinf-l').hidden=false;nomsg('mtema')}catch(e){msg('mtema','bad',esc(e.message))}};
+$('tm-foto').onchange=async()=>{const f=$('tm-foto').files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{TMIMG=await fotoSubir(f);$('tm-img').src=TMIMG;$('tm-img').hidden=false;$('tm-sinf-l').hidden=false;nomsg('mtema');tmCambio()}catch(e){msg('mtema','bad',esc(e.message))}};
 $('ftema').onsubmit=async e=>{e.preventDefault();const id=$('tm-id').value;if(!id)return msg('mtema','bad','Elige un tema, o toca "Quitar tema".');const de=$('tm-desde').value,ha=$('tm-hasta').value;if(de&&ha&&ha<de)return msg('mtema','bad','La fecha de fin es antes que la de inicio.');
   const u=$('tm-url').value.trim();if(u&&!/^https:\/\//.test(u))return msg('mtema','bad','El enlace tiene que empezar con https://');
   try{const r=await api('tema',{id,desde:de,hasta:ha,cartel:{etiqueta:$('tm-et').value.trim(),titulo:$('tm-ti').value.trim(),texto:$('tm-tx').value.trim(),boton:$('tm-bo').value.trim(),url:u,img:$('tm-sinf').checked?'':TMIMG},...(id==='propio'?{cfg:tpLeer()}:{})});tmPintar(r.tema);msg('mtema','ok','✅ Tema guardado. Se ve en la web y la app en 1–2 minutos (al abrirlas o recargar).')}catch(err){msg('mtema','bad',esc(err.message))}};
+// ---- probar el tema en la web real, sin guardar ----
+let TPW=null,TPT=0;
+function tmLeerTema(){const id=$('tm-id').value;return id?{id,cartel:{etiqueta:$('tm-et').value.trim(),titulo:$('tm-ti').value.trim(),texto:$('tm-tx').value.trim(),boton:$('tm-bo').value.trim(),url:$('tm-url').value.trim(),img:$('tm-sinf').checked?'':TMIMG},...(id==='propio'?{cfg:tpLeer()}:{})}:null}
+function tmMandar(){if(!TPW||TPW.closed){TPW=null;$('tm-probar-n').hidden=true;return}try{TPW.postMessage({gxTema:tmLeerTema()},'https://gamex-cu.github.io')}catch(e){}}
+function tmCambio(){clearTimeout(TPT);TPT=setTimeout(tmMandar,700)}
+addEventListener('message',e=>{if(e.origin==='https://gamex-cu.github.io'&&e.data&&e.data.gxListo&&TPW)tmMandar()});
+$('tm-probar').onclick=()=>{if(!$('tm-id').value)return msg('mtema','bad','Escoge un tema para probarlo.');if(TPW&&!TPW.closed){TPW.focus();tmMandar();return}TPW=window.open('https://gamex-cu.github.io/?probar=1','gxprueba');$('tm-probar-n').hidden=!TPW;if(!TPW)msg('mtema','bad','El navegador bloqueó la pestaña nueva: permite las ventanas emergentes para el panel.')};
+$('ftema').addEventListener('input',tmCambio);$('ftema').addEventListener('change',tmCambio);
 $('tm-quitar').onclick=async()=>{try{await api('tema',{id:''});tmPintar(null);msg('mtema','ok','Tema quitado: la web vuelve a la normalidad en 1–2 minutos.')}catch(err){msg('mtema','bad',esc(err.message))}};
 // ---------- ofertas pasadas ----------
 let PAS=[],REPUB='';

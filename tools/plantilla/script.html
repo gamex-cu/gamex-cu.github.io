@@ -312,7 +312,13 @@ route();
 <script>
 /* ---------- temas temporales (lanzamientos): se ponen y se quitan solos por fechas, desde el panel ---------- */
 (function(){const hoy=new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
- fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const t=j.tema;if(!t||!t.id||(t.desde&&t.desde>hoy)||(t.hasta&&t.hasta<hoy))return;
+ // Modo prueba (?probar): el panel abre esta página y le manda el tema que estás armando; no se guarda nada ni lo ve nadie más
+ const PR=new URLSearchParams(location.search).has('probar');let PT=null;try{PT=JSON.parse(sessionStorage.getItem('gx-tema-prueba')||'null')}catch(e){}
+ if(PR){addEventListener('message',e=>{const d=e.data;if(!d||typeof d!=='object'||!('gxTema' in d))return;const nu=JSON.stringify(d.gxTema||null);if(nu===JSON.stringify(PT))return;try{sessionStorage.setItem('gx-tema-prueba',nu)}catch(x){}const y=scrollY;try{sessionStorage.setItem('gx-tema-prueba-y',y)}catch(x){}location.reload()});
+  const bar=document.createElement('div');bar.setAttribute('role','status');bar.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99999;background:#ffd45e;color:#140a24;font:700 13px/1.2 system-ui,sans-serif;text-align:center;padding:6px 10px;box-shadow:0 2px 10px #0006';bar.textContent='👁️ Vista de prueba del tema — solo la ves tú, no se ha guardado';document.body.appendChild(bar);
+  addEventListener('load',()=>{try{const y=+sessionStorage.getItem('gx-tema-prueba-y');if(y)scrollTo(0,y)}catch(x){}});
+  try{if(opener)opener.postMessage({gxListo:1},'*')}catch(x){}}
+ (PR?Promise.resolve({tema:PT}):fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json())).then(j=>{const t=j.tema;if(!t||!t.id||(!PR&&((t.desde&&t.desde>hoy)||(t.hasta&&t.hasta<hoy))))return;
   if(t.id==='aventura'){
    const f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap';document.head.appendChild(f);
    const st=document.createElement('style');st.textContent=`
