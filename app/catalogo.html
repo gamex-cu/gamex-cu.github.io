@@ -842,7 +842,13 @@ route();
 <script>
 /* ---------- temas temporales (lanzamientos): se ponen y se quitan solos por fechas, desde el panel ---------- */
 (function(){const hoy=new Date().toLocaleDateString('en-CA',{timeZone:'America/Havana'});
- fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{const t=j.tema;if(!t||!t.id||(t.desde&&t.desde>hoy)||(t.hasta&&t.hasta<hoy))return;
+ // Modo prueba (?probar): el panel abre esta página y le manda el tema que estás armando; no se guarda nada ni lo ve nadie más
+ const PR=new URLSearchParams(location.search).has('probar');let PT=null;try{PT=JSON.parse(sessionStorage.getItem('gx-tema-prueba')||'null')}catch(e){}
+ if(PR){addEventListener('message',e=>{const d=e.data;if(!d||typeof d!=='object'||!('gxTema' in d))return;const nu=JSON.stringify(d.gxTema||null);if(nu===JSON.stringify(PT))return;try{sessionStorage.setItem('gx-tema-prueba',nu)}catch(x){}const y=scrollY;try{sessionStorage.setItem('gx-tema-prueba-y',y)}catch(x){}location.reload()});
+  const bar=document.createElement('div');bar.setAttribute('role','status');bar.style.cssText='position:fixed;left:0;right:0;top:0;z-index:99999;background:#ffd45e;color:#140a24;font:700 13px/1.2 system-ui,sans-serif;text-align:center;padding:6px 10px;box-shadow:0 2px 10px #0006';bar.textContent='👁️ Vista de prueba del tema — solo la ves tú, no se ha guardado';document.body.appendChild(bar);
+  addEventListener('load',()=>{try{const y=+sessionStorage.getItem('gx-tema-prueba-y');if(y)scrollTo(0,y)}catch(x){}});
+  try{if(opener)opener.postMessage({gxListo:1},'*')}catch(x){}}
+ (PR?Promise.resolve({tema:PT}):fetch('https://gamex-cu.github.io/app/avisos.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json())).then(j=>{const t=j.tema;if(!t||!t.id||(!PR&&((t.desde&&t.desde>hoy)||(t.hasta&&t.hasta<hoy))))return;
   if(t.id==='aventura'){
    const f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&display=swap';document.head.appendChild(f);
    const st=document.createElement('style');st.textContent=`
@@ -871,6 +877,46 @@ h2,.ccard .cn,.sbt b,.secc-t,.tag,.tm-c small,.tm-c b{font-family:"Cinzel",serif
 @media(max-width:760px){.tm-c{margin:16px 16px 0}.tm-c .tm-n{display:none}}`;document.head.appendChild(st);
    const h=[[12,20,6,40,30],[80,14,7,-50,25],[65,55,8,35,-40],[25,70,9,-30,35],[90,80,6.5,45,20],[45,35,7.5,-40,30]];
    h.forEach(([l,tp,d,x,y])=>{const i=document.createElement('i');i.className='tm-hada';i.style.cssText=`left:${l}%;top:${tp}%;--t:${d}s;--x:${x}px;--y:${y}px`;document.body.appendChild(i)});
+  }
+  if(t.id==='propio'&&t.cfg){ /* tema creado desde el panel: colores, letra, marcos, decoraciones y fotos propias */
+   const g=t.cfg,D=new Set(g.decor||[]),ok=u=>/^https:\/\/gamex-cu\.github\.io\/app\/fotos\/[\w.-]+\.jpg$/.test(u||'');
+   const rgba=(h,a)=>{const n=parseInt(h.slice(1),16);return `rgba(${n>>16},${n>>8&255},${n&255},${a})`};
+   const FU={retro:['Anton','"Anton",Impact,sans-serif',1],neon:['Bungee','"Bungee",Impact,sans-serif',0],elegante:['Cinzel:wght@700','"Cinzel",serif',0],navidad:['Mountains+of+Christmas:wght@700','"Mountains of Christmas",Georgia,serif',0],grafiti:['Permanent+Marker','"Permanent Marker",cursive',0]}[g.fuente];
+   if(FU){const f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family='+FU[0]+'&display=swap';document.head.appendChild(f)}
+   const svg=b=>'data:image/svg+xml,'+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 150'>${b}</svg>`);
+   const palma=(x,y,h,lean,c)=>{const tx=x+lean,ty=y-h,L=h*.5;let o=`<path d='M${x} ${y} Q${x+lean*.15} ${y-h*.55} ${tx} ${ty}' stroke='${c}' stroke-width='${(h/15).toFixed(1)}' fill='none' stroke-linecap='round'/>`;[[-175,.55],[-145,.25],[-112,.05],[-75,.05],[-38,.25],[-5,.55],[150,.9],[30,.9]].forEach(([a,d])=>{const r=a*Math.PI/180,ex=tx+Math.cos(r)*L,ey=ty+Math.sin(r)*L+L*d,mx=(tx+ex)/2,my=(ty+ey)/2-L*.28,nx=(tx+ex)/2,ny=(ty+ey)/2-L*.08;o+=`<path d='M${tx} ${ty} Q${mx.toFixed(1)} ${my.toFixed(1)} ${ex.toFixed(1)} ${ey.toFixed(1)} Q${nx.toFixed(1)} ${ny.toFixed(1)} ${tx} ${ty}Z' fill='${c}'/>`});return o};
+   const K=rgba(g.bg,1),PI=svg(palma(150,150,95,22,K)+palma(40,150,135,-14,K)+palma(95,150,110,30,K)),PD=svg(palma(190,150,95,-22,K)+palma(300,150,135,14,K)+palma(245,150,110,-30,K));
+   const o=(g.oscuro||0)/100,M={
+    neon:`border:2px solid ${g.acento}!important;box-shadow:0 0 0 1px ${rgba(g.boton,.35)},0 0 18px ${rgba(g.acento,.4)}!important;border-radius:14px!important`,
+    inclinado:`border:0!important;border-radius:0!important;box-shadow:none!important;clip-path:polygon(0 0,100% 0,calc(100% - 16px) 100%,0 100%);background:linear-gradient(90deg,${g.acento} 0 7px,${rgba(g.panel,.92)} 7px)!important`,
+    dorado:`border:1px solid #e8c25a!important;box-shadow:inset 0 0 0 3px ${rgba(g.panel,.9)},inset 0 0 0 4px rgba(232,194,90,.35),0 6px 24px rgba(0,0,0,.4)!important;border-radius:10px!important`,
+    normal:`border:1px solid ${rgba(g.acento,.45)}!important;border-radius:14px!important`}[g.marco||'normal'];
+   let css=`:root{--bg:${g.bg};--panel:${g.panel};--line:${rgba(g.acento,.35)};--fg:${g.texto};--muted:${rgba(g.texto,.72)};--accent:${g.acento};--hot:${g.boton}}
+body{background:${ok(g.fondo)?`linear-gradient(${rgba(g.bg,o)},${rgba(g.bg,o)}),url("${g.fondo}") center/cover fixed,`:''}linear-gradient(180deg,${rgba(g.acento,.18)} 0%,${g.bg} 40%)!important;background-color:${g.bg}!important}
+header{position:relative;overflow:hidden;background:${ok(g.cab)?`linear-gradient(180deg,${rgba(g.bg,Math.min(.85,o))},${rgba(g.bg,Math.min(.95,o+.25))}),url("${g.cab}") center/cover,`:''}linear-gradient(180deg,${rgba(g.acento,.45)},${rgba(g.bg,0)})!important;border-bottom:2px solid ${g.acento}!important}
+#home header>*,header .wrap{position:relative;z-index:1}
+.lede{color:${g.texto}!important;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+.tag{color:${g.boton}!important;border-color:${g.boton}!important;background:${rgba(g.bg,.55)}!important}
+.sbtn,.ccard,.secc{background:${rgba(g.panel,.92)}!important;${M}}
+.sbtn .sgo{color:${g.boton}!important}
+.tm-c{position:relative;z-index:2;overflow:hidden;margin:18px auto 0;max-width:720px;border-radius:16px;padding:20px 22px 18px;text-align:left;background:linear-gradient(120deg,${g.acento},${g.panel})!important;border:2px solid ${g.boton}}
+.tm-c small{display:block;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:${g.boton}}
+.tm-c b{display:block;font-size:1.7rem;line-height:1.1;margin:4px 0 8px;color:#fff;text-shadow:2px 2px 0 ${rgba(g.bg,.8)}}
+.tm-c p{margin:0 0 12px;color:#fff;white-space:pre-line}.tm-c img{display:block;width:100%;max-height:260px;object-fit:cover;border-radius:10px;margin:0 0 12px}
+.tm-c a{display:inline-flex;gap:8px;align-items:center;background:${g.boton};color:${g.bg};font-weight:800;padding:11px 16px;border-radius:12px;text-decoration:none}
+@media(max-width:760px){.tm-c{margin:16px 16px 0}.tm-c b{font-size:1.45rem}}
+footer{background:transparent!important}`;
+   if(FU)css+=`\nh2,.ccard .cn,.sbt b,.secc-t,.tm-c b{font-family:${FU[1]}!important;${FU[2]?'text-transform:uppercase;font-weight:400!important;letter-spacing:.03em':''}}`;
+   if(D.has('sol'))css+=`\nheader::before{content:"";position:absolute;left:50%;top:58%;width:min(70vw,520px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:repeating-linear-gradient(180deg,#ffe36e 0 14px,#ff9a3c 14px 15px,transparent 15px 20px);-webkit-mask:linear-gradient(180deg,#000 45%,transparent 75%);mask:linear-gradient(180deg,#000 45%,transparent 75%);opacity:.5;pointer-events:none}`;
+   if(D.has('palmeras'))css+=`\nheader::after{content:"";position:absolute;inset:auto 0 0 0;height:150px;pointer-events:none;background:url("${PI}") left bottom/auto 100% no-repeat,url("${PD}") right bottom/auto 100% no-repeat}@media(max-width:760px){header::after{height:70px}}`;
+   else if(D.has('luces'))css+=`\nheader::after{content:"";position:absolute;inset:auto 0 0 0;height:22px;pointer-events:none;background:radial-gradient(circle at 10px 12px,#ff3b3b 0 5px,transparent 6px) 0 0/80px 22px repeat-x,radial-gradient(circle at 30px 12px,#ffd45e 0 5px,transparent 6px) 0 0/80px 22px repeat-x,radial-gradient(circle at 50px 12px,#3bd16f 0 5px,transparent 6px) 0 0/80px 22px repeat-x,radial-gradient(circle at 70px 12px,#4fa3ff 0 5px,transparent 6px) 0 0/80px 22px repeat-x;animation:tpLuz 1.4s steps(2) infinite}@keyframes tpLuz{50%{filter:brightness(1.7)}}`;
+   if(D.has('estrellas'))css+=`\nbody::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(1.5px 1.5px at 12% 18%,#fff,transparent),radial-gradient(1.5px 1.5px at 28% 8%,#fff,transparent),radial-gradient(2px 2px at 44% 22%,#fffa,transparent),radial-gradient(1.5px 1.5px at 63% 12%,#fff,transparent),radial-gradient(2px 2px at 81% 26%,#fff,transparent),radial-gradient(1.5px 1.5px at 92% 9%,#fffa,transparent),radial-gradient(1.5px 1.5px at 6% 52%,#fff,transparent),radial-gradient(2px 2px at 37% 61%,#fff8,transparent),radial-gradient(1.5px 1.5px at 72% 48%,#fff,transparent),radial-gradient(1.5px 1.5px at 55% 84%,#fffa,transparent),radial-gradient(2px 2px at 88% 72%,#fff,transparent)}`;
+   if(D.has('playa'))css+=`\n.tp-playa{height:200px;background:radial-gradient(circle at 50% 100%,#ffd86e 0 60px,rgba(255,216,110,.3) 61px,transparent 100px) center 10%/100% 50% no-repeat,linear-gradient(180deg,transparent 0 45%,#2bb5c9 45% 68%,#f2c98a 68%)}`;
+   if(D.has('nieve')||D.has('brillos'))css+=`\n.tp-p{position:fixed;top:-12px;pointer-events:none;z-index:3;border-radius:50%;animation:tpCae var(--t) linear var(--d) infinite}.tp-b{position:fixed;width:7px;height:7px;border-radius:50%;background:#fff6c8;box-shadow:0 0 12px 5px rgba(255,236,150,.7);pointer-events:none;z-index:3;animation:tpFl var(--t) ease-in-out infinite alternate}@keyframes tpCae{to{transform:translate(var(--x),110vh)}}@keyframes tpFl{to{transform:translate(var(--x),-40px)}}@media (prefers-reduced-motion:reduce){.tp-p,.tp-b{animation:none;display:none}}`;
+   const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+   if(D.has('playa')){const ft=document.querySelector('footer');if(ft&&!document.querySelector('.tp-playa')){const pl=document.createElement('div');pl.className='tp-playa';pl.setAttribute('aria-hidden','true');ft.after(pl)}}
+   if(D.has('nieve'))for(let k=0;k<26;k++){const i=document.createElement('i');i.className='tp-p';const z=2+(k*7)%5;i.style.cssText=`left:${(k*37)%100}%;width:${z}px;height:${z}px;background:#fff;opacity:.85;--t:${7+(k*13)%9}s;--d:-${(k*3)%9}s;--x:${(k%2?1:-1)*(20+(k*11)%40)}px`;document.body.appendChild(i)}
+   if(D.has('brillos'))for(let k=0;k<8;k++){const i=document.createElement('i');i.className='tp-b';i.style.cssText=`left:${(k*29+7)%96}%;top:${(k*41+11)%90}%;--t:${5+(k%4)}s;--x:${(k%2?1:-1)*(25+k*4)}px`;document.body.appendChild(i)}
   }
   if(t.id==='neon'){
    const f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Anton&family=Pacifico&display=swap';document.head.appendChild(f);
