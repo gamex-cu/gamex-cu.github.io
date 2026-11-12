@@ -220,6 +220,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <button role="tab" id="tb-ju" aria-selected="false">🎮 <span>Juegos</span></button>
     <button role="tab" id="tb-sv" aria-selected="false">🧾 <span>Servicios</span></button>
     <button role="tab" id="tb-pp" aria-selected="false">🏠 <span>Página principal</span></button>
+    <button role="tab" id="tb-tm" aria-selected="false">🎨 <span>Temas</span></button>
     <button role="tab" id="tb-cl" aria-selected="false">👥 <span>Clientes</span> <span class="bdg" id="nsol2"></span></button>
     <button role="tab" id="tb-es" aria-selected="false">📊 <span>Números</span></button>
     <button role="tab" id="tb-aj" aria-selected="false">⚙️ <span>Ajustes</span></button>
@@ -401,43 +402,6 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <button class="btn" type="submit" style="margin-top:12px">Guardar asistente</button>
     </form><div class="msg" id="mbot"></div></details>
   </section>
-  <section class="card">
-    <details id="dtema" open><summary><h2 style="display:inline">🎨 Tema de la web</h2> <small class="nota">(ambiente por un lanzamiento, se pone y se quita solo)</small></summary>
-    <form id="ftema" style="margin-top:10px">
-      <label for="tm-id">Tema</label><select id="tm-id"><option value="">Ninguno (la web normal)</option><option value="aventura">🌲 Aventura medieval (verde y dorado, hadas, letras de grabado)</option><option value="neon">🌴 Neón playero (atardecer, palmeras y neón, para el GTA)</option><option value="navidad">🎄 Navidad (nieve cayendo, luces, pinos y lazo rojo)</option><option value="gala">🏆 Gala de premios (negro y dorado, focos y brillos, para The Game Awards)</option><option value="blackfriday">🏷️ Black Friday (negro, amarillo y rojo, cinta de ofertas)</option><option value="propio">🛠️ Tema propio (lo armas tú: colores, letra, decoraciones y fotos)</option></select>
-      <fieldset id="tp-box" hidden style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0">
-        <legend style="padding:0 6px"><b>🛠️ Tu tema</b></legend>
-        <div class="row" style="gap:6px;align-items:flex-end"><div style="flex:1"><label for="tp-pl">Mis temas guardados</label><select id="tp-pl"><option value="">— Escoge para cargarlo —</option></select></div><button type="button" class="chip" id="tp-borra" title="Borrar el tema guardado">🗑️</button></div>
-        <div class="row" style="gap:8px;flex-wrap:wrap">
-          <div><label for="tp-bg">Fondo</label><input id="tp-bg" type="color" value="#120c22"></div>
-          <div><label for="tp-panel">Tarjetas</label><input id="tp-panel" type="color" value="#1c1433"></div>
-          <div><label for="tp-ac">Acento</label><input id="tp-ac" type="color" value="#ff4fa3"></div>
-          <div><label for="tp-bo">Botones</label><input id="tp-bo" type="color" value="#22e3d8"></div>
-          <div><label for="tp-tx">Letras</label><input id="tp-tx" type="color" value="#ffffff"></div>
-        </div>
-        <div class="row" style="gap:10px"><div style="flex:1"><label for="tp-fu">Letra de los títulos</label><select id="tp-fu"><option value="normal">Normal (la de siempre)</option><option value="retro">Retro gruesa (tipo póster)</option><option value="neon">Neón / arcade</option><option value="elegante">Elegante (grabado)</option><option value="navidad">Navideña</option><option value="grafiti">Grafiti / marcador</option></select></div>
-        <div style="flex:1"><label for="tp-ma">Marco de las tarjetas</label><select id="tp-ma"><option value="normal">Normal</option><option value="neon">Neón brillante</option><option value="inclinado">Inclinado (franja de color)</option><option value="dorado">Dorado</option></select></div></div>
-        <label>Decoraciones</label><div class="row" style="gap:6px;flex-wrap:wrap" id="tp-dec">
-          <label class="sw"><input type="checkbox" value="palmeras"><span>🌴 Palmeras arriba</span></label><label class="sw"><input type="checkbox" value="sol"><span>🌅 Sol a rayas</span></label><label class="sw"><input type="checkbox" value="playa"><span>🏖️ Playa al final</span></label><label class="sw"><input type="checkbox" value="nieve"><span>❄️ Nieve cayendo</span></label><label class="sw"><input type="checkbox" value="luces"><span>💡 Luces de colores</span></label><label class="sw"><input type="checkbox" value="estrellas"><span>✨ Estrellas</span></label><label class="sw"><input type="checkbox" value="brillos"><span>🌟 Brillos flotando</span></label></div>
-        <p class="nota" style="margin-top:8px">📷 Fotos del tema (opcionales). Usa fotos tuyas (tienda, clientes, consolas) o que tengas permiso para usar.</p>
-        <label for="tp-fcab">Foto de arriba (encabezado)</label><input id="tp-fcab" type="file" accept="image/*"><img id="tp-icab" alt="" hidden style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tp-qcab-l" hidden><input type="checkbox" id="tp-qcab"><span>Quitar esta foto</span></label>
-        <label for="tp-ffon">Foto de fondo de toda la página</label><input id="tp-ffon" type="file" accept="image/*"><img id="tp-ifon" alt="" hidden style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tp-qfon-l" hidden><input type="checkbox" id="tp-qfon"><span>Quitar esta foto</span></label>
-        <label for="tp-os">Oscurecer las fotos para que se lea el texto: <b id="tp-osv">55%</b></label><input id="tp-os" type="range" min="0" max="90" step="5" value="55">
-        <label>Vista previa</label><div id="tp-vista" style="border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
-        <div class="row" style="gap:6px;margin-top:8px"><input id="tp-nom" maxlength="40" placeholder="Nombre para guardarlo (ej: Día de las Madres)" style="flex:1"><button type="button" class="btn sec" id="tp-guarda">💾 Guardar en mis temas</button></div>
-      </fieldset>
-      <div class="row" style="gap:10px"><div style="flex:1"><label for="tm-desde">Desde</label><input id="tm-desde" type="date" class="fecha"></div><div style="flex:1"><label for="tm-hasta">Hasta</label><input id="tm-hasta" type="date" class="fecha"></div></div>
-      <p class="nota">Cartel de arriba (opcional):</p>
-      <label for="tm-et">Etiqueta pequeña</label><input id="tm-et" maxlength="60" placeholder="Ej: Lanzamiento · Emulador Switch 2">
-      <label for="tm-ti">Título</label><input id="tm-ti" maxlength="90" placeholder="Ej: The Legend of Zelda: Ocarina of Time">
-      <label for="tm-tx">Texto</label><textarea id="tm-tx" maxlength="400" rows="2" placeholder="Ej: La aventura clásica, ahora en tu PC."></textarea>
-      <label for="tm-bo">Texto del botón</label><input id="tm-bo" maxlength="30" placeholder="Pedir por WhatsApp">
-      <label for="tm-url">Enlace del botón <small>(vacío = WhatsApp)</small></label><input id="tm-url" type="url" placeholder="https://…">
-      <label for="tm-foto">Foto <small>(opcional)</small></label><input id="tm-foto" type="file" accept="image/*"><img id="tm-img" alt="" hidden style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tm-sinf-l" hidden><input type="checkbox" id="tm-sinf"><span>Quitar la foto</span></label>
-      <button type="button" class="btn sec" id="tm-probar" style="width:100%;margin-top:10px">👁️ Probar en la web (sin guardar)</button><p class="nota" id="tm-probar-n" hidden>La prueba está abierta en otra pestaña: cada cambio que hagas aquí se ve allí en un momento. Cuando te guste, toca "Guardar tema".</p>
-      <div class="row" style="margin-top:10px"><button class="btn" style="flex:1">Guardar tema</button><button type="button" class="btn sec" id="tm-quitar" style="flex:1">Quitar tema</button></div>
-    </form><div class="msg" id="mtema"></div></details>
-  </section>
   <div class="subnav" data-g="pp"><button type="button" class="chip" data-s="pp-0" aria-pressed="true">Qué se ve y orden</button><button type="button" class="chip" data-s="pp-1" aria-pressed="false">Botones</button><button type="button" class="chip" data-s="pp-2" aria-pressed="false">Datos de la tienda</button></div>
   <div class="subp" id="pp-0">
   <section class="card">
@@ -489,6 +453,45 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <div class="msg" id="mti"></div>
   </section>
   </div>
+  </div>
+  <div id="t-tm" class="pest" hidden>
+  <section class="card">
+    <details id="dtema" open><summary><h2 style="display:inline">🎨 Temas de la web</h2> <small class="nota">(ambiente por un lanzamiento, se pone y se quita solo)</small></summary>
+    <form id="ftema" style="margin-top:10px">
+      <label for="tm-id">Tema</label><select id="tm-id" style="width:100%;max-width:100%"><option value="">Ninguno (la web normal)</option><option value="aventura">🌲 Aventura medieval (verde y dorado, hadas, letras de grabado)</option><option value="neon">🌴 Neón playero (atardecer, palmeras y neón, para el GTA)</option><option value="navidad">🎄 Navidad (nieve cayendo, luces, pinos y lazo rojo)</option><option value="gala">🏆 Gala de premios (negro y dorado, focos y brillos, para The Game Awards)</option><option value="blackfriday">🏷️ Black Friday (negro, amarillo y rojo, cinta de ofertas)</option><option value="propio">🛠️ Tema propio (lo armas tú: colores, letra, decoraciones y fotos)</option></select>
+      <fieldset id="tp-box" hidden style="border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:10px 0">
+        <legend style="padding:0 6px"><b>🛠️ Tu tema</b></legend>
+        <div class="row" style="gap:6px;align-items:flex-end"><div style="flex:1"><label for="tp-pl">Mis temas guardados</label><select id="tp-pl"><option value="">— Escoge para cargarlo —</option></select></div><button type="button" class="chip" id="tp-borra" title="Borrar el tema guardado">🗑️</button></div>
+        <div class="row" style="gap:8px;flex-wrap:wrap">
+          <div><label for="tp-bg">Fondo</label><input id="tp-bg" type="color" value="#120c22"></div>
+          <div><label for="tp-panel">Tarjetas</label><input id="tp-panel" type="color" value="#1c1433"></div>
+          <div><label for="tp-ac">Acento</label><input id="tp-ac" type="color" value="#ff4fa3"></div>
+          <div><label for="tp-bo">Botones</label><input id="tp-bo" type="color" value="#22e3d8"></div>
+          <div><label for="tp-tx">Letras</label><input id="tp-tx" type="color" value="#ffffff"></div>
+        </div>
+        <div class="row" style="gap:10px"><div style="flex:1"><label for="tp-fu">Letra de los títulos</label><select id="tp-fu"><option value="normal">Normal (la de siempre)</option><option value="retro">Retro gruesa (tipo póster)</option><option value="neon">Neón / arcade</option><option value="elegante">Elegante (grabado)</option><option value="navidad">Navideña</option><option value="grafiti">Grafiti / marcador</option></select></div>
+        <div style="flex:1"><label for="tp-ma">Marco de las tarjetas</label><select id="tp-ma"><option value="normal">Normal</option><option value="neon">Neón brillante</option><option value="inclinado">Inclinado (franja de color)</option><option value="dorado">Dorado</option></select></div></div>
+        <label>Decoraciones</label><div class="row" style="gap:6px;flex-wrap:wrap" id="tp-dec">
+          <label class="sw"><input type="checkbox" value="palmeras"><span>🌴 Palmeras arriba</span></label><label class="sw"><input type="checkbox" value="sol"><span>🌅 Sol a rayas</span></label><label class="sw"><input type="checkbox" value="playa"><span>🏖️ Playa al final</span></label><label class="sw"><input type="checkbox" value="nieve"><span>❄️ Nieve cayendo</span></label><label class="sw"><input type="checkbox" value="luces"><span>💡 Luces de colores</span></label><label class="sw"><input type="checkbox" value="estrellas"><span>✨ Estrellas</span></label><label class="sw"><input type="checkbox" value="brillos"><span>🌟 Brillos flotando</span></label></div>
+        <p class="nota" style="margin-top:8px">📷 Fotos del tema (opcionales). Usa fotos tuyas (tienda, clientes, consolas) o que tengas permiso para usar.</p>
+        <label for="tp-fcab">Foto de arriba (encabezado)</label><input id="tp-fcab" type="file" accept="image/*"><img id="tp-icab" alt="" hidden style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tp-qcab-l" hidden><input type="checkbox" id="tp-qcab"><span>Quitar esta foto</span></label>
+        <label for="tp-ffon">Foto de fondo de toda la página</label><input id="tp-ffon" type="file" accept="image/*"><img id="tp-ifon" alt="" hidden style="width:100%;max-height:120px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tp-qfon-l" hidden><input type="checkbox" id="tp-qfon"><span>Quitar esta foto</span></label>
+        <label for="tp-os">Oscurecer las fotos para que se lea el texto: <b id="tp-osv">55%</b></label><input id="tp-os" type="range" min="0" max="90" step="5" value="55">
+        <label>Vista previa</label><div id="tp-vista" style="border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
+        <div class="row" style="gap:6px;margin-top:8px"><input id="tp-nom" maxlength="40" placeholder="Nombre para guardarlo (ej: Día de las Madres)" style="flex:1"><button type="button" class="btn sec" id="tp-guarda">💾 Guardar en mis temas</button></div>
+      </fieldset>
+      <div class="row" style="gap:10px"><div style="flex:1"><label for="tm-desde">Desde</label><input id="tm-desde" type="date" class="fecha"></div><div style="flex:1"><label for="tm-hasta">Hasta</label><input id="tm-hasta" type="date" class="fecha"></div></div>
+      <p class="nota">Cartel de arriba (opcional):</p>
+      <label for="tm-et">Etiqueta pequeña</label><input id="tm-et" maxlength="60" placeholder="Ej: Lanzamiento · Emulador Switch 2">
+      <label for="tm-ti">Título</label><input id="tm-ti" maxlength="90" placeholder="Ej: The Legend of Zelda: Ocarina of Time">
+      <label for="tm-tx">Texto</label><textarea id="tm-tx" maxlength="400" rows="2" placeholder="Ej: La aventura clásica, ahora en tu PC."></textarea>
+      <label for="tm-bo">Texto del botón</label><input id="tm-bo" maxlength="30" placeholder="Pedir por WhatsApp">
+      <label for="tm-url">Enlace del botón <small>(vacío = WhatsApp)</small></label><input id="tm-url" type="url" placeholder="https://…">
+      <label for="tm-foto">Foto <small>(opcional)</small></label><input id="tm-foto" type="file" accept="image/*"><img id="tm-img" alt="" hidden style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-top:6px"><label class="sw" id="tm-sinf-l" hidden><input type="checkbox" id="tm-sinf"><span>Quitar la foto</span></label>
+      <button type="button" class="btn sec" id="tm-probar" style="width:100%;margin-top:10px">👁️ Probar en la web (sin guardar)</button><p class="nota" id="tm-probar-n" hidden>La prueba está abierta en otra pestaña: cada cambio que hagas aquí se ve allí en un momento. Cuando te guste, toca "Guardar tema".</p>
+      <div class="row" style="margin-top:10px"><button class="btn" style="flex:1">Guardar tema</button><button type="button" class="btn sec" id="tm-quitar" style="flex:1">Quitar tema</button></div>
+    </form><div class="msg" id="mtema"></div></details>
+  </section>
   </div>
   <div id="t-cl" class="pest" hidden>
   <div class="subnav" data-g="cl"><button type="button" class="chip" data-s="cl-0" aria-pressed="true">Clientes</button><button type="button" class="chip" data-s="cl-1" aria-pressed="false">Reglas de Rewards</button></div>
@@ -747,7 +750,7 @@ $('fbot').onsubmit=async ev=>{ev.preventDefault();const preguntas=[...document.q
   const btn=ev.submitter||$('fbot').querySelector('button[type=submit]');btn.disabled=true;
   try{await api('bot',{activo:$('ab-on').checked,nombre:$('ab-nom').value.trim(),saludo:$('ab-sal').value.trim(),preguntas});msg('mbot','ok','✅ Asistente guardado. En 1–2 minutos se ve en la web y la app.')}catch(e){msg('mbot','bad',esc(e.message))}finally{btn.disabled=false}};
 async function cargarTemaP(){try{tmPintar((await api('tema-ver',{})).tema)}catch(e){msg('mtema','bad',esc(e.message))}}
-$('dtema').addEventListener('toggle',()=>{if($('dtema').open&&!$('t-pp').hidden)cargarTemaP()});
+$('dtema').addEventListener('toggle',()=>{if($('dtema').open&&!$('t-tm').hidden)cargarTemaP()});
 $('tm-foto').onchange=async()=>{const f=$('tm-foto').files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{TMIMG=await fotoSubir(f);$('tm-img').src=TMIMG;$('tm-img').hidden=false;$('tm-sinf-l').hidden=false;nomsg('mtema');tmCambio()}catch(e){msg('mtema','bad',esc(e.message))}};
 $('ftema').onsubmit=async e=>{e.preventDefault();const id=$('tm-id').value;if(!id)return msg('mtema','bad','Elige un tema, o toca "Quitar tema".');const de=$('tm-desde').value,ha=$('tm-hasta').value;if(de&&ha&&ha<de)return msg('mtema','bad','La fecha de fin es antes que la de inicio.');
   const u=$('tm-url').value.trim();if(u&&!/^https:\/\//.test(u))return msg('mtema','bad','El enlace tiene que empezar con https://');
@@ -843,10 +846,10 @@ $('lista').onclick=async e=>{const b=e.target.closest('button[data-id]');if(!b)r
 
 // ---------- pestañas y estadísticas ----------
 let DIAS=7,cargadas=false;
-const TABS=['of','ju','sv','pp','cl','es','aj'];
+const TABS=['of','ju','sv','pp','tm','cl','es','aj'];
 function tab(t){if(!TABS.includes(t))t='of';TABS.forEach(x=>{$('tb-'+x).setAttribute('aria-selected',t===x);$('t-'+x).hidden=t!==x});window.scrollTo(0,0);
-  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes();if(t==='ju')juegos();if(t==='pp')cargarTemaP();if(['ju','sv','pp','cl','aj'].includes(t))tienda()}
-$('tb-cl').onclick=()=>tab('cl');
+  try{localStorage.setItem('gx_tab',t)}catch(e){}if(t==='es')stats();if(t==='cl')clientes();if(t==='ju')juegos();if(t==='tm')cargarTemaP();if(['ju','sv','pp','cl','aj'].includes(t))tienda()}
+$('tb-cl').onclick=()=>tab('cl');$('tb-tm').onclick=()=>tab('tm');
 $('tb-of').onclick=()=>tab('of');
 const copiar=t=>(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>$('cp-nc-m').textContent='Copiado: '+t+' · pégalo en el navegador del otro equipo.').catch(()=>$('cp-nc-m').textContent=t);
 $('cp-nc').onclick=()=>copiar('https://gamex-cu.github.io/#no-contar');$('cp-c').onclick=()=>copiar('https://gamex-cu.github.io/#contar');
