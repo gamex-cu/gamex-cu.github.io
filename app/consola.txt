@@ -1,5 +1,5 @@
 GAMEX1
-V	310
+V	311
 F	12 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6734,7 +6734,6 @@ J	2	Final Fantasy VII Remake Intergrade
 J	0	Firefighting Simulator - The Squad
 J	2	Firefighting Simulator: Ignite
 J	2	FixForce
-J	0	Football Manager 26 Console
 J	2	Football Manager 27 Console
 J	1	For Honor
 J	0	For The King II
@@ -6791,6 +6790,7 @@ J	2	High On Life 2
 J	0	Hogwarts Legacy
 J	0	Hollow Knight: Silksong
 J	0	Hollow Knight: Voidheart Edition
+J	2	Hope in the City
 J	0	House Flipper
 J	0	Human Fall Flat
 J	0	Hungry Shark World
@@ -6804,6 +6804,7 @@ J	0	INSIDE
 J	4	Iron Brigade
 J	0	It Takes Two - Digital Version
 J	132	Jetpac Refuelled
+J	2	John Carpenter's Toxic Commando
 J	4	Joy Ride Turbo
 J	2	Junkster
 J	2	Jurassic World Evolution 3
@@ -7052,6 +7053,7 @@ J	0	The Walking Dead: Season Two
 J	0	The Walking Dead: The Complete First Season
 J	0	The Walking Dead: The Final Season - The Complete Season
 J	0	theHunter: Call of the Wild
+J	2	Thronefall
 J	2	Tiny Bookshop
 J	0	Titanfall 2
 J	2	to a T
@@ -7125,7 +7127,7 @@ J	0	Wolfenstein: Youngblood
 J	1	World of Tanks Modern Armor
 J	3	World of Tanks: HEAT
 J	1	World of Warships: Legends
-J	0	World War Z: Aftermath
+J	0	World War Z: Year 1 Edition
 J	0	Wreckfest
 J	2	WUCHANG: Fallen Feathers
 J	3	Wuthering Waves

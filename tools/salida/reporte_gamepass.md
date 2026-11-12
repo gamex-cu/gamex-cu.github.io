@@ -1,21 +1,22 @@
-# Game Pass – revisión del 2026-11-10
+# Game Pass – revisión del 2026-11-12
 
-Total: 614 juegos (antes 611).
+Total: 616 juegos (antes 614).
 
-## Entraron (3)
-- Football Manager 27 Console
-- TANUKI: Pon's Summer
-- Warhammer Survivors
+## Entraron (4)
+- Hope in the City
+- John Carpenter's Toxic Commando
+- Thronefall
+- World War Z: Year 1 Edition
 
-## Salieron (0)
+## Salieron (2)
+- Football Manager 26 Console
+- World War Z: Aftermath
 
-## Se van pronto (14)
+## Se van pronto (12)
 - 1000xRESIST
 - Barbie Horse Trails
 - DRAGON BALL XENOVERSE 2
 - Firefighting Simulator - The Squad
-- Football Manager 26 Console
-- GoldenEye 007
 - Great God Grove
 - Moonlighter
 - Pigeon Simulator

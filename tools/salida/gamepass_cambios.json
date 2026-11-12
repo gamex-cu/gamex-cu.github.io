@@ -1,20 +1,22 @@
 {
- "fecha": "2026-11-10",
- "total": 614,
- "antes": 611,
+ "fecha": "2026-11-12",
+ "total": 616,
+ "antes": 614,
  "entraron": [
-  "Football Manager 27 Console",
-  "TANUKI: Pon's Summer",
-  "Warhammer Survivors"
+  "Hope in the City",
+  "John Carpenter's Toxic Commando",
+  "Thronefall",
+  "World War Z: Year 1 Edition"
  ],
- "salieron": [],
+ "salieron": [
+  "Football Manager 26 Console",
+  "World War Z: Aftermath"
+ ],
  "saliendo": [
   "1000xRESIST",
   "Barbie Horse Trails",
   "DRAGON BALL XENOVERSE 2",
   "Firefighting Simulator - The Squad",
-  "Football Manager 26 Console",
-  "GoldenEye 007",
   "Great God Grove",
   "Moonlighter",
   "Pigeon Simulator",
@@ -25,5 +27,5 @@
   "Wreckfest"
  ],
  "revisar": [],
- "saliendo_cambio": false
+ "saliendo_cambio": true
 }
