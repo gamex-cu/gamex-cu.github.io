@@ -1,6 +1,6 @@
 GAMEX1
-V	312
-F	12 nov 2026
+V	313
+F	14 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -6762,6 +6762,7 @@ J	2	Ghostwire: Tokyo
 J	2	GOALS
 J	0	Goat Simulator 3
 J	0	GoldenEye 007
+J	4	Grabbed by the Ghoulies
 J	2	GRAVHOUNDS (Game Preview)
 J	2	Great God Grove
 J	0	GRID Legends

@@ -1,16 +1,11 @@
-# Game Pass – revisión del 2026-11-12
+# Game Pass – revisión del 2026-11-14
 
-Total: 616 juegos (antes 614).
+Total: 617 juegos (antes 616).
 
-## Entraron (4)
-- Hope in the City
-- John Carpenter's Toxic Commando
-- Thronefall
-- World War Z: Year 1 Edition
+## Entraron (1)
+- Grabbed by the Ghoulies
 
-## Salieron (2)
-- Football Manager 26 Console
-- World War Z: Aftermath
+## Salieron (0)
 
 ## Se van pronto (12)
 - 1000xRESIST
