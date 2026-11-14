@@ -285,11 +285,11 @@ export class Stats extends DurableObject{
   ignorados(){return this.sql.exec("SELECT i.uid,i.nota,i.ts,(SELECT MAX(CASE WHEN tipo='equipo' THEN v END) FROM ev WHERE ev.uid=i.uid) modelo,(SELECT MAX(disp) FROM ev WHERE ev.uid=i.uid) disp FROM ign i ORDER BY ts DESC").toArray()}
   agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
     for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
-    if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-400*864e5);return filas.length}
+    if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-1830*864e5);return filas.length}
   reiniciar(){const n=this.sql.exec('SELECT COUNT(*) c FROM ev').one().c;this.sql.exec('DELETE FROM ev');return n}
   borrarUid(uid){if(uid.startsWith('prueba:'))this.sql.exec("DELETE FROM ev WHERE v=?",uid.slice(7));else this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
   resumen(dias){
-    const hasta=diaCuba(Date.now()),desde=diaCuba(Date.now()-(dias-1)*864e5);
+    const hasta=diaCuba(Date.now());if(!dias){const p=this.sql.exec('SELECT MIN(dia) d FROM ev').one().d||hasta;dias=Math.max(1,Math.round((Date.parse(hasta)-Date.parse(p))/864e5)+1)}const desde=diaCuba(Date.now()-(dias-1)*864e5);
     const q=(sql,...a)=>this.sql.exec(sql,desde,hasta,...a).toArray();
     const W="dia>=? AND dia<=? AND uid NOT IN (SELECT uid FROM ign)";
     const tot=q(`SELECT SUM(tipo='visita') visitas,COUNT(DISTINCT CASE WHEN tipo='visita' THEN uid END) personas,SUM(tipo='envio') pedidos,SUM(CASE WHEN tipo='envio' THEN n ELSE 0 END) juegos,SUM(tipo='contacto') contactos,SUM(tipo='busca') busquedas FROM ev WHERE ${W}`)[0]||{};
@@ -353,7 +353,7 @@ async function panel(req,env,u){
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){
       if(!env.STATS)return j({error:'Las estadísticas no están activadas'},500);
-      const d=[1,7,30,90].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
+      const d=[0,1,7,30,90,365].includes(+u.searchParams.get('dias'))?+u.searchParams.get('dias'):7;
       const R=await statsDO(env).resumen(d);
       try{const raws=[...(R.modelos||[]).map(x=>x.v),...(R.equipos||[]).map(x=>x.modelo),...(R.ignorados||[]).map(x=>x.modelo)];const N=await nombresGoogle(raws);
         const nm=v=>esCodigo(v)&&N[v.trim().toUpperCase()]||v;(R.modelos||[]).forEach(x=>x.v=nm(x.v));(R.equipos||[]).forEach(x=>{if(x.modelo)x.modelo=nm(x.modelo)});(R.ignorados||[]).forEach(x=>{if(x.modelo)x.modelo=nm(x.modelo)})}catch(e){}
