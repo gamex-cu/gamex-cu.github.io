@@ -285,7 +285,7 @@ export class Stats extends DurableObject{
   ignorados(){return this.sql.exec("SELECT i.uid,i.nota,i.ts,(SELECT MAX(CASE WHEN tipo='equipo' THEN v END) FROM ev WHERE ev.uid=i.uid) modelo,(SELECT MAX(disp) FROM ev WHERE ev.uid=i.uid) disp FROM ign i ORDER BY ts DESC").toArray()}
   agregar(filas){const ahora=Date.now(),dia=diaCuba(ahora);
     for(const f of filas)this.sql.exec('INSERT INTO ev VALUES(?,?,?,?,?,?,?,?)',ahora,dia,f.tipo,f.v,f.n,f.uid,f.disp,f.org);
-    if(Math.random()<0.01)this.sql.exec('DELETE FROM ev WHERE ts<?',ahora-1830*864e5);return filas.length}
+    return filas.length}
   reiniciar(){const n=this.sql.exec('SELECT COUNT(*) c FROM ev').one().c;this.sql.exec('DELETE FROM ev');return n}
   borrarUid(uid){if(uid.startsWith('prueba:'))this.sql.exec("DELETE FROM ev WHERE v=?",uid.slice(7));else this.sql.exec('DELETE FROM ev WHERE uid=?',uid);return true}
   resumen(dias){
