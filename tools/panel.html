@@ -391,6 +391,16 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
   </div>
   <div id="t-pp" class="pest" hidden>
   <section class="card">
+    <details id="dcd"><summary><h2 style="display:inline">⏳ Cuenta regresiva</h2> <small class="nota">(sale en el widget de la app Android)</small></summary>
+    <p class="nota">Los clientes que pongan el widget "Cuenta regresiva" en su teléfono ven cuánto falta para lo que pongas aquí. La hora es la de Cuba. Cuando llega, el widget dice "¡Ya llegó!" hasta que la quites o pongas otra.</p>
+    <form id="fcd">
+      <label for="cd-ti">Qué viene</label><input id="cd-ti" maxlength="40" placeholder="Ej: GTA VI">
+      <label for="cd-et">Etiqueta pequeña <small class="nota">(opcional)</small></label><input id="cd-et" maxlength="30" placeholder="⏳ Ya casi llega">
+      <label for="cd-fe">Día y hora (hora de Cuba)</label><input id="cd-fe" type="datetime-local" style="width:100%;min-width:0;box-sizing:border-box">
+      <div class="row" style="margin-top:10px"><button class="btn" style="flex:1">Guardar</button><button type="button" class="btn sec" id="cd-quitar" style="flex:1">Quitar</button></div>
+    </form><div class="msg" id="mcd"></div></details>
+  </section>
+  <section class="card">
     <details id="dbot"><summary><h2 style="display:inline">🤖 Asistente de la web</h2> <small class="nota">(el botón 💬 que responde preguntas al momento)</small></summary>
     <p class="nota">Cuando el cliente toca una pregunta, o escribe algo que tenga alguna de las <b>palabras clave</b>, le sale la respuesta. Si escribe el nombre de un juego, lo busca solo en los catálogos. Y siempre tiene el botón para hablar con ustedes por WhatsApp. En las respuestas puedes usar <b>{horario}</b>, <b>{direccion}</b> y <b>{mapa}</b> (salen de los datos de la tienda) y *negrita*.</p>
     <form id="fbot">
@@ -749,6 +759,11 @@ $('fbot').onsubmit=async ev=>{ev.preventDefault();const preguntas=[...document.q
   const malu=preguntas.find(x=>x.url&&!/^(#[a-z0-9=-]{1,40}|https:\/\/\S+)$/.test(x.url));if(malu)return msg('mbot','bad','En "Lleva a" pon #servicios, #cuenta, #ofertas o un enlace que empiece por https://');
   const btn=ev.submitter||$('fbot').querySelector('button[type=submit]');btn.disabled=true;
   try{await api('bot',{activo:$('ab-on').checked,nombre:$('ab-nom').value.trim(),saludo:$('ab-sal').value.trim(),preguntas});msg('mbot','ok','✅ Asistente guardado. En 1–2 minutos se ve en la web y la app.')}catch(e){msg('mbot','bad',esc(e.message))}finally{btn.disabled=false}};
+// ---- cuenta regresiva (widget de la app) ----
+function cdPintar(c){c=c||{};$('cd-ti').value=c.titulo||'';$('cd-et').value=c.etiqueta||'';$('cd-fe').value=(c.fecha||'').slice(0,16)}
+$('dcd').addEventListener('toggle',async()=>{if(!$('dcd').open)return;try{cdPintar((await api('cuenta-ver',{})).cuenta)}catch(e){msg('mcd','bad',esc(e.message))}});
+$('fcd').onsubmit=async e=>{e.preventDefault();msg('mcd','inf','Guardando…');try{const r=await api('cuenta',{titulo:$('cd-ti').value,etiqueta:$('cd-et').value,fecha:$('cd-fe').value});cdPintar(r.cuenta);msg('mcd','ok','✅ Guardada. Los widgets la muestran en un rato (o al abrir la app).')}catch(er){msg('mcd','bad',esc(er.message))}};
+$('cd-quitar').onclick=async()=>{if(!confirm('¿Quitar la cuenta regresiva?'))return;try{await api('cuenta',{});cdPintar(null);msg('mcd','ok','Quitada.')}catch(er){msg('mcd','bad',esc(er.message))}};
 async function cargarTemaP(){try{tmPintar((await api('tema-ver',{})).tema)}catch(e){msg('mtema','bad',esc(e.message))}}
 $('dtema').addEventListener('toggle',()=>{if($('dtema').open&&!$('t-tm').hidden)cargarTemaP()});
 $('tm-foto').onchange=async()=>{const f=$('tm-foto').files[0];if(!f)return;msg('mtema','inf','Subiendo la foto…');try{TMIMG=await fotoSubir(f);$('tm-img').src=TMIMG;$('tm-img').hidden=false;$('tm-sinf-l').hidden=false;nomsg('mtema');tmCambio()}catch(e){msg('mtema','bad',esc(e.message))}};

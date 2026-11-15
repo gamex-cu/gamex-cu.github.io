@@ -642,6 +642,7 @@ function gxOff(h){return SECOFF.some(s=>s==='ofertas'?(h==='ofertas'||h.startsWi
 SECOFF.forEach(s=>{const b=document.getElementById('b-'+s);if(b)b.style.setProperty('display','none','important')});
 function route(){
   if(gxOff(location.hash.slice(1))&&location.hash)history.replaceState(null,'',location.pathname+location.search);
+  if(location.hash==='#nuevos'){active=new Set(['nv']);history.replaceState(null,'',location.pathname+location.search+'#todas')}
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
   document.querySelectorAll('.pgx').forEach(p=>p.hidden=true);{const pg=h.startsWith('p-')&&document.getElementById('pg-'+h.slice(2));if(pg){current=null;['view','home','cats','ofer','iphone','serv','cuenta'].forEach(x=>$(x).hidden=true);pg.hidden=false;window.scrollTo(0,0);sync();return}}
@@ -691,7 +692,20 @@ function cuMsg(tipo,html){const m=$('cu-msg');m.className='cu-msg '+(tipo||'');m
 function cuTab(t){document.querySelectorAll('[data-cu]').forEach(b=>b.setAttribute('aria-selected',b.dataset.cu===t));['entrar','activar','pedir'].forEach(x=>$('cu-'+x).hidden=x!==t);cuMsg('','')}
 document.querySelector('.cu-tabs').addEventListener('click',e=>{const b=e.target.closest('[data-cu]');if(b)cuTab(b.dataset.cu)});
 const gxFirma=tx=>CU&&!/crear mi cuenta/.test(tx)?`\n\nCliente GameX: ${CU.gx}${CU.nombre?' ('+CU.nombre+')':''}`:'';
-function cuTile(){$('b-cuenta-sub').textContent=CU?`${CU.gx} · ${cuN(CU.resumen.saldo)} GX · ${CU.resumen.nivel}`:'Rewards: mira tus GX, tu nivel, tu prestigio y tus compras'}
+// ---- app Android: widgets de la pantalla de inicio (window.GameXApp solo existe dentro de la app, desde la 1.9) ----
+const APPW=(()=>{try{return !!(window.GameXApp&&GameXApp.widgets&&GameXApp.widgets())}catch(e){return false}})();
+function appPuntos(){if(!APPW)return;try{
+  if(CU){const r=CU.resumen,R=CU.reglas||{},ini=r.saldo>=R.n2?R.n2:r.saldo>=R.n1?R.n1:0;
+    GameXApp.puntos(JSON.stringify({gx:CU.gx,nombre:CU.nombre||'',saldo:r.saldo||0,nivel:r.nivel||'',falta:r.siguiente?`Te faltan ${cuN(r.faltan)} GX para tu próximo nivel`:'¡Nivel máximo! 🏆',pct:Math.round(r.siguiente?Math.max(0,Math.min(100,(r.saldo-ini)/(r.siguiente-ini)*100)):100),tok:cuLS.get('gx-sesion')||''}))}
+  else if(!cuLS.get('gx-sesion'))GameXApp.puntos('')}catch(e){}
+  const f=$('cu-falta');if(f&&CU&&!$('cu-wid')){const b=document.createElement('button');b.type='button';b.id='cu-wid';b.textContent='📌 Poner mis puntos en la pantalla de inicio';b.style.cssText='display:block;width:100%;margin:12px 0 0;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:transparent;color:var(--fg);font:600 .92rem inherit;cursor:pointer';b.onclick=()=>{try{GameXApp.fijar('puntos')}catch(e){}};f.after(b)}}
+function appNovedad(){if(!APPW)return;try{if(localStorage.getItem('gx-wid-nov'))return;localStorage.setItem('gx-wid-nov','1')}catch(e){return}
+  const W=[['puntos','⭐','Mis puntos GX','Tu saldo y lo que te falta para tu premio'],['nuevo','🆕','Lo nuevo','Los últimos juegos del catálogo'],['oferta','🔥','Oferta','La oferta más reciente'],['cuenta','⏳','Cuenta regresiva','Cuánto falta para el próximo lanzamiento']];
+  const m=document.createElement('div');m.style.cssText='position:fixed;inset:0;z-index:99998;background:#000b;display:flex;align-items:center;justify-content:center;padding:16px';
+  m.innerHTML=`<div role="dialog" aria-modal="true" aria-labelledby="wn-h" style="background:#161b2c;color:#fff;border:1px solid #3a4160;border-radius:18px;padding:20px;max-width:400px;width:100%;max-height:90vh;overflow:auto;line-height:1.4"><h3 id="wn-h" style="margin:0 0 6px;font-size:1.15rem">✨ Nuevo: widgets de GameX</h3><p style="margin:0 0 12px;font-size:.92rem;color:#b8c3ea">Pon GameX en la pantalla de inicio de tu teléfono y mira tus puntos, lo nuevo y las ofertas sin abrir la app.</p>${W.map(([k,e,n,d])=>`<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid #2a3360"><span style="font-size:1.5rem">${e}</span><span style="flex:1"><b style="display:block;font-size:.95rem">${n}</b><small style="color:#b8c3ea">${d}</small></span><button type="button" data-wn="${k}" style="border:0;border-radius:99px;background:#3b82f6;color:#fff;font:700 .85rem inherit;padding:8px 14px;cursor:pointer">Poner</button></div>`).join('')}<p style="margin:10px 0 0;font-size:.8rem;color:#8fa0d8">También puedes dejar apretado un espacio vacío de tu pantalla de inicio, tocar <b>Widgets</b> y buscar <b>GameX</b>.</p><button type="button" data-wn="" style="display:block;width:100%;margin-top:12px;padding:12px;border:0;border-radius:12px;background:#2a3048;color:#fff;font:700 .95rem inherit;cursor:pointer">Cerrar</button></div>`;
+  m.onclick=e=>{const b=e.target.closest('[data-wn]');if(e.target===m||(b&&!b.dataset.wn)){m.remove();return}if(b){try{GameXApp.fijar(b.dataset.wn)}catch(x){}}};document.body.appendChild(m)}
+setTimeout(appNovedad,1800);
+function cuTile(){appPuntos();$('b-cuenta-sub').textContent=CU?`${CU.gx} · ${cuN(CU.resumen.saldo)} GX · ${CU.resumen.nivel}`:'Rewards: mira tus GX, tu nivel, tu prestigio y tus compras'}
 async function cuCargar(){
   const tok=cuLS.get('gx-sesion');
   if(!tok){CU=null;cuTile();cuPintar();return}

@@ -385,6 +385,12 @@ async function panel(req,env,u){
       await cambiarAvisos(env,d=>{d.bot=bot},'Panel: asistente de la web');return j({ok:true,bot})}
     if(p==='bot-ver'){const {d}=await leerAvisos(env);return j({bot:d.bot||null})}
     if(p==='tema-ver'){const {d}=await leerAvisos(env);return j({tema:d.tema||null})}
+    if(p==='cuenta-ver'){const {d}=await leerAvisos(env);return j({cuenta:d.cuenta||null})}
+    if(p==='cuenta'){ /* cuenta regresiva del widget de la app Android */
+      const titulo=String(q.titulo||'').trim().slice(0,40),fecha=String(q.fecha||'');let cuenta=null;
+      if(titulo&&/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(fecha))cuenta={titulo,fecha:fecha+':00'+(()=>{const u=new Date(fecha+':00Z'),m=Math.round((new Date(u.toLocaleString('en-US',{timeZone:'America/Havana'}))-new Date(u.toLocaleString('en-US',{timeZone:'UTC'})))/60000),a=Math.abs(m);return (m<0?'-':'+')+String(a/60|0).padStart(2,'0')+':'+String(a%60).padStart(2,'0')})(),etiqueta:String(q.etiqueta||'').trim().slice(0,30)};
+      else if(titulo||fecha)return j({error:'Pon el título, el día y la hora'},400);
+      await cambiarAvisos(env,d=>{if(cuenta)d.cuenta=cuenta;else delete d.cuenta},cuenta?'Panel: cuenta regresiva':'Panel: quitar cuenta regresiva');return j({ok:true,cuenta})}
     if(p==='pasada-borrar'){return j({pasadas:await statsDO(env).pasadasBorrar(String(q.id||''))})}
     if(p==='enviar'){
       let titulo=String(q.titulo||'').trim().replace(/🎮/g,'🥷').slice(0,80),texto=String(q.texto||'').trim().slice(0,1500);
