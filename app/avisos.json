@@ -49,19 +49,6 @@
    "silenciosa": true
   }
  ],
- "tema": {
-  "id": "aventura",
-  "desde": "",
-  "hasta": "2026-11-18",
-  "cartel": {
-   "etiqueta": "",
-   "titulo": "",
-   "texto": "",
-   "boton": "",
-   "url": "",
-   "img": ""
-  }
- },
  "cuenta": {
   "titulo": "GTA VI",
   "fecha": "2026-11-18T18:00:00-05:00",
