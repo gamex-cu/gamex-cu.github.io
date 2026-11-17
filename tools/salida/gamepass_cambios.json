@@ -1,12 +1,11 @@
 {
- "fecha": "2026-11-14",
- "total": 617,
- "antes": 616,
+ "fecha": "2026-11-17",
+ "total": 606,
+ "antes": 617,
  "entraron": [
-  "Grabbed by the Ghoulies"
+  "PAW Patrol: Dino World"
  ],
- "salieron": [],
- "saliendo": [
+ "salieron": [
   "1000xRESIST",
   "Barbie Horse Trails",
   "DRAGON BALL XENOVERSE 2",
@@ -20,6 +19,16 @@
   "Winter Burrow",
   "Wreckfest"
  ],
+ "saliendo": [
+  "Aliens: Dark Descent",
+  "Banishers: Ghosts of New Eden",
+  "DreamWorks Gabby's Dollhouse: Ready to Party",
+  "Generation Zero",
+  "KILL IT WITH FIRE! 2",
+  "Moving Out 2",
+  "Star Trucker",
+  "Totally Reliable Delivery Service"
+ ],
  "revisar": [],
- "saliendo_cambio": false
+ "saliendo_cambio": true
 }
