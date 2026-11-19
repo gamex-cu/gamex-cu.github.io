@@ -107,6 +107,8 @@ function render(){
 }
 function route(){
   if(location.hash==='#nuevos'){active=new Set(['nv']);history.replaceState(null,'',location.pathname+location.search+'#todas')}
+  // QR de la tienda: abre directo «Quiero una cuenta»
+  if(location.hash==='#crear-cuenta'){history.replaceState(null,'',location.pathname+location.search+'#cuenta');setTimeout(()=>document.querySelector('[data-cu="pedir"]')?.click(),0)}
   if(location.hash.startsWith('#oferta=')){window.gxAbrir=decodeURIComponent(location.hash.slice(8));history.replaceState(null,'',location.pathname+location.search+'#ofertas')}
   const h=location.hash.slice(1);
   $('cuenta').hidden=h!=='cuenta';if(h==='cuenta'){current=null;['view','home','cats','ofer','iphone','serv'].forEach(x=>$(x).hidden=true);window.scrollTo(0,0);cuCargar();sync();return}
