@@ -625,7 +625,9 @@ const EXCL=new Set(["PS4|Ace Combat 5: The Unsung War", "PS4|Astro Bot Rescue Mi
 // Juegos que de momento no se pueden pedir (p. ej. FC 25+ en Xbox: no se pueden inyectar; el 24 sí)
 const NDFC=k=>/^Xbox/.test(k)&&/\|ea sports fc 2[5-9]\b/i.test(k);
 // Hitman 2 y 3 de Xbox (pagos): mismo cartel, pero sin juego alternativo
-const NODISP=k=>NDFC(k)||/^Xbox pago\|hitman [23]$/i.test(k);
+// juegos de Xbox solo online: avisar que por inyección (offline) no sirven
+const NDON=k=>/^Xbox/.test(k)&&ONLINE.has(k)&&!NDFC(k);
+const NODISP=k=>NDFC(k)||NDON(k)||/^Xbox pago\|hitman [23]$/i.test(k);
 const badges=k=>(NUEVO.has(k)?' <span class="nv">Nuevo</span>':'')+(EXCL.has(k)?' <span class="ex">Exclusivo</span>':'')+(SALE.has(k)?' <span class="sv">Se va pronto</span>':'')+(PORT.has(k)?' <span class="pt">'+(k.startsWith('PC|')?'PC-Port':'Port')+'</span>':'')+(EMU.has(k)?' <span class="em">Emulador</span>':'')+(HYPER.has(k)?' <span class="hv">Hypervisor</span>':'')+CUSTOM.filter(f=>f.s.has(k)).map(f=>' <span class="cf" style="--fc:'+f.c+'">'+esc(f.l)+'</span>').join('')+(VR.has(k)?' <span class="vr">Solo VR</span>':'')+(VRO.has(k)?' <span class="vro">VR opcional</span>':'')+(X360.has(k)?' <span class="x3">Xbox 360</span>':'')+(XOG.has(k)?' <span class="xc">Xbox clásico</span>':'')+(ONLINE.has(k)?' <span class="on">Solo online</span>':'')+(SERIES.has(k)?' <span class="sx">'+(X360.has(k)?'':'Solo ')+'Series X|S</span>':'');
 const GAMES=[];for(const [c,l] of Object.entries(RAW))for(const n of l)GAMES.push({n,c,k:c+'|'+n});
 const KEYS=new Set(GAMES.map(g=>g.k));
@@ -878,7 +880,7 @@ function sync(){
   save();
 }
 function ndAviso(k){let m=$('ndm');if(!m){m=document.createElement('div');m.id='ndm';m.hidden=true;m.innerHTML='<div class="ndc" role="dialog" aria-modal="true" aria-labelledby="ndh"><h3 id="ndh"></h3><p class="ndt"></p><p class="ndok">✅ Disponible para inyectar: <b>EA Sports FC 24</b></p><p class="ndq">¿Lo quieres de todas formas?</p><div class="ndb"><button type="button" class="si">Sí, agregarlo</button><button type="button" class="no">No</button></div></div>';document.body.appendChild(m);m.addEventListener('click',e=>{if(e.target===m||e.target.closest('.no'))m.hidden=true;else if(e.target.closest('.si')){m.hidden=true;if(!cart.includes(m.dataset.k)){cart.push(m.dataset.k);sync()}}})}
-  m.dataset.k=k;const fc=NDFC(k);m.querySelector('.ndok').hidden=m.querySelector('.ndq').hidden=m.querySelector('.si').hidden=!fc;m.querySelector('.no').textContent=fc?'No':'Entendido';m.querySelector('.ndt').innerHTML=fc?'⚠️ Por el momento <b>no está disponible para inyectar</b>, solo funciona <b>con internet</b>.':'⚠️ Por el momento este juego <b>no está disponible para inyección</b>.<br><br>Estamos trabajando para ofrecerlo lo antes posible. Te avisaremos en cuanto esté listo.';$('ndh').textContent=split(k)[1]+' · '+nom(split(k)[0]);m.hidden=false;m.querySelector(fc?'.si':'.no').focus()}
+  m.dataset.k=k;const fc=NDFC(k),on=NDON(k),pide=fc||on;m.querySelector('.ndok').hidden=!fc;m.querySelector('.ndq').hidden=m.querySelector('.si').hidden=!pide;m.querySelector('.no').textContent=pide?'No':'Entendido';m.querySelector('.ndt').innerHTML=on?'🌐 Este juego es <b>solo online</b>: necesita internet para jugar.<br><br>Por <b>inyección (offline) no funciona</b>.':fc?'⚠️ Por el momento <b>no está disponible para inyectar</b>, solo funciona <b>con internet</b>.':'⚠️ Por el momento este juego <b>no está disponible para inyección</b>.<br><br>Estamos trabajando para ofrecerlo lo antes posible. Te avisaremos en cuanto esté listo.';$('ndh').textContent=split(k)[1]+' · '+nom(split(k)[0]);m.hidden=false;m.querySelector(pide?'.si':'.no').focus()}
 function toggle(k){if(NODISP(k)&&!cart.includes(k))return ndAviso(k);const i=cart.indexOf(k);i<0?cart.push(k):cart.splice(i,1);sync()}
 list.addEventListener('click',e=>{if(e.target.closest('a.info'))return;const li=e.target.closest('li[data-k]');if(li)toggle(li.dataset.k)});
 $('cl').addEventListener('click',e=>{const b=e.target.closest('.add');if(b)toggle(b.closest('li').dataset.k)});
@@ -1311,7 +1313,7 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js',{updat
 (function(){try{const ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);const standalone=navigator.standalone||matchMedia('(display-mode: standalone)').matches;let seen=false;try{seen=localStorage.getItem('gamex-ios-tip')==='1'}catch(e){}
 if(ios&&!standalone&&!seen){const t=document.getElementById('ios-tip');t.hidden=false;document.getElementById('ios-x').onclick=()=>{t.hidden=true;try{localStorage.setItem('gamex-ios-tip','1')}catch(e){}}}}catch(e){}})();
 
-const GXV=330;
+const GXV=331;
 let GXN=0;
 async function gxRefresh(e){const bs=[document.getElementById('refresh'),document.getElementById('upd-b')].filter(Boolean),b=e&&e.currentTarget||bs[0];
   if(b&&b.classList.contains('cargando'))return;
