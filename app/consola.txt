@@ -1,5 +1,5 @@
 GAMEX1
-V	331
+V	332
 F	20 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6752,7 +6752,7 @@ J	0	Gears of War 4
 J	2	Gears of War: E-Day
 J	132	Gears of War: Judgment
 J	2	Gears of War: Reloaded
-J	0	Gears Tactics
+J	1	Gears Tactics
 J	0	Generation Zero
 J	0	Genesis Noir
 J	3	Genshin Impact
