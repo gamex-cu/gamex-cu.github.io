@@ -1,6 +1,6 @@
 GAMEX1
-V	326
-F	19 nov 2026
+V	327
+F	20 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -7236,6 +7236,7 @@ J	0	Gear.Club Unlimited 2 - Ultimate Edition
 J	2	Gotham Knights
 J	0	Grand Theft Auto V
 J	2	Grand Theft Auto V (Xbox Series X|S)
+J	2	Grand Theft Auto VI
 J	0	Grand Theft Auto: The Trilogy
 J	0	Green Hell
 J	0	Guns, Gore & Cannoli
