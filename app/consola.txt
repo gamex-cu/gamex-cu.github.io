@@ -1,6 +1,6 @@
 GAMEX1
-V	332
-F	20 nov 2026
+V	333
+F	21 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -7334,6 +7334,7 @@ J	0	Sniper Ghost Warrior Contracts 2
 J	0	Sonic Colors: Ultimate
 J	0	Sonic Frontiers
 J	0	South Park: The Fractured but Whole
+J	2	Split Fiction
 J	0	Spyro Reignited Trilogy
 J	2	Star Wars Jedi: Survivor
 J	0	Stray
