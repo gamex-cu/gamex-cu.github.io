@@ -1,6 +1,6 @@
 GAMEX1
-V	333
-F	21 nov 2026
+V	334
+F	24 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -2685,7 +2685,7 @@ J	0	Phantaruk
 J	0	Phantasmal City of Darkness
 J	0	Phantasmal Survival Horror
 J	0	Phantasy Star Universe Ambition Of The Illuminus
-J	256	Phantom Blade Zero
+J	0	Phantom Blade Zero
 J	0	Phantom Brave
 J	0	Phantom Doctrine
 J	0	Phantom Signal — Sci-Fi Strategy Game
