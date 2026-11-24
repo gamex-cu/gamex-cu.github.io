@@ -1,24 +1,11 @@
 {
- "fecha": "2026-11-17",
- "total": 606,
- "antes": 617,
+ "fecha": "2026-11-24",
+ "total": 607,
+ "antes": 606,
  "entraron": [
-  "PAW Patrol: Dino World"
+  "Sniper Ghost Warrior Contracts 2"
  ],
- "salieron": [
-  "1000xRESIST",
-  "Barbie Horse Trails",
-  "DRAGON BALL XENOVERSE 2",
-  "Firefighting Simulator - The Squad",
-  "Great God Grove",
-  "Moonlighter",
-  "Pigeon Simulator",
-  "Police Simulator: Patrol Officers",
-  "Relic Hunters Legend",
-  "Total Chaos",
-  "Winter Burrow",
-  "Wreckfest"
- ],
+ "salieron": [],
  "saliendo": [
   "Aliens: Dark Descent",
   "Banishers: Ghosts of New Eden",
@@ -30,5 +17,5 @@
   "Totally Reliable Delivery Service"
  ],
  "revisar": [],
- "saliendo_cambio": true
+ "saliendo_cambio": false
 }

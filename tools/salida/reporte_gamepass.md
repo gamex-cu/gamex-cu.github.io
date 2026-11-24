@@ -1,23 +1,11 @@
-# Game Pass – revisión del 2026-11-17
+# Game Pass – revisión del 2026-11-24
 
-Total: 606 juegos (antes 617).
+Total: 607 juegos (antes 606).
 
 ## Entraron (1)
-- PAW Patrol: Dino World
+- Sniper Ghost Warrior Contracts 2
 
-## Salieron (12)
-- 1000xRESIST
-- Barbie Horse Trails
-- DRAGON BALL XENOVERSE 2
-- Firefighting Simulator - The Squad
-- Great God Grove
-- Moonlighter
-- Pigeon Simulator
-- Police Simulator: Patrol Officers
-- Relic Hunters Legend
-- Total Chaos
-- Winter Burrow
-- Wreckfest
+## Salieron (0)
 
 ## Se van pronto (8)
 - Aliens: Dark Descent

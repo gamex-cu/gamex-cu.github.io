@@ -1,5 +1,5 @@
 GAMEX1
-V	334
+V	335
 F	24 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6971,6 +6971,7 @@ J	4	skate. (2007)
 J	3	Skull and Bones
 J	3	Sledding Game
 J	3	SMITE 2 (Game Preview)
+J	0	Sniper Ghost Warrior Contracts 2
 J	0	SnowRunner
 J	2	Solarpunk
 J	2	South of Midnight
