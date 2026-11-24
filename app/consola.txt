@@ -1,5 +1,5 @@
 GAMEX1
-V	335
+V	336
 F	24 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -3477,6 +3477,7 @@ J	0	Super ComboMan: Smash Edition
 J	0	Super GTR Racing
 J	0	Super Lucky's Tale
 J	0	Super Mario Galaxy Collection
+J	32	Super Mario Odyssey
 J	0	Super Markup Man
 J	0	Super Meat Boy
 J	0	Super Monkey Ball: Banana Blitz HD
@@ -3713,6 +3714,7 @@ J	0	The Legend of Heroes: Trails of Cold Steel II
 J	0	The Legend of Heroes: Trails of Cold Steel IV
 J	0	The Legend of Kyrandia Trilogy
 J	0	The Legend of Zelda Breath of the Wild
+J	32	The Legend of Zelda: Link's Awakening
 J	32	The Legend of Zelda: Ocarina of Time
 J	0	The LEGO Movie 2 Videogame
 J	0	The LEGO NINJAGO Movie Video Game
