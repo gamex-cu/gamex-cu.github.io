@@ -1,5 +1,5 @@
 GAMEX1
-V	337
+V	338
 F	24 nov 2026
 M	Noviembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -6914,9 +6914,9 @@ J	2	Pit Of Goblin
 J	2	Planet Coaster 2
 J	0	Planet of Lana II
 J	4	Plants vs. Zombies
-J	0	Plants vs. Zombies Garden Warfare
-J	0	Plants vs. Zombies Garden Warfare 2
-J	0	Plants vs. Zombies: Battle for Neighborville
+J	2	Plants vs. Zombies Garden Warfare
+J	2	Plants vs. Zombies Garden Warfare 2
+J	2	Plants vs. Zombies: Battle for Neighborville
 J	0	Plants vs. Zombies: Replanted
 J	0	PlateUp!
 J	2	PowerWash Simulator 2
