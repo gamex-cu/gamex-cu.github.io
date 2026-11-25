@@ -1,7 +1,7 @@
 GAMEX1
-V	338
-F	24 nov 2026
-M	Noviembre 2026
+V	339
+F	25 nov 2026
+M	Diciembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
 J	0	-KLAUS-
@@ -6522,9 +6522,9 @@ J	0	You Suck At Parking
 J	0	Ys X: Proud Nordics
 J	0	Zorro: The Chronicles
 C	PlayStation Plus	PlayStation Plus	f5c400	ffd84d
-J	0	Dead Island 2 (PS4 y PS5)
-J	0	Monster Train 2 (PS5)
-J	0	Tomb Raider IV-VI Remastered (PS4 y PS5)
+J	0	Amnesia: The Bunker (PS4)
+J	0	Dragon Ball Xenoverse 2 (PS4 y PS5)
+J	0	Tony Hawk’s Pro Skater 3+4 (PS5)
 C	Xbox Game Pass	Xbox Game Pass	107c10	7fdc7f
 J	1	33 Immortals
 J	0	A Game About Digging A Hole
