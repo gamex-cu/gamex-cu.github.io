@@ -1,0 +1,25 @@
+{
+ "fecha": "2026-11-25",
+ "mes": "Diciembre 2026",
+ "hasta": "2027-01-04",
+ "post": "PlayStation Plus Monthly Games for December: Tony Hawk’s Pro Skater 3+4, Dragon Ball Xenoverse 2, Amnesia: The Bunker",
+ "link": "https://blog.playstation.com/2026/11/25/playstation-plus-monthly-games-for-december-tony-hawks-pro-skater-34-dragon-ball-xenoverse-2-amnesia-the-bunker/",
+ "juegos": [
+  {
+   "n": "Tony Hawk’s Pro Skater 3+4",
+   "p": "PS5"
+  },
+  {
+   "n": "Dragon Ball Xenoverse 2",
+   "p": "PS4 y PS5",
+   "id": "UP0700-PPSA08587_00-DBXV2DELUXE00000",
+   "tienda": "DRAGON BALL XENOVERSE 2 Deluxe Edition"
+  },
+  {
+   "n": "Amnesia: The Bunker",
+   "p": "PS4",
+   "id": "UP1192-CUSA40994_00-AMNESIATHEBUNKER",
+   "tienda": "Amnesia: The Bunker"
+  }
+ ]
+}
