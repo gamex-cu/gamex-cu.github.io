@@ -315,7 +315,7 @@ const statsDO=env=>env.STATS.get(env.STATS.idFromName('gamex'));
 // La contraseña ya no viaja en cada llamada ni se guarda en el navegador: al entrar se cambia por una sesión de 8 horas
 // que se cierra sola a los 30 minutos sin usarla. El código 2FA se guarda cifrado. HERRAMIENTAS (llave larga de las
 // herramientas y del Manager) sigue entrando sin código: no es una contraseña de persona.
-const P_MAX=8*3600e3,P_IDLE=30*60e3;
+const P_MAX=8*3600e3,P_IDLE=30*60e3,P_DISP=30*864e5;
 const P2F={
   p2fCfg(k){this.cliInit();const x=this.sql.exec('SELECT v FROM cfg WHERE k=?',k).toArray()[0];return x?JSON.parse(x.v):null},
   p2fPoner(k,v){this.cliInit();if(v==null)this.sql.exec('DELETE FROM cfg WHERE k=?',k);else this.sql.exec('INSERT OR REPLACE INTO cfg(k,v) VALUES(?,?)',k,JSON.stringify(v));return true},
@@ -325,6 +325,11 @@ const P2F={
     if(s.exp<t||t-s.uso>P_IDLE){this.sql.exec('DELETE FROM pses WHERE h=?',h);return false}this.sql.exec('UPDATE pses SET uso=? WHERE h=?',t,h);return true},
   psesBorrar(h){this.psesInit();this.sql.exec('DELETE FROM pses WHERE h=?',h);return true},
   psesBorrarTodas(){this.psesInit();this.sql.exec('DELETE FROM pses');return true},
+  // equipos de confianza: después de poner el código una vez, ese equipo no lo vuelve a pedir en 30 días (la contraseña sí)
+  pdispInit(){this.cliInit();this.sql.exec('CREATE TABLE IF NOT EXISTS pdisp(h TEXT PRIMARY KEY,exp INTEGER,ua TEXT,creado INTEGER)')},
+  pdispCrear(h,ua){this.pdispInit();const t=Date.now();this.sql.exec('DELETE FROM pdisp WHERE exp<?',t);this.sql.exec('INSERT OR REPLACE INTO pdisp VALUES(?,?,?,?)',h,t+P_DISP,String(ua).slice(0,160),t);return t+P_DISP},
+  pdispVer(h){this.pdispInit();const s=this.sql.exec('SELECT exp FROM pdisp WHERE h=?',h).toArray()[0];return !!s&&s.exp>Date.now()},
+  pdispBorrarTodos(){this.pdispInit();this.sql.exec('DELETE FROM pdisp');return true},
   // los intentos fallidos se cuentan aquí y la tabla se limpia sola
   falloLimpiar(){this.cliInit();this.sql.exec('DELETE FROM fallos WHERE ts<?',Date.now()-864e5);return true},
 };
@@ -352,8 +357,8 @@ const esHerr=(env,k)=>!!env.HERRAMIENTAS&&igual(sinAst(String(k||'')),env.HERRAM
 const tokDe=req=>(req.headers.get('Authorization')||'').replace(/^Bearer\s+/i,'').slice(0,100);
 async function panelLogin(req,env,D,ip){
   const q=await req.json().catch(()=>({})),mal=async m=>{await D.fallo('p:'+ip,true);await D.fallo('p:todos',true);await new Promise(z=>setTimeout(z,1200));return j({error:m},401)};
-  const act=await D.p2fCfg('panel2fa');
-  if(act&&!/^\d{6}$/.test(String(q.codigo||'')))return j({error:'Pon la contraseña y el código de 6 números de la app'},400);
+  const act=await D.p2fCfg('panel2fa'),dt=String(q.disp||''),yaDisp=!!(act&&dt.length===64&&await D.pdispVer(await id(dt)));
+  if(act&&!yaDisp&&!/^\d{6}$/.test(String(q.codigo||'')))return j({error:'Pon la contraseña y el código de 6 números de la app',pideCodigo:true},400);
   if(!await claveHumana(env,q.clave))return mal('Contraseña o código incorrectos');
   if(!act){ // primera vez: hay que activar el código de 2 pasos antes de poder entrar
     let nv=await D.p2fCfg('panel2fa_nuevo');
@@ -361,12 +366,13 @@ async function panelLogin(req,env,D,ip){
       const s=base32(sec);return j({configurar:true,secreto:s,uri:`otpauth://totp/GameX%20Panel?secret=${s}&issuer=GameX%20Panel&digits=6&period=30`})}
     const ok=await verificar2fa(env,nv,q.codigo,true);if(!ok)return mal('El código no es correcto. Mira la hora del teléfono y prueba con el código nuevo.');
     await D.p2fPoner('panel2fa',ok);await D.p2fPoner('panel2fa_nuevo',null);
-  }else{
+  }else if(!yaDisp){
     const ok=await verificar2fa(env,act,q.codigo,false);if(!ok)return mal('Contraseña o código incorrectos');
     await D.p2fPoner('panel2fa',ok);
   }
-  const tok=azar(32),exp=await D.psesCrear(await id(tok),ip,req.headers.get('User-Agent')||'');
-  return j({token:tok,exp,inactivo:P_IDLE});
+  const ua=req.headers.get('User-Agent')||'',tok=azar(32),exp=await D.psesCrear(await id(tok),ip,ua);
+  let disp=null;if(!yaDisp&&q.recordar){disp=azar(32);await D.pdispCrear(await id(disp),ua)}
+  return j({token:tok,exp,inactivo:P_IDLE,disp});
 }
 
 async function evento(req,env){
@@ -396,7 +402,7 @@ async function panel(req,env,u){
   const tok=tokDe(req),maquina=!tok&&esHerr(env,req.headers.get('X-Panel'));
   if(!maquina&&!(tok&&tok.length===64&&await DOp.psesVer(await id(tok)))){await DOp.fallo('p:'+ipP,true);if(Math.random()<0.05)await DOp.falloLimpiar();return j({error:'Tu sesión terminó. Entra otra vez.',sesion:true},401)}
   if(p==='salir'){if(tok)await DOp.psesBorrar(await id(tok));return j({ok:true})}
-  if(p==='panel-2fa-reset'&&req.method==='POST'){if(!maquina)return j({error:'Solo con la llave de herramientas'},403);await DOp.p2fPoner('panel2fa',null);await DOp.p2fPoner('panel2fa_nuevo',null);await DOp.psesBorrarTodas();return j({ok:true})}
+  if(p==='panel-2fa-reset'&&req.method==='POST'){if(!maquina)return j({error:'Solo con la llave de herramientas'},403);await DOp.p2fPoner('panel2fa',null);await DOp.p2fPoner('panel2fa_nuevo',null);await DOp.psesBorrarTodas();await DOp.pdispBorrarTodos();return j({ok:true})}
   try{
     if(p==='juegos'||p.startsWith('juegos-'))return await panelJuegos(p,req,env,u);
     if(p==='panel-clave'&&req.method==='POST'){const q=await req.json().catch(()=>({}));const act=String(q.actual||''),nu=String(q.nueva||'');
@@ -405,7 +411,7 @@ async function panel(req,env,u){
       if(nu.length<10)return j({error:'La nueva tiene que tener al menos 10 caracteres'},400);if(nu.length>100)return j({error:'Demasiado larga'},400);
       if(!/[A-Za-zÁÉÍÓÚÑáéíóúñ]/.test(nu)||!/\d/.test(nu))return j({error:'Ponle letras y al menos un número'},400);
       if(sinAst(nu)!==nu)return j({error:'No empieces ni termines con espacio o *'},400);if(nu===sinAst(act))return j({error:'Es igual a la actual'},400);
-      const sal=crypto.randomUUID();await statsDO(env).panelHashPoner(await hashClave(nu,sal),sal);PANEL_OK.clear();await DOp.psesBorrarTodas();return j({ok:true,salir:true})}
+      const sal=crypto.randomUUID();await statsDO(env).panelHashPoner(await hashClave(nu,sal),sal);PANEL_OK.clear();await DOp.psesBorrarTodas();await DOp.pdispBorrarTodos();return j({ok:true,salir:true})}
     if(['archivo','archivo-guardar','gp-estado','gp-revisar','gp-publicar','psp-estado','psp-revisar','foto','respaldo'].includes(p))return await panelDatos(p,req,env,u);
     if(p.startsWith('cli-')){const q=req.method==='POST'?await req.json().catch(()=>({})):Object.fromEntries(u.searchParams);const res=await panelClientes(p,req,env,q);if(res)return res}
     if(p==='stats'){

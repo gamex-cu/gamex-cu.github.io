@@ -211,6 +211,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <input id="clave" type="password" autocomplete="current-password" required>
     <label for="codigo2">Código de 2 pasos <small class="nota">(6 números de la app de códigos)</small></label>
     <input id="codigo2" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456">
+    <label style="display:flex;gap:8px;align-items:center;font-weight:400;margin-top:8px"><input type="checkbox" id="recordar" checked style="width:auto"> Recordar este equipo 30 días (no pedir el código aquí)</label>
     <button class="btn" id="bentrar">Entrar</button>
   </form>
   <div id="cfg2" hidden>
@@ -220,7 +221,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
     <p class="nota" style="text-align:center">¿No puedes escanear? Escribe esta clave a mano:<br><code id="sec2" style="font-size:15px;letter-spacing:1px;user-select:all"></code></p>
   </div>
   <div class="msg" id="mlogin"></div>
-  <p class="nota" style="margin-top:10px">🔒 La sesión se cierra sola a los 30 minutos sin usar el panel, o a las 8 horas.</p>
+  <p class="nota" style="margin-top:10px">🔒 La sesión se cierra sola a los 30 minutos sin usar el panel, o a las 8 horas. En un equipo recordado solo se pide la contraseña.</p>
 </section>
 
 <div id="app" hidden>
@@ -696,7 +697,9 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
 const $=id=>document.getElementById(id);
 // La contraseña ya no se guarda en el navegador: solo una sesión que caduca (y se borra al cerrar el navegador)
 try{localStorage.removeItem('gx_panel')}catch(e){}
-let TOK='';try{TOK=sessionStorage.getItem('gx_ps')||''}catch(e){}
+let TOK='',EQUIPO='';try{TOK=sessionStorage.getItem('gx_ps')||'';EQUIPO=localStorage.getItem('gx_pdisp')||''}catch(e){}
+// en un equipo recordado no hace falta el código: se esconde la casilla
+function pintarDisp(){const ya=!!EQUIPO;$('codigo2').closest('form').querySelectorAll('label[for=codigo2],#codigo2').forEach(x=>x.hidden=ya);$('recordar').closest('label').hidden=ya}
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
 const fecha=f=>{if(!f)return'';const[y,m,d]=f.split('-');return +d+' '+MES[+m-1]};
@@ -817,11 +820,11 @@ function salir(caduco){if(TOK&&!caduco)fetch('/panel/api/salir',{method:'POST',h
 function qrPintar(uri){try{const q=qrcode(0,'M');q.addData(uri);q.make();$('qr2').innerHTML=q.createSvgTag({cellSize:5,margin:2})}catch(e){$('qr2').textContent='No se pudo dibujar el QR: usa la clave de abajo.'}}
 async function login(){
   $('bentrar').disabled=true;nomsg('mlogin');
-  try{const r=await fetch('/panel/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clave:$('clave').value,codigo:$('codigo2').value.replace(/\D/g,'')})});
+  try{const r=await fetch('/panel/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({clave:$('clave').value,codigo:$('codigo2').value.replace(/\D/g,''),disp:EQUIPO,recordar:$('recordar').checked})});
     const d=await r.json().catch(()=>({error:'Respuesta rara del servidor ('+r.status+')'}));
     if(d.configurar){$('cfg2').hidden=false;$('sec2').textContent=d.secreto.replace(/(.{4})/g,'$1 ').trim();qrPintar(d.uri);$('codigo2').value='';$('codigo2').focus();msg('mlogin','inf','Escanea el código con la app y escribe los 6 números que te salen.')}
-    else if(!r.ok||!d.token)msg('mlogin','bad',esc(d.error||('Error '+r.status)));
-    else{TOK=d.token;try{sessionStorage.setItem('gx_ps',TOK)}catch(e){}$('cfg2').hidden=true;$('clave').value='';$('codigo2').value='';await entrar()}
+    else if(!r.ok||!d.token){if(d.pideCodigo&&EQUIPO){EQUIPO='';try{localStorage.removeItem('gx_pdisp')}catch(e){}pintarDisp()}msg('mlogin','bad',esc(d.error||('Error '+r.status)))}
+    else{TOK=d.token;if(d.disp){EQUIPO=d.disp;try{localStorage.setItem('gx_pdisp',EQUIPO)}catch(e){}}try{sessionStorage.setItem('gx_ps',TOK)}catch(e){}$('cfg2').hidden=true;$('clave').value='';$('codigo2').value='';await entrar()}
   }catch(e){msg('mlogin','bad','No hay conexión. Revisa el internet y prueba otra vez.')}
   $('bentrar').disabled=false}
 async function entrar(){
@@ -1184,7 +1187,7 @@ $('comp-sh').onclick=async()=>{if(!COMP_BLOB)return;const f=new File([COMP_BLOB]
   $('comp-dl').click();$('comp-st').textContent='Tu teléfono no permite compartir directo: se bajó la imagen. Ábrela en WhatsApp y mándala.'};
 $('comp-dl').onclick=e=>{if(!COMP_BLOB)return;const a=document.createElement('a');a.href=URL.createObjectURL(COMP_BLOB);a.download=nombreComp();document.body.appendChild(a);a.click();a.remove();e.preventDefault()};
 prev();
-if(TOK)entrar()
+pintarDisp();if(TOK)entrar()
 // ---------- juegos a mano ----------
 const JPL={'PS4':'PS4','PS5':'PS5','PC':'PC','Switch':'Switch','Meta Quest':'Meta Quest','Xbox pago':'Xbox (pago)','Xbox Game Pass':'Game Pass'};
 const JET={online:'Solo online',vr:'VR',vro:'VR opcional',port:'Port',emu:'Emulador',series:'Series X|S',excl:'Exclusivo',hyper:'Hypervisor'};
