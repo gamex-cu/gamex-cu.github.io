@@ -1,6 +1,6 @@
 GAMEX1
-V	339
-F	25 nov 2026
+V	340
+F	27 nov 2026
 M	Diciembre 2026
 C	PC	PC	e07a10	ffc27d
 J	0	#KILLALLZOMBIES
@@ -168,6 +168,7 @@ J	0	Angels Fall First
 J	0	AngerForce Reloaded Arcade Edition
 J	0	Anima Gate of Memories: I&II Remaster
 J	0	Anima: Gate of Memories - The Nameless Chronicles
+J	32	Animal Crossing: New Horizons
 J	0	Anna - Extended Edition
 J	0	Anno 1800 Complete Edition
 J	0	Anno 2070
