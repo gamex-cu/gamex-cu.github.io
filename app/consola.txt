@@ -1,5 +1,5 @@
 GAMEX1
-V	341
+V	342
 F	27 nov 2026
 M	Diciembre 2026
 C	PC	PC	e07a10	ffc27d
@@ -3348,6 +3348,7 @@ J	0	SPRAWL zero
 J	0	Spyro Reignited Trilogy
 J	0	Stalker Clear Sky
 J	0	Stand
+J	32	Star Fox
 J	0	Star Ocean The Divine Force Deluxe Edition
 J	0	Star Ocean The Last Hope 4K and Full HD Remaster
 J	0	STAR OCEAN THE SECOND STORY R
