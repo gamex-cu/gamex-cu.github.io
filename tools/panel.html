@@ -197,6 +197,8 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:0;bord
 .psj .row{align-items:center}
 textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;min-height:260px}
 [hidden]{display:none!important}
+dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-nue{background:var(--card,#151a33);margin:auto!important;position:fixed;inset:0;height:max-content}
+#c-lista{max-height:62vh;overflow:auto;overscroll-behavior:contain}
 </style>
 </head>
 <body>
@@ -567,7 +569,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       </details>
     </section>
     <section class="card">
-      <h2>Clientes</h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 style="margin:0;flex:1">Clientes</h2><button type="button" class="btn" id="c-nuevo" style="width:auto;margin:0;padding:10px 16px">➕ Nuevo cliente</button></div>
       <div class="kpis" id="c-kpis"></div>
       <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
       <div class="row" style="margin-top:10px;align-items:center" id="c-ord"><span class="nota" style="margin:0">Ordenar:</span><button type="button" class="chip" data-o="rec" aria-pressed="true">Recientes</button><button type="button" class="chip" data-o="gx" aria-pressed="false">Por GX</button><button type="button" class="chip" data-o="pts" aria-pressed="false">Más puntos</button><button type="button" class="chip" data-o="nom" aria-pressed="false">Nombre A–Z</button></div>
@@ -577,9 +579,9 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       <div id="c-lista" class="clist"><p class="vacio">Cargando…</p></div>
       <div class="msg" id="mcli"></div>
     </section>
-    <section class="card">
-      <h2>Cliente nuevo a mano</h2>
-      <p class="nota" style="margin:-6px 0 8px">Para alguien que se registró en la tienda. Si usas un ID reservado, se le asigna ese.</p>
+    <dialog id="dlg-nue" class="card" style="max-width:520px;width:calc(100% - 32px);color:inherit;border:1px solid var(--line,#2a3155);padding:20px">
+      <div style="display:flex;align-items:center;gap:8px"><h2 style="margin:0;flex:1">➕ Cliente nuevo</h2><button type="button" class="chip" id="dlg-nue-x" aria-label="Cerrar">✕</button></div>
+      <p class="nota" style="margin:6px 0 8px">Para alguien que se registró en la tienda. Si usas un ID reservado, se le asigna ese.</p>
       <form id="fnue">
         <div class="g2">
           <div><label for="n-gx">ID GX</label><input id="n-gx" required></div>
@@ -592,7 +594,7 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
       </form>
       <div class="msg" id="mnue"></div>
       <datalist id="plats"><option>Xbox</option><option>PlayStation</option><option>Nintendo</option><option>PC</option><option>Meta Quest / VR</option><option>Varias</option><option>Otro</option></datalist>
-    </section>
+    </dialog>
     <section class="card">
       <h2>Copia de seguridad</h2>
       <p class="nota" style="margin:-6px 0 8px">Baja todo (clientes, movimientos y solicitudes) en un Excel.</p>
@@ -1060,10 +1062,13 @@ $('sols').onclick=async e=>{const b=e.target.closest('[data-sol]');if(!b)return;
       msg('msol','ok',`✅ Cuenta creada: <b>${esc(x.gx)}</b> para ${esc(x.nombre)}.<br><a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(waUrl(x.tel,t))}">💬 Avisarle por WhatsApp</a> <a class="chip" style="margin-top:8px" target="_blank" rel="noopener" href="${esc(tgUrl(x.tel,t))}">✈️ Pasarlo por Telegram</a>`)}
     else msg('msol','ok','Solicitud rechazada.');clientes()}
   catch(err){msg('msol','bad',esc(err.message));b.disabled=false}};
+$('c-nuevo').onclick=()=>{nomsg('mnue');$('dlg-nue').showModal();setTimeout(()=>$('n-nom').focus(),30)};
+$('dlg-nue-x').onclick=()=>$('dlg-nue').close();
+$('dlg-nue').addEventListener('click',e=>{if(e.target===$('dlg-nue'))$('dlg-nue').close()});
 $('fnue').onsubmit=async e=>{e.preventDefault();nomsg('mnue');
   try{const gx=$('n-gx').value,ya=CLI&&CLI.clientes.find(c=>c.gx===gx.toUpperCase());
     const d=await api('cli-guardar',{gx,nuevo:!ya,nombre:$('n-nom').value,tel:$('n-tel').value,nac:$('n-nac').value,plataforma:$('n-pla').value,estado:'activo'});
-    msg('mnue','ok','✅ Cliente '+esc(d.cliente.gx)+' creado.');$('fnue').reset();$('n-gx').value='';await clientes();abrirFicha(d.cliente.gx)}
+    msg('mnue','ok','✅ Cliente '+esc(d.cliente.gx)+' creado.');$('fnue').reset();$('n-gx').value='';await clientes();setTimeout(()=>$('dlg-nue').close(),900);abrirFicha(d.cliente.gx)}
   catch(err){msg('mnue','bad',esc(err.message))}};
 $('c-exp').onclick=async()=>{nomsg('mexp');$('c-exp').disabled=true;
   try{const d=await api('cli-exportar');
