@@ -206,6 +206,10 @@ dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-n
 ::-webkit-scrollbar-thumb:hover{background:#4f63b8;background-clip:padding-box;border:2px solid transparent}
 ::-webkit-scrollbar-corner{background:transparent}
 #c-lista{padding-right:4px}
+#c-nuevo{display:inline-flex;align-items:center;gap:5px;width:auto;margin:0;padding:4px 11px;border-radius:999px;border:1px solid #3d6bff55;background:transparent;color:#9db8ff;font-family:inherit;font-size:12.5px;font-weight:500;line-height:1.2;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+#c-nuevo span{font-size:14px;font-weight:500;line-height:1}
+#c-nuevo:hover{background:#3d6bff1a;border-color:#3d6bffaa;color:#cfe0ff}
+#c-nuevo:focus-visible{outline:2px solid #7aa2ff;outline-offset:2px}
 </style>
 </head>
 <body>
@@ -576,7 +580,7 @@ dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-n
       </details>
     </section>
     <section class="card">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h2 style="margin:0;flex:1">Clientes</h2><button type="button" class="btn" id="c-nuevo" style="width:auto;margin:0;padding:10px 16px">➕ Nuevo cliente</button></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><h2 style="margin:0;flex:1">Clientes</h2><button type="button" id="c-nuevo"><span aria-hidden="true">+</span> Nuevo cliente</button></div>
       <div class="kpis" id="c-kpis"></div>
       <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
       <div class="row" style="margin-top:10px;align-items:center" id="c-ord"><span class="nota" style="margin:0">Ordenar:</span><button type="button" class="chip" data-o="rec" aria-pressed="true">Recientes</button><button type="button" class="chip" data-o="gx" aria-pressed="false">Por GX</button><button type="button" class="chip" data-o="pts" aria-pressed="false">Más puntos</button><button type="button" class="chip" data-o="nom" aria-pressed="false">Nombre A–Z</button></div>
