@@ -210,6 +210,25 @@ dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-n
 #c-nuevo span{font-size:14px;font-weight:500;line-height:1}
 #c-nuevo:hover{background:#3d6bff1a;border-color:#3d6bffaa;color:#cfe0ff}
 #c-nuevo:focus-visible{outline:2px solid #7aa2ff;outline-offset:2px}
+/* Clientes: la lista arriba a todo lo ancho; la ficha debajo; solicitudes y copia al final */
+#cl-0:not([hidden]){display:flex;flex-direction:column}
+#s-cli{order:-3}#s-ficha{order:-2}
+#c-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:620px){#c-kpis{gap:8px}#c-kpis .kpi{padding:10px}#c-kpis .kpi b{font-size:1.25rem}#c-kpis .kpi small{display:none}
+  #c-ord,#c-act{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#c-ord::-webkit-scrollbar,#c-act::-webkit-scrollbar{display:none}#c-ord>*,#c-act>*{flex:none}}
+@media (min-width:960px){
+  #cl-0:not([hidden]){display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  #s-cli,#s-ficha{grid-column:1/-1}
+  #c-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));column-gap:22px;align-content:start}
+  #c-lista .vacio,#c-lista>.row{grid-column:1/-1}
+}
+/* computadora: el menú va arriba en una barra larga (no a la izquierda) y el contenido usa todo el ancho */
+@media (min-width:960px){
+  main{max-width:1400px}
+  #app:not([hidden]){display:block}
+  .tabs{flex-direction:row;flex-wrap:wrap;justify-content:center;gap:4px;position:sticky;top:8px;z-index:20;padding:6px;margin:0 0 18px;backdrop-filter:blur(8px)}
+  .tabs button{text-align:center;padding:9px 16px;font-size:.92rem}
+}
 </style>
 </head>
 <body>
@@ -579,7 +598,7 @@ dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-n
         <div class="msg" id="mdat"></div>
       </details>
     </section>
-    <section class="card">
+    <section class="card" id="s-cli">
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><h2 style="margin:0;flex:1">Clientes</h2><button type="button" id="c-nuevo"><span aria-hidden="true">+</span> Nuevo cliente</button></div>
       <div class="kpis" id="c-kpis"></div>
       <input id="c-bus" type="search" placeholder="Buscar por GX, nombre o teléfono" style="margin-top:12px">
