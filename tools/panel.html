@@ -199,6 +199,13 @@ textarea.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem
 [hidden]{display:none!important}
 dialog#dlg-nue::backdrop{background:#000a;backdrop-filter:blur(2px)}dialog#dlg-nue{background:var(--card,#151a33);margin:auto!important;position:fixed;inset:0;height:max-content}
 #c-lista{max-height:62vh;overflow:auto;overscroll-behavior:contain}
+/* barras de desplazamiento finas y del color del panel */
+*{scrollbar-width:thin;scrollbar-color:#3b4a8a transparent}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:linear-gradient(#3b4a8a,#2c3870);border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:#4f63b8;background-clip:padding-box;border:2px solid transparent}
+::-webkit-scrollbar-corner{background:transparent}
+#c-lista{padding-right:4px}
 </style>
 </head>
 <body>
