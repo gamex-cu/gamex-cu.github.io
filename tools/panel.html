@@ -986,10 +986,14 @@ function pintarClientes(){
   if(CACT)ls=ls.filter(c=>c.estado==='activo'&&(CACT==='si'?c.activada:!c.activada));
   const so={rec:(a,b)=>(b.ultima||'').localeCompare(a.ultima||'')||a.gx.localeCompare(b.gx),gx:(a,b)=>a.gx.localeCompare(b.gx),pts:(a,b)=>b.saldo-a.saldo||b.prestigio-a.prestigio||a.gx.localeCompare(b.gx),nom:(a,b)=>(a.nombre||'~').localeCompare(b.nombre||'~','es')};
   ls.sort(so[ORD]);$('c-cuenta').textContent=ls.length+' cliente'+(ls.length===1?'':'s')+(q||mn!=null||mx!=null||CACT?' con ese filtro':'');
-  $('c-lista').innerHTML=ls.length?ls.map(c=>`<button type="button" class="cl${c.estado==='reservado'?' res':''}" data-gx="${c.gx}"><span class="gx">${c.gx}</span><span class="nm">${c.estado==='reservado'?'<i>Reservado</i>':esc(c.nombre)}<small>${c.estado==='reservado'?'Libre para dar':(c.activada?'🔓 cuenta activada':'🔒 sin activar')+(c.ultima?' · última compra '+fecha(c.ultima):'')}</small></span><span class="sd">${nivelCls(c.nivel)} ${N(c.saldo)} GX<small>${c.prestigio?'⭐'.repeat(Math.min(c.prestigio,5))+' ':''}${money(c.valor)}</small></span></button>`).join(''):'<p class="vacio">Nadie coincide con la búsqueda.</p>';
+  const total=ls.length;ls=ls.slice(0,CVER);
+  $('c-lista').innerHTML=ls.length?ls.map(c=>`<button type="button" class="cl${c.estado==='reservado'?' res':''}" data-gx="${c.gx}"><span class="gx">${c.gx}</span><span class="nm">${c.estado==='reservado'?'<i>Reservado</i>':esc(c.nombre)}<small>${c.estado==='reservado'?'Libre para dar':(c.activada?'🔓 cuenta activada':'🔒 sin activar')+(c.ultima?' · última compra '+fecha(c.ultima):'')}</small></span><span class="sd">${nivelCls(c.nivel)} ${N(c.saldo)} GX<small>${c.prestigio?'⭐'.repeat(Math.min(c.prestigio,5))+' ':''}${money(c.valor)}</small></span></button>`).join('')+(total>ls.length?`<div class="row" style="justify-content:center;gap:8px;margin:10px 0"><button type="button" class="chip" id="c-mas">Ver ${Math.min(50,total-ls.length)} más</button><button type="button" class="chip" id="c-todos">Ver todos (${total})</button></div>`:''):'<p class="vacio">Nadie coincide con la búsqueda.</p>';
+  if($('c-mas'))$('c-mas').onclick=()=>{CVER+=50;pintarClientes()};if($('c-todos'))$('c-todos').onclick=()=>{CVER=1e9;pintarClientes()};
 }
-$('c-bus').oninput=pintarClientes;
-$('c-min').oninput=pintarClientes;$('c-max').oninput=pintarClientes;
+// la lista enseña los primeros 20; "Ver más" o "Ver todos" para el resto (buscar o filtrar vuelve a 20)
+let CVER=20;
+$('c-bus').oninput=()=>{CVER=20;pintarClientes()};
+$('c-min').oninput=()=>{CVER=20;pintarClientes()};$('c-max').oninput=()=>{CVER=20;pintarClientes()};
 $('c-act').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;CACT=b.dataset.a;$('c-act').querySelectorAll('[data-a]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-ord').onclick=e=>{const b=e.target.closest('[data-o]');if(!b)return;ORD=b.dataset.o;$('c-ord').querySelectorAll('[data-o]').forEach(x=>x.setAttribute('aria-pressed',x===b));pintarClientes()};
 $('c-res').onclick=()=>{VERRES=!VERRES;$('c-res').setAttribute('aria-pressed',VERRES);$('c-res').textContent=VERRES?'Ocultar reservados':'Ver IDs reservados';pintarClientes()};
